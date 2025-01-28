@@ -487,7 +487,11 @@ namespace STROOP.Tabs.MapTab
             foreach (var a in hoverData)
                 a.AddContextMenuItems(this, contextMenu);
 
-            contextMenu.Items.Add(new ToolStripSeparator());
+            if (hoverData.Count > 0)
+            {
+                contextMenu.Items.Add(new ToolStripSeparator());
+            }
+            
             var openPopoutItem = new ToolStripMenuItem("Open Popout");
             openPopoutItem.Click += (e, args) =>
             {
