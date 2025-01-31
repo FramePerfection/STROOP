@@ -195,12 +195,14 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     Vector3 screenspacePoint = ssp.Xyz / ssp.W;
                     if (ssp.W < 0)
                         continue;
-                    graphics.textRenderer.AddText(
-                        new[] { ($"{nameString}: {(p1 - p2).Length}", Vector3.Zero) },
-                        lineColor,
-                        Matrix4.CreateTranslation(-16, 8, 0) * Matrix4.CreateScale(1.0f / graphics.glControl.Height) * Matrix4.CreateTranslation(screenspacePoint),
-                        screenSpace: true,
-                        align: QuickFont.QFontAlignment.Right);
+
+                    // TODO: render text again
+                    //graphics.textRenderer.AddText(
+                    //    new[] { ($"{nameString}: {(p1 - p2).Length}", Vector3.Zero) },
+                    //    lineColor,
+                    //    Matrix4.CreateTranslation(-16, 8, 0) * Matrix4.CreateScale(1.0f / graphics.glControl.Height) * Matrix4.CreateTranslation(screenspacePoint),
+                    //    screenSpace: true,
+                    //    align: QuickFont.QFontAlignment.Right);
                 }
             });
         }
