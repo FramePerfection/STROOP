@@ -1496,9 +1496,6 @@
     <PackageReference Include="OpenTK.GLControl">
       <Version>3.0.1</Version>
     </PackageReference>
-    <PackageReference Include="QuickFont.Desktop">
-      <Version>4.5.7053.25687</Version>
-    </PackageReference>
     <PackageReference Include="SharpFont">
       <Version>4.0.1</Version>
     </PackageReference>

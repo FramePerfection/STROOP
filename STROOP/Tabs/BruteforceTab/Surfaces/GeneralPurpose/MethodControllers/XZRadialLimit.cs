@@ -119,13 +119,11 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                                 2);
                     }
                 }
-                Vector3 screenSpacePos = Vector3.TransformPosition(new Vector3(x, 0, z), graphics.ViewMatrix);
-                screenSpacePos.Z = 0;
                 graphics.textRenderer.AddText(
-                    new[] { ($"XZRadialLimit ({parent.GetFuncIndex()?.ToString() ?? "-"})", Vector3.Zero) },
+                    $"XZRadialLimit ({parent.GetFuncIndex()?.ToString() ?? "-"})",
+                    new Vector3(x, 0, z),
                     OutlineColor,
-                    Matrix4.CreateScale(1.0f / graphics.glControl.Height) * Matrix4.CreateTranslation(screenSpacePos),
-                    true);
+                    StringAlignment.Center);
             });
 
         }

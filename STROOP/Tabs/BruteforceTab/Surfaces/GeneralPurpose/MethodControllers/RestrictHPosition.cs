@@ -148,13 +148,11 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                 var yaw = MoreMath.RadiansToAngleUnits(Math.Atan2(direction.X, direction.Z));
                 var b = arrowBase(graphics);
                 graphics.lineRenderer.AddArrow(b.X, b.Y, b.Z, len / graphics.MapViewScaleValue, (float)yaw, 20 / graphics.MapViewScaleValue, color, OutlineWidth);
-                Vector3 screenSpacePos = Vector3.TransformPosition(arrowTip, graphics.ViewMatrix);
-                screenSpacePos.Z = 0;
                 graphics.textRenderer.AddText(
-                    new[] { ($"RestrictHPosition ({parent.GetFuncIndex()?.ToString() ?? "-"})", Vector3.Zero) },
+                    $"RestrictHPosition ({parent.GetFuncIndex()?.ToString() ?? "-"})",
+                    arrowTip,
                     OutlineColor,
-                    Matrix4.CreateScale(1.0f / graphics.glControl.Height) * Matrix4.CreateTranslation(screenSpacePos),
-                    true);
+                    StringAlignment.Center);
             });
         }
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);

@@ -16,6 +16,7 @@ namespace STROOP.Tabs.MapTab
         {
             FillBuffers,
             FillBuffersRedirect,
+            BakeText,
             Background,
             Geometry,
             Transparency,

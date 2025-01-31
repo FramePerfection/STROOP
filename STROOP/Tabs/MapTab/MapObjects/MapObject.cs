@@ -93,6 +93,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         public readonly ObjectCreateParams creationParameters;
 
+        protected virtual bool hasDragPoints => true;
+
         ToolStripMenuItem itemEnableDragging = new ToolStripMenuItem("Enable dragging");
         ToolStripMenuItem itemEnableDraggingX = new ToolStripMenuItem("Enable X");
         ToolStripMenuItem itemEnableDraggingY = new ToolStripMenuItem("Enable Y");
@@ -265,14 +267,16 @@ namespace STROOP.Tabs.MapTab.MapObjects
         protected virtual ContextMenuStrip GetContextMenuStrip(MapTracker targetTracker)
         {
             var _contextMenuStrip = new ContextMenuStrip();
-            itemEnableDragging.Click += (_, __) => enableDragging = dragMask == DragMask.None;
-            foreach (var item_it in new[] { itemEnableDraggingX, itemEnableDraggingY, itemEnableDraggingZ, itemEnableDraggingAngle })
+            if (hasDragPoints)
             {
-                var item = item_it;
-                itemEnableDragging.DropDownItems.Add(item_it);
-                item_it.Click += (_, __) => item_it.Checked = !item_it.Checked;
+                itemEnableDragging.Click += (_, __) => enableDragging = dragMask == DragMask.None;
+                foreach (var item in new[] { itemEnableDraggingX, itemEnableDraggingY, itemEnableDraggingZ, itemEnableDraggingAngle })
+                {
+                    itemEnableDragging.DropDownItems.Add(item);
+                    item.Click += (_, __) => item.Checked = !item.Checked;
+                }
+                _contextMenuStrip.Items.Add(itemEnableDragging);
             }
-            _contextMenuStrip.Items.Add(itemEnableDragging);
 
             return _contextMenuStrip;
         }
