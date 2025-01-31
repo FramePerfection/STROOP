@@ -183,21 +183,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
                     var lineColor = colors[colorIndex - 1];
                     graphics.lineRenderer.Add(p1, p2, ColorUtilities.ColorToVec4(lineColor), OutlineWidth);
-
-                    Vector3 middlePoint = (p1 + p2) * 0.5f;
-                    var ssp = Vector4.Transform(new Vector4(middlePoint.X, middlePoint.Y, middlePoint.Z, 1), graphics.ViewMatrix);
-
-                    Vector3 screenspacePoint = ssp.Xyz / ssp.W;
-                    if (ssp.W < 0)
-                        continue;
-
-                    // TODO: render text again
-                    //graphics.textRenderer.AddText(
-                    //    new[] { ($"{nameString}: {(p1 - p2).Length}", Vector3.Zero) },
-                    //    lineColor,
-                    //    Matrix4.CreateTranslation(-16, 8, 0) * Matrix4.CreateScale(1.0f / graphics.glControl.Height) * Matrix4.CreateTranslation(screenspacePoint),
-                    //    screenSpace: true,
-                    //    align: QuickFont.QFontAlignment.Right);
+                    graphics.textRenderer.AddText($"{nameString}: {(p1 - p2).Length}", (p1 + p2) * 0.5f, lineColor, StringAlignment.Far);
                 }
             });
         }

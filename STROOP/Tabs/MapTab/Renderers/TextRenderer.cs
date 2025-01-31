@@ -1,21 +1,47 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using STROOP.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Imaging = System.Drawing.Imaging;
 
 namespace STROOP.Tabs.MapTab.Renderers
 {
+    using BrushCacheEntry = StrongBox<(Brush brush, int unusedCount)>;
+
     public class TextRenderer : Renderer
     {
+        const int BRUSH_UNUSED_COUNT_LIMIT = 120; // 4 seconds at 30 FPS
+
+        public static class Fonts
+        {
+            public static Font small = new Font("Consolas", 8);
+            public static Font medium = new Font("Consolas", 12);
+            public static Font large = new Font("Consolas", 24);
+        }
+
+        struct Text
+        {
+            public string value;
+            public StringFormat format;
+            public Font font;
+            public Brush brush;
+            public PointF position;
+        }
+
         int targetTexture;
         int shader;
         int uniform_sampler;
 
         Bitmap targetImage;
         Graphics gdiGraphics;
-        Font font;
+
+        List<Text> texts = new List<Text>();
+        Dictionary<Color, BrushCacheEntry> cachedBrushes = new Dictionary<Color, BrushCacheEntry>();
 
         protected virtual int GetShader() => GraphicsUtil.GetShaderProgram("Resources/Shaders/Fullscreen.vert.glsl", "Resources/Shaders/TextOverlay.frag.glsl");
 
@@ -29,7 +55,6 @@ namespace STROOP.Tabs.MapTab.Renderers
                 targetTexture = GL.GenTexture();
                 ResizeIfNecessary();
             });
-            font = new Font("Consolas", 60);
         }
 
         private void ResizeIfNecessary()
@@ -55,9 +80,21 @@ namespace STROOP.Tabs.MapTab.Renderers
             ResizeIfNecessary();
             graphics.drawLayers[(int)MapGraphics.DrawLayers.BakeText].Add(() =>
             {
-                // Draw some test content with GDI - we will later render text "instances" here
+                // Dispose of brushes that haven't been used in a while
+                var old = cachedBrushes;
+                cachedBrushes = new Dictionary<Color, BrushCacheEntry>();
+                foreach (var kvp in old)
+                    if (kvp.Value.Value.unusedCount++ < BRUSH_UNUSED_COUNT_LIMIT)
+                        cachedBrushes.Add(kvp.Key, kvp.Value);
+                    else
+                        kvp.Value.Value.brush.Dispose();
+
+                // Draw all collectext text instances, then clear the list for the next frame
                 gdiGraphics.Clear(Color.FromArgb(0));
-                gdiGraphics.DrawString("Test", font, Brushes.DarkGray, new Point(10, 20));
+                foreach (var t in texts)
+                    gdiGraphics.DrawString(t.value, t.font, t.brush, t.position, t.format);
+
+                texts.Clear();
                 gdiGraphics.Flush();
 
                 // Retrieve the rendered image data into a GL compatible array
@@ -87,6 +124,36 @@ namespace STROOP.Tabs.MapTab.Renderers
             });
         }
 
-        public void AddText(params object[] ignored) { }
+        public void AddText(string text, Vector3 position, Color color, StringAlignment alignment, Font font = null)
+        {
+            var graphics = AccessScope<MapTab>.content.graphics;
+            var ssp = Vector4.Transform(new Vector4(position.X, position.Y, position.Z, 1), graphics.ViewMatrix);
+
+            // clip texts behind the camera
+            if (ssp.W < 0)
+                return;
+
+            Vector3 screenspacePoint = ssp.Xyz / ssp.W;
+            texts.Add(new Text()
+            {
+                value = text,
+                brush = GetBrush(color),
+                font = font ?? Fonts.medium,
+                format = new StringFormat() { Alignment = alignment },
+                position = new PointF((screenspacePoint.X + 1) * targetImage.Width / 2f, (-screenspacePoint.Y + 1) * targetImage.Height / 2f),
+            });
+        }
+
+        Brush GetBrush(Color color)
+        {
+            BrushCacheEntry result;
+            if (!cachedBrushes.TryGetValue(color, out result))
+                cachedBrushes[color] = result = new BrushCacheEntry((new SolidBrush(color), 0));
+            else
+                result.Value.unusedCount = 0;
+
+            return result.Value.brush;
+
+        }
     }
 }
