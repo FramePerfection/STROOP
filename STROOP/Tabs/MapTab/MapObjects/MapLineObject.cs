@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using STROOP.Utilities;
 using OpenTK;
-using System.Windows.Forms;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
     public abstract class MapLineObject : MapObject
     {
+        protected override bool hasDragPoints => false;
+
         public MapLineObject() : base() { }
 
         protected virtual Vector4 GetColor(MapGraphics graphics) => ColorUtilities.ColorToVec4(OutlineColor, OpacityByte);
@@ -31,9 +32,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 }
             });
         }
-
-        protected override ContextMenuStrip GetContextMenuStrip(MapTracker targetTracker) => new ContextMenuStrip();
-
+        
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
 
         protected abstract List<Vector3> GetVertices(MapGraphics graphics);

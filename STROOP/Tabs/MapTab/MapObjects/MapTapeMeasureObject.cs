@@ -5,6 +5,7 @@ using STROOP.Utilities;
 using STROOP.Structs.Configurations;
 using System.Windows.Forms;
 using OpenTK;
+using System.Linq;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -102,6 +103,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
         Func<Vector3> aProvider, bProvider;
         TapeHoverData hoverData;
 
+        protected override bool hasDragPoints => true;
+
         public MapTapeMeasureObject()
         {
             OutlineColor = Color.Orange;
@@ -117,17 +120,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
         protected override ContextMenuStrip GetContextMenuStrip(MapTracker targetTracker)
         {
             this.targetTracker = targetTracker;
-
-            itemEnableDragging = new ToolStripMenuItem("Enable dragging");
-            var capturedMapTab = currentMapTab;
-            itemEnableDragging.Click += (sender, e) =>
-            {
-                itemEnableDragging.Checked = !itemEnableDragging.Checked;
-            };
-
-            var _contextMenuStrip = new ContextMenuStrip();
-            _contextMenuStrip.Items.Add(itemEnableDragging);
-            itemEnableDragging.PerformClick();
+            
+            var _contextMenuStrip = base.GetContextMenuStrip(targetTracker);
+            _contextMenuStrip.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Enable dragging")?.PerformClick();
             return _contextMenuStrip;
         }
 
