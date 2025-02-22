@@ -44,6 +44,7 @@ namespace STROOP
             this.labelNotConnected = new System.Windows.Forms.Label();
             this.buttonConnect = new System.Windows.Forms.Button();
             this.listBoxProcessesList = new System.Windows.Forms.ListBox();
+            this.contextMenuStripProcessesList = new System.Windows.Forms.ContextMenuStrip();
             this.labelFpsCounter = new System.Windows.Forms.Label();
             this.comboBoxRomVersion = new System.Windows.Forms.ComboBox();
             this.comboBoxReadWriteMode = new System.Windows.Forms.ComboBox();
@@ -206,7 +207,15 @@ namespace STROOP
             this.listBoxProcessesList.Name = "listBoxProcessesList";
             this.listBoxProcessesList.Size = new System.Drawing.Size(229, 95);
             this.listBoxProcessesList.TabIndex = 0;
+            this.listBoxProcessesList.ContextMenuStrip = contextMenuStripProcessesList;
             this.listBoxProcessesList.DoubleClick += new System.EventHandler(this.listBoxProcessesList_DoubleClick);
+            // 
+            // contextMenuStripProcessesList
+            // 
+            itemShowSimilarProcesses = new ToolStripMenuItem("Show Similar Processes");
+            itemShowSimilarProcesses.CheckOnClick = true;
+            itemShowSimilarProcesses.CheckedChanged += new System.EventHandler(this.itemShowSimilarProcesses_CheckedChanged);
+            contextMenuStripProcessesList.Items.Add(itemShowSimilarProcesses);
             // 
             // labelFpsCounter
             // 
@@ -628,6 +637,8 @@ namespace STROOP
         private Label labelNotConnected;
         private Button buttonConnect;
         private ListBox listBoxProcessesList;
+        private ContextMenuStrip contextMenuStripProcessesList;
+        private ToolStripMenuItem itemShowSimilarProcesses;
         private Label labelFpsCounter;
         private Button buttonShowTopPane;
         private Button buttonShowTopBottomPane;
