@@ -85,7 +85,7 @@ namespace STROOP
             {
                 return false;
             }
-            
+
             if (emulators.Length > 1)
             {
                 MessageBox.Show("Ambiguous emulator type", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -492,6 +492,11 @@ namespace STROOP
         {
             SavedSettingsConfig.ProcessListShowSimilarProcesses.value = itemShowSimilarProcesses.Checked;
             buttonRefresh_Click(this, new EventArgs());
+        }
+
+        private void buttonProcessOptions_Click(object sender, EventArgs e)
+        {
+            contextMenuStripProcessesList.Show(Cursor.Position);
         }
 
         private void buttonConnect_Click(object sender, EventArgs e)
