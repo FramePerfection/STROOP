@@ -216,6 +216,7 @@ namespace STROOP
             itemShowSimilarProcesses.CheckOnClick = true;
             itemShowSimilarProcesses.CheckedChanged += new System.EventHandler(this.itemShowSimilarProcesses_CheckedChanged);
             contextMenuStripProcessesList.Items.Add(itemShowSimilarProcesses);
+            contextMenuStripProcessesList.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripProcessesList_Opening);
             // 
             // labelFpsCounter
             // 

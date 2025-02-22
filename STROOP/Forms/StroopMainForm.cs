@@ -33,7 +33,6 @@ namespace STROOP
         bool _objSlotResizing = false;
         int _resizeObjSlotTime = 0;
         readonly bool isMainForm;
-        bool showSimilarProcesses = false;
         List<Process> _availableProcesses = new List<Process>();
             
         public readonly SearchVariableDialog searchVariableDialog;
@@ -46,7 +45,6 @@ namespace STROOP
             InitTabs();
             ObjectSlotsManager = new ObjectSlotsManager(this, tabControlMain);
             GetTab<Tabs.OptionsTab>().AddCogContextMenu(pictureBoxCog);
-            itemShowSimilarProcesses.Checked = showSimilarProcesses;
         }
 
         public void ShowSearchDialog()
@@ -66,7 +64,7 @@ namespace STROOP
         /// <param name="process">The process.</param>
         private IEnumerable<Emulator> GetEmulatorCandidatesForProcess(Process process)
         {
-            if (showSimilarProcesses)
+            if (SavedSettingsConfig.ProcessListShowSimilarProcesses.value)
             {
                 return Config.Emulators.Where(e => process.ProcessName.ToLower().Contains(e.ProcessName.ToLower()));
             }
@@ -324,7 +322,7 @@ namespace STROOP
             {
                 try
                 {
-                    if (showSimilarProcesses)
+                    if (SavedSettingsConfig.ProcessListShowSimilarProcesses.value)
                     {
                         if (!Config.Emulators.Any(e => p.ProcessName.ToLower().Contains(e.ProcessName.ToLower())))
                             continue;
@@ -485,9 +483,14 @@ namespace STROOP
             buttonTabAdd.ContextMenuStrip.Show(Cursor.Position);
         }
         
+        private void contextMenuStripProcessesList_Opening(object sender, CancelEventArgs e)
+        {
+            itemShowSimilarProcesses.Checked = SavedSettingsConfig.ProcessListShowSimilarProcesses.value;
+        }
+        
         private void itemShowSimilarProcesses_CheckedChanged(object sender, EventArgs e)
         {
-            showSimilarProcesses = itemShowSimilarProcesses.Checked;
+            SavedSettingsConfig.ProcessListShowSimilarProcesses.value = itemShowSimilarProcesses.Checked;
             buttonRefresh_Click(this, new EventArgs());
         }
 
