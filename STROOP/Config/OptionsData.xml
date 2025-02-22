@@ -13,4 +13,5 @@
   <Data base="None" specialType="WatchVarPanelYMargin">Variable Panel Vertical Margin</Data>
   <Data base="None" specialType="WatchVarPanelBoldNames" subclass="Boolean">Bold Variable Names</Data>
   <Data base="None" specialType="WatchVarPanelFont" subclass="String">Variable Panel Font</Data>
+  <Data base="None" specialType="ProcessListShowSimilarProcesses" subclass="Boolean">Show Similar Processes</Data>
 </VarData>

@@ -82,6 +82,7 @@ namespace STROOP.Structs.Configurations
         public static SavedVariable<uint> WatchVarPanelValueWidth = new SavedVariable<uint>("VariablePanel Value Width", 80);
         public static SavedVariable<uint> WatchVarPanelHorizontalMargin = new SavedVariable<uint>("VariablePanel Horizontal Margin", 2);
         public static SavedVariable<uint> WatchVarPanelVerticalMargin = new SavedVariable<uint>("VariablePanel Vertical Margin", 2);
+        public static SavedVariable<bool> ProcessListShowSimilarProcesses = new SavedVariable<bool>("Show Similar Processes", false);
 
         public static IEnumerable<SavedVariable<bool>> GetBoolVariables()
         {

@@ -58,6 +58,20 @@ namespace STROOP
             searchVariableDialog.Activate();
         }
 
+        /// <summary>
+        /// Gets the config emulator entries which match a process.
+        /// </summary>
+        /// <param name="process">The process.</param>
+        private IEnumerable<Emulator> GetEmulatorCandidatesForProcess(Process process)
+        {
+            if (SavedSettingsConfig.ProcessListShowSimilarProcesses.value)
+            {
+                return Config.Emulators.Where(e => process.ProcessName.ToLower().Contains(e.ProcessName.ToLower()));
+            }
+
+            return Config.Emulators.Where(e => e.ProcessName.ToLower() == process.ProcessName.ToLower());
+        }
+        
         private bool AttachToProcess(Process process)
         {
             if (process.HasExited)
@@ -65,10 +79,14 @@ namespace STROOP
                 return false;
             }
             
-            // Find emulator
-            var emulators = Config.Emulators.Where(e => e.ProcessName.ToLower() == process.ProcessName.ToLower()).ToList();
+            var emulators = GetEmulatorCandidatesForProcess(process).ToArray();
 
-            if (emulators.Count > 1)
+            if (emulators.Length == 0)
+            {
+                return false;
+            }
+
+            if (emulators.Length > 1)
             {
                 MessageBox.Show("Ambiguous emulator type", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -295,7 +313,7 @@ namespace STROOP
                 buttonRefresh_Click(this, new EventArgs());
             }));
         }
-
+        
         private List<Process> GetAvailableProcesses()
         {
             var AvailableProcesses = Process.GetProcesses();
@@ -304,8 +322,17 @@ namespace STROOP
             {
                 try
                 {
-                    if (!Config.Emulators.Any(e => e.ProcessName.ToLower() == p.ProcessName.ToLower()))
-                        continue;
+                    if (SavedSettingsConfig.ProcessListShowSimilarProcesses.value)
+                    {
+                        if (!Config.Emulators.Any(e => p.ProcessName.ToLower().Contains(e.ProcessName.ToLower())))
+                            continue;
+                    }
+                    else
+                    {
+                        if (!Config.Emulators.Any(e => e.ProcessName.ToLower() == p.ProcessName.ToLower()))
+                            continue;
+                    }
+                    
 
                     if (p.HasExited)
                         continue;
@@ -455,6 +482,22 @@ namespace STROOP
         {
             buttonTabAdd.ContextMenuStrip.Show(Cursor.Position);
         }
+        
+        private void contextMenuStripProcessesList_Opening(object sender, CancelEventArgs e)
+        {
+            itemShowSimilarProcesses.Checked = SavedSettingsConfig.ProcessListShowSimilarProcesses.value;
+        }
+        
+        private void itemShowSimilarProcesses_CheckedChanged(object sender, EventArgs e)
+        {
+            SavedSettingsConfig.ProcessListShowSimilarProcesses.value = itemShowSimilarProcesses.Checked;
+            buttonRefresh_Click(this, new EventArgs());
+        }
+
+        private void buttonProcessOptions_Click(object sender, EventArgs e)
+        {
+            contextMenuStripProcessesList.Show(Cursor.Position);
+        }
 
         private void buttonConnect_Click(object sender, EventArgs e)
         {
@@ -511,7 +554,7 @@ namespace STROOP
             buttonRefresh_Click(this, new EventArgs());
             panelConnect.Visible = true;
         }
-
+        
         private void buttonRefreshAndConnect_Click(object sender, EventArgs e)
         {
             buttonRefresh_Click(sender, e);
