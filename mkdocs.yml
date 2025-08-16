@@ -1,3 +1,9 @@
 site_name: STROOP
 nav:
-  - Overview: index.md
+  - Home: index.md
+  - User Guide:
+    - Getting Started: getting-started.md
+    - Tabs: 
+      - Understanding Tabs: tabs.md
+      - Specific Tabs:
+        - Object Tab: tabs/object.md
