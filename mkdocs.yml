@@ -6,4 +6,41 @@ nav:
     - Tabs: 
       - Understanding Tabs: tabs.md
       - Specific Tabs:
-        - Object Tab: tabs/object.md
+        - Actions Tab: ./tabs/actions.md
+        - Area Tab: ./tabs/area.md
+        - Cam Hack Tab: ./tabs/cam-hack.md
+        - Camera Tab: ./tabs/camera.md
+        - Cells Tab: ./tabs/cells.md
+        - Coin Tab: ./tabs/coin.md
+        - Custom Tab: ./tabs/custom.md
+        - Debug Tab: ./tabs/debug.md
+        - Disassembly Tab: ./tabs/disassembly.md
+        - File Tab: ./tabs/file.md
+        - Gfx Tab: ./tabs/gfx.md
+        - Ghost Tab: ./tabs/ghost.md
+        - Hacks Tab: ./tabs/hacks.md
+        - HUD Tab: ./tabs/hud.md
+        - Input Tab: ./tabs/input.md
+        - M64 Tab: ./tabs/m64.md
+        - Main Save Tab: ./tabs/main-save.md
+        - Map Tab: ./tabs/map.md
+        - Mario Tab: ./tabs/mario.md
+        - Memory Tab: ./tabs/memory.md
+        - Misc Tab: ./tabs/misc.md
+        - Model Tab: ./tabs/model.md
+        - Music Tab: ./tabs/music.md
+        - Object Tab: ./tabs/object.md
+        - Options Tab: ./tabs/options.md
+        - Painting Tab: ./tabs/painting.md
+        - PU Tab: ./tabs/pu.md
+        - Q Frames Tab: ./tabs/q-frames.md
+        - Script Tab: ./tabs/script.md
+        - Search Tab: ./tabs/search.md
+        - Snow Tab: ./tabs/snow.md
+        - Sound Tab: ./tabs/sound.md
+        - TAS Tab: ./tabs/tas.md
+        - Testing Tab: ./tabs/testing.md
+        - Triangles Tab: ./tabs/triangles.md
+        - Var Hack Tab: ./tabs/var-hack.md
+        - Warp Tab: ./tabs/warp.md
+        - Water Tab: ./tabs/water.md

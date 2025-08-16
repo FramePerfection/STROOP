@@ -7,21 +7,21 @@ For a complete list of tabs and their documentation, see the [List of Tabs](#lis
 
 By default, STROOP will show only a portion of all available tabs in the following order:
 
-- Object
-- Mario
-- HUD
-- Map
-- Ghost
-- Triangles
-- Water
-- File
-- Camera
-- Hacks
-- M64
-- Input
-- Misc
-- Custom
-- TAS
+- [Object](./object)
+- [Mario](./mario)
+- [HUD](./hud)
+- [Map](./map)
+- [Ghost](./ghost)
+- [Triangles](./triangles)
+- [Water](./water)
+- [File](./file)
+- [Camera](./camera)
+- [Hacks](./hacks)
+- [M64](./m64)
+- [Input](./input)
+- [Misc](./misc)
+- [Custom](./custom)
+- [TAS](./tas)
 
 This list is effectively a guess of what could be useful to someone who is just starting out with STROOP, but you can manage the tabs you want to see and their order (which is a setting that will be saved across sessions) using the controls in the center top area of the window:  
 
@@ -32,4 +32,43 @@ This list is effectively a guess of what could be useful to someone who is just 
 
 ## List of Tabs
 
+The following is a complete list of available tabs in alphabetical order:
+
+- [Actions](./tabs/actions.md)
+- [Area](./tabs/area.md)
+- [Cam Hack](./tabs/cam-hack.md)
+- [Camera](./tabs/camera.md)
+- [Cells](./tabs/cells.md)
+- [Coin](./tabs/coin.md)
+- [Custom](./tabs/custom.md)
+- [Debug](./tabs/debug.md)
+- [Disassembly](./tabs/disassembly.md)
+- [File](./tabs/file.md)
+- [Gfx](./tabs/gfx.md)
+- [Ghost](./tabs/ghost.md)
+- [Hacks](./tabs/hacks.md)
+- [HUD](./tabs/hud.md)
+- [Input](./tabs/input.md)
+- [M64](./tabs/m64.md)
+- [Main Save](./tabs/main-save.md)
+- [Map](./tabs/map.md)
+- [Mario](./tabs/mario.md)
+- [Memory](./tabs/memory.md)
+- [Misc](./tabs/misc.md)
+- [Model](./tabs/model.md)
+- [Music](./tabs/music.md)
 - [Object](./tabs/object.md)
+- [Options](./tabs/options.md)
+- [Painting](./tabs/painting.md)
+- [PU](./tabs/pu.md)
+- [Q Frames](./tabs/q-frames.md)
+- [Script](./tabs/script.md)
+- [Search](./tabs/search.md)
+- [Snow](./tabs/snow.md)
+- [Sound](./tabs/sound.md)
+- [TAS](./tabs/tas.md)
+- [Testing](./tabs/testing.md)
+- [Triangles](./tabs/triangles.md)
+- [Var Hack](./tabs/var-hack.md)
+- [Warp](./tabs/warp.md)
+- [Water](./tabs/water.md)
