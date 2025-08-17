@@ -31,4 +31,6 @@ The tabs are designed to present information and controls for certain aspects of
 
 By default, the object list and the "left panel" of each tab are always visible, but you can change this appearance with the layout buttons in the top right corner near the gear icon. However, because objects are relevant in a great number of contexts, and because many STROOP tabs aren't designed to work well with any but the default layout, messing around with this can hardly ever be recommended.
 
+For a more detailed explanation of the main user interface, see the [Main UI](./main-ui.md) page.
+
 As a general note, it is worth mentioning that right clicking just about anything in STROOP will reveal a lot of hidden, yet at times very useful context menus - even for typically non-function elements like labels or elements that serve a different function by nature such as buttons or drop-down boxes.

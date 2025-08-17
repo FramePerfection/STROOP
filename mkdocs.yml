@@ -3,6 +3,7 @@ nav:
   - Home: index.md
   - User Guide:
     - Getting Started: getting-started.md
+    - Main User Interface: main-ui.md
     - Tabs: 
       - Understanding Tabs: tabs.md
       - Specific Tabs:
