@@ -18,7 +18,7 @@ The main user interface is subdivided into three main sections:
     - 11: A "Variable Panel" displays in-game memory values, derived values, as well as some special variables, and allows editing them in a neat table format. Nearly all tabs have one of these, and they are a central component of STROOP's user interface.
 - Objects List: This large control group at the bottom allows viewing loaded objects at a glance, as well as performing complex operations on them, sometimes related to the currently selected tab. For more information, see the [Object List](#the-object-list) chapter and consult the respective [Tab documentation](./tabs.md#list-of-tabs) for how this interacts with each tab.
 
-![Main User Interface Image](/resources/main-ui-overview.png)
+![Main User Interface Image](./resources/main-ui-overview.png)
 
 ## The Object List
 
