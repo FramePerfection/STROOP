@@ -41,7 +41,7 @@ namespace STROOP.Controls
             _timer = new Timer();
             _timer.Interval = 1000 / 60;
             _timer.Tick += _timer_Tick;
-            
+
             control.MouseWheel += HandleMouseWheel;
             EventHandler disposeHandler = null;
             disposeHandler = (_, _) =>
@@ -76,7 +76,9 @@ namespace STROOP.Controls
 
             Control.Paint += OnPaint;
             Control.Resize += OnResize;
-            Control.MouseDown += Control_MouseClick;
+            Control.MouseDown += OnMouseDown;
+            Control.MouseMove += OnMouseMove;
+            Control.MouseUp += OnMouseUp;
 
             GL.ClearColor(Color.FromKnownColor(KnownColor.Control));
             GL.Enable(EnableCap.DepthTest);
@@ -86,16 +88,26 @@ namespace STROOP.Controls
             SetupViewport();
         }
 
-        volatile bool _mousePressedWithin = false;
-        private void Control_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        bool _mouseDown = false;
+
+        private void OnMouseDown(object sender, MouseEventArgs e)
         {
-            _mousePressedWithin = true;
+            _mouseDown = true;
+            _pMouseCoords = new Vector2(e.X, e.Y);
+            _mouseCoords = new Vector2(e.X, e.Y);
         }
 
-        bool _mousePressed = false;
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            _mouseCoords = new Vector2(e.X, e.Y);
+        }
 
-        Vector2 _pMouseCoords;
+        private void OnMouseUp(object sender, MouseEventArgs e)
+            => _mouseDown = false;
+
+        Vector2 _pMouseCoords, _mouseCoords;
         float? _pMouseScroll = null;
+
         public void CameraFly()
         {
             // Calculate key speed multiplier
@@ -108,18 +120,13 @@ namespace STROOP.Controls
                 _speedMul = 0.3f;
 
             // Handle mouse
-            var tmp = Mouse.GetPosition(Mouse.Captured);
-            var mousePosition = new Vector2((float)tmp.X, (float)tmp.Y);
-            if (Mouse.LeftButton == MouseButtonState.Pressed && _mousePressedWithin)
+            if (_mouseDown)
             {
-                // Reset previous coordinates so no movement occurs during the initial press 
-                if (!_mousePressed)
-                {
-                    _pMouseCoords = mousePosition;
-                }
+                // Reset previous coordinates so no movement occurs during the initial press
 
                 // Calcualte mouse delta
-                Vector2 delta = mousePosition - _pMouseCoords;
+                Vector2 delta = _mouseCoords - _pMouseCoords;
+                _pMouseCoords = _mouseCoords;
 
                 // Add speed multiplier
                 delta *= _speedMul * 0.009f;
@@ -138,22 +145,8 @@ namespace STROOP.Controls
                     _cameraManualAngleLong = (float)(-Math.PI / 2) + 0.001f;
                 }
 
-                // Update mouse coordinates for next time
-                _pMouseCoords = mousePosition;
-
-                _mousePressed = true;
                 ManualMode = true;
             }
-            else
-            {
-                if (_mousePressed)
-                    _mousePressedWithin = false;
-                _mousePressed = false;
-            }
-
-            // Don't do anything if we don't have focus
-            if (!Control.Focused)
-                return;
 
             Vector3 relDeltaPos = new Vector3(0, 0, 0);
             float posSpeed = _speedMul * _modelRadius * 0.01f; // Move at a rate relative to the model size
@@ -164,26 +157,31 @@ namespace STROOP.Controls
                 relDeltaPos.Z += posSpeed;
                 ManualMode = true;
             }
+
             if (Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.Left))
             {
                 relDeltaPos.X += posSpeed;
                 ManualMode = true;
             }
+
             if (Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.Down))
             {
                 relDeltaPos.Z += -posSpeed;
                 ManualMode = true;
             }
+
             if (Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.Right))
             {
                 relDeltaPos.X += -posSpeed;
                 ManualMode = true;
             }
+
             if (Keyboard.IsKeyDown(Key.Q))
             {
                 relDeltaPos.Y += -posSpeed;
                 ManualMode = true;
             }
+
             if (Keyboard.IsKeyDown(Key.E))
             {
                 relDeltaPos.Y += posSpeed;
@@ -198,8 +196,8 @@ namespace STROOP.Controls
             // The Z unit is the normalized camera look vector (to move towards the look),
             // Hence, move formard.
             _cameraPosition += Vector3.Cross(Vector3.UnitY, _cameraLook) * relDeltaPos.X
-                + Vector3.UnitY * relDeltaPos.Y
-                + _cameraLook * relDeltaPos.Z;
+                               + Vector3.UnitY * relDeltaPos.Y
+                               + _cameraLook * relDeltaPos.Z;
         }
 
         private void HandleMouseWheel(object sender, MouseEventArgs e)
@@ -297,6 +295,7 @@ namespace STROOP.Controls
                     GL.Vertex3(_vertices[t[1]]);
                     GL.Vertex3(_vertices[t[2]]);
                 }
+
                 GL.End();
 
                 // Draw lines
@@ -312,6 +311,7 @@ namespace STROOP.Controls
                     GL.Vertex3(_vertices[t[1]]);
                     GL.Vertex3(_vertices[t[2]]);
                 }
+
                 GL.End();
 
                 // Draw vertices
@@ -329,6 +329,7 @@ namespace STROOP.Controls
 
                     GL.Vertex3(v);
                 }
+
                 GL.End();
             }
         }
