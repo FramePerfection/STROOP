@@ -121,6 +121,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, targetTexture);
                 GL.Uniform1(uniform_sampler, (int)0);
+                GL.BindVertexArray(graphics.emptyVAO);
                 GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
             });
         }

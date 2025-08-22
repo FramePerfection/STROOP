@@ -67,6 +67,8 @@ namespace STROOP.Tabs.MapTab
 
         public Models.TriangleDataModel hoverTriangle;
 
+        public int emptyVAO { get; private set; }
+
         int mainFrameBuffer, mainColorBuffer, mainDepthBuffer;
 
         public class CachedCollisionStructure
@@ -239,6 +241,7 @@ namespace STROOP.Tabs.MapTab
 
             glInits.Add(() =>
             {
+                emptyVAO = GL.GenVertexArray();
                 GL.ClearColor(Color.FromKnownColor(KnownColor.Control));
                 GL.Enable(EnableCap.Texture2D);
                 GL.Enable(EnableCap.Blend);
