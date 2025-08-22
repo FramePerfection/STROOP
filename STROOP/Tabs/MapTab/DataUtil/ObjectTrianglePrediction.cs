@@ -7,6 +7,7 @@ using STROOP.Tabs.MapTab.MapObjects;
 using STROOP.Utilities;
 using System.Windows.Forms;
 using System.Linq;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.DataUtil
 {
@@ -290,17 +291,17 @@ namespace STROOP.Tabs.MapTab.DataUtil
             short[] result = new short[numVertices * 3];
             int i = 0;
 
-            OpenTK.Matrix4 m;
+            Matrix4 m;
             uint throwMtxPtr = Config.Stream.GetUInt32(gCurrentObject + objThrowMatrixOffset);
             if (throwMtxPtr != 0)
             {
                 uint transformPtr = gCurrentObject + objTransformOffset;
                 uint idx = 0;
                 float F() => Config.Stream.GetSingle(transformPtr + idx++ * 4);
-                m = new OpenTK.Matrix4(F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F());
+                m = new Matrix4(F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F(), F());
             }
             else
-                m = mtxf_rotate_zxy_and_translate(new OpenTK.Vector3(objPosX, objPosY, objPosZ), objAngleX, objAngleY, objAngleZ);
+                m = mtxf_rotate_zxy_and_translate(new Vector3(objPosX, objPosY, objPosZ), objAngleX, objAngleY, objAngleZ);
 
             //apply_object_scale_to_matrix(gCurrentObject, m, *objectTransform);
             m.M11 *= objScaleX;
@@ -333,9 +334,9 @@ namespace STROOP.Tabs.MapTab.DataUtil
          * Build a matrix that rotates around the z axis, then the x axis, then the y
          * axis, and then translates.
          */
-        static OpenTK.Matrix4 mtxf_rotate_zxy_and_translate(OpenTK.Vector3 translate, short rotate0, short rotate1, short rotate2)
+        static Matrix4 mtxf_rotate_zxy_and_translate(Vector3 translate, short rotate0, short rotate1, short rotate2)
         {
-            OpenTK.Matrix4 dest = new OpenTK.Matrix4();
+            Matrix4 dest = new Matrix4();
 
             float sx = InGameTrigUtilities.InGameSine(rotate0);
             float cx = InGameTrigUtilities.InGameCosine(rotate0);

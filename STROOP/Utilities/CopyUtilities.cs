@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using OpenTK;
+using OpenTK.Mathematics;
 
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;

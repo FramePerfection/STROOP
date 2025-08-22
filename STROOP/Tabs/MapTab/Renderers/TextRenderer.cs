@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 using Imaging = System.Drawing.Imaging;
 
 namespace STROOP.Tabs.MapTab.Renderers
@@ -89,7 +90,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                     else
                         kvp.Value.Value.brush.Dispose();
 
-                // Draw all collectext text instances, then clear the list for the next frame
+                // Draw all collected text instances, then clear the list for the next frame
                 gdiGraphics.Clear(Color.FromArgb(0));
                 foreach (var t in texts)
                     gdiGraphics.DrawString(t.value, t.font, t.brush, t.position, t.format);
@@ -127,7 +128,7 @@ namespace STROOP.Tabs.MapTab.Renderers
         public void AddText(string text, Vector3 position, Color color, StringAlignment alignment, Font font = null)
         {
             var graphics = AccessScope<MapTab>.content.graphics;
-            var ssp = Vector4.Transform(new Vector4(position.X, position.Y, position.Z, 1), graphics.ViewMatrix);
+            var ssp = Vector4.TransformRow(new Vector4(position.X, position.Y, position.Z, 1.0f), graphics.ViewMatrix);
 
             // clip texts behind the camera
             if (ssp.W < 0)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using OpenTK;
-
+using OpenTK.Mathematics;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab;
 using STROOP.Utilities;

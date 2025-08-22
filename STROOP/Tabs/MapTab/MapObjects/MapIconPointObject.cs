@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
