@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Main User Interface - STROOP</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">STROOP</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">User Guide</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../getting-started/" class="dropdown-item">Getting Started</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Main User Interface</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Tabs</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../tabs/" class="dropdown-item">Understanding Tabs</a>
+</li>
+            
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Specific Tabs</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../tabs/actions.md" class="dropdown-item">Actions Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/area.md" class="dropdown-item">Area Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/cam-hack.md" class="dropdown-item">Cam Hack Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/camera.md" class="dropdown-item">Camera Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/cells.md" class="dropdown-item">Cells Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/coin.md" class="dropdown-item">Coin Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/custom.md" class="dropdown-item">Custom Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/debug.md" class="dropdown-item">Debug Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/disassembly.md" class="dropdown-item">Disassembly Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/file.md" class="dropdown-item">File Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/gfx.md" class="dropdown-item">Gfx Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/ghost.md" class="dropdown-item">Ghost Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/hacks.md" class="dropdown-item">Hacks Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/hud.md" class="dropdown-item">HUD Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/input.md" class="dropdown-item">Input Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/m64.md" class="dropdown-item">M64 Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/main-save.md" class="dropdown-item">Main Save Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/map.md" class="dropdown-item">Map Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/mario.md" class="dropdown-item">Mario Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/memory.md" class="dropdown-item">Memory Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/misc.md" class="dropdown-item">Misc Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/model.md" class="dropdown-item">Model Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/music.md" class="dropdown-item">Music Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/object/" class="dropdown-item">Object Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/options.md" class="dropdown-item">Options Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/painting.md" class="dropdown-item">Painting Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/pu.md" class="dropdown-item">PU Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/q-frames.md" class="dropdown-item">Q Frames Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/script.md" class="dropdown-item">Script Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/search.md" class="dropdown-item">Search Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/snow.md" class="dropdown-item">Snow Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/sound.md" class="dropdown-item">Sound Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/tas.md" class="dropdown-item">TAS Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/testing.md" class="dropdown-item">Testing Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/triangles.md" class="dropdown-item">Triangles Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/var-hack.md" class="dropdown-item">Var Hack Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/warp.md" class="dropdown-item">Warp Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/water.md" class="dropdown-item">Water Tab</a>
+</li>
+    </ul>
+  </li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../getting-started/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../tabs/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#main-user-interface" class="nav-link">Main User Interface</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#the-object-list" class="nav-link">The Object List</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#memory-mapping" class="nav-link">Memory mapping</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="main-user-interface">Main User Interface</h1>
+<p>After connecting STROOP to mupen, you will be greeted by the main user interface of STROOP.<br />
+The main user interface is subdivided into three main sections:</p>
+<ul>
+<li>General controls:<ul>
+<li>1: The <code>Disconnect</code> button lets you return to the process selection interface.</li>
+<li>2: The FPS counter displays the number of (memory) updates STROOP is currently performing each seconds.</li>
+<li>3: The <code>Connected To:</code> label shows which process STROOP is currently connected to.</li>
+<li>4: The tab controls allow managing the layout of tabs. See <a href="../tabs/">Understanding Tabs in STROOP</a> for more information.</li>
+<li>5: These drop-down boxes are for choosing how to deal with the game's memory. See <a href="#memory-mapping">Memory Mapping</a> for more information.</li>
+<li>6: These buttons allow hiding or expanding certain window regions of the main UI.</li>
+<li>7: The cog icon provides quick access to most options. Some more specific options must be accessed via the <a href="./tabs/options.md">Options Tab</a>, however.</li>
+<li>8: The version of STROOP - you'd think there's nothing more to see here, but right clicking this actually reveals a number of miscellaneous tools, some of which are suprisingly useful.</li>
+</ul>
+</li>
+<li>Tabs:<ul>
+<li>9: The list of tabs provides access to all the different functions STROOP has. By default, not all available tabs are shown here. See <a href="../tabs/">Understanding Tabs in STROOP</a> for more information.</li>
+<li>10: A "left panel" of a tab typically displays controls specific to the topic that tab is about.</li>
+<li>11: A "Variable Panel" displays in-game memory values, derived values, as well as some special variables, and allows editing them in a neat table format. Nearly all tabs have one of these, and they are a central component of STROOP's user interface.</li>
+</ul>
+</li>
+<li>Objects List: This large control group at the bottom allows viewing loaded objects at a glance, as well as performing complex operations on them, sometimes related to the currently selected tab. For more information, see the <a href="#the-object-list">Object List</a> chapter and consult the respective <a href="../tabs/#list-of-tabs">Tab documentation</a> for how this interacts with each tab.</li>
+</ul>
+<p><img alt="Main User Interface Image" src="../resources/main-ui-overview.png" /></p>
+<h2 id="the-object-list">The Object List</h2>
+<p><strong>-- TODO --</strong></p>
+<h2 id="memory-mapping">Memory mapping</h2>
+<p><strong>-- TODO --</strong></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

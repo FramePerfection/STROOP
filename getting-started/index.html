@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Getting Started - STROOP</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">STROOP</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">User Guide</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Getting Started</a>
+</li>
+                                    
+<li>
+    <a href="../main-ui/" class="dropdown-item">Main User Interface</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Tabs</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../tabs/" class="dropdown-item">Understanding Tabs</a>
+</li>
+            
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Specific Tabs</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../tabs/actions.md" class="dropdown-item">Actions Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/area.md" class="dropdown-item">Area Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/cam-hack.md" class="dropdown-item">Cam Hack Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/camera.md" class="dropdown-item">Camera Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/cells.md" class="dropdown-item">Cells Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/coin.md" class="dropdown-item">Coin Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/custom.md" class="dropdown-item">Custom Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/debug.md" class="dropdown-item">Debug Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/disassembly.md" class="dropdown-item">Disassembly Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/file.md" class="dropdown-item">File Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/gfx.md" class="dropdown-item">Gfx Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/ghost.md" class="dropdown-item">Ghost Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/hacks.md" class="dropdown-item">Hacks Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/hud.md" class="dropdown-item">HUD Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/input.md" class="dropdown-item">Input Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/m64.md" class="dropdown-item">M64 Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/main-save.md" class="dropdown-item">Main Save Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/map.md" class="dropdown-item">Map Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/mario.md" class="dropdown-item">Mario Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/memory.md" class="dropdown-item">Memory Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/misc.md" class="dropdown-item">Misc Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/model.md" class="dropdown-item">Model Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/music.md" class="dropdown-item">Music Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/object/" class="dropdown-item">Object Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/options.md" class="dropdown-item">Options Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/painting.md" class="dropdown-item">Painting Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/pu.md" class="dropdown-item">PU Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/q-frames.md" class="dropdown-item">Q Frames Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/script.md" class="dropdown-item">Script Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/search.md" class="dropdown-item">Search Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/snow.md" class="dropdown-item">Snow Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/sound.md" class="dropdown-item">Sound Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/tas.md" class="dropdown-item">TAS Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/testing.md" class="dropdown-item">Testing Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/triangles.md" class="dropdown-item">Triangles Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/var-hack.md" class="dropdown-item">Var Hack Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/warp.md" class="dropdown-item">Warp Tab</a>
+</li>
+            
+<li>
+    <a href="../tabs/water.md" class="dropdown-item">Water Tab</a>
+</li>
+    </ul>
+  </li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href=".." class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../main-ui/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#getting-started" class="nav-link">Getting started</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#connecting-stroop-to-mupen" class="nav-link">Connecting STROOP to mupen</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#overview-and-structure" class="nav-link">Overview and Structure</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="getting-started">Getting started</h1>
+<p>STROOP is typically used and works best in conjunction with <a href="https://github.com/mupen64/mupen64-rr-lua">mupen64</a>.<br />
+If you don't have mupen set up, the recommend way is to download <a href="http://repack.skazzy3.com">Skazzy's Repack</a>, which includes a recent stable build of mupen along with several plugins, and thus can run out of the box.<br />
+You will, of course, also need a ROM of Super Mario 64 (or a ROM hack thereof, if that's your interest), preferrably either the NTSC or US version, as those are best supported by STROOP.</p>
+<p>To install STROOP, head to the releases page on GitHub (<a href="https://github.com/FramePerfection/STROOP/releases/">here</a> for my refactor, and <a href="https://github.com/SM64-TAS-ABC/STROOP/releases">here</a> for the original repository), then download the <code>STROOP.zip</code> file (or similarly named file) from the <code>Assets</code> section of the latest release.<br />
+Extract the downloaded archive in a location of your liking, and then simply run STROOP.exe.</p>
+<h2 id="connecting-stroop-to-mupen">Connecting STROOP to mupen</h2>
+<p>To do its work, STROOP must usually be able to read the memory of a running Super Mario 64 instance (there is a <a href="TODO: link">feature to work based on a savestate instead</a>). After starting up, STROOP will list all processes that it has detected to be running Super Mario 64, and let you connect STROOP to one of them with the click of a button.</p>
+<p>If this list is empty for you, even after hitting <code>Refresh</code> after you have launched Super Mario 64, it means STROOP is unable to detect the running Super Mario 64 instance. This can happen when the auto-detection of the RAM start for the emulated N64's memory fails. (Note that this feature is unavailable or works differently in the original STROOP.)<br />
+To fix this issue, select <code>Utilities-&gt;Show RAM start...</code> and click <code>Copy STROOP config line</code> , then open the <code>./Config/Config.xml</code> file and paste that line into the <code>&lt;Emulators&gt;</code> section.<br />
+After restarting STROOP, it should then be able to detect your emulator.  </p>
+<p>There are some more things to note about this:</p>
+<ul>
+<li>If you don't have the "Show RAM start" option, install a recent version of mupen from <a href="http://repack.skazzy3.com">Skazzy's Repack</a> - seriously!</li>
+<li>The <code>autoDetect</code> attribute included in the STROOP config line actually does nothing - the correct name is <code>autoDetectRAMStart</code>, and it is <code>true</code> by default, rendering the attribute doubly useless. I deeply regret this design decision, as it effectively leads to the program doing guess work, with no clear indication of how to turn it off, and I hope to right this mistake in a future version.</li>
+<li>In some situations, the auto-detection algorithm may come across a region of memory that appears to be the emulated N64's memory, but actually isn't, such as a region of a savestate or the like. When this happens, STROOP will not appear to update its information as expected. When this happens, adding the STROOP config line as described above and setting <code>autoDetectRAMStart</code> to <code>false</code> will solve the problem.</li>
+</ul>
+<h2 id="overview-and-structure">Overview and Structure</h2>
+<p>So you've installed STROOP, connected it to mupen, and are finally greeted with STROOP's <em>real</em> user interface and your first instinct might be to just hit the <code>Disconnect</code> button in the top left from the informational overload, but that's probably not what you had in mind.<br />
+So, what now? Well, that depends heavily on what you want to do...</p>
+<p>STROOP's main interface consists of two key elements: The <a href="TODO: link">object list</a> at the bottom, and the <a href="TODO: link">tabs</a> at the top.<br />
+The tabs are designed to present information and controls for certain aspects of the game or workflows you may want to follow. Over time, you'll want to make yourself familiar with the different individual tabs that suit your needs and deeply understand their purpose, interactions between one another and the object list.</p>
+<p>By default, the object list and the "left panel" of each tab are always visible, but you can change this appearance with the layout buttons in the top right corner near the gear icon. However, because objects are relevant in a great number of contexts, and because many STROOP tabs aren't designed to work well with any but the default layout, messing around with this can hardly ever be recommended.</p>
+<p>For a more detailed explanation of the main user interface, see the <a href="../main-ui/">Main UI</a> page.</p>
+<p>As a general note, it is worth mentioning that right clicking just about anything in STROOP will reveal a lot of hidden, yet at times very useful context menus - even for typically non-function elements like labels or elements that serve a different function by nature such as buttons or drop-down boxes.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
