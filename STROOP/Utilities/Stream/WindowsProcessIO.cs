@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using static STROOP.Utilities.Kernal32NativeMethods;
 
 namespace STROOP.Utilities
@@ -33,7 +34,7 @@ namespace STROOP.Utilities
             _process.EnableRaisingEvents = true;
 
             ProcessAccess accessFlags = ProcessAccess.PROCESS_QUERY_LIMITED_INFORMATION | ProcessAccess.SUSPEND_RESUME
-                | ProcessAccess.VM_OPERATION | ProcessAccess.VM_READ | ProcessAccess.VM_WRITE;
+                                                                                        | ProcessAccess.VM_OPERATION | ProcessAccess.VM_READ | ProcessAccess.VM_WRITE;
             _processHandle = ProcessGetHandleFromId(accessFlags, false, _process.Id);
             try
             {
@@ -90,9 +91,19 @@ namespace STROOP.Utilities
                     return false;
             return true;
         }
-
+        
         protected virtual void CalculateOffset()
         {
+            // Find CORE_RDRAM export from mupen if present
+            Win32SymbolInfo smybolInfo = Win32SymbolInfo.Create();
+            if (SymInitialize(_process.Handle, null, true) && SymFromName(_process.Handle, "CORE_RDRAM", ref smybolInfo))
+            {
+                var val = new byte[4];
+                ReadAbsolute((UIntPtr)smybolInfo.Address, val, EndiannessType.Little);
+                _baseOffset = BitConverter.ToUInt32(val, 0);
+                return;
+            }
+            
             // Find DLL offset if needed
             IntPtr dllOffset = new IntPtr();
 

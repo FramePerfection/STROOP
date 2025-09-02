@@ -56,6 +56,41 @@ namespace STROOP.Utilities
             public IntPtr VirtualAddress;
             public ulong VirtualAttributes;
         }
+        
+        /// <summary>
+        /// C# representation of SYMBOL_INFO in dbghelp.h. <para/>
+        /// https://learn.microsoft.com/de-de/windows/win32/api/dbghelp/ns-dbghelp-symbol_info <para/>
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct Win32SymbolInfo
+        {
+            const int MaxSymbolLen = 2000;
+
+            public static Win32SymbolInfo Create()
+                => new Win32SymbolInfo
+                {
+                    MaxNameLen = MaxSymbolLen,
+                    SizeOfStruct = 88
+                };
+
+            public int SizeOfStruct;
+            public int TypeIndex;
+            readonly ulong Reserved1, Reserved2;
+            public int Index;
+            public int Size;
+            public ulong ModuleBase;
+            public uint Flags;
+            public long Value;
+            public ulong Address;
+            public uint Register;
+            public uint Scope;
+            public uint Tag;
+            public uint NameLen;
+            public int MaxNameLen;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxSymbolLen)]
+            public string Name;
+        }
 
         #region DLL Import
         [DllImport("kernel32.dll")]
@@ -86,6 +121,13 @@ namespace STROOP.Utilities
 
         [DllImport("psapi", SetLastError = true)]
         static extern bool QueryWorkingSetEx(IntPtr hProcess, out PsapiWorkingSetExInformation pv, uint cb);
+
+        [DllImport("dbghelp", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SymInitializeW", ExactSpelling = true)]
+        public static extern bool SymInitialize(IntPtr hProcess, string searchPath, bool invadeProcess);
+        
+        [DllImport("dbghelp", SetLastError = true)]
+        public static extern bool SymFromName(IntPtr hProcess, string name, ref Win32SymbolInfo win32Symbol);
+        
         #endregion
 
         public static IntPtr ProcessGetHandleFromId(ProcessAccess dwDesiredAccess, bool bInheritHandle, int dwProcessId)
