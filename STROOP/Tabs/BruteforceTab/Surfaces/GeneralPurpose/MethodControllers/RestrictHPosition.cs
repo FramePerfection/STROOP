@@ -27,7 +27,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
 
             public void DragTo(Vector3 position, bool setY)
             {
-                bool snapEnabled = !KeyboardUtilities.IsAltHeld();
+                bool snapEnabled = !GlobalKeyboard.IsAltDown();
                 if (setBase)
                 {
                     position.Y = parent.arrowTip.Y;

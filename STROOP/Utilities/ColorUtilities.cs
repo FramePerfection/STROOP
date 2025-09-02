@@ -56,7 +56,7 @@ namespace STROOP.Utilities
         public static Color LastCustomColor = SystemColors.Control;
         public static Color GetColorForVariable()
         {
-            int? inputtedNumber = KeyboardUtilities.GetCurrentlyInputtedNumber();
+            int? inputtedNumber = GlobalKeyboard.GetCurrentlyInputtedNumber();
 
             if (inputtedNumber.HasValue &&
                 inputtedNumber.Value > 0 &&
@@ -69,7 +69,7 @@ namespace STROOP.Utilities
 
         public static Color? GetColorForHighlight()
         {
-            int? inputtedNumber = KeyboardUtilities.GetCurrentlyInputtedNumber();
+            int? inputtedNumber = GlobalKeyboard.GetCurrentlyInputtedNumber();
             switch (inputtedNumber)
             {
                 case 1:

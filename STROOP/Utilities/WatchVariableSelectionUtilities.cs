@@ -142,7 +142,7 @@ namespace STROOP.Structs
                             _setterFunction = val =>
                             {
                                 if (val is double valueDouble)
-                                    if (!KeyboardControlsExtensions.IsCtrlDown())
+                                    if (!GlobalKeyboard.IsCtrlDown())
                                     {
                                         var wrapper1Value = wrapper1._view.CombineValues<double>().value;
                                         return inverseSetter2 == null
@@ -235,7 +235,7 @@ namespace STROOP.Structs
                     var x2 = varValues[3];
                     var y2 = varValues[4];
                     var z2 = varValues[5];
-                    bool toggle = KeyboardControlsExtensions.IsCtrlDown();
+                    bool toggle = GlobalKeyboard.IsCtrlDown();
                     int off = toggle ? 0 : 3;
                     var min = varValues.Min(x => x.Length);
                     var result = new List<bool>(min);
@@ -255,7 +255,7 @@ namespace STROOP.Structs
                     var y1 = varValues[1];
                     var x2 = varValues[2];
                     var y2 = varValues[3];
-                    bool toggle = KeyboardControlsExtensions.IsCtrlDown();
+                    bool toggle = GlobalKeyboard.IsCtrlDown();
                     int off = toggle ? 0 : 2;
                     var min = varValues.Min(x => x.Length);
                     var result = new List<bool>(min);

@@ -88,7 +88,7 @@ namespace STROOP.Utilities
         {
             if (!useRelative) return;
 
-            if (KeyboardUtilities.IsShiftHeld() || double.IsNaN(relativeAngle))
+            if (GlobalKeyboard.IsShiftDown() || double.IsNaN(relativeAngle))
             {
                 relativeAngle = Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.FacingYawOffset);
             }

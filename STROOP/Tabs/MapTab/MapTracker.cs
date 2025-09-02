@@ -334,15 +334,15 @@ namespace STROOP.Tabs.MapTab
 
         private void pictureBoxUpArrow_Click(object sender, EventArgs e)
         {
-            int numMoves = KeyboardUtilities.GetCurrentlyInputtedNumber() ?? 1;
-            if (KeyboardUtilities.IsCtrlHeld()) numMoves = 0;
+            int numMoves = GlobalKeyboard.GetCurrentlyInputtedNumber() ?? 1;
+            if (GlobalKeyboard.IsCtrlDown()) numMoves = 0;
             this.GetParent<MapTrackerFlowLayoutPanel>().MoveUpControl(this, numMoves);
         }
 
         private void pictureBoxDownArrow_Click(object sender, EventArgs e)
         {
-            int numMoves = KeyboardUtilities.GetCurrentlyInputtedNumber() ?? 1;
-            if (KeyboardUtilities.IsCtrlHeld()) numMoves = 0;
+            int numMoves = GlobalKeyboard.GetCurrentlyInputtedNumber() ?? 1;
+            if (GlobalKeyboard.IsCtrlDown()) numMoves = 0;
             this.GetParent<MapTrackerFlowLayoutPanel>().MoveDownControl(this, numMoves);
         }
 

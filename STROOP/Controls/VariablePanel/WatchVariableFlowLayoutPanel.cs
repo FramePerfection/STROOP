@@ -143,7 +143,7 @@ namespace STROOP.Controls.VariablePanel
             renderer = new WatchVariablePanelRenderer(this);
             KeyDown += (_, args) =>
             {
-                if (KeyboardUtilities.IsCtrlHeld() && args.KeyCode == Keys.F)
+                if (GlobalKeyboard.IsCtrlDown() && args.KeyCode == Keys.F)
                     (FindForm() as StroopMainForm)?.ShowSearchDialog();
             };
             Click += (_, __) => FocusVariablePanel();
@@ -228,8 +228,8 @@ namespace STROOP.Controls.VariablePanel
                     (int index, var var, var _select) = renderer.GetVariableAt(__.Location);
                     lastClicked = index;
 
-                    bool ctrlHeld = KeyboardUtilities.IsCtrlHeld();
-                    bool shiftHeld = KeyboardUtilities.IsShiftHeld();
+                    bool ctrlHeld = GlobalKeyboard.IsCtrlDown();
+                    bool shiftHeld = GlobalKeyboard.IsShiftDown();
                     clickedName = _select | shiftHeld;
 
                     if (_reorderingWatchVarControls.Count > 0)
@@ -323,29 +323,29 @@ namespace STROOP.Controls.VariablePanel
             if (watchVars.Count == 0)
                 return;
 
-            bool isCtrlKeyHeld = KeyboardUtilities.IsCtrlHeld();
-            bool isShiftKeyHeld = KeyboardUtilities.IsShiftHeld();
-            bool isAltKeyHeld = KeyboardUtilities.IsAltHeld();
-            bool isFKeyHeld = Keyboard.IsKeyDown(Key.F);
-            bool isHKeyHeld = Keyboard.IsKeyDown(Key.H);
-            bool isLKeyHeld = Keyboard.IsKeyDown(Key.L);
-            bool isDKeyHeld = Keyboard.IsKeyDown(Key.D);
-            bool isRKeyHeld = Keyboard.IsKeyDown(Key.R);
-            bool isCKeyHeld = Keyboard.IsKeyDown(Key.C);
-            bool isBKeyHeld = Keyboard.IsKeyDown(Key.B);
-            bool isQKeyHeld = Keyboard.IsKeyDown(Key.Q);
-            bool isOKeyHeld = Keyboard.IsKeyDown(Key.O);
-            bool isMKeyHeld = Keyboard.IsKeyDown(Key.M);
-            bool isNKeyHeld = Keyboard.IsKeyDown(Key.N);
-            bool isPKeyHeld = Keyboard.IsKeyDown(Key.P);
-            bool isXKeyHeld = Keyboard.IsKeyDown(Key.X);
-            bool isSKeyHeld = Keyboard.IsKeyDown(Key.S);
-            bool isDeletishKeyHeld = KeyboardUtilities.IsDeletishKeyHeld();
-            bool isBacktickHeld = Keyboard.IsKeyDown(Key.OemTilde);
-            bool isZHeld = Keyboard.IsKeyDown(Key.Z);
-            bool isMinusHeld = Keyboard.IsKeyDown(Key.OemMinus);
-            bool isPlusHeld = Keyboard.IsKeyDown(Key.OemPlus);
-            bool isNumberHeld = KeyboardUtilities.IsNumberHeld();
+            bool isCtrlKeyHeld = GlobalKeyboard.IsCtrlDown();
+            bool isShiftKeyHeld = GlobalKeyboard.IsShiftDown();
+            bool isAltKeyHeld = GlobalKeyboard.IsAltDown();
+            bool isFKeyHeld = GlobalKeyboard.IsDown(Keys.F);
+            bool isHKeyHeld = GlobalKeyboard.IsDown(Keys.H);
+            bool isLKeyHeld = GlobalKeyboard.IsDown(Keys.L);
+            bool isDKeyHeld = GlobalKeyboard.IsDown(Keys.D);
+            bool isRKeyHeld = GlobalKeyboard.IsDown(Keys.R);
+            bool isCKeyHeld = GlobalKeyboard.IsDown(Keys.C);
+            bool isBKeyHeld = GlobalKeyboard.IsDown(Keys.B);
+            bool isQKeyHeld = GlobalKeyboard.IsDown(Keys.Q);
+            bool isOKeyHeld = GlobalKeyboard.IsDown(Keys.O);
+            bool isMKeyHeld = GlobalKeyboard.IsDown(Keys.M);
+            bool isNKeyHeld = GlobalKeyboard.IsDown(Keys.N);
+            bool isPKeyHeld = GlobalKeyboard.IsDown(Keys.P);
+            bool isXKeyHeld = GlobalKeyboard.IsDown(Keys.X);
+            bool isSKeyHeld = GlobalKeyboard.IsDown(Keys.S);
+            bool isDeletishKeyHeld = GlobalKeyboard.IsDeletishKeyDown();
+            bool isBacktickHeld = GlobalKeyboard.IsDown(Keys.Oemtilde);
+            bool isZHeld = GlobalKeyboard.IsDown(Keys.Z);
+            bool isMinusHeld = GlobalKeyboard.IsDown(Keys.OemMinus);
+            bool isPlusHeld = GlobalKeyboard.IsDown(Keys.Oemplus);
+            bool isNumberHeld = GlobalKeyboard.IsNumberDown();
 
             if (isShiftKeyHeld && isNumberHeld)
             {
@@ -510,7 +510,7 @@ namespace STROOP.Controls.VariablePanel
                 typeItem.Click += (sender, e) =>
                 {
                     int numEntries = 1;
-                    if (KeyboardUtilities.IsCtrlHeld())
+                    if (GlobalKeyboard.IsCtrlDown())
                     {
                         string numEntriesString = DialogUtilities.GetStringFromDialog(labelText: "Enter Num Vars:");
                         if (numEntriesString == null) return;

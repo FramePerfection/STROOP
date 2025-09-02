@@ -103,7 +103,7 @@ namespace STROOP.Utilities
         {
             if (controls.Count == 0) return;
             Func<string, string> varNameFunc;
-            if (KeyboardUtilities.IsCtrlHeld())
+            if (GlobalKeyboard.IsCtrlDown())
             {
                 string template = DialogUtilities.GetStringFromDialog("$");
                 if (template == null) return;

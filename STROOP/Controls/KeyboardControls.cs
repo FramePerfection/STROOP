@@ -7,7 +7,7 @@ namespace STROOP.Controls;
 public class KeyboardControls
 {
     private readonly Control _parent;
-    HashSet<Keys> _pressedKeys = new();
+    HashSet<Keys> pressedKeys = new();
 
     public KeyboardControls(Control parent)
     {
@@ -17,7 +17,7 @@ public class KeyboardControls
         parent.Disposed += Unbind;
     }
     
-    public bool IsDown(Keys key) => _pressedKeys.Contains(key);
+    public bool IsDown(Keys key) => pressedKeys.Contains(key);
 
     private void Unbind(object sender, EventArgs e)
     {
@@ -26,8 +26,8 @@ public class KeyboardControls
     }
 
     private void OnKeyDown(object sender, KeyEventArgs e)
-        => _pressedKeys.Add(e.KeyCode);
+        => pressedKeys.Add(e.KeyCode);
 
     private void OnKeyUp(object sender, KeyEventArgs e)
-        => _pressedKeys.Remove(e.KeyCode);
+        => pressedKeys.Remove(e.KeyCode);
 }
