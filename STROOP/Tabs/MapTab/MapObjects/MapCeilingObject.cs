@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
 using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Models;
 
 namespace STROOP.Tabs.MapTab.MapObjects

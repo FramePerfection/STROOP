@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using OpenTK;
-
+using OpenTK.Mathematics;
 using STROOP.Controls;
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;

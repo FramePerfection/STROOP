@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.GhostTab
 {

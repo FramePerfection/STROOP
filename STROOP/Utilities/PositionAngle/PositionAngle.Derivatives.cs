@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 
@@ -11,7 +11,7 @@ namespace STROOP.Utilities
     {
         public class HybridPositionAngle : PositionAngle
         {
-            static PositionAngle pointCustom = Custom(new OpenTK.Vector3(0));
+            static PositionAngle pointCustom = Custom(new Vector3(0));
             public static List<HybridPositionAngle> pointPAs = new List<HybridPositionAngle>()
             {
                 new HybridPositionAngle(() => Mario, () => Mario, "Self"),

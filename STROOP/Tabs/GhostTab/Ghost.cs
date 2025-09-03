@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.GhostTab

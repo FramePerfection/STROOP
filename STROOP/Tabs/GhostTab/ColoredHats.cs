@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;

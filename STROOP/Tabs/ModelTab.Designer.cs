@@ -1,4 +1,6 @@
-﻿namespace STROOP.Tabs
+﻿using OpenTK.GLControl;
+
+namespace STROOP.Tabs
 {
     partial class ModelTab
     {
@@ -91,7 +93,7 @@
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxModelAddress = new System.Windows.Forms.TextBox();
-            this.glControlModelView = new OpenTK.GLControl();
+            this.glControlModelView = new GLControl();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerModel)).BeginInit();
             this.splitContainerModel.Panel1.SuspendLayout();
             this.splitContainerModel.Panel2.SuspendLayout();
@@ -822,7 +824,6 @@
             this.glControlModelView.Padding = new System.Windows.Forms.Padding(2);
             this.glControlModelView.Size = new System.Drawing.Size(496, 461);
             this.glControlModelView.TabIndex = 0;
-            this.glControlModelView.VSync = false;
             // 
             // ModelTab
             // 
@@ -921,6 +922,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxModelAddress;
-        private OpenTK.GLControl glControlModelView;
+        private GLControl glControlModelView;
     }
 }

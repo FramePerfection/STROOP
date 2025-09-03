@@ -1,7 +1,7 @@
 ﻿using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using System;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Utilities
 {

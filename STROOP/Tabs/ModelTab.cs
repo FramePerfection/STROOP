@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using STROOP.Structs;
 using System.Windows.Forms;
+using OpenTK.Windowing.Common;
 using STROOP.Utilities;
 using STROOP.Controls;
 using STROOP.Structs.Configurations;
@@ -50,6 +51,7 @@ namespace STROOP.Tabs
         public ModelTab()
         {
             InitializeComponent();
+            glControlModelView.Profile = ContextProfile.Compatability;
         }
 
         public override string GetDisplayName() => "Model";

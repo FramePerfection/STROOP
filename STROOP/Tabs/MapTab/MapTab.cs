@@ -11,6 +11,8 @@ using OpenTK.Graphics;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab.MapObjects;
 using System.Xml.Linq;
+using OpenTK.GLControl;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab
 {
@@ -117,7 +119,10 @@ namespace STROOP.Tabs.MapTab
         {
             // Create new graphics control
             var parentControl = splitContainerMap.Panel2;
-            glControlMap2D = new GLControl(GraphicsMode.Default, 3, 3, GraphicsContextFlags.Default);
+            glControlMap2D = new GLControl()
+            {
+                APIVersion = new Version(3, 3),
+            };
             glControlMap2D.Size = parentControl.ClientSize;
             glControlMap2D.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
             glControlMap2D.Location = new Point(0, 0);
