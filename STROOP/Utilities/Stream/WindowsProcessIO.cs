@@ -1,6 +1,7 @@
 ﻿using STROOP.Structs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -91,19 +92,27 @@ namespace STROOP.Utilities
                     return false;
             return true;
         }
-        
+
+        // see https://msdn.microsoft.com/en-us/library/windows/desktop/ms684139%28v=vs.85%29.aspx
+        public static bool Is64Bit(Process process)
+            => Environment.Is64BitOperatingSystem
+               && IsWow64Process(process.Handle, out bool isWow64)
+                ? !isWow64
+                : throw new Win32Exception();
+
         protected virtual void CalculateOffset()
         {
             // Find CORE_RDRAM export from mupen if present
             Win32SymbolInfo smybolInfo = Win32SymbolInfo.Create();
             if (SymInitialize(_process.Handle, null, true) && SymFromName(_process.Handle, "CORE_RDRAM", ref smybolInfo))
             {
-                var val = new byte[4];
-                ReadAbsolute((UIntPtr)smybolInfo.Address, val, EndiannessType.Little);
-                _baseOffset = BitConverter.ToUInt32(val, 0);
+                var is64Bit = Is64Bit(_process);
+                var buffer = new byte[is64Bit ? 8 : 4];
+                ReadAbsolute((UIntPtr)smybolInfo.Address, buffer, EndiannessType.Little);
+                _baseOffset = (UIntPtr)(is64Bit ? BitConverter.ToUInt64(buffer, 0) : (ulong)BitConverter.ToUInt32(buffer, 0));
                 return;
             }
-            
+
             // Find DLL offset if needed
             IntPtr dllOffset = new IntPtr();
 
@@ -150,19 +159,21 @@ namespace STROOP.Utilities
                         break;
                 }
             }
+
             messageLogBuilder.AppendLine("Unable to verify or correct RAM start.\r\nVerify that the game is currently running.");
-        verified:;
+            verified: ;
 
             bool VerifyCandidate(UIntPtr candidate)
             {
                 try
                 {
                     var mem = new byte[0x200];
-                    var expectedSignature = new byte?[] {
-                         null,0x80,0x1a, 0x3c,
-                         null,null,0x5a, 0x27,
-                         0x08,0x00,0x40, 0x03,
-                         0x00,0x00,0x00, 0x00,
+                    var expectedSignature = new byte?[]
+                    {
+                        null, 0x80, 0x1a, 0x3c,
+                        null, null, 0x5a, 0x27,
+                        0x08, 0x00, 0x40, 0x03,
+                        0x00, 0x00, 0x00, 0x00,
                     };
                     if (!ReadFunc(candidate, mem))
                         return false;
@@ -181,7 +192,10 @@ namespace STROOP.Utilities
                                 return false;
                 }
                 catch (Exception e)
-                { return false; }
+                {
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -202,6 +216,7 @@ namespace STROOP.Utilities
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
