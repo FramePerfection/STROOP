@@ -103,14 +103,31 @@ namespace STROOP.Utilities
         protected virtual void CalculateOffset()
         {
             // Find CORE_RDRAM export from mupen if present
-            Win32SymbolInfo smybolInfo = Win32SymbolInfo.Create();
-            if (SymInitialize(_process.Handle, null, true) && SymFromName(_process.Handle, "CORE_RDRAM", ref smybolInfo))
+            var symbol = Win32SymbolInfo.Create();
+            if (SymInitialize(_process.Handle, null, true))
             {
-                var is64Bit = Is64Bit(_process);
-                var buffer = new byte[is64Bit ? 8 : 4];
-                ReadAbsolute((UIntPtr)smybolInfo.Address, buffer, EndiannessType.Little);
-                _baseOffset = (UIntPtr)(is64Bit ? BitConverter.ToUInt64(buffer, 0) : (ulong)BitConverter.ToUInt32(buffer, 0));
-                return;
+                try
+                {
+                    if (SymFromName(_process.Handle, "CORE_RDRAM", ref symbol))
+                    {
+                        var is64Bit = Is64Bit(_process);
+                        var buffer = new byte[is64Bit ? 8 : 4];
+                        ReadAbsolute((UIntPtr)symbol.Address, buffer, EndiannessType.Little);
+                        _baseOffset = (UIntPtr)(is64Bit ? BitConverter.ToUInt64(buffer, 0) : (ulong)BitConverter.ToUInt32(buffer, 0));
+                        return;
+                    }
+                }
+                finally
+                {
+                    if (!SymCleanup(_process.Handle))
+                        throw new Win32Exception();
+                }
+            }
+            else
+            {
+                // documentation doesn't say what to do when SymInitialize returns false, so just call this and don't care for its result for good (or bad) measure :shrug:
+                // https://learn.microsoft.com/en-us/windows/win32/api/dbghelp/nf-dbghelp-syminitialize
+                SymCleanup(_process.Handle);
             }
 
             // Find DLL offset if needed
