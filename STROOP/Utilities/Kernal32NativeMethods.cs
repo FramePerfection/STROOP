@@ -124,6 +124,9 @@ namespace STROOP.Utilities
 
         [DllImport("dbghelp", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SymInitializeW", ExactSpelling = true)]
         public static extern bool SymInitialize(IntPtr hProcess, string searchPath, bool invadeProcess);
+
+        [DllImport("dbghelp", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SymCleanup", ExactSpelling = true)]
+        public static extern bool SymCleanup(IntPtr hProcess);
         
         [DllImport("dbghelp", SetLastError = true)]
         public static extern bool SymFromName(IntPtr hProcess, string name, ref Win32SymbolInfo win32Symbol);
