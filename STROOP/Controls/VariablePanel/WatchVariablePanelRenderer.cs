@@ -315,7 +315,7 @@ namespace STROOP.Controls.VariablePanel
                             var overEdge = ctrlData.nameTextLength - (elementNameWidth - elementMarginLeftRight * 2);
                             if (overEdge > 0)
                             {
-                                ctrlData.nameTextOffset += (float)Config.Stream.lastFrameTime * elementHeight;
+                                ctrlData.nameTextOffset += (float)Config.CoreLoop.lastFrameTime * elementHeight;
                                 if (ctrlData.nameTextOffset > overEdge + elementHeight * 2)
                                     ctrlData.nameTextOffset = 0;
                                 txtPoint.X -= (int)Math.Max(0, Math.Min(overEdge, ctrlData.nameTextOffset - elementHeight));
@@ -456,7 +456,7 @@ namespace STROOP.Controls.VariablePanel
 
                         var target = cursorPosition;
                         target.Y += elementHeight * i++;
-                        ctrlData.positionWhileMoving += (target - ctrlData.positionWhileMoving) * Utilities.MoreMath.EaseIn(10 * (float)Structs.Configurations.Config.Stream.lastFrameTime);
+                        ctrlData.positionWhileMoving += (target - ctrlData.positionWhileMoving) * Utilities.MoreMath.EaseIn(10 * (float)Config.CoreLoop.lastFrameTime);
                         if ((ctrlData.positionInGrid - ctrlData.positionWhileMoving).LengthSquared < 1)
                             ctrlData.moving = false;
                         else

@@ -90,7 +90,7 @@ namespace STROOP
                     () => tmpMainForm = new StroopMainForm(true)
                 ),
                 ("Creating Process Stream",
-                    () => Config.Stream = new ProcessStream(tmpMainForm.OnUpdate)
+                    () => ProcessStream.Instance = new ProcessStream(tmpMainForm.OnUpdate)
                 )
             );
             mainForm = tmpMainForm;

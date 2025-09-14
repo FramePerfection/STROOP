@@ -291,5 +291,8 @@
             <SubType>Designer</SubType>
         </EmbeddedResource>
     </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\STROOP.Core\STROOP.Core.csproj"/>
+    </ItemGroup>
 
 </Project>

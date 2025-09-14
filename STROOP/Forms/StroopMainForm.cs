@@ -93,7 +93,7 @@ namespace STROOP
                 MessageBox.Show("Ambiguous emulator type", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            return Config.Stream.SwitchProcess(process, emulators[0]);
+            return Config.CoreLoop.SwitchProcess(process, emulators[0]);
         }
 
         private void InitTabs()
@@ -164,7 +164,7 @@ namespace STROOP
             BringToFront();
             Activate();
             using (new AccessScope<StroopMainForm>(this))
-                Config.Stream.Run();
+                Config.CoreLoop.Run();
         }
 
         private void InitializeTabRemoval()
@@ -352,7 +352,7 @@ namespace STROOP
         {
             using (new AccessScope<StroopMainForm>(this))
             {
-                labelFpsCounter.Text = "FPS: " + (int?)Config.Stream?.FpsInPractice ?? "<none>";
+                labelFpsCounter.Text = "FPS: " + (int?)Config.CoreLoop?.FpsInPractice ?? "<none>";
                 if (Config.Stream != null)
                 {
                     UpdateGlobalConfig();
@@ -552,7 +552,7 @@ namespace STROOP
 
         private void buttonDisconnect_Click(object sender, EventArgs e)
         {
-            Task.Run(() => Config.Stream.SwitchProcess(null, null));
+            Task.Run(() => Config.CoreLoop.SwitchProcess(null, null));
             buttonRefresh_Click(this, new EventArgs());
             panelConnect.Visible = true;
         }
@@ -604,7 +604,7 @@ namespace STROOP
             {
                 try
                 {
-                    Config.Stream.OpenSTFile(openFileDialogSt.FileName);
+                    Config.CoreLoop.OpenSTFile(openFileDialogSt.FileName);
                 }
                 catch
                 {
@@ -659,11 +659,7 @@ namespace STROOP
 
             if (isMainForm)
             {
-                if (Config.Stream != null)
-                {
-                    Config.Stream.Dispose();
-                    Config.Stream = null;
-                }
+                Config.Stream?.Dispose();
             }
         }
     }
