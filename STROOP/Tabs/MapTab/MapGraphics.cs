@@ -171,6 +171,8 @@ namespace STROOP.Tabs.MapTab
             this.mapTab = mapTab;
             this.glControl = glControl;
             this.getContext = getContext;
+            
+            glControl.MouseDown += (_, _) => glControl.Focus();
             keyboardControls = new(glControl);
             view = new MapView();
             drawLayers = new List<Action>[Enum.GetNames(typeof(DrawLayers)).Length];

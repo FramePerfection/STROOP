@@ -64,6 +64,7 @@ namespace STROOP.Controls
             Control.Resize += OnResize;
             _keyboardControls = new KeyboardControls(Control);
             _mouseControls = new MouseControls(Control);
+            Control.MouseDown += (_, _) => Control.Focus();
 
             GL.ClearColor(Color.FromKnownColor(KnownColor.Control));
             GL.Enable(EnableCap.DepthTest);
@@ -89,6 +90,7 @@ namespace STROOP.Controls
             }
 
             CameraFly();
+            _mouseControls.NextFrame();
         }
         
         private void CameraFly()

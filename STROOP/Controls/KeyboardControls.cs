@@ -17,7 +17,7 @@ public class KeyboardControls
         parent.Disposed += Unbind;
     }
     
-    public bool IsDown(Keys key) => pressedKeys.Contains(key);
+    public bool IsDown(Keys key) => pressedKeys.Contains(key) && _parent.Focused;
 
     private void Unbind(object sender, EventArgs e)
     {

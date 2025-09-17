@@ -26,13 +26,13 @@ namespace STROOP.Extensions
         }
 
         public static bool IsCtrlDown(this KeyboardControls controls)
-            => controls.IsDown(Keys.Control);
+            => controls.IsDown(Keys.ControlKey);
 
         public static bool IsShiftDown(this KeyboardControls controls)
-            => controls.IsDown(Keys.Shift);
+            => controls.IsDown(Keys.ShiftKey);
 
         public static bool IsAltDown(this KeyboardControls controls)
-            => controls.IsDown(Keys.Alt);
+            => controls.IsDown(Keys.Menu) || controls.IsDown(Keys.Alt);
 
         public static bool IsDeletishKeyDown(this KeyboardControls controls)
         {
