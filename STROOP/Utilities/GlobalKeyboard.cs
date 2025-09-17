@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace STROOP.Utilities;
@@ -7,9 +8,11 @@ namespace STROOP.Utilities;
 public static class GlobalKeyboard
 {
     static HashSet<Keys> pressedKeys = new();
-    
+    static HashSet<Form> registeredForms = new();
+
     public static void AddForm(Form form)
     {
+        registeredForms.Add(form);
         form.KeyPreview = true;
         form.KeyDown += OnKeyDown;
         form.KeyUp += OnKeyUp;
@@ -17,19 +20,20 @@ public static class GlobalKeyboard
         EventHandler unbind = null;
         unbind = (sender, e) =>
         {
+            registeredForms.Remove(form);
             ((Form)sender).Disposed -= unbind;
             form.KeyDown -= OnKeyDown;
             form.KeyUp -= OnKeyUp;
         };
         form.Disposed += unbind;
     }
-    
-    public static bool IsDown(Keys key) => pressedKeys.Contains(key);
-    
+
+    public static bool IsDown(Keys key) => pressedKeys.Contains(key) && registeredForms.Any(f => Form.ActiveForm == f);
+
     public static bool IsCtrlDown() => pressedKeys.Contains(Keys.ControlKey);
     public static bool IsShiftDown() => pressedKeys.Contains(Keys.ShiftKey);
     public static bool IsAltDown() => pressedKeys.Contains(Keys.Menu) || pressedKeys.Contains(Keys.Alt); // Don't ask me why...
-    
+
     public static int? GetCurrentlyInputtedNumber()
     {
         if (pressedKeys.Contains(Keys.D1)) return 1;
@@ -49,7 +53,7 @@ public static class GlobalKeyboard
     {
         return GetCurrentlyInputtedNumber() != null;
     }
-    
+
     public static bool IsDeletishKeyDown()
     {
         return IsDown(Keys.Delete) ||
