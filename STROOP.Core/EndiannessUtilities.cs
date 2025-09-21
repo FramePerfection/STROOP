@@ -1,8 +1,4 @@
-﻿using STROOP.Structs;
-using System;
-using System.Linq;
-
-namespace STROOP.Utilities
+﻿namespace STROOP.Core
 {
     public static class EndiannessUtilities
     {

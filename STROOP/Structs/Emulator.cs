@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STROOP.Core;
+using System;
 
 namespace STROOP.Structs
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenTK.Graphics.OpenGL;
+using STROOP.Core;
 using STROOP.Utilities;
 using STROOP.Structs;
 using STROOP.Models;

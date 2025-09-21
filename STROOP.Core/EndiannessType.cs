@@ -1,4 +1,4 @@
-﻿namespace STROOP.Structs
+﻿namespace STROOP.Core
 {
     public enum EndiannessType
     {

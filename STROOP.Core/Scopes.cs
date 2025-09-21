@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace STROOP.Utilities
+﻿namespace STROOP.Core
 {
 #pragma warning disable CA1063 // Implement IDisposable correctly - this is not a resource!
     public abstract class Scope : IDisposable

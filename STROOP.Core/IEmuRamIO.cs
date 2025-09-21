@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
-using STROOP.Structs;
 
-namespace STROOP.Utilities
+namespace STROOP.Core
 {
     public interface IEmuRamIO
     {

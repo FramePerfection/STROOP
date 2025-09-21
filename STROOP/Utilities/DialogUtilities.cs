@@ -1,4 +1,5 @@
-﻿using STROOP.Forms;
+﻿using STROOP.Core;
+using STROOP.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

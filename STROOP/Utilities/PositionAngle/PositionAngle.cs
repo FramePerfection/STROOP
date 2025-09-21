@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenTK.Mathematics;
+using STROOP.Core;
 
 namespace STROOP.Utilities
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using STROOP.Structs;
 using ICSharpCode.SharpZipLib.GZip;
+using STROOP.Core;
 using System.IO;
 using System.Diagnostics;
 

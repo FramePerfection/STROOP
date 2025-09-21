@@ -1,4 +1,5 @@
-﻿using STROOP.Utilities;
+﻿using STROOP.Core;
+using STROOP.Utilities;
 
 namespace STROOP.Structs.Configurations
 {

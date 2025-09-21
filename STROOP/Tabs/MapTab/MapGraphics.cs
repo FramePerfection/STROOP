@@ -7,6 +7,7 @@ using System.Drawing;
 using OpenTK.GLControl;
 using OpenTK.Mathematics;
 using STROOP.Controls;
+using STROOP.Core;
 using STROOP.Extensions;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;

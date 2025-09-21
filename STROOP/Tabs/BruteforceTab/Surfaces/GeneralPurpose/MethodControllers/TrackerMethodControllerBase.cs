@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
+using STROOP.Core;
 using STROOP.Core.Variables;
 using STROOP.Utilities;
 

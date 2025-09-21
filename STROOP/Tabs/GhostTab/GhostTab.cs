@@ -8,6 +8,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using System.Linq;
 using OpenTK.Mathematics;
+using STROOP.Core;
 
 namespace STROOP.Tabs.GhostTab
 {

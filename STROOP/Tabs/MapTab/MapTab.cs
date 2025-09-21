@@ -13,6 +13,7 @@ using STROOP.Tabs.MapTab.MapObjects;
 using System.Xml.Linq;
 using OpenTK.GLControl;
 using OpenTK.Mathematics;
+using STROOP.Core;
 
 namespace STROOP.Tabs.MapTab
 {

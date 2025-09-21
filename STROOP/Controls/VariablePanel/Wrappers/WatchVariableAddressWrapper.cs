@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using STROOP.Core;
+using System.Linq;
 using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;

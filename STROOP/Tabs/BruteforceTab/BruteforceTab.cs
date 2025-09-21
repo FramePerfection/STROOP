@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using STROOP.Controls.VariablePanel;
+using STROOP.Core;
 using STROOP.Core.Variables;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
 using STROOP.Utilities;

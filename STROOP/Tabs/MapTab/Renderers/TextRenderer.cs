@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
+using STROOP.Core;
 using Imaging = System.Drawing.Imaging;
 
 namespace STROOP.Tabs.MapTab.Renderers

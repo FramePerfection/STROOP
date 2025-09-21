@@ -1,4 +1,5 @@
-﻿using STROOP.Core.Variables;
+﻿using STROOP.Core;
+using STROOP.Core.Variables;
 using STROOP.Utilities;
 
 namespace STROOP.Controls.VariablePanel

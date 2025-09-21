@@ -1,4 +1,5 @@
-﻿using STROOP.Tabs.MapTab;
+﻿using STROOP.Core;
+using STROOP.Tabs.MapTab;
 using STROOP.Models;
 using STROOP.Structs;
 using STROOP.Utilities;
