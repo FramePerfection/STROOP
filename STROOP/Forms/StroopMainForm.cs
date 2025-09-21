@@ -1,4 +1,5 @@
 ﻿using STROOP.Core;
+using STROOP.Core.Emulators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,6 @@ using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
 using STROOP.Core.Variables;
-using STROOP.Exceptions;
 using System.Reflection;
 using System.Threading;
 

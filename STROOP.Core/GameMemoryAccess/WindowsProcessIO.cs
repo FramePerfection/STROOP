@@ -1,16 +1,11 @@
-﻿using STROOP.Core;
-using STROOP.Structs;
-using System;
-using System.Collections.Generic;
+﻿using STROOP.Core.GameMemoryAccess;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using static STROOP.Utilities.Kernal32NativeMethods;
+using static STROOP.Core.Kernal32NativeMethods;
 
-namespace STROOP.Utilities
+namespace STROOP.Core.Emulators
 {
-    class WindowsProcessRamIO : BaseProcessIO, IDisposable
+    public class WindowsProcessRamIO : BaseProcessIO, IDisposable
     {
         protected IntPtr _processHandle;
         protected Process _process;

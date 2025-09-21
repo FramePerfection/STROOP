@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace STROOP.Utilities
+namespace STROOP.Core
 {
     public static class Kernal32NativeMethods
     {

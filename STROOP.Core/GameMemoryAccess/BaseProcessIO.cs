@@ -1,11 +1,7 @@
-﻿using STROOP.Core;
-using STROOP.Structs;
-using STROOP.Structs.Configurations;
-using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 
-namespace STROOP.Utilities
+namespace STROOP.Core.GameMemoryAccess
 {
     public abstract class BaseProcessIO : IEmuRamIO
     {
@@ -78,7 +74,7 @@ namespace STROOP.Utilities
         {
             // Safety bounds check
             if (address.ToUInt64() < BaseOffset.ToUInt64()
-                || address.ToUInt64() + (uint)buffer.Length >= BaseOffset.ToUInt64() + Config.RamSize)
+                || address.ToUInt64() + (uint)buffer.Length >= BaseOffset.ToUInt64() + ProcessStream.MAX_RAM_SIZE)
                 return false;
 
             if (Endianness == endianness)

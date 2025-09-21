@@ -2,7 +2,7 @@
 
 public class ProcessStream : IDisposable
 {
-    private const int MAX_RAM_SIZE = 0x800000;
+    public const int MAX_RAM_SIZE = 0x800000;
 
     public static ProcessStream Instance;
 

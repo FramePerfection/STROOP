@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace STROOP.Exceptions
+﻿namespace STROOP.Core.Emulators
 {
     public class DolphinNotRunningGameException : Exception
     {

@@ -1,7 +1,8 @@
 ﻿using System;
-using STROOP.Structs;
 using ICSharpCode.SharpZipLib.GZip;
 using STROOP.Core;
+using STROOP.Core.Emulators;
+using STROOP.Core.GameMemoryAccess;
 using System.IO;
 using System.Diagnostics;
 

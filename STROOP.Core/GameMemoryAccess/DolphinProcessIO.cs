@@ -1,14 +1,10 @@
-﻿using STROOP.Core;
-using STROOP.Exceptions;
-using STROOP.Structs;
-using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using static STROOP.Utilities.Kernal32NativeMethods;
+using static STROOP.Core.Kernal32NativeMethods;
 
-namespace STROOP.Utilities
+namespace STROOP.Core.Emulators
 {
-    class DolphinProcessIO : WindowsProcessRamIO
+    public class DolphinProcessIO : WindowsProcessRamIO
     {
         public DolphinProcessIO(Process process, Emulator emulator)
             : base(process, emulator)
