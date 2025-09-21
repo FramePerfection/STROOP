@@ -1,7 +1,4 @@
-﻿using STROOP.Core;
-using System;
-
-namespace STROOP.Structs
+﻿namespace STROOP.Core
 {
     public class Emulator
     {

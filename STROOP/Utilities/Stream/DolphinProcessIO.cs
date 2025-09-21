@@ -1,4 +1,5 @@
-﻿using STROOP.Exceptions;
+﻿using STROOP.Core;
+using STROOP.Exceptions;
 using STROOP.Structs;
 using System;
 using System.Diagnostics;

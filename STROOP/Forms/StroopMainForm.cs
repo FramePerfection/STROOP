@@ -16,6 +16,8 @@ using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
 using STROOP.Core.Variables;
+using STROOP.Exceptions;
+using System.Reflection;
 using System.Threading;
 
 namespace STROOP
@@ -97,7 +99,41 @@ namespace STROOP
                 MessageBox.Show("Ambiguous emulator type", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            return Config.CoreLoop.SwitchProcess(process, emulators[0]);
+            return SwitchProcess(process, emulators[0]);
+        }
+
+
+        public bool OpenSTFile(string fileName)
+        {
+            StFileIO fileIO = new StFileIO(fileName);
+            return ProcessStream.Instance.SwitchIO(fileIO);
+        }
+
+        public bool SwitchProcess(Process newProcess, Emulator emulator)
+        {
+            IEmuRamIO newIo = null;
+            try
+            {
+                newIo = newProcess != null
+                    ? (IEmuRamIO)Activator.CreateInstance(
+                        emulator.IOType,
+                        BindingFlags.Default,
+                        null,
+                        [newProcess, emulator],
+                        null
+                    )
+                    : null;
+                var messages = newIo?.GetLastMessages() ?? string.Empty;
+                if (string.Empty != messages)
+                    MessageBox.Show(messages, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (DolphinNotRunningGameException e)
+            {
+                MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return ProcessStream.Instance.SwitchIO(newIo);
         }
 
         private void InitTabs()
@@ -168,7 +204,11 @@ namespace STROOP
             BringToFront();
             Activate();
             using (new AccessScope<StroopMainForm>(this))
-                Config.CoreLoop.Run(_formClosing.Token);
+                Config.CoreLoop.Run(
+                    _formClosing.Token,
+                    Application.DoEvents,
+                    () => RefreshRateConfig.RefreshRateInterval
+                );
         }
 
         private void InitializeTabRemoval()
@@ -556,7 +596,7 @@ namespace STROOP
 
         private void buttonDisconnect_Click(object sender, EventArgs e)
         {
-            Task.Run(() => Config.CoreLoop.SwitchProcess(null, null));
+            Task.Run(() => SwitchProcess(null, null));
             buttonRefresh_Click(this, new EventArgs());
             panelConnect.Visible = true;
         }
@@ -608,7 +648,7 @@ namespace STROOP
             {
                 try
                 {
-                    Config.CoreLoop.OpenSTFile(openFileDialogSt.FileName);
+                    OpenSTFile(openFileDialogSt.FileName);
                 }
                 catch
                 {
