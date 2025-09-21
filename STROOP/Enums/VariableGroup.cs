@@ -1,10 +1,12 @@
-﻿namespace STROOP.Structs
+﻿using STROOP.Core.Utilities;
+
+namespace STROOP.Structs
 {
     public static class VariableGroup
     {
-        static VariableGroup() => Utilities.StringUtilities.InitializeDeclaredStrings(typeof(VariableGroup));
+        static VariableGroup() => StringSymbolAttribute.InitializeDeclaredStrings(typeof(VariableGroup));
 
-        [Utilities.DeclaredString]
+        [StringSymbol]
         public static string
             Basic,
             Intermediate,

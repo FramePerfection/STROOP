@@ -1,10 +1,12 @@
-﻿namespace STROOP.Structs
+﻿using STROOP.Core.Utilities;
+
+namespace STROOP.Structs
 {
     public static class BaseAddressType
     {
-        static BaseAddressType() => Utilities.StringUtilities.InitializeDeclaredStrings(typeof(BaseAddressType));
+        static BaseAddressType() => StringSymbolAttribute.InitializeDeclaredStrings(typeof(BaseAddressType));
 
-        [Utilities.DeclaredString]
+        [StringSymbol]
         public static string
             None,
             Absolute,

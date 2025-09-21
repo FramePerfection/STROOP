@@ -1,29 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
 
 namespace STROOP.Utilities
 {
-    /// <summary>
-    /// Denotes that a static string variable's value shall be initialized with its field name when <see cref="StringUtilities.InitializeDeclaredStrings(Type)"/> is called on its declaring type.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field)]
-    public class DeclaredStringAttribute : Attribute
-    {
-    }
-
     public static class StringUtilities
     {
-        public static void InitializeDeclaredStrings(Type t)
-        {
-            foreach (var field in t.GetFields(BindingFlags.Public | BindingFlags.Static))
-                if (field.FieldType == typeof(string))
-                    field.SetValue(null, field.Name);
-        }
-
         public static string Cap(string stringValue, int length)
         {
             if (stringValue == null) return stringValue;

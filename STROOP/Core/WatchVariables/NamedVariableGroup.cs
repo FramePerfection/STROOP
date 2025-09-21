@@ -35,9 +35,9 @@ namespace STROOP.Core.Variables
 
         public static class ViewProperties
         {
-            static ViewProperties() => StringUtilities.InitializeDeclaredStrings(typeof(ViewProperties));
+            static ViewProperties() => StringSymbolAttribute.InitializeDeclaredStrings(typeof(ViewProperties));
 
-            [DeclaredString]
+            [StringSymbol]
             public static readonly string
                 useHex,
                 invertBool,
