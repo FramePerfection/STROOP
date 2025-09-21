@@ -16,6 +16,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
 using STROOP.Core.Variables;
+using System.Threading;
 
 namespace STROOP
 {
@@ -37,6 +38,8 @@ namespace STROOP
         List<Process> _availableProcesses = new List<Process>();
 
         public readonly SearchVariableDialog searchVariableDialog;
+
+        CancellationTokenSource _formClosing = new CancellationTokenSource();
 
         public StroopMainForm(bool isMainForm)
         {
@@ -165,7 +168,7 @@ namespace STROOP
             BringToFront();
             Activate();
             using (new AccessScope<StroopMainForm>(this))
-                Config.CoreLoop.Run();
+                Config.CoreLoop.Run(_formClosing.Token);
         }
 
         private void InitializeTabRemoval()
@@ -660,6 +663,7 @@ namespace STROOP
 
             if (isMainForm)
             {
+                _formClosing.Cancel();
                 Config.Stream?.Dispose();
             }
         }
