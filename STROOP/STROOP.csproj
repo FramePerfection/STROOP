@@ -13,7 +13,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="OpenTK" Version="4.9.4"/>
         <PackageReference Include="OpenTK.GLControl" Version="4.0.2"/>
-        <PackageReference Include="SharpZipLib" Version="1.4.2"/>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
         <PackageReference Include="WindowsAPICodePack" Version="8.0.9"/>
     </ItemGroup>
