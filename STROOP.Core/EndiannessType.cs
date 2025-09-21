@@ -1,8 +1,7 @@
-﻿namespace STROOP.Core
+﻿namespace STROOP.Core;
+
+public enum EndiannessType
 {
-    public enum EndiannessType
-    {
-        Big,
-        Little
-    }
+    Big,
+    Little
 }
