@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
+using STROOP.Core.Utilities;
 using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;

@@ -1,12 +1,8 @@
-﻿using System;
+﻿using STROOP.Core.Utilities;
+using System;
 
 namespace STROOP.Utilities
 {
-    [AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
-    public abstract class InitializerAttribute : Attribute
-    {
-    }
-
     public class InitializeSpecialAttribute : InitializerAttribute
     {
     }

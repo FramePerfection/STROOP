@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STROOP.Core.Utilities;
+using System;
 using STROOP.Core.Variables;
 using STROOP.Utilities;
 

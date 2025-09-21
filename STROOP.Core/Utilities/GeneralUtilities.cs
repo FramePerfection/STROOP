@@ -1,66 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace STROOP.Utilities
+namespace STROOP.Core.Utilities
 {
-    public class Wrapper<T>
-    {
-        public T value;
-
-        public Wrapper()
-        {
-        }
-
-        public Wrapper(T value)
-        {
-            this.value = value;
-        }
-    }
-
-    public class EqualityComparer<T> : IEqualityComparer<T>
-    {
-        Func<T, T, bool> equalsFunc;
-        Func<T, int> getHashCodeFunc;
-
-        public EqualityComparer(Func<T, T, bool> equalsFunc, Func<T, int> getHashCodeFunc = null)
-        {
-            this.equalsFunc = equalsFunc;
-            this.getHashCodeFunc = getHashCodeFunc ?? (_ => _.GetHashCode());
-        }
-
-        bool IEqualityComparer<T>.Equals(T x, T y) => equalsFunc(x, y);
-
-        int IEqualityComparer<T>.GetHashCode(T obj) => getHashCodeFunc(obj);
-    }
-
-    public class OrderComparer<T> : IComparer<T>
-    {
-        Func<T, T, int> func;
-
-        public OrderComparer(Func<T, T, int> func)
-        {
-            this.func = func;
-        }
-
-        int IComparer<T>.Compare(T x, T y) => func(x, y);
-    }
-
     public static class GeneralUtilities
     {
-        static Type[] stroopTypes;
-
-        static GeneralUtilities()
-        {
-            stroopTypes = typeof(GeneralUtilities).Assembly.GetTypes();
-        }
-
-        public static IEnumerable<Type> EnumerateTypes(Func<Type, bool> filter)
-        {
-            foreach (var t in stroopTypes)
-                if (filter(t))
-                    yield return t;
-        }
 
         public static IEnumerable<T> Yield<T>(this T value)
         {

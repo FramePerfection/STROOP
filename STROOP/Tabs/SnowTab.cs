@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using STROOP.Controls.VariablePanel;
+using STROOP.Core.Utilities;
 using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;

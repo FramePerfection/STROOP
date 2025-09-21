@@ -23,7 +23,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
             public double weight = 1.0;
 
             public Dictionary<Identifier, string> parameterDefinitions = new Dictionary<Identifier, string>(
-                new Utilities.EqualityComparer<Identifier>((a, b) => a.name == b.name, a => a.name.GetHashCode())
+                new Core.Utilities.EqualityComparer<Identifier>((a, b) => a.name == b.name, a => a.name.GetHashCode())
             );
 
             public Dictionary<string, IBruteforceVariableView> parameterValues = new Dictionary<string, IBruteforceVariableView>();

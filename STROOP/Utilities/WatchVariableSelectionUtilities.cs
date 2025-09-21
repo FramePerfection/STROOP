@@ -6,6 +6,7 @@ using OpenTK;
 using OpenTK.Mathematics;
 using STROOP.Controls;
 using STROOP.Controls.VariablePanel;
+using STROOP.Core.Utilities;
 using STROOP.Core.Variables;
 using STROOP.Extensions;
 using STROOP.Forms;

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using OpenTK;
 using System.Collections.Generic;
 using OpenTK.Mathematics;
+using STROOP.Core.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
