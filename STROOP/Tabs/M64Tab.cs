@@ -302,7 +302,7 @@ namespace STROOP.Tabs
 
         private void ListBoxCopied_KeyDown()
         {
-            if (KeyboardUtilities.IsDeletishKeyHeld())
+            if (GlobalKeyboard.IsDeletishKeyDown())
             {
                 M64CopiedData copiedData = listBoxM64Copied.SelectedItem as M64CopiedData;
                 if (copiedData == null || copiedData == M64CopiedData.OneEmptyFrame) return;

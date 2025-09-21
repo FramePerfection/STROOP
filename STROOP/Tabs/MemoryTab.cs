@@ -108,7 +108,7 @@ namespace STROOP.Tabs
             {
                 if (!Address.HasValue || _objectSnapshot == null) return;
                 List<uint> addresses = new List<uint>() { Address.Value };
-                if (KeyboardUtilities.IsCtrlHeld())
+                if (GlobalKeyboard.IsCtrlDown())
                 {
                     addresses = Config.ObjectSlotsManager.SelectedObjects.ConvertAll(obj => obj.Address);
                 }
@@ -223,8 +223,8 @@ namespace STROOP.Tabs
 
         private void MemoryValueClick()
         {
-            bool isCtrlKeyHeld = KeyboardUtilities.IsCtrlHeld();
-            bool isAltKeyHeld = KeyboardUtilities.IsAltHeld();
+            bool isCtrlKeyHeld = GlobalKeyboard.IsCtrlDown();
+            bool isAltKeyHeld = GlobalKeyboard.IsAltDown();
             if (!isCtrlKeyHeld) return;
             int index = richTextBoxMemoryValues.SelectionStart;
             bool useObjAddress = checkBoxMemoryUseObjAddress.Checked;
@@ -319,10 +319,10 @@ namespace STROOP.Tabs
                 WatchVariableSubclass subclass = useObj
                     ? WatchVariableSubclass.Object
                     : WatchVariableSubclass.Number;
-                if (Keyboard.IsKeyDown(Key.A)) subclass = WatchVariableSubclass.Angle;
-                if (Keyboard.IsKeyDown(Key.B)) subclass = WatchVariableSubclass.Boolean;
-                if (Keyboard.IsKeyDown(Key.Q)) subclass = WatchVariableSubclass.Object;
-                if (Keyboard.IsKeyDown(Key.T)) subclass = WatchVariableSubclass.Triangle;
+                if (GlobalKeyboard.IsDown(Keys.A)) subclass = WatchVariableSubclass.Angle;
+                if (GlobalKeyboard.IsDown(Keys.B)) subclass = WatchVariableSubclass.Boolean;
+                if (GlobalKeyboard.IsDown(Keys.Q)) subclass = WatchVariableSubclass.Object;
+                if (GlobalKeyboard.IsDown(Keys.T)) subclass = WatchVariableSubclass.Triangle;
 
                 bool isObjectOrTriangle =
                     subclass == WatchVariableSubclass.Object ||

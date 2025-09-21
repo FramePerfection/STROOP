@@ -3,7 +3,6 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
-    <UseWpf>true</UseWpf>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -11,7 +10,6 @@
 
 <!--  Package references -->
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenTK" Version="4.9.4" />
     <PackageReference Include="OpenTK.GLControl" Version="4.0.2" />

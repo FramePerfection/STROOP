@@ -357,8 +357,8 @@ namespace STROOP.Tabs
                         nOffset,
                         -1 * vOffset,
                         useRelative,
-                        KeyboardUtilities.IsCtrlHeld(),
-                        KeyboardUtilities.IsAltHeld());
+                        GlobalKeyboard.IsCtrlDown(),
+                        GlobalKeyboard.IsAltDown());
                 });
 
             ControlUtilities.InitializeScalarController(
@@ -367,7 +367,7 @@ namespace STROOP.Tabs
                 textBoxObjAngleYaw,
                 (float yawValue) =>
                 {
-                    ButtonUtilities.RotateObjects(_objects, (int)Math.Round(yawValue), 0, 0, KeyboardUtilities.IsCtrlHeld(), KeyboardUtilities.IsAltHeld());
+                    ButtonUtilities.RotateObjects(_objects, (int)Math.Round(yawValue), 0, 0, GlobalKeyboard.IsCtrlDown(), GlobalKeyboard.IsAltDown());
                 });
             ControlUtilities.InitializeScalarController(
                 buttonObjAnglePitchN,
@@ -375,7 +375,7 @@ namespace STROOP.Tabs
                 textBoxObjAnglePitch,
                 (float pitchValue) =>
                 {
-                    ButtonUtilities.RotateObjects(_objects, 0, (int)Math.Round(pitchValue), 0, KeyboardUtilities.IsCtrlHeld(), KeyboardUtilities.IsAltHeld());
+                    ButtonUtilities.RotateObjects(_objects, 0, (int)Math.Round(pitchValue), 0, GlobalKeyboard.IsCtrlDown(), GlobalKeyboard.IsAltDown());
                 });
             ControlUtilities.InitializeScalarController(
                 buttonObjAngleRollN,
@@ -383,7 +383,7 @@ namespace STROOP.Tabs
                 textBoxObjAngleRoll,
                 (float rollValue) =>
                 {
-                    ButtonUtilities.RotateObjects(_objects, 0, 0, (int)Math.Round(rollValue), KeyboardUtilities.IsCtrlHeld(), KeyboardUtilities.IsAltHeld());
+                    ButtonUtilities.RotateObjects(_objects, 0, 0, (int)Math.Round(rollValue), GlobalKeyboard.IsCtrlDown(), GlobalKeyboard.IsAltDown());
                 });
 
             ControlUtilities.InitializeScaleController(

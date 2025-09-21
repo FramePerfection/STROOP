@@ -84,18 +84,18 @@ namespace STROOP
                 };
 
                 lst.Add(new Overlay("Parent", GetHoveredExpression((obj, address, hoveredObject) =>
-                    (OverlayConfig.ShowOverlayParentObject || Keyboard.IsKeyDown(Key.P)) && address == hoveredObject.Parent)));
+                    (OverlayConfig.ShowOverlayParentObject || GlobalKeyboard.IsDown(Keys.P)) && address == hoveredObject.Parent)));
 
                 lst.Add(new Overlay("ParentNone", GetHoveredExpression((obj, address, hoveredObject) =>
-                    (OverlayConfig.ShowOverlayParentObject || Keyboard.IsKeyDown(Key.P)) && address == hoveredObject.Address
+                    (OverlayConfig.ShowOverlayParentObject || GlobalKeyboard.IsDown(Keys.P)) && address == hoveredObject.Address
                     && hoveredObject.Parent == 0)));
 
                 lst.Add(new Overlay("ParentUnused", GetHoveredExpression((obj, address, hoveredObject) =>
-                    (OverlayConfig.ShowOverlayParentObject || Keyboard.IsKeyDown(Key.P)) && address == hoveredObject.Address
+                    (OverlayConfig.ShowOverlayParentObject || GlobalKeyboard.IsDown(Keys.P)) && address == hoveredObject.Address
                     && hoveredObject.Parent == ObjectSlotsConfig.UnusedSlotAddress)));
 
                 lst.Add(new Overlay("Child", GetHoveredExpression((obj, address, hoveredObject) =>
-                    (OverlayConfig.ShowOverlayChildObject || Keyboard.IsKeyDown(Key.P)) && obj.CurrentObject?.Parent == hoveredObject.Address)));
+                    (OverlayConfig.ShowOverlayChildObject || GlobalKeyboard.IsDown(Keys.P)) && obj.CurrentObject?.Parent == hoveredObject.Address)));
 
                 for (int i = 1; i <= 4; i++)
                 {
@@ -103,7 +103,7 @@ namespace STROOP
                     lst.Add(new Overlay($"Collision{capture}", GetAddressExpression((obj, address) =>
                     {
                         uint? hoveredAddress = Config.ObjectSlotsManager.HoveredObjectAddress;
-                        uint collisionObjAddress = hoveredAddress.HasValue && Keyboard.IsKeyDown(Key.C)
+                        uint collisionObjAddress = hoveredAddress.HasValue && GlobalKeyboard.IsDown(Keys.C)
                             ? hoveredAddress.Value : Config.Stream.GetUInt32(MarioObjectConfig.PointerAddress);
                         return OverlayConfig.ShowOverlayCollisionObject && address == ObjectUtilities.GetCollisionObject(collisionObjAddress, capture);
                     })));
@@ -270,7 +270,7 @@ namespace STROOP
                     ContextMenuStrip.Items.Add(selectInTabItem);
                 }
 
-            Func<List<ObjectDataModel>> getObjects = () => KeyboardUtilities.IsCtrlHeld()
+            Func<List<ObjectDataModel>> getObjects = () => GlobalKeyboard.IsCtrlDown()
                 ? Config.ObjectSlotsManager.SelectedObjects
                 : new List<ObjectDataModel>() { CurrentObject };
 

@@ -49,7 +49,7 @@ namespace STROOP.Utilities
                 using (Config.Stream.Suspend())
                 {
                     bool success = Config.Stream.SetValue((float)value, MarioConfig.StructAddress + structOffset);
-                    if (KeyboardUtilities.IsAltHeld())
+                    if (GlobalKeyboard.IsAltDown())
                         success &= Config.Stream.SetValue((float)value, MarioConfig.StructAddress + objOffset);
                     return success;
                 }

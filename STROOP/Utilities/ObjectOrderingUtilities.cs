@@ -107,7 +107,7 @@ namespace STROOP.Utilities
                 int diff = GetProcessedIndex(objAddress1) - GetProcessedIndex(objAddress2);
                 return multiplier * diff;
             });
-            int multiplicity = KeyboardUtilities.GetCurrentlyInputtedNumber() ?? 1;
+            int multiplicity = GlobalKeyboard.GetCurrentlyInputtedNumber() ?? 1;
 
             List<List<uint>> processGroups = GetProcessGroups();
             for (int i = 0; i < multiplicity; i++)

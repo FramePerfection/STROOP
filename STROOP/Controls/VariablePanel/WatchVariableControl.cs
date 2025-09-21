@@ -218,7 +218,7 @@ namespace STROOP.Controls.VariablePanel
         }
 
         public void ToggleFixedAddress(bool? fix)
-            => (view as NamedVariableCollection.IMemoryDescriptorView).describedMemoryState.ToggleFixedAddress(fix);
+            => (view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.ToggleFixedAddress(fix);
 
         public void ToggleHighlighted(Color? color = null)
         {

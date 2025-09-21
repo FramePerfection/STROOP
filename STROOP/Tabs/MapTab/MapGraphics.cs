@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using OpenTK.GLControl;
 using OpenTK.Mathematics;
+using STROOP.Controls;
+using STROOP.Extensions;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -150,7 +152,7 @@ namespace STROOP.Tabs.MapTab
         public bool cursorOnMap = false;
         Vector3 normalAtCursor;
         public float cursorViewPlaneDist = 1000;
-        public bool fixCursorPlane => view.mode == MapView.ViewMode.ThreeDimensional && KeyboardUtilities.IsShiftHeld();
+        public bool fixCursorPlane => view.mode == MapView.ViewMode.ThreeDimensional && keyboardControls.IsShiftDown();
 
         public float nearClip { get; private set; }
         public float farClip { get; private set; }
@@ -161,6 +163,7 @@ namespace STROOP.Tabs.MapTab
         bool[] mouseDown = new bool[3];
         public bool IsMouseDown(int button) => mouseDown[button];
 
+        public readonly KeyboardControls keyboardControls;
 
         Func<OpenTK.Windowing.Common.IGraphicsContext> getContext;
         public MapGraphics(MapTab mapTab, GLControl glControl, Func<OpenTK.Windowing.Common.IGraphicsContext> getContext = null)
@@ -168,6 +171,9 @@ namespace STROOP.Tabs.MapTab
             this.mapTab = mapTab;
             this.glControl = glControl;
             this.getContext = getContext;
+            
+            glControl.MouseDown += (_, _) => glControl.Focus();
+            keyboardControls = new(glControl);
             view = new MapView();
             drawLayers = new List<Action>[Enum.GetNames(typeof(DrawLayers)).Length];
             for (int i = 0; i < drawLayers.Length; i++)
@@ -575,7 +581,7 @@ namespace STROOP.Tabs.MapTab
                 foreach (var hover in mapTab.hoverData)
                     if (mouseDown[0])
                     {
-                        if (KeyboardUtilities.IsCtrlHeld())
+                        if (keyboardControls.IsCtrlDown())
                         {
                             if (hover.CanDrag().HasFlag(DragMask.Angle))
                             {
@@ -617,7 +623,7 @@ namespace STROOP.Tabs.MapTab
 
             if (mouseDown[0])
             {
-                if (!KeyboardUtilities.IsCtrlHeld())
+                if (!keyboardControls.IsCtrlDown())
                 {
                     int pixelDiffX = e.X - _dragStartMouseX;
                     int pixelDiffY = e.Y - _dragStartMouseY;
@@ -728,22 +734,22 @@ namespace STROOP.Tabs.MapTab
             Vector3 up = BillboardMatrix.Row1.Xyz;
             Vector3 right = BillboardMatrix.Row0.Xyz;
             Vector3 relativeMovement = Vector3.Zero;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
+            if (keyboardControls.IsDown(Keys.W))
                 relativeMovement.Z += 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S))
+            if (keyboardControls.IsDown(Keys.S))
                 relativeMovement.Z -= 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
+            if (keyboardControls.IsDown(Keys.D))
                 relativeMovement.X += 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
+            if (keyboardControls.IsDown(Keys.A))
                 relativeMovement.X -= 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.E))
+            if (keyboardControls.IsDown(Keys.E))
                 relativeMovement.Y += 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Q))
+            if (keyboardControls.IsDown(Keys.Q))
                 relativeMovement.Y -= 1;
             if (relativeMovement != Vector3.Zero)
             {
                 relativeMovement.Normalize();
-                float movement = (float)frameTime * (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftShift) ? 100 : 2000);
+                float movement = (float)frameTime * (keyboardControls.IsShiftDown() ? 100 : 2000);
                 view.position += (right * relativeMovement.X + up * relativeMovement.Y + forwards * relativeMovement.Z) * movement;
             }
         }

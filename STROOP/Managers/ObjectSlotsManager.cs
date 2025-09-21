@@ -92,10 +92,10 @@ namespace STROOP.Managers
             ObjectSlot selectedSlot = sender as ObjectSlot;
             selectedSlot.Focus();
 
-            bool isCtrlKeyHeld = KeyboardUtilities.IsCtrlHeld();
-            bool isShiftKeyHeld = KeyboardUtilities.IsShiftHeld();
-            bool isAltKeyHeld = KeyboardUtilities.IsAltHeld();
-            int? numberHeld = KeyboardUtilities.GetCurrentlyInputtedNumber();
+            bool isCtrlKeyHeld = GlobalKeyboard.IsCtrlDown();
+            bool isShiftKeyHeld = GlobalKeyboard.IsShiftDown();
+            bool isAltKeyHeld = GlobalKeyboard.IsAltDown();
+            int? numberHeld = GlobalKeyboard.GetCurrentlyInputtedNumber();
 
             DoSlotClickUsingInput(selectedSlot, isCtrlKeyHeld, isShiftKeyHeld, isAltKeyHeld, numberHeld);
         }

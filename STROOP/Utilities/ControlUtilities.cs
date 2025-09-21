@@ -675,7 +675,7 @@ namespace STROOP.Utilities
 
         public static SplitContainer GetDescendantSplitContainer(Control control, Orientation orientation, int? indexNullable = null)
         {
-            int index = indexNullable ?? (KeyboardUtilities.GetCurrentlyInputtedNumber() - 1) ?? 0;
+            int index = indexNullable ?? (GlobalKeyboard.GetCurrentlyInputtedNumber() - 1) ?? 0;
             List<SplitContainer> splitContainerList = GetAllDescendantSplitContainers(control);
             splitContainerList = splitContainerList.FindAll(
                 splitContainer => splitContainer.Visible);
