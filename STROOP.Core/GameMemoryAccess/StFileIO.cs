@@ -1,14 +1,9 @@
-﻿using System;
-using ICSharpCode.SharpZipLib.GZip;
-using STROOP.Core;
-using STROOP.Core.Emulators;
-using STROOP.Core.GameMemoryAccess;
-using System.IO;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.IO.Compression;
 
-namespace STROOP.Utilities
+namespace STROOP.Core.GameMemoryAccess
 {
-    class StFileIO : BaseProcessIO
+    public class StFileIO : BaseProcessIO
     {
         public override bool IsSuspended => false;
 
@@ -31,30 +26,20 @@ namespace STROOP.Utilities
             LoadMemory();
         }
 
-        public void LoadMemory()
+        private void LoadMemory()
         {
-            using (var fileStream = new FileStream(_path, FileMode.Open))
-            {
-                using (var gzipStream = new GZipInputStream(fileStream))
-                {
-                    using (MemoryStream unzip = new MemoryStream())
-                    {
-                        gzipStream.CopyTo(unzip);
-                        _data = unzip.GetBuffer();
-                    }
-                }
-            }
+            using var fileStream = new FileStream(_path, FileMode.Open);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using MemoryStream unzip = new MemoryStream();
+            gzipStream.CopyTo(unzip);
+            _data = unzip.ToArray();
         }
 
         public void SaveMemory(string path)
         {
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                using (var gzipStream = new GZipOutputStream(fileStream))
-                {
-                    gzipStream.Write(_data, 0, _data.Length);
-                }
-            }
+            using var fileStream = new FileStream(path, FileMode.Create);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Compress);
+            gzipStream.Write(_data, 0, _data.Length);
         }
 
         public override bool Resume()
