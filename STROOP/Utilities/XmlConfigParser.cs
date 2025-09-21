@@ -16,7 +16,9 @@ using STROOP.Core.Variables;
 namespace STROOP.Utilities
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class InitializeConfigParser : Attribute { }
+    public class InitializeConfigParser : Attribute
+    {
+    }
 
     public static class XmlConfigParser
     {
@@ -45,7 +47,9 @@ namespace STROOP.Utilities
         }
 
         public delegate void ConfigElementParser(XElement node);
+
         static Dictionary<string, ConfigElementParser> configParsers = new Dictionary<string, ConfigElementParser>();
+
         public static void AddConfigParser(string elementName, ConfigElementParser parser)
         {
             configParsers[elementName] = parser;
@@ -88,10 +92,12 @@ namespace STROOP.Utilities
                                 AllowAutoDetect = allowAutoDetect,
                                 Dll = subElement.Attribute(XName.Get("offsetDll"))?.Value ?? null,
                                 Endianness = subElement.Attribute(XName.Get("endianness")).Value == "big"
-                                    ? EndiannessType.Big : EndiannessType.Little,
+                                    ? EndiannessType.Big
+                                    : EndiannessType.Little,
                                 IOType = special == "dolphin" ? typeof(DolphinProcessIO) : typeof(WindowsProcessRamIO),
                             });
                         }
+
                         break;
                     case "RomVersion":
                         RomVersionConfig.Version = (RomVersion)Enum.Parse(typeof(RomVersion), element.Value);
@@ -108,6 +114,7 @@ namespace STROOP.Utilities
 
             return doc;
         }
+
         public static List<NamedVariableCollection.IView> OpenWatchVariables(string path) => OpenWatchVariableControlPrecursors(path);
 
         public static List<NamedVariableCollection.IView> OpenWatchVariableControlPrecursors(string path)
@@ -161,8 +168,13 @@ namespace STROOP.Utilities
             Dictionary<string, string> assocDictionary = new Dictionary<string, string>();
 
             string
-                marioImagePath = "", hudImagePath = "", debugImagePath = "",
-                miscImagePath = "", cameraImagePath = "", marioMapImagePath = "", cameraMapImagePath = "";
+                marioImagePath = "",
+                hudImagePath = "",
+                debugImagePath = "",
+                miscImagePath = "",
+                cameraImagePath = "",
+                marioMapImagePath = "",
+                cameraMapImagePath = "";
 
             uint marioBehavior = 0;
 
@@ -176,12 +188,12 @@ namespace STROOP.Utilities
                             typeof(AssocConfig).GetField(subElement.Attribute(XName.Get("name")).Value, BindingFlags.Public | BindingFlags.Static)
                                 .SetValue(null, subElement.Value);
                         }
+
                         break;
 
                     case "Mario":
                         marioImagePath = element.Element(XName.Get("Image")).Attribute(XName.Get("path")).Value;
-                        marioMapImagePath = element.Element(XName.Get("MapImage")) != null ?
-                            element.Element(XName.Get("MapImage")).Attribute(XName.Get("path")).Value : null;
+                        marioMapImagePath = element.Element(XName.Get("MapImage")) != null ? element.Element(XName.Get("MapImage")).Attribute(XName.Get("path")).Value : null;
                         assoc.MarioColor = ColorTranslator.FromHtml(element.Element(XName.Get("Color")).Value);
                         marioBehavior = ParsingUtilities.ParseHex(element.Attribute(XName.Get("behaviorScriptAddress")).Value);
                         break;
@@ -217,74 +229,72 @@ namespace STROOP.Utilities
                         break;
 
                     case "Object":
+                    {
+                        string name = element.Attribute(XName.Get("name")).Value;
+                        uint behaviorSegmented = ParsingUtilities.ParseHex(element.Attribute(XName.Get("behaviorScriptAddress")).Value);
+                        uint? gfxId = null, subType = null, appearance = null, spawnObj = null;
+                        if (element.Attribute(XName.Get("gfxId")) != null)
+                            gfxId = ParsingUtilities.ParseHex(element.Attribute(XName.Get("gfxId")).Value) | 0x80000000U;
+                        if (element.Attribute(XName.Get("subType")) != null)
+                            subType = ParsingUtilities.ParseUIntNullable(element.Attribute(XName.Get("subType")).Value);
+                        if (element.Attribute(XName.Get("appearance")) != null)
+                            appearance = ParsingUtilities.ParseUIntNullable(element.Attribute(XName.Get("appearance")).Value);
+                        if (element.Attribute(XName.Get("spawnObj")) != null)
+                            spawnObj = ParsingUtilities.ParseHex(element.Attribute(XName.Get("spawnObj")).Value);
+
+                        var spawnElement = element.Element(XName.Get("SpawnCode"));
+                        if (spawnElement != null)
                         {
-                            string name = element.Attribute(XName.Get("name")).Value;
-                            uint behaviorSegmented = ParsingUtilities.ParseHex(element.Attribute(XName.Get("behaviorScriptAddress")).Value);
-                            uint? gfxId = null, subType = null, appearance = null, spawnObj = null;
-                            if (element.Attribute(XName.Get("gfxId")) != null)
-                                gfxId = ParsingUtilities.ParseHex(element.Attribute(XName.Get("gfxId")).Value) | 0x80000000U;
-                            if (element.Attribute(XName.Get("subType")) != null)
-                                subType = ParsingUtilities.ParseUIntNullable(element.Attribute(XName.Get("subType")).Value);
-                            if (element.Attribute(XName.Get("appearance")) != null)
-                                appearance = ParsingUtilities.ParseUIntNullable(element.Attribute(XName.Get("appearance")).Value);
-                            if (element.Attribute(XName.Get("spawnObj")) != null)
-                                spawnObj = ParsingUtilities.ParseHex(element.Attribute(XName.Get("spawnObj")).Value);
-
-                            var spawnElement = element.Element(XName.Get("SpawnCode"));
-                            if (spawnElement != null)
+                            byte spawnGfxId = (byte)(spawnElement.Attribute(XName.Get("gfxId")) != null ? ParsingUtilities.ParseHex(spawnElement.Attribute(XName.Get("gfxId")).Value) : 0);
+                            byte spawnExtra = (byte)(spawnElement.Attribute(XName.Get("extra")) != null ? ParsingUtilities.ParseHex(spawnElement.Attribute(XName.Get("extra")).Value) : (byte)(subType.HasValue ? subType : 0));
+                            assoc.AddSpawnHack(new SpawnHack()
                             {
-                                byte spawnGfxId = (byte)(spawnElement.Attribute(XName.Get("gfxId")) != null ?
-                                    ParsingUtilities.ParseHex(spawnElement.Attribute(XName.Get("gfxId")).Value) : 0);
-                                byte spawnExtra = (byte)(spawnElement.Attribute(XName.Get("extra")) != null ?
-                                    ParsingUtilities.ParseHex(spawnElement.Attribute(XName.Get("extra")).Value) : (byte)(subType.HasValue ? subType : 0));
-                                assoc.AddSpawnHack(new SpawnHack()
-                                {
-                                    Name = name,
-                                    Behavior = behaviorSegmented,
-                                    GfxId = spawnGfxId,
-                                    Extra = spawnExtra
-                                });
-                            }
-
-                            string imagePath = element.Element(XName.Get("Image")).Attribute(XName.Get("path")).Value;
-                            string mapImagePath = null;
-                            bool rotates = false;
-                            if (element.Element(XName.Get("MapImage")) != null)
-                            {
-                                mapImagePath = element.Element(XName.Get("MapImage")).Attribute(XName.Get("path")).Value;
-                                rotates = bool.Parse(element.Element(XName.Get("MapImage")).Attribute(XName.Get("rotates")).Value);
-                            }
-
-                            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-                            foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
-                            {
-                                var variableView = NamedVariableCollection.ParseXml(subElement);
-                                if (variableView != null)
-                                    precursors.Add(variableView);
-                            }
-
-                            var newBehavior = new ObjectBehaviorAssociation()
-                            {
-                                Criteria = new BehaviorCriteria()
-                                {
-                                    BehaviorAddress = behaviorSegmented,
-                                    GfxId = gfxId,
-                                    SubType = subType,
-                                    Appearance = appearance,
-                                    SpawnObj = spawnObj,
-                                },
-                                ImagePath = imagePath,
-                                MapImagePath = mapImagePath,
                                 Name = name,
-                                RotatesOnMap = rotates,
-                                Precursors = precursors,
-                            };
-
-                            if (!assoc.AddAssociation(newBehavior))
-                                throw new Exception("More than one behavior address was defined.");
-
-                            break;
+                                Behavior = behaviorSegmented,
+                                GfxId = spawnGfxId,
+                                Extra = spawnExtra
+                            });
                         }
+
+                        string imagePath = element.Element(XName.Get("Image")).Attribute(XName.Get("path")).Value;
+                        string mapImagePath = null;
+                        bool rotates = false;
+                        if (element.Element(XName.Get("MapImage")) != null)
+                        {
+                            mapImagePath = element.Element(XName.Get("MapImage")).Attribute(XName.Get("path")).Value;
+                            rotates = bool.Parse(element.Element(XName.Get("MapImage")).Attribute(XName.Get("rotates")).Value);
+                        }
+
+                        List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
+                        foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
+                        {
+                            var variableView = NamedVariableCollection.ParseXml(subElement);
+                            if (variableView != null)
+                                precursors.Add(variableView);
+                        }
+
+                        var newBehavior = new ObjectBehaviorAssociation()
+                        {
+                            Criteria = new BehaviorCriteria()
+                            {
+                                BehaviorAddress = behaviorSegmented,
+                                GfxId = gfxId,
+                                SubType = subType,
+                                Appearance = appearance,
+                                SpawnObj = spawnObj,
+                            },
+                            ImagePath = imagePath,
+                            MapImagePath = mapImagePath,
+                            Name = name,
+                            RotatesOnMap = rotates,
+                            Precursors = precursors,
+                        };
+
+                        if (!assoc.AddAssociation(newBehavior))
+                            throw new Exception("More than one behavior address was defined.");
+
+                        break;
+                    }
                 }
             }
 
@@ -323,6 +333,7 @@ namespace STROOP.Utilities
                         }
                     });
                 }
+
                 obj.TransparentImage = new Lazy<Image>(() => obj.Image.Value.GetOpaqueImage(0.5f));
             }
 
@@ -367,9 +378,11 @@ namespace STROOP.Utilities
                                     break;
                             }
                         }
+
                         break;
                 }
             }
+
             return guiList;
         }
 
@@ -416,9 +429,11 @@ namespace STROOP.Utilities
                                     break;
                             }
                         }
+
                         break;
                 }
             }
+
             return result;
         }
 
@@ -438,45 +453,45 @@ namespace STROOP.Utilities
 
             // Create path list
             string fileImageDir = "",
-                   powerStarPath = "",
-                   powerStarBlackPath = "",
-                   cannonPath = "",
-                   cannonLidPath = "",
-                   door1StarPath = "",
-                   door3StarPath = "",
-                   doorBlackPath = "",
-                   starDoorOpenPath = "",
-                   starDoorClosedPath = "",
-                   capSwitchRedPressedPath = "",
-                   capSwitchRedUnpressedPath = "",
-                   capSwitchGreenPressedPath = "",
-                   capSwitchGreenUnpressedPath = "",
-                   capSwitchBluePressedPath = "",
-                   capSwitchBlueUnpressedPath = "",
-                   fileStartedPath = "",
-                   fileNotStartedPath = "",
-                   dddPaintingMovedBackPath = "",
-                   dddPaintingNotMovedBackPath = "",
-                   moatDrainedPath = "",
-                   moatNotDrainedPath = "",
-                   keyDoorClosedPath = "",
-                   keyDoorClosedKeyPath = "",
-                   keyDoorOpenPath = "",
-                   keyDoorOpenKeyPath = "",
-                   hatOnMarioPath = "",
-                   hatOnMarioGreyPath = "",
-                   hatOnKleptoPath = "",
-                   hatOnKleptoGreyPath = "",
-                   hatOnSnowmanPath = "",
-                   hatOnSnowmanGreyPath = "",
-                   hatOnUkikiPath = "",
-                   hatOnUkikiGreyPath = "",
-                   hatOnGroundInSSLPath = "",
-                   hatOnGroundInSSLGreyPath = "",
-                   hatOnGroundInSLPath = "",
-                   hatOnGroundInSLGreyPath = "",
-                   hatOnGroundInTTMPath = "",
-                   hatOnGroundInTTMGrey = "";
+                powerStarPath = "",
+                powerStarBlackPath = "",
+                cannonPath = "",
+                cannonLidPath = "",
+                door1StarPath = "",
+                door3StarPath = "",
+                doorBlackPath = "",
+                starDoorOpenPath = "",
+                starDoorClosedPath = "",
+                capSwitchRedPressedPath = "",
+                capSwitchRedUnpressedPath = "",
+                capSwitchGreenPressedPath = "",
+                capSwitchGreenUnpressedPath = "",
+                capSwitchBluePressedPath = "",
+                capSwitchBlueUnpressedPath = "",
+                fileStartedPath = "",
+                fileNotStartedPath = "",
+                dddPaintingMovedBackPath = "",
+                dddPaintingNotMovedBackPath = "",
+                moatDrainedPath = "",
+                moatNotDrainedPath = "",
+                keyDoorClosedPath = "",
+                keyDoorClosedKeyPath = "",
+                keyDoorOpenPath = "",
+                keyDoorOpenKeyPath = "",
+                hatOnMarioPath = "",
+                hatOnMarioGreyPath = "",
+                hatOnKleptoPath = "",
+                hatOnKleptoGreyPath = "",
+                hatOnSnowmanPath = "",
+                hatOnSnowmanGreyPath = "",
+                hatOnUkikiPath = "",
+                hatOnUkikiGreyPath = "",
+                hatOnGroundInSSLPath = "",
+                hatOnGroundInSSLGreyPath = "",
+                hatOnGroundInSLPath = "",
+                hatOnGroundInSLGreyPath = "",
+                hatOnGroundInTTMPath = "",
+                hatOnGroundInTTMGrey = "";
 
             foreach (XElement element in doc.Root.Elements())
             {
@@ -492,6 +507,7 @@ namespace STROOP.Utilities
                                     break;
                             }
                         }
+
                         break;
 
                     case "FileImages":
@@ -656,6 +672,7 @@ namespace STROOP.Utilities
                                     break;
                             }
                         }
+
                         break;
                 }
             }
@@ -747,63 +764,59 @@ namespace STROOP.Utilities
                                     break;
                             }
                         }
+
                         break;
 
                     case "Background":
-                        {
-                            string name = element.Attribute(XName.Get("name")).Value;
-                            string imagePath = element.Element(XName.Get("Image")).Attribute(XName.Get("path")).Value;
-                            BackgroundImage backgroundImage = new BackgroundImage(name, assoc.BackgroundImageFolderPath + imagePath);
-                            assoc.AddBackgroundImage(backgroundImage);
-                        }
+                    {
+                        string name = element.Attribute(XName.Get("name")).Value;
+                        string imagePath = element.Element(XName.Get("Image")).Attribute(XName.Get("path")).Value;
+                        BackgroundImage backgroundImage = new BackgroundImage(name, assoc.BackgroundImageFolderPath + imagePath);
+                        assoc.AddBackgroundImage(backgroundImage);
+                    }
                         break;
 
                     case "Map":
+                    {
+                        string id = element.Attribute(XName.Get("id")).Value;
+                        byte level = byte.Parse(element.Attribute(XName.Get("level")).Value);
+                        byte area = byte.Parse(element.Attribute(XName.Get("area")).Value);
+                        ushort? loadingPoint = element.Attribute(XName.Get("loadingPoint")) != null ? (ushort?)ushort.Parse(element.Attribute(XName.Get("loadingPoint")).Value) : null;
+                        ushort? missionLayout = element.Attribute(XName.Get("missionLayout")) != null ? (ushort?)ushort.Parse(element.Attribute(XName.Get("missionLayout")).Value) : null;
+                        string imagePath = element.Element(XName.Get("Image")).Attribute(XName.Get("path")).Value;
+
+                        string backgroundImageName = (element.Element(XName.Get("BackgroundImage")) != null) ? element.Element(XName.Get("BackgroundImage")).Attribute(XName.Get("name")).Value : null;
+                        BackgroundImage backgroundImage = assoc.GetBackgroundImage(backgroundImageName);
+
+                        var coordinatesElement = element.Element(XName.Get("Coordinates"));
+                        float x1 = float.Parse(coordinatesElement.Attribute(XName.Get("x1")).Value);
+                        float x2 = float.Parse(coordinatesElement.Attribute(XName.Get("x2")).Value);
+                        float z1 = float.Parse(coordinatesElement.Attribute(XName.Get("z1")).Value);
+                        float z2 = float.Parse(coordinatesElement.Attribute(XName.Get("z2")).Value);
+                        float y = (coordinatesElement.Attribute(XName.Get("y")) != null) ? float.Parse(coordinatesElement.Attribute(XName.Get("y")).Value) : float.MinValue;
+
+                        string name = element.Attribute(XName.Get("name")).Value;
+                        string subName = (element.Attribute(XName.Get("subName")) != null) ? element.Attribute(XName.Get("subName")).Value : null;
+
+                        var coordinates = new RectangleF(x1, z1, x2 - x1, z2 - z1);
+
+                        MapLayout map = new MapLayout()
                         {
-                            string id = element.Attribute(XName.Get("id")).Value;
-                            byte level = byte.Parse(element.Attribute(XName.Get("level")).Value);
-                            byte area = byte.Parse(element.Attribute(XName.Get("area")).Value);
-                            ushort? loadingPoint = element.Attribute(XName.Get("loadingPoint")) != null ?
-                                (ushort?)ushort.Parse(element.Attribute(XName.Get("loadingPoint")).Value) : null;
-                            ushort? missionLayout = element.Attribute(XName.Get("missionLayout")) != null ?
-                                (ushort?)ushort.Parse(element.Attribute(XName.Get("missionLayout")).Value) : null;
-                            string imagePath = element.Element(XName.Get("Image")).Attribute(XName.Get("path")).Value;
+                            Id = id,
+                            Level = level,
+                            Area = area,
+                            LoadingPoint = loadingPoint,
+                            MissionLayout = missionLayout,
+                            Coordinates = coordinates,
+                            ImagePath = imagePath,
+                            Y = y,
+                            Name = name,
+                            SubName = subName,
+                            Background = backgroundImage,
+                        };
 
-                            string backgroundImageName = (element.Element(XName.Get("BackgroundImage")) != null) ?
-                              element.Element(XName.Get("BackgroundImage")).Attribute(XName.Get("name")).Value : null;
-                            BackgroundImage backgroundImage = assoc.GetBackgroundImage(backgroundImageName);
-
-                            var coordinatesElement = element.Element(XName.Get("Coordinates"));
-                            float x1 = float.Parse(coordinatesElement.Attribute(XName.Get("x1")).Value);
-                            float x2 = float.Parse(coordinatesElement.Attribute(XName.Get("x2")).Value);
-                            float z1 = float.Parse(coordinatesElement.Attribute(XName.Get("z1")).Value);
-                            float z2 = float.Parse(coordinatesElement.Attribute(XName.Get("z2")).Value);
-                            float y = (coordinatesElement.Attribute(XName.Get("y")) != null) ?
-                                float.Parse(coordinatesElement.Attribute(XName.Get("y")).Value) : float.MinValue;
-
-                            string name = element.Attribute(XName.Get("name")).Value;
-                            string subName = (element.Attribute(XName.Get("subName")) != null) ?
-                                element.Attribute(XName.Get("subName")).Value : null;
-
-                            var coordinates = new RectangleF(x1, z1, x2 - x1, z2 - z1);
-
-                            MapLayout map = new MapLayout()
-                            {
-                                Id = id,
-                                Level = level,
-                                Area = area,
-                                LoadingPoint = loadingPoint,
-                                MissionLayout = missionLayout,
-                                Coordinates = coordinates,
-                                ImagePath = imagePath,
-                                Y = y,
-                                Name = name,
-                                SubName = subName,
-                                Background = backgroundImage,
-                            };
-
-                            assoc.AddAssociation(map);
-                        }
+                        assoc.AddAssociation(map);
+                    }
                         break;
                 }
             }
@@ -846,6 +859,7 @@ namespace STROOP.Utilities
                                     break;
                             }
                         }
+
                         break;
 
                     case "Script":
@@ -889,6 +903,7 @@ namespace STROOP.Utilities
                                     break;
                             }
                         }
+
                         break;
 
                     case "SpawnHack":
@@ -942,12 +957,9 @@ namespace STROOP.Utilities
                         uint actionValue = ParsingUtilities.ParseHex(
                             element.Attribute(XName.Get("value")).Value);
                         string actionName = element.Attribute(XName.Get("name")).Value;
-                        uint? afterCloneValue = element.Attribute(XName.Get("afterCloneValue")) != null ?
-                            ParsingUtilities.ParseHex(element.Attribute(XName.Get("afterCloneValue")).Value) : (uint?)null;
-                        uint? afterUncloneValue = element.Attribute(XName.Get("afterUncloneValue")) != null ?
-                            ParsingUtilities.ParseHex(element.Attribute(XName.Get("afterUncloneValue")).Value) : (uint?)null;
-                        uint? handsfreeValue = element.Attribute(XName.Get("handsfreeValue")) != null ?
-                            ParsingUtilities.ParseHex(element.Attribute(XName.Get("handsfreeValue")).Value) : (uint?)null;
+                        uint? afterCloneValue = element.Attribute(XName.Get("afterCloneValue")) != null ? ParsingUtilities.ParseHex(element.Attribute(XName.Get("afterCloneValue")).Value) : (uint?)null;
+                        uint? afterUncloneValue = element.Attribute(XName.Get("afterUncloneValue")) != null ? ParsingUtilities.ParseHex(element.Attribute(XName.Get("afterUncloneValue")).Value) : (uint?)null;
+                        uint? handsfreeValue = element.Attribute(XName.Get("handsfreeValue")) != null ? ParsingUtilities.ParseHex(element.Attribute(XName.Get("handsfreeValue")).Value) : (uint?)null;
                         actionTable?.Add(new ActionTable.ActionReference()
                         {
                             Action = actionValue,

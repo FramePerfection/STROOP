@@ -56,7 +56,7 @@ namespace STROOP
         {
             _currentInputs = InputFrame.GetCurrent();
         }
-        
+
 
         private Color GetBackColor(InputDisplayTypeEnum inputDisplayType)
         {
@@ -97,7 +97,7 @@ namespace STROOP
 
             Rectangle scaledRect = new Rectangle(new Point(), Size).Zoom(gui.ControllerImage.Value.Size);
             e.Graphics.DrawImage(gui.ControllerImage.Value, scaledRect);
-            
+
             InputFrame inputs = _currentInputs;
             if (inputs == null) return;
 
@@ -113,5 +113,5 @@ namespace STROOP
             RectangleF controlStickRectange = new RectangleF(scaledRect.X + hOffset, scaledRect.Y - vOffset, scaledRect.Width, scaledRect.Height);
             e.Graphics.DrawImage(gui.ControlStickImage.Value, controlStickRectange);
         }
-}
+    }
 }

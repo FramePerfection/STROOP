@@ -11,7 +11,11 @@ namespace STROOP.Structs
 {
     public static class SegmentationUtilities
     {
-        public static uint SegmentationTableAddress { get => RomVersionConfig.SwitchMap(SegmentationTableAddressUS, SegmentationTableAddressJP); }
+        public static uint SegmentationTableAddress
+        {
+            get => RomVersionConfig.SwitchMap(SegmentationTableAddressUS, SegmentationTableAddressJP);
+        }
+
         public static uint SegmentationTableAddressUS = 0x8033B400;
         public static uint SegmentationTableAddressJP = 0x8033A090;
 

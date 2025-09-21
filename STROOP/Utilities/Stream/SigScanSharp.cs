@@ -3,25 +3,25 @@
  * Author: Striekcarl/GENESIS @ Unknowncheats
  * Date: 14/05/2017
  * Purpose: Find memory patterns, both individually or simultaneously, as fast as possible
- * 
+ *
  * Example:
  *  Init:
  *      Process TargetProcess = Process.GetProcessesByName("TslGame")[0];
  *      SigScanSharp Sigscan = new SigScanSharp(TargetProcess.Handle);
  *      Sigscan.SelectModule(procBattlegrounds.MainModule);
- * 
+ *
  *  Find Patterns (Simultaneously):
  *      Sigscan.AddPattern("Pattern1", "48 8D 0D ? ? ? ? E8 ? ? ? ? E8 ? ? ? ? 48 8B D6");
  *      Sigscan.AddPattern("Pattern2", "E8 0A EC ? ? FF");
- *      
+ *
  *      long lTime;
  *      var result = Sigscan.FindPatterns(out lTime);
  *      var offset = result["Pattern1"];
- *      
+ *
  *  Find Patterns (Individual):
  *      long lTime;
  *      var offset = Sigscan.FindPattern("48 8D 0D ? ? ? ? E8 ? ? ? ? E8 ? ? ? ? 48 8B D6", out lTime);
- * 
+ *
  */
 
 using System;

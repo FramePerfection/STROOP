@@ -10,12 +10,12 @@ namespace STROOP.Tabs.MapTab.Renderers
 {
     public class TriangleRenderer : Renderer
     {
-
         class TransparentTriangleRenderer : TriangleRenderer, TransparencyRenderer.Transparent
         {
             TriangleRenderer parent;
 
             protected override int GetShader() => GraphicsUtil.GetShaderProgram("Resources/Shaders/Triangles.vert.glsl", "Resources/Shaders/DepthMask.frag.glsl", "Resources/Shaders/Triangles.geom.glsl");
+
             public TransparentTriangleRenderer(TriangleRenderer parent) : base()
             {
                 this.parent = parent;
@@ -74,16 +74,19 @@ namespace STROOP.Tabs.MapTab.Renderers
         List<Triangle> triangles = new List<Triangle>();
 
         int uniform_viewProjection, uniform_pixelsPerUnit, uniform_unitShift;
+
         protected virtual int GetShader() => GraphicsUtil.GetShaderProgram(
-                "Resources/Shaders/Triangles.vert.glsl",
-                "Resources/Shaders/Triangles.frag.glsl",
-                "Resources/Shaders/Triangles.geom.glsl");
+            "Resources/Shaders/Triangles.vert.glsl",
+            "Resources/Shaders/Triangles.frag.glsl",
+            "Resources/Shaders/Triangles.geom.glsl");
 
         TransparentTriangleRenderer transparentRenderer;
         public TransparencyRenderer.Transparent transparent => transparentRenderer;
         public MapGraphics.DrawLayers drawlayer = MapGraphics.DrawLayers.Geometry;
 
-        protected TriangleRenderer() { }
+        protected TriangleRenderer()
+        {
+        }
 
         public TriangleRenderer(int maxExpectedTriangles)
         {
@@ -138,6 +141,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                     GL.Enable(EnableCap.DepthTest);
                     GL.DepthFunc(DepthFunction.Lequal);
                 }
+
                 DrawTriangles(graphics, shader);
             });
         }
@@ -163,6 +167,7 @@ namespace STROOP.Tabs.MapTab.Renderers
 
         public void Add(Vector3 v1, Vector3 v2, Vector3 v3, bool showTriUnits, Vector4 color, Vector4 outlineColor, float outlineThickness, bool transparent) =>
             Add(v1, v2, v3, showTriUnits, color, outlineColor, new Vector3(outlineThickness), transparent);
+
         public void Add(Vector3 v1, Vector3 v2, Vector3 v3, bool showTriUnits, Vector4 color, Vector4 outlineColor, Vector3 outlineThickness, bool transparent) =>
             Add(v1, v2, v3, showTriUnits, color, color, color, outlineColor, outlineThickness, transparent);
 
@@ -203,9 +208,9 @@ namespace STROOP.Tabs.MapTab.Renderers
                         outlineThickness = instance.outlineThickness
                     }, ptr, false);
                     ptr = IntPtr.Add(ptr, TriangleVertex.Size);
-
                 }
             }
+
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr)(dataSize), dataPtr);
         }
     }

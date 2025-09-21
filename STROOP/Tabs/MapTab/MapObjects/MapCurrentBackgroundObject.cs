@@ -2,7 +2,9 @@
 {
     public class MapCurrentBackgroundObject : MapBackgroundObject
     {
-        public MapCurrentBackgroundObject() : base() { }
+        public MapCurrentBackgroundObject() : base()
+        {
+        }
 
         protected override BackgroundImage GetBackgroundImage() => currentMapTab.GetBackgroundImage();
 

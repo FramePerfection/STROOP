@@ -69,6 +69,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                                     Config.Stream.GetInt32(objAddress + 0xD8));
                         }
                     }
+
                     if (faceAngles.Count > 0)
                         this.cachedFaceAngles[globalTimer] = faceAngles;
 
@@ -81,19 +82,23 @@ namespace STROOP.Tabs.MapTab.DataUtil
                             if (filter != null && !filter(tri))
                                 continue;
                             if (loadedObjTriangles.Any(loaded =>
-                                loaded.p1 == tri.p1 &&
-                                loaded.p2 == tri.p2 &&
-                                loaded.p3 == tri.p3
-                            ))
+                                    loaded.p1 == tri.p1 &&
+                                    loaded.p2 == tri.p2 &&
+                                    loaded.p3 == tri.p3
+                                ))
                                 continue;
                             bufferedTris.Add(tri);
                         }
 
                     lastGlobalTimer = globalTimer;
                 }
-                catch { /*inconsistent game states can fail to read predictions*/ }
+                catch
+                {
+                    /*inconsistent game states can fail to read predictions*/
+                }
             }
         }
+
         public List<TriangleDataModel> GetTriangles() => bufferedTris;
 
         List<TriangleDataModel> ComputeNewTriangles(MapObject.PositionAngleProvider positionAngleProvider, uint gTimerMinus1)
@@ -138,6 +143,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 while ((readCollisionData = Config.Stream.GetInt16(collisionData)) != TERRAIN_LOAD_CONTINUE)
                     load_object_surfaces(triangleList, ref collisionData, vertexData);
             }
+
             return triangleList;
         }
 
@@ -229,8 +235,11 @@ namespace STROOP.Tabs.MapTab.DataUtil
         class VirtualTriangleDataModel : TriangleDataModel
         {
             static uint virtualTriangleAddrIndex = 1;
+
             public VirtualTriangleDataModel(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3)
-            : base(0xFF000000 | virtualTriangleAddrIndex++, x1, y1, z1, x2, y2, z2, x3, y3, z3) { }
+                : base(0xFF000000 | virtualTriangleAddrIndex++, x1, y1, z1, x2, y2, z2, x3, y3, z3)
+            {
+            }
         }
 
         /**
@@ -317,15 +326,19 @@ namespace STROOP.Tabs.MapTab.DataUtil
             // Go through all vertices, rotating and translating them to transform the object.
             while (numVertices-- > 0)
             {
-                vx = Config.Stream.GetInt16(dataPtr); dataPtr += collisionDataSize;
-                vy = Config.Stream.GetInt16(dataPtr); dataPtr += collisionDataSize;
-                vz = Config.Stream.GetInt16(dataPtr); dataPtr += collisionDataSize;
+                vx = Config.Stream.GetInt16(dataPtr);
+                dataPtr += collisionDataSize;
+                vy = Config.Stream.GetInt16(dataPtr);
+                dataPtr += collisionDataSize;
+                vz = Config.Stream.GetInt16(dataPtr);
+                dataPtr += collisionDataSize;
 
                 //! No bounds check on vertex data
                 result[i++] = (short)(vx * m.M11 + vy * m.M21 + vz * m.M31 + m.M41);
                 result[i++] = (short)(vx * m.M12 + vy * m.M22 + vz * m.M32 + m.M42);
                 result[i++] = (short)(vx * m.M13 + vy * m.M23 + vz * m.M33 + m.M43);
             }
+
             return result;
         }
 
@@ -347,25 +360,24 @@ namespace STROOP.Tabs.MapTab.DataUtil
             float sz = InGameTrigUtilities.InGameSine(rotate2);
             float cz = InGameTrigUtilities.InGameCosine(rotate2);
 
-            dest.M11/*[0][0]*/ = cy * cz + sx * sy * sz;
-            dest.M21/*[1][0]*/ = -cy * sz + sx * sy * cz;
-            dest.M31/*[2][0]*/ = cx * sy;
-            dest.M41/*[3][0]*/ = translate[0];
+            dest.M11 /*[0][0]*/ = cy * cz + sx * sy * sz;
+            dest.M21 /*[1][0]*/ = -cy * sz + sx * sy * cz;
+            dest.M31 /*[2][0]*/ = cx * sy;
+            dest.M41 /*[3][0]*/ = translate[0];
 
-            dest.M12/*[0][1]*/ = cx * sz;
-            dest.M22/*[1][1]*/ = cx * cz;
-            dest.M32/*[2][1]*/ = -sx;
-            dest.M42/*[3][1]*/ = translate[1];
+            dest.M12 /*[0][1]*/ = cx * sz;
+            dest.M22 /*[1][1]*/ = cx * cz;
+            dest.M32 /*[2][1]*/ = -sx;
+            dest.M42 /*[3][1]*/ = translate[1];
 
-            dest.M13/*[0][2]*/ = -sy * cz + sx * cy * sz;
-            dest.M23/*[1][2]*/ = sy * sz + sx * cy * cz;
-            dest.M33/*[2][2]*/ = cx * cy;
-            dest.M43/*[3][2]*/ = translate[2];
+            dest.M13 /*[0][2]*/ = -sy * cz + sx * cy * sz;
+            dest.M23 /*[1][2]*/ = sy * sz + sx * cy * cz;
+            dest.M33 /*[2][2]*/ = cx * cy;
+            dest.M43 /*[3][2]*/ = translate[2];
 
-            dest.M14/*[0][3]*/ = dest.M24/*[1][3]*/ = dest.M34/*[2][3]*/ = 0.0f;
-            dest.M44/*[3][3]*/ = 1.0f;
+            dest.M14 /*[0][3]*/ = dest.M24 /*[1][3]*/ = dest.M34 /*[2][3]*/ = 0.0f;
+            dest.M44 /*[3][3]*/ = 1.0f;
             return dest;
         }
     }
-
 }

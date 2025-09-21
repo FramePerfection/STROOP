@@ -7,6 +7,7 @@ namespace STROOP.Tabs.BruteforceTab
     {
         public Dictionary<string, JsonNode> values = new Dictionary<string, JsonNode>();
         public override object valueObject => values;
+
         public bool TryGetValue<T>(string key, out T result) where T : JsonNode
         {
             result = null;
@@ -15,6 +16,7 @@ namespace STROOP.Tabs.BruteforceTab
                 result = concreteResult;
                 return true;
             }
+
             return false;
         }
     }
@@ -44,7 +46,10 @@ namespace STROOP.Tabs.BruteforceTab
         public override object valueObject => value;
     }
 
-    public class JsonNodeNull : JsonNode { public override object valueObject => null; }
+    public class JsonNodeNull : JsonNode
+    {
+        public override object valueObject => null;
+    }
 
     public abstract class JsonNode
     {
@@ -100,7 +105,9 @@ namespace STROOP.Tabs.BruteforceTab
             {
                 char c = input[cursor++];
                 if (IsWhitespace(c))
-                { /*Do nothing*/ }
+                {
+                    /*Do nothing*/
+                }
                 else if (c == '-' || IsDigit(c))
                 {
                     for (; cursor < input.Length; ++cursor)
@@ -118,8 +125,9 @@ namespace STROOP.Tabs.BruteforceTab
                             goto ValidNumber;
                         }
                     }
+
                     throw new System.Exception("Expected '}' at end of input");
-                    ValidNumber:;
+                ValidNumber: ;
                 }
                 else if (c == '"')
                 {
@@ -148,6 +156,7 @@ namespace STROOP.Tabs.BruteforceTab
                         }
                     }
             }
+
             throw new System.Exception($"Unexpected end of input while parsing value:{System.Environment.NewLine}{input.Substring(start)}");
         }
 
@@ -164,7 +173,9 @@ namespace STROOP.Tabs.BruteforceTab
             {
                 c = input[cursor++];
                 if (IsWhitespace(c))
-                { /* Do nothing */ }
+                {
+                    /* Do nothing */
+                }
                 else if (c == '"')
                 {
                     if (identifier != null)
@@ -195,6 +206,7 @@ namespace STROOP.Tabs.BruteforceTab
                 else
                     throw new System.Exception($"Unexpected token {c} at cursor position {cursor}");
             }
+
             throw new System.Exception("Expected '}' at end of input");
         }
 
@@ -213,7 +225,9 @@ namespace STROOP.Tabs.BruteforceTab
                 if (c == ']')
                     return new JsonNodeArray { values = nodes.ToArray() };
                 else if (IsWhitespace(c))
-                { /* do nothing */ }
+                {
+                    /* do nothing */
+                }
                 else if (c == ']')
                     return new JsonNodeArray();
                 else
@@ -268,12 +282,14 @@ namespace STROOP.Tabs.BruteforceTab
                                 cursor += 4;
                                 break;
                         }
+
                         break;
                     default:
                         builder.Append(c);
                         break;
                 }
             }
+
             throw new System.Exception($"Unexpected end of string starting at {start}");
         }
     }

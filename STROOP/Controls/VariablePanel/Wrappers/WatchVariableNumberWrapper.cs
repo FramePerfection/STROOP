@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -18,55 +17,56 @@ namespace STROOP.Controls.VariablePanel
             };
 
         public static readonly WatchVariableSetting RoundToSetting = new WatchVariableSetting(
-                "Round To",
-                (ctrl, obj) =>
-                {
-                    if (ctrl.WatchVarWrapper is WatchVariableNumberWrapper<TNumber> num)
-                        if (obj is bool doRounding && doRounding == false)
-                            num._roundingLimit = -1;
-                        else if (obj is int roundingLimit)
-                            num._roundingLimit = roundingLimit;
-                        else if (obj == null)
-                            num._roundingLimit = num._defaultRoundingLimit;
-                        else
-                            return false;
+            "Round To",
+            (ctrl, obj) =>
+            {
+                if (ctrl.WatchVarWrapper is WatchVariableNumberWrapper<TNumber> num)
+                    if (obj is bool doRounding && doRounding == false)
+                        num._roundingLimit = -1;
+                    else if (obj is int roundingLimit)
+                        num._roundingLimit = roundingLimit;
+                    else if (obj == null)
+                        num._roundingLimit = num._defaultRoundingLimit;
                     else
                         return false;
-                    return true;
-                },
-                ((Func<(string, Func<object>, Func<WatchVariableControl, bool>)[]>)(() =>
+                else
+                    return false;
+                return true;
+            },
+            ((Func<(string, Func<object>, Func<WatchVariableControl, bool>)[]>)(() =>
+            {
+                var lst = new List<(string, Func<object>, Func<WatchVariableControl, bool>)>();
+                lst.Add(("Default", () => null, WrapperProperty(wr => wr._roundingLimit == wr._defaultRoundingLimit)));
+                lst.Add(("No Rounding", () => false, WrapperProperty(wr => wr._roundingLimit == -1)));
+                for (int i = 0; i < 10; i++)
                 {
-                    var lst = new List<(string, Func<object>, Func<WatchVariableControl, bool>)>();
-                    lst.Add(("Default", () => null, WrapperProperty(wr => wr._roundingLimit == wr._defaultRoundingLimit)));
-                    lst.Add(("No Rounding", () => false, WrapperProperty(wr => wr._roundingLimit == -1)));
-                    for (int i = 0; i < 10; i++)
-                    {
-                        var c = i;
-                        lst.Add(($"{i} double places", () => c, WrapperProperty(wr => wr._roundingLimit == c)));
-                    }
-                    return lst.ToArray();
-                }))()
-                );
+                    var c = i;
+                    lst.Add(($"{i} double places", () => c, WrapperProperty(wr => wr._roundingLimit == c)));
+                }
+
+                return lst.ToArray();
+            }))()
+        );
 
         public static readonly WatchVariableSetting DisplayAsHexSetting = new WatchVariableSetting(
-                "Display as Hex",
-                (ctrl, obj) =>
-                {
-                    if (ctrl.WatchVarWrapper is WatchVariableNumberWrapper<TNumber> num)
-                        if (obj is bool doHexDisplay)
-                            num.displayAsHex = doHexDisplay;
-                        else if (obj == null)
-                            num.displayAsHex = num._defaultDisplayAsHex;
-                        else
-                            return false;
+            "Display as Hex",
+            (ctrl, obj) =>
+            {
+                if (ctrl.WatchVarWrapper is WatchVariableNumberWrapper<TNumber> num)
+                    if (obj is bool doHexDisplay)
+                        num.displayAsHex = doHexDisplay;
+                    else if (obj == null)
+                        num.displayAsHex = num._defaultDisplayAsHex;
                     else
                         return false;
-                    return true;
-                },
-                ("Default", () => null, WrapperProperty(wr => wr._displayAsHex == wr._defaultDisplayAsHex)),
-                ("Hex", () => true, WrapperProperty(wr => wr._displayAsHex)),
-                ("double", () => false, WrapperProperty(wr => !wr._displayAsHex))
-            );
+                else
+                    return false;
+                return true;
+            },
+            ("Default", () => null, WrapperProperty(wr => wr._displayAsHex == wr._defaultDisplayAsHex)),
+            ("Hex", () => true, WrapperProperty(wr => wr._displayAsHex)),
+            ("double", () => false, WrapperProperty(wr => !wr._displayAsHex))
+        );
 
         protected const int DEFAULT_ROUNDING_LIMIT = 3;
         protected const bool DEFAULT_DISPLAY_AS_HEX = false;
@@ -98,8 +98,8 @@ namespace STROOP.Controls.VariablePanel
 
             _defaultDisplayAsHex =
                 bool.TryParse(watchVarControl.view.GetValueByKey(NamedVariableCollection.ViewProperties.useHex), out var viewSetting)
-                ? viewSetting
-                : DEFAULT_DISPLAY_AS_HEX;
+                    ? viewSetting
+                    : DEFAULT_DISPLAY_AS_HEX;
             displayAsHex = _displayAsHex = _defaultDisplayAsHex;
 
             AddNumberContextMenuStripItems();
@@ -129,6 +129,7 @@ namespace STROOP.Controls.VariablePanel
                 string digitsString = roundingLimit?.ToString() ?? "";
                 return value.ToString("E" + digitsString);
             }
+
             return roundedValue.ToString();
         }
 

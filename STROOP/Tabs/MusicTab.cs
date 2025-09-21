@@ -43,6 +43,7 @@ namespace STROOP.Tabs
                 uint address = (uint)(baseAddress + intValue * size);
                 return Config.Stream.GetUInt32(address);
             }
+
             return null;
         }
 

@@ -17,6 +17,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             public float x, y, z, angle;
             public Lazy<Image> tex;
+
             public DataPoint(float x, float y, float z, float angle, Lazy<Image> tex)
             {
                 this.x = x;
@@ -28,7 +29,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
         }
 
         private DateTime _showEachPointStartTime = DateTime.MinValue;
-        uint numFramesToShow = 1; uint firstRecord;
+        uint numFramesToShow = 1;
+        uint firstRecord;
         Dictionary<uint, List<DataPoint>> dataByFrame = new Dictionary<uint, List<DataPoint>>();
 
         public MapPreviousPositionsObject()
@@ -79,7 +81,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public List<DataPoint> GetData()
         {
-            Lazy<Image>[] marioImages = new[] {
+            Lazy<Image>[] marioImages = new[]
+            {
                 Config.ObjectAssociations.PinkMarioMapImage,
                 Config.ObjectAssociations.YellowMarioMapImage,
                 Config.ObjectAssociations.PurpleMarioMapImage,
@@ -100,7 +103,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             uint globalTimer = Config.Stream.GetUInt32(MiscConfig.GlobalTimerAddress);
 
-            var qsData = new(float qsX, float qsY, float qsZ, ushort qsA)[7 + 4 * 4];
+            var qsData = new (float qsX, float qsY, float qsZ, ushort qsA)[7 + 4 * 4];
             for (int i = 0; i < qsData.Length; i++)
                 qsData[i] = (
                     Config.Stream.GetSingle((uint)(READ_INITIAL_OFFSET + 0x10 * i)),
@@ -160,10 +163,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             var _contextMenuStrip = base.GetContextMenuStrip(targetTracker);
             ToolStripMenuItem itemShowEachPoint = new ToolStripMenuItem("Show Each Point");
-            itemShowEachPoint.Click += (sender, e) =>
-            {
-                _showEachPointStartTime = DateTime.Now;
-            };
+            itemShowEachPoint.Click += (sender, e) => { _showEachPointStartTime = DateTime.Now; };
 
             ToolStripMenuItem itemSetNumFrames = new ToolStripMenuItem("Set Number of Frames");
             itemSetNumFrames.Click += (sender, e) =>
@@ -172,7 +172,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 uint? numFramesNullable = ParsingUtilities.ParseUIntNullable(text);
                 if (!numFramesNullable.HasValue) return;
                 numFramesToShow = numFramesNullable.Value;
-
             };
 
             _contextMenuStrip = new ContextMenuStrip();

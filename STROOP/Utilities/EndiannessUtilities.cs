@@ -56,7 +56,7 @@ namespace STROOP.Utilities
             // Be sure the bytes fit in the remaining section and do go past the 4-byte alignment
             return (bytesToAlignment < dataSize);
         }
-        
+
         public static bool AddressIsMisaligned(UIntPtr address)
         {
             return (address.ToUInt64() & 0x03) != 0;
@@ -68,6 +68,7 @@ namespace STROOP.Utilities
         }
 
         static readonly byte[] _bytesToAlignment = new byte[] { 0x00, 0x03, 0x02, 0x01 };
+
         public static int NumberOfBytesToAlignment(UIntPtr address)
         {
             return _bytesToAlignment[address.ToUInt64() & 0x03];
@@ -114,6 +115,7 @@ namespace STROOP.Utilities
                 result[i + 2]   = bytes[i + 1];
                 result[i + 3]   = bytes[i];
             }
+
             return result;
         }
     }

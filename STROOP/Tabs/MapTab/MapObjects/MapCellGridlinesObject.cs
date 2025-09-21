@@ -28,11 +28,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 vertices.Add(new Vector3(x, marioY, - 8192));
                 vertices.Add(new Vector3(x, marioY, 8192));
             }
+
             for (int z = -8192; z <= 8192; z += 1024)
             {
                 vertices.Add(new Vector3(-8192, marioY, z));
                 vertices.Add(new Vector3(8192, marioY, z));
             }
+
             return vertices;
         }
 
@@ -41,6 +43,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
             return "Cell Gridlines";
         }
 
-        public override Lazy<Image> GetInternalImage() =>Config.ObjectAssociations.CellGridlinesImage;
+        public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.CellGridlinesImage;
     }
 }

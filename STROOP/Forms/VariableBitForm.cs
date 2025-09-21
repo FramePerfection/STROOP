@@ -48,6 +48,7 @@ namespace STROOP.Forms
             {
                 _bytes.Add(new ByteModel(_memoryDescriptor.ByteCount.Value - 1 - i, 0, _dataGridViewBits, this));
             }
+
             _dataGridViewBits.DataSource = _bytes;
             _dataGridViewBits.CellContentClick += (sender, e) =>
                 _dataGridViewBits.CommitEdit(new DataGridViewDataErrorContexts());
@@ -83,8 +84,8 @@ namespace STROOP.Forms
                     _memoryDescriptor.UseAbsoluteAddressing,
                     _memoryDescriptor.Mask,
                     _memoryDescriptor.Shift
-                    )
-                ).ToList();
+                )
+            ).ToList();
             if (values.Count == 0) return;
             object value = values[0];
             if (!TypeUtilities.IsNumber(value))

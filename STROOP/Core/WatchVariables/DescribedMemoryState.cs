@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 
 namespace STROOP.Core.Variables
 {
-
     public class DescribedMemoryState
     {
         public readonly MemoryDescriptor descriptor;
@@ -98,10 +96,10 @@ namespace STROOP.Core.Variables
                 else if (v != firstLockValue)
                     return System.Windows.Forms.CheckState.Indeterminate;
             }
+
             if (!firstLockValue.HasValue)
                 return System.Windows.Forms.CheckState.Unchecked;
             return firstLockValue.Value ? System.Windows.Forms.CheckState.Checked : System.Windows.Forms.CheckState.Unchecked;
         }
-
     }
 }

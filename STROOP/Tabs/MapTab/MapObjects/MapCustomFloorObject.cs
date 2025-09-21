@@ -12,7 +12,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         private readonly List<uint> _triAddressList;
 
-        protected MapCustomFloorObject(List<uint> triAddressList) : this(triAddressList, null) { }
+        protected MapCustomFloorObject(List<uint> triAddressList) : this(triAddressList, null)
+        {
+        }
 
         protected MapCustomFloorObject(List<uint> triAddressList, ObjectCreateParams creationParameters)
             : base(creationParameters)

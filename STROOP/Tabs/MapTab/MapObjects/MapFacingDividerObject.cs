@@ -34,7 +34,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
                 lst.Add(new Vector3(x1, y, z1));
                 lst.Add(new Vector3(x2, y, z2));
-            };
+            }
+
+            ;
             return lst;
         }
 

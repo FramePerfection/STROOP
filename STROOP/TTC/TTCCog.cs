@@ -7,7 +7,7 @@ namespace STROOP.Ttc
 {
     /** A cog is the hexagon platform that spins about
         *  a vertical axis (i.e. changes its yaw).
-        *  
+        *
         *  A cog has a target angular velocity and a current angular velocity.
         *  On every frame, the current angular velocity moves 50 towards
         *  the target angular velocity. Then the cog's angle changes
@@ -17,7 +17,6 @@ namespace STROOP.Ttc
         */
     public class TtcCog : TtcObject
     {
-
         public int _angle;
         public int _currentAngularVelocity;
         public int _targetAngularVelocity;
@@ -67,8 +66,8 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _angle + SEPARATOR +
-                    _currentAngularVelocity + SEPARATOR +
-                    _targetAngularVelocity + CLOSER;
+                   _currentAngularVelocity + SEPARATOR +
+                   _targetAngularVelocity + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -88,5 +87,4 @@ namespace STROOP.Ttc
             return new TtcCog(rng, _angle, _currentAngularVelocity, _targetAngularVelocity);
         }
     }
-
 }

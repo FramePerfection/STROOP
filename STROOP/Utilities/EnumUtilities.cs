@@ -13,6 +13,7 @@ namespace STROOP.Utilities
             {
                 list.Add((T)obj);
             }
+
             return list;
         }
 

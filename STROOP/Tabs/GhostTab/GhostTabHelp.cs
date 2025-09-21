@@ -9,8 +9,8 @@ namespace STROOP.Tabs.GhostTab
             Forms.InfoForm frm = new Forms.InfoForm();
             frm.Size = new System.Drawing.Size(850, 250);
             frm.SetText("Ghost Help",
-                        "How to record ghosts",
-@"To record a ghost use the 'recordghost.lua' script.
+                "How to record ghosts",
+                @"To record a ghost use the 'recordghost.lua' script.
 This script should be located next to your STROOP executable. (You can move it to a different location though.)
 When you press 'Start', a new recording will begin at the current frame.
 Hitting 'Stop' will save the ghost to 'tmp.ghost' at the location of the script file.
@@ -24,8 +24,8 @@ You can also use a File Watcher to automatically load in the last recorded ghost
             Forms.InfoForm frm = new Forms.InfoForm();
             frm.Size = new System.Drawing.Size(900, 500);
             frm.SetText("Ghost Help",
-                        "How to play ghosts back",
-@"To play back a ghost, you must first enable the ghost hack.
+                "How to play ghosts back",
+                @"To play back a ghost, you must first enable the ghost hack.
 If no ghost recording is currently selected, STROOP will instead inject a ghost that will hover around Mario.
 This way you can see if the hack is enabled and working correctly.
 
@@ -49,8 +49,8 @@ Always make sure your runs work from a clean savestate.
             Forms.InfoForm frm = new Forms.InfoForm();
             frm.Size = new System.Drawing.Size(900, 400);
             frm.SetText("Ghost Help",
-                        "Notes",
-@"The ghost hack works on the US and JP versions of Super Mario 64 (and therefore also on numerous ROM hacks).
+                "Notes",
+                @"The ghost hack works on the US and JP versions of Super Mario 64 (and therefore also on numerous ROM hacks).
 It works best when mupen is set to ""Pure Interpreter"" mode to apply code changes immediately.
 If you are not on ""Pure Interpreter"", follow the steps displayed under the ""Enable Ghost Hack"" button exactly and it should still work.
 
@@ -74,8 +74,8 @@ The displayed cap state of the ghost is not representative of its actual cap sta
             Forms.InfoForm frm = new Forms.InfoForm();
             frm.Size = new System.Drawing.Size(1050, 330);
             frm.SetText("Ghost Help",
-                        "Moving and expanding the GFX Pool",
-@"You can move the game's GFX pools to a custom location in RAM and assign a custom size to them to allow for more graphics to be rendered.
+                "Moving and expanding the GFX Pool",
+                @"You can move the game's GFX pools to a custom location in RAM and assign a custom size to them to allow for more graphics to be rendered.
 This can enable you to render a lot of ghosts at once, since the original GFX Pool usually overflows at ~15 to ~18 ghosts.
 
 Unless you are on Pure Interpreter, you will need to savestate and loadstate after moving the GFX pool for the first time.
@@ -85,7 +85,7 @@ It is recommended to make a backup savestate before moving the GFX Pool.
 
 If you move the GFX pools more than once and the game has rendered in-between, you may get a warning about overriding non-zero data.
 You can usually safely ignore this warning then, although at this point it won't be able to distinguish GFX data from other data."
-);
+            );
             frm.ShowDialog();
         }
 
@@ -94,8 +94,8 @@ You can usually safely ignore this warning then, although at this point it won't
             Forms.InfoForm frm = new Forms.InfoForm();
             frm.Size = new System.Drawing.Size(700, 300);
             frm.SetText("Ghost Help",
-                        "Using the file watch list",
-@"You can let STROOP automatically detect when 'recordghost.lua' saves a new ghost recording.
+                "Using the file watch list",
+                @"You can let STROOP automatically detect when 'recordghost.lua' saves a new ghost recording.
 To do so, click the 'Edit File Watch List' button, then hit 'Add...' and navigate to wherever you have located your 'recordghost.lua' file and select it.
 
 You can add as many instances of the script as you please. The information for paths will be stored in 'Config/Config.xml'

@@ -6,7 +6,7 @@ namespace STROOP.Ttc
     /** A pusher is rectangular prism that extends from and
      *  retracts into the wall. They are referred to as
      *  "moving bars" in the star Timed Jumps on Moving Bars.
-     *  
+     *
      *  A pusher beings flush with the wall (i.e. its outer surface
      *  is flush with the wall). It waits in this state for some
      *  amount of time, dictated by RNG. Then it retracts deeper
@@ -19,7 +19,6 @@ namespace STROOP.Ttc
      */
     public class TtcPusher : TtcObject
     {
-
         public int _timerMax;
         public int _countdown;
         public int _state; //0 = flush with wall, 1 = retracted, 2 = extending, 3 = retracting
@@ -51,7 +50,8 @@ namespace STROOP.Ttc
         public override void Update()
         {
             if (_state == 0)
-            { //flush with wall
+            {
+                //flush with wall
                 if (_timer <= _timerMax)
                 {
                     _timer++;
@@ -80,61 +80,75 @@ namespace STROOP.Ttc
                 }
             }
             else if (_state == 1)
-            { //retracted
+            {
+                //retracted
                 if (_timer < 10)
-                { //waiting
+                {
+                    //waiting
                     _timer++;
                 }
                 else
                 {
                     if (_countdown > 0)
-                    { //moving back in
+                    {
+                        //moving back in
                         _countdown--;
                         _timer++;
                     }
                     else
-                    { //moving back in
+                    {
+                        //moving back in
                         _state = 2;
                         _timer = 0;
                     }
                 }
             }
             else if (_state == 2)
-            { //extending
+            {
+                //extending
                 if (_timer == 0)
-                { //wait one frame
+                {
+                    //wait one frame
                     _timer++;
                 }
                 else if (_timer == 1)
-                { //either extend out or fake it
+                {
+                    //either extend out or fake it
                     if (PollRNG() % 4 == 0)
-                    { //fake extend
+                    {
+                        //fake extend
                         _state = 0;
                         _timer = 0;
                     }
                     else
-                    { //actually extend
+                    {
+                        //actually extend
                         _timer++;
                     }
                 }
                 else if (_timer < 36)
-                { //continue extending out
+                {
+                    //continue extending out
                     _timer++;
                 }
                 else
-                { //finished extending out
+                {
+                    //finished extending out
                     _state = 3;
                     _timer = 0;
                 }
             }
             else
-            { //retracting
+            {
+                //retracting
                 if (_timer < 82)
-                { //still retracting
+                {
+                    //still retracting
                     _timer++;
                 }
                 else
-                { //finished retracting
+                {
+                    //finished retracting
                     _state = 0;
                     _timer = 0;
                 }
@@ -144,9 +158,9 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _timerMax + SEPARATOR +
-                          _countdown + SEPARATOR +
-                          _state + SEPARATOR +
-                          _timer + CLOSER;
+                   _countdown + SEPARATOR +
+                   _state + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -177,5 +191,4 @@ namespace STROOP.Ttc
             return new TtcPusher(rng, _timerMax, _countdown, _state, _timer);
         }
     }
-
 }

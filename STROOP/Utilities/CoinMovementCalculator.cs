@@ -46,6 +46,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             Config.Print("END");
         }
 
@@ -72,13 +73,19 @@ namespace STROOP.Utilities
                         numCoinsPassingThroughFloor++;
                     }
                 }
+
                 prevStates = states;
             }
 
             return numCoinsPassingThroughFloor;
         }
 
-        public enum FloorRelativity { ABOVE, INSIDE, BELOW };
+        public enum FloorRelativity
+        {
+            ABOVE,
+            INSIDE,
+            BELOW
+        };
 
         public static List<CoinState> GetCoinStates(int rngIndex, float x, float y, float z)
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 
@@ -21,10 +20,11 @@ namespace STROOP.Tabs.BruteforceTab.BF_Utilities
                     options.Add(($"QS {i_cap + 1} wall2", () => (byte)(i_cap * 4 + 2)));
                     options.Add(($"QS {i_cap + 1} final", () => (byte)(i_cap * 4 + 3)));
                 }
+
                 view._setterFunction(4 * 4 - 1);
             }
-
         }
+
         public static readonly Dictionary<string, Type> fallbackWrapperTypes = new Dictionary<string, Type>()
         {
             ["u32"] = typeof(WatchVariableNumberWrapper<uint>),
@@ -67,12 +67,12 @@ namespace STROOP.Tabs.BruteforceTab.BF_Utilities
             }
             catch (Exception)
             {
-
             }
+
             return (IBruteforceVariableView)typeof(BruteforceVariableView<>)
-                        .MakeGenericType(backingType)
-                        .GetConstructor(new[] { typeof(string), typeof(string), backingType })
-                        .Invoke(new object[] { bruteforcerType, name, defaultValue ?? DefaultFunc.MakeGenericMethod(backingType).Invoke(null, Array.Empty<object>()) });
+                .MakeGenericType(backingType)
+                .GetConstructor(new[] { typeof(string), typeof(string), backingType })
+                .Invoke(new object[] { bruteforcerType, name, defaultValue ?? DefaultFunc.MakeGenericMethod(backingType).Invoke(null, Array.Empty<object>()) });
         }
 
         private static T Default<T>() => default(T);

@@ -29,7 +29,7 @@ namespace STROOP.Utilities
             int index = MoreMath.Clamp(numRngUsages.Value, 0, ObjectSlotsConfig.RngUsageColors.Count - 1);
             return ObjectSlotsConfig.RngUsageColors[index];
         }
-        
+
         public static int GetNumRngUsages()
         {
             int numRngUsages = 0;
@@ -38,6 +38,7 @@ namespace STROOP.Utilities
                 uint memoryOffset = (uint)i * 4;
                 numRngUsages += Config.Stream.GetInt32(0x803678A0 + memoryOffset);
             }
+
             return numRngUsages;
         }
     }

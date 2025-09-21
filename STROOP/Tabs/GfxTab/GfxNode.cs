@@ -11,7 +11,12 @@ namespace STROOP.Tabs.GfxTab
     public class GfxNode
     {
         private const int _maxSiblings = 1000; //Siblings are stored as a circular list. This limit prevent infinite loops on malformed memory.
-        public virtual string Name { get { return "GFX node"; } } //This name is overridden by all the sub classes corresponding 
+
+        public virtual string Name
+        {
+            get { return "GFX node"; }
+        } //This name is overridden by all the sub classes corresponding 
+
         public uint Address;
         public List<GfxNode> Children;
 
@@ -51,6 +56,7 @@ namespace STROOP.Tabs.GfxTab
                 case 0x12E: res = new GfxHeldObject(); break;
                 default: res = new GfxNode(); break;
             }
+
             res.Address = address;
             res.Children = new List<GfxNode>();
 
@@ -144,6 +150,7 @@ namespace STROOP.Tabs.GfxTab
                 uint address = RomVersionConfig.SwitchMap(addressUS, addressJP);
                 if (address == functionAddress) return functionName;
             }
+
             return null;
         }
 
@@ -168,7 +175,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxBackgroundImage : GfxNode
     {
-        public override string Name { get { return "Background image"; } }
+        public override string Name
+        {
+            get { return "Background image"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             var precursors = new List<NamedVariableCollection.IView>();
@@ -179,7 +190,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxHeldObject : GfxNode
     {
-        public override string Name { get { return "Held object"; } }
+        public override string Name
+        {
+            get { return "Held object"; }
+        }
+
         //function gfxFunction  0x14
         //int marioOffset  0x18        memory offset from marioData to check
         //void* heldObj      0x1c        another struct
@@ -225,6 +240,7 @@ namespace STROOP.Tabs.GfxTab
                 uint address = RomVersionConfig.SwitchMap(addressUS, addressJP);
                 if (address == functionAddress) return functionName;
             }
+
             return null;
         }
 
@@ -250,7 +266,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxCamera : GfxNode
     {
-        public override string Name { get { return "Camera"; } }
+        public override string Name
+        {
+            get { return "Camera"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -267,7 +287,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxProjection3D : GfxNode
     {
-        public override string Name { get { return "Projection 3D"; } }
+        public override string Name
+        {
+            get { return "Projection 3D"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -281,7 +305,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxObjectParent : GfxNode
     {
-        public override string Name { get { return "Object parent"; } }
+        public override string Name
+        {
+            get { return "Object parent"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -292,7 +320,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxShadowNode : GfxNode
     {
-        public override string Name { get { return "Shadow"; } }
+        public override string Name
+        {
+            get { return "Shadow"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -305,7 +337,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxScalingNode : GfxNode
     {
-        public override string Name { get { return "Scaling node"; } }
+        public override string Name
+        {
+            get { return "Scaling node"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -317,12 +353,19 @@ namespace STROOP.Tabs.GfxTab
     //For example Goomba body
     internal class GfxBillboard : GfxNode
     {
-        public override string Name { get { return "Billboard"; } }
+        public override string Name
+        {
+            get { return "Billboard"; }
+        }
     }
 
     internal class GfxAnimationNode : GfxNode
     {
-        public override string Name { get { return "Animated node"; } }
+        public override string Name
+        {
+            get { return "Animated node"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -336,7 +379,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxGameObject : GfxNode
     {
-        public override string Name { get { return "Game object"; } }
+        public override string Name
+        {
+            get { return "Game object"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -347,7 +394,10 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxRotationNode : GfxNode
     {
-        public override string Name { get { return "Rotation"; } }
+        public override string Name
+        {
+            get { return "Rotation"; }
+        }
 
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
@@ -363,7 +413,11 @@ namespace STROOP.Tabs.GfxTab
     // This is used to draw the "S U P E R M A R I O" in debug level select
     internal class GfxTranslatedModel : GfxNode
     {
-        public override string Name { get { return "Menu model"; } }
+        public override string Name
+        {
+            get { return "Menu model"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -377,7 +431,10 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxDebugTransformation : GfxNode
     {
-        public override string Name { get { return "Debug transformation"; } }
+        public override string Name
+        {
+            get { return "Debug transformation"; }
+        }
 
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
@@ -394,7 +451,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxLevelOfDetail : GfxNode
     {
-        public override string Name { get { return "Level of detail"; } }
+        public override string Name
+        {
+            get { return "Level of detail"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             var precursors = new List<NamedVariableCollection.IView>();
@@ -408,7 +469,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxMasterList : GfxNode
     {
-        public override string Name { get { return "Master list"; } }
+        public override string Name
+        {
+            get { return "Master list"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             var precursors = new List<NamedVariableCollection.IView>();
@@ -435,12 +500,19 @@ namespace STROOP.Tabs.GfxTab
     // Possibly some extra things?
     internal class GfxGroupParent : GfxNode
     {
-        public override string Name { get { return "Group"; } }
+        public override string Name
+        {
+            get { return "Group"; }
+        }
     }
 
     internal class GfxScreenSpace : GfxNode
     {
-        public override string Name { get { return "Screenspace"; } }
+        public override string Name
+        {
+            get { return "Screenspace"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             var precursors = new List<NamedVariableCollection.IView>();
@@ -452,7 +524,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxRootnode : GfxNode
     {
-        public override string Name { get { return "Root"; } }
+        public override string Name
+        {
+            get { return "Root"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
@@ -467,7 +543,11 @@ namespace STROOP.Tabs.GfxTab
 
     internal class GfxDisplayList : GfxNode
     {
-        public override string Name { get { return "Display List"; } }
+        public override string Name
+        {
+            get { return "Display List"; }
+        }
+
         public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
         {
             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();

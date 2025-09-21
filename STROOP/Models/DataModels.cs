@@ -10,7 +10,11 @@ namespace STROOP.Models
         public static CameraDataModel Camera { get; private set; }
         public static LevelDataModel Level { get; private set; }
         public static ObjectProcessorDataModel ObjectProcessor { get; private set; }
-        public static IReadOnlyList<ObjectDataModel> Objects { get => ObjectProcessor.Objects; }
+
+        public static IReadOnlyList<ObjectDataModel> Objects
+        {
+            get => ObjectProcessor.Objects;
+        }
 
         static DataModels()
         {

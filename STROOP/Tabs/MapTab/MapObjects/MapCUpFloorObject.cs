@@ -23,7 +23,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 .ConvertAll(tri => tri.Address);
         }
 
-        public MapCUpFloorObject() : base(GetCUpTriangleList()) { }
+        public MapCUpFloorObject() : base(GetCUpTriangleList())
+        {
+        }
 
         public override string GetName() => "C-Up Floor Tris";
 

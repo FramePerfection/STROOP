@@ -118,10 +118,12 @@ namespace STROOP.Forms
             {
                 text += (keyName + "\t" + valueName + "\r\n");
             }
+
             foreach (KeyValuePair<TKey, TValue> entry in dictionary)
             {
                 text += (entry.Key + "\t" + entry.Value + "\r\n");
             }
+
             textBoxTriangleInfo.Text = text;
         }
 

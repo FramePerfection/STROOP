@@ -26,6 +26,7 @@ namespace STROOP.Structs
                 int y = Config.Stream.GetInt16((uint)(waterAddress + baseOffset + i * waterStructSize + 0x08));
                 output.Add((y, xMin, xMax, zMin, zMax));
             }
+
             return output;
         }
 
@@ -43,6 +44,7 @@ namespace STROOP.Structs
                     return i + 1;
                 }
             }
+
             return 0;
         }
     }

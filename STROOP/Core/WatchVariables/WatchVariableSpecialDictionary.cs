@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using STROOP.Utilities;
 
 namespace STROOP.Core.Variables
@@ -33,10 +32,10 @@ namespace STROOP.Core.Variables
 
         public void Add<T>(string key, string baseAddressType, Func<uint, T> getter, Func<T, uint, bool> setter, Type wrapperType = null)
             => Add(key,
-                   () => WatchVariableUtilities.GetBaseAddresses(baseAddressType).Select(x => getter(x)),
-                   value => WatchVariableUtilities.GetBaseAddresses(baseAddressType).Select(x => setter(value, x)),
-                   wrapperType
-               );
+                () => WatchVariableUtilities.GetBaseAddresses(baseAddressType).Select(x => getter(x)),
+                value => WatchVariableUtilities.GetBaseAddresses(baseAddressType).Select(x => setter(value, x)),
+                wrapperType
+            );
 
         public void Add<T>(string key, Func<T> getter, NamedVariableCollection.SetterFunction<T> setter, Type wrapperType = null)
         {

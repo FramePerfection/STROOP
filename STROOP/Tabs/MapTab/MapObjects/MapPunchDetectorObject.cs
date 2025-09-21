@@ -9,7 +9,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("Punch Detector", "Misc")]
     public class MapPunchDetectorObject : MapCylinderObject
     {
-        public MapPunchDetectorObject() : base(null) { }
+        public MapPunchDetectorObject() : base(null)
+        {
+        }
 
         protected override List<(float centerX, float centerZ, float radius, float minY, float maxY)> Get3DDimensions()
         {

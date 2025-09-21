@@ -42,8 +42,8 @@ namespace STROOP.Structs
                 }
                 else
                 {
-                    fullScript = fullScript.Substring(0, startCommentIndex) 
-                        + fullScript.Substring(endCommentIndex + 2, fullScript.Length - (endCommentIndex + 2));
+                    fullScript = fullScript.Substring(0, startCommentIndex)
+                                 + fullScript.Substring(endCommentIndex + 2, fullScript.Length - (endCommentIndex + 2));
                 }
             }
 

@@ -6,7 +6,9 @@ namespace STROOP.Models
     public class LevelDataModel : IUpdatableDataModel
     {
         #region Properties
+
         private byte _index;
+
         public byte Index
         {
             get => _index;
@@ -18,6 +20,7 @@ namespace STROOP.Models
         }
 
         private byte _area;
+
         public byte Area
         {
             get => _area;
@@ -29,6 +32,7 @@ namespace STROOP.Models
         }
 
         private ushort _loadingPoint;
+
         public ushort LoadingPoint
         {
             get => _loadingPoint;
@@ -38,7 +42,9 @@ namespace STROOP.Models
                     _loadingPoint = value;
             }
         }
+
         private ushort _missionLayout;
+
         public ushort MissionLayout
         {
             get => _missionLayout;
@@ -48,6 +54,7 @@ namespace STROOP.Models
                     _missionLayout = value;
             }
         }
+
         #endregion
 
         public void Update()
@@ -59,6 +66,8 @@ namespace STROOP.Models
             _missionLayout = Config.Stream.GetUInt16(MiscConfig.MissionAddress);
         }
 
-        public void Update2() { }
+        public void Update2()
+        {
+        }
     }
 }

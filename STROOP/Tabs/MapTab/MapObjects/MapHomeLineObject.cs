@@ -29,6 +29,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 vertices.Add(new Vector3((float)_homePosAngle.X, (float)_homePosAngle.Y, (float)_homePosAngle.Z));
                 vertices.Add(new Vector3((float)_objPosAngle.X, (float)_objPosAngle.Y, (float)_objPosAngle.Z));
             }
+
             return vertices;
         }
 

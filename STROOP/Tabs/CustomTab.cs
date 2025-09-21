@@ -119,6 +119,7 @@ namespace STROOP.Tabs
                     int diff = currentTimer - _lastTimer.Value;
                     if (diff > 1) _numGaps += (diff - 1);
                 }
+
                 _lastTimer = currentTimer;
 
                 if (!alreadyContainsKey || recordEvenIfAlreadyHave)
@@ -131,6 +132,7 @@ namespace STROOP.Tabs
             {
                 labelCustomRecordingFrequencyValue.Text = "0";
             }
+
             textBoxRecordValuesCount.Text = _recordedValues.Count.ToString();
             labelCustomRecordingGapsValue.Text = _numGaps.ToString();
 

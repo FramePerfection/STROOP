@@ -11,6 +11,7 @@ namespace STROOP.Tabs.GhostTab
     {
         static XElement configNode;
         static HashSet<string> fileWatcherPaths = new HashSet<string>();
+
         [Utilities.InitializeConfigParser]
         static void InitConfigParser()
         {
@@ -39,10 +40,12 @@ namespace STROOP.Tabs.GhostTab
                 n.SetAttributeValue(XName.Get("path"), path);
                 configNode.Add(n);
             }
+
             configNode.Document.Save(Program.CONFIG_FILE_NAME);
         }
 
         Dictionary<string, FileSystemWatcher> activeFileWatchers = new Dictionary<string, FileSystemWatcher>();
+
         void UpdateFileWatchers()
         {
             foreach (var entry in activeFileWatchers)
@@ -83,7 +86,9 @@ namespace STROOP.Tabs.GhostTab
                                     groupBoxGhosts.Invoke((Action)(() => AddGhost($"{ghostName} {i++}", newGhost)));
                                     oldFileChangedDate = newFileChangedDate;
                                 }
-                                catch { }
+                                catch
+                                {
+                                }
                                 finally
                                 {
                                     rd?.Close();

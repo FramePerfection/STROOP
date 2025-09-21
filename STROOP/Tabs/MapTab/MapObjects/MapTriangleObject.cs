@@ -23,11 +23,17 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 this.parent = parent;
             }
 
-            public void DragTo(Vector3 position, bool setY) { }
+            public void DragTo(Vector3 position, bool setY)
+            {
+            }
 
-            public void SetLookAt(Vector3 lookAt) { }
+            public void SetLookAt(Vector3 lookAt)
+            {
+            }
 
-            public void LeftClick(Vector3 position) { }
+            public void LeftClick(Vector3 position)
+            {
+            }
 
             public void RightClick(Vector3 position)
             {
@@ -88,6 +94,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 if (defaultTriangle == 0) return null;
                 return new List<uint>() { defaultTriangle };
             }
+
             List<uint?> nullableUIntList = ParsingUtilities.ParseStringList(text)
                 .ConvertAll(word => ParsingUtilities.ParseHexNullable(word));
             if (nullableUIntList.Any(nullableUInt => !nullableUInt.HasValue))
@@ -163,6 +170,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     return hoverData;
                 }
             }
+
             return null;
         }
 
@@ -272,7 +280,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         Vector3[] baseVectors = baseDisplacement.faceVertices;
                         foreach (Vector3 displacement in GetVolumeDisplacements(tri))
                         {
-
                             for (int i = 0; i < baseVectors.Length; i++)
                             {
                                 if (i > 1)
@@ -325,28 +332,20 @@ namespace STROOP.Tabs.MapTab.MapObjects
             };
 
             ToolStripMenuItem itemClearWithinDist = new ToolStripMenuItem("Clear Within Dist");
-            itemClearWithinDist.Click += (sender, e) =>
-            {
-                _withinDist = null;
-            };
+            itemClearWithinDist.Click += (sender, e) => { _withinDist = null; };
 
             ToolStripMenuItem itemSetWithinCenter = new ToolStripMenuItem("Set Within Center");
             itemSetWithinCenter.Click += (sender, e) =>
             {
                 string text = DialogUtilities.GetStringFromDialog(labelText: "Enter the center y of the within-dist range.");
                 float? withinCenterNullable =
-                    text == "" ?
-                    Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) :
-                    ParsingUtilities.ParseFloatNullable(text);
+                    text == "" ? Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) : ParsingUtilities.ParseFloatNullable(text);
                 if (!withinCenterNullable.HasValue) return;
                 _withinCenter = withinCenterNullable.Value;
             };
 
             ToolStripMenuItem itemClearWithinCenter = new ToolStripMenuItem("Clear Within Center");
-            itemClearWithinCenter.Click += (sender, e) =>
-            {
-                _withinCenter = null;
-            };
+            itemClearWithinCenter.Click += (sender, e) => { _withinCenter = null; };
 
             ToolStripMenuItem itemSetProjectionColorMultiplier = new ToolStripMenuItem("Set Projection Alpha Multiplier");
             itemSetProjectionColorMultiplier.Click += (sender, e) =>
@@ -385,7 +384,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "ProjectionAlphaMultiplier", _projectionAlphaMultiplier.ToString());
                 SaveValueNode(node, "UseRandomColors", useRandomColors.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

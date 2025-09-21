@@ -9,8 +9,7 @@ namespace STROOP.Utilities
 {
     public static class ParsingUtilities
     {
-
-        public static bool TryParseNumber<T>(string value, out T result) where T: struct, IConvertible
+        public static bool TryParseNumber<T>(string value, out T result) where T : struct, IConvertible
         {
             {
                 if (value.IndexOf("0x") != -1 && ParsingUtilities.TryParseHex(value, out uint uintV))
@@ -26,6 +25,7 @@ namespace STROOP.Utilities
                     result = default(T);
                     return false;
                 }
+
                 return true;
             }
         }
@@ -42,20 +42,21 @@ namespace STROOP.Utilities
                 var trim = split.Substring(startIndex, split.IndexOf(')') - startIndex);
                 ts.Add(elementConverter(Array.ConvertAll(trim.Split(','), o => o.Trim())));
             }
+
             return ts;
         }
 
         public static string CreatePointList(List<(float x, float y , float z)> points) => StringUtilities.Concat(points, p => $"({p.x}, {p.y}, {p.z});");
 
-        public static List<(float, float, float)> ParsePointList(string input) => 
+        public static List<(float, float, float)> ParsePointList(string input) =>
             ParseTupleList(input, vals =>
-                {
-                    if (vals.Length == 2)
-                        return (float.Parse(vals[0]), 0, float.Parse(vals[1]));
-                    else if (vals.Length == 3)
-                        return (float.Parse(vals[0]), float.Parse(vals[1]), float.Parse(vals[2]));
-                    return (0, 0, 0);
-                });
+            {
+                if (vals.Length == 2)
+                    return (float.Parse(vals[0]), 0, float.Parse(vals[1]));
+                else if (vals.Length == 3)
+                    return (float.Parse(vals[0]), float.Parse(vals[1]), float.Parse(vals[2]));
+                return (0, 0, 0);
+            });
 
         public static bool TryParseHex(string obj, out uint result)
         {
@@ -90,6 +91,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -106,6 +108,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -122,6 +125,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -138,6 +142,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -154,6 +159,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -170,6 +176,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -186,6 +193,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -202,6 +210,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -220,6 +229,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -238,6 +248,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -254,6 +265,7 @@ namespace STROOP.Utilities
             {
                 return parsed;
             }
+
             return null;
         }
 
@@ -268,6 +280,7 @@ namespace STROOP.Utilities
             {
                 obj = ParseHexNullable(obj);
             }
+
             if (type == typeof(byte)) return ParseByteNullable(obj);
             if (type == typeof(sbyte)) return ParseSByteNullable(obj);
             if (type == typeof(short)) return ParseShortNullable(obj);
@@ -285,6 +298,7 @@ namespace STROOP.Utilities
             {
                 obj = ParseHexNullable(obj);
             }
+
             if (type == typeof(byte)) return ParseByteRoundingWrapping(obj);
             if (type == typeof(sbyte)) return ParseSByteRoundingWrapping(obj);
             if (type == typeof(short)) return ParseShortRoundingWrapping(obj);
@@ -302,6 +316,7 @@ namespace STROOP.Utilities
             {
                 return new List<string>();
             }
+
             if (replaceCharacters)
             {
                 text = text
@@ -312,10 +327,12 @@ namespace STROOP.Utilities
                     .Replace('(', ' ')
                     .Replace(')', ' ');
             }
+
             if (replaceComma)
             {
                 text = text.Replace(',', ' ');
             }
+
             text = text.Trim();
             text = Regex.Replace(text, @"\s+", " ");
             string[] stringArray = text.Split(' ');
@@ -328,6 +345,7 @@ namespace STROOP.Utilities
             {
                 return new List<List<string>>();
             }
+
             string[] linesArray = text.Split('\n');
             List<string> linesList = new List<string>(linesArray);
             List<List<string>> output = linesList.ConvertAll(line => ParseStringList(line));
@@ -437,7 +455,6 @@ namespace STROOP.Utilities
         }
 
 
-
         public static byte? ParseByteRoundingCapping(object value)
         {
             double? doubleValue = ParseDoubleNullable(value.ToString());
@@ -516,9 +533,9 @@ namespace STROOP.Utilities
             if (text == null) return false;
             string[] split = text.Split(';');
             return (split.Length == 3
-                && float.TryParse(split[0].Trim(), out value.X)
-                && float.TryParse(split[1].Trim(), out value.Y)
-                && float.TryParse(split[2].Trim(), out value.Z));
+                    && float.TryParse(split[0].Trim(), out value.X)
+                    && float.TryParse(split[1].Trim(), out value.Y)
+                    && float.TryParse(split[2].Trim(), out value.Z));
         }
 
         public static bool ParseByteString(string byteString, out byte[] result)
@@ -531,10 +548,10 @@ namespace STROOP.Utilities
             var bytes = new byte[byteString.Length / 2];
             for (int i = 0; i < bytes.Length; i++)
                 if (!byte.TryParse(
-                    byteString.Substring(i * 2, 2),
-                    NumberStyles.HexNumber,
-                    CultureInfo.InvariantCulture,
-                    out bytes[i]))
+                        byteString.Substring(i * 2, 2),
+                        NumberStyles.HexNumber,
+                        CultureInfo.InvariantCulture,
+                        out bytes[i]))
                     return false;
             result = bytes;
             return true;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Utilities;
@@ -10,41 +9,42 @@ namespace STROOP.Controls.VariablePanel
     public class WatchVariableAngleWrapper<TNumber> : WatchVariableNumberWrapper<TNumber> where TNumber : struct, IConvertible
     {
         public static readonly WatchVariableSetting DisplaySignedSetting = new WatchVariableSetting(
-                "Angle: Signed",
-                CreateBoolWithDefault<WatchVariableAngleWrapper<TNumber>>((wrapper, val) => wrapper._signed = val, wrapper => wrapper._defaultSigned),
-                ("Default", () => null, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._signed == wr._defaultSigned)),
-                ("Unsigned", () => false, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => !wr._signed)),
-                ("Signed", () => true, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._signed))
-            );
+            "Angle: Signed",
+            CreateBoolWithDefault<WatchVariableAngleWrapper<TNumber>>((wrapper, val) => wrapper._signed = val, wrapper => wrapper._defaultSigned),
+            ("Default", () => null, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._signed == wr._defaultSigned)),
+            ("Unsigned", () => false, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => !wr._signed)),
+            ("Signed", () => true, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._signed))
+        );
 
         public static readonly WatchVariableSetting AngleUnitTypeSetting = new WatchVariableSetting(
-                "Angle: Units",
-                (ctrl, obj) =>
-                {
-                    if (ctrl.WatchVarWrapper is WatchVariableAngleWrapper<TNumber> num)
-                        if (obj is AngleUnitType type)
-                            num._angleUnitType = type;
-                        else if (obj == null)
-                            num._angleUnitType = num._defaultAngleUnitType;
-                        else
-                            return false;
+            "Angle: Units",
+            (ctrl, obj) =>
+            {
+                if (ctrl.WatchVarWrapper is WatchVariableAngleWrapper<TNumber> num)
+                    if (obj is AngleUnitType type)
+                        num._angleUnitType = type;
+                    else if (obj == null)
+                        num._angleUnitType = num._defaultAngleUnitType;
                     else
                         return false;
-                    return true;
-                },
-                ((Func<(string, Func<object>, Func<WatchVariableControl, bool>)[]>)(() =>
+                else
+                    return false;
+                return true;
+            },
+            ((Func<(string, Func<object>, Func<WatchVariableControl, bool>)[]>)(() =>
+            {
+                var lst = new List<(string, Func<object>, Func<WatchVariableControl, bool>)>();
+                foreach (AngleUnitType angleUnitType in Enum.GetValues(typeof(AngleUnitType)))
                 {
-                    var lst = new List<(string, Func<object>, Func<WatchVariableControl, bool>)>();
-                    foreach (AngleUnitType angleUnitType in Enum.GetValues(typeof(AngleUnitType)))
-                    {
-                        string stringValue = angleUnitType.ToString();
-                        if (stringValue == AngleUnitType.InGameUnits.ToString()) stringValue = "In-Game Units";
-                        var value = angleUnitType;
-                        lst.Add((stringValue, () => angleUnitType, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._angleUnitType == angleUnitType)));
-                    }
-                    return lst.ToArray();
-                }))()
-            );
+                    string stringValue = angleUnitType.ToString();
+                    if (stringValue == AngleUnitType.InGameUnits.ToString()) stringValue = "In-Game Units";
+                    var value = angleUnitType;
+                    lst.Add((stringValue, () => angleUnitType, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._angleUnitType == angleUnitType)));
+                }
+
+                return lst.ToArray();
+            }))()
+        );
 
         public static readonly WatchVariableSetting TruncateToMultipleOf16Setting = new WatchVariableSetting(
             "Angle: Truncate to Multiple of 16",
@@ -52,7 +52,7 @@ namespace STROOP.Controls.VariablePanel
             ("Default", () => null, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._truncateToMultipleOf16 == wr._defaultTruncateToMultipleOf16)),
             ("Truncate to Multiple of 16", () => true, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._truncateToMultipleOf16)),
             ("Don't Truncate to Multiple of 16", () => false, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => !wr._truncateToMultipleOf16))
-            );
+        );
 
         public static readonly WatchVariableSetting ConstrainToOneRevolutionSetting = new WatchVariableSetting(
             "Angle: Constrain to One Revolution",
@@ -60,7 +60,7 @@ namespace STROOP.Controls.VariablePanel
             ("Default", () => null, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._constrainToOneRevolution == wr._defaultConstrainToOneRevolution)),
             ("Constrain to One Revolution", () => true, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._constrainToOneRevolution)),
             ("Don't Constrain to One Revolution", () => false, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => !wr._constrainToOneRevolution))
-            );
+        );
 
         public static readonly WatchVariableSetting ReverseSetting = new WatchVariableSetting(
             "Angle: Reverse",
@@ -68,7 +68,7 @@ namespace STROOP.Controls.VariablePanel
             ("Default", () => null, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._reverse == wr._defaultReverse)),
             ("Reverse", () => true, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => wr._reverse)),
             ("Don't Reverse", () => false, WrapperProperty<WatchVariableAngleWrapper<TNumber>>(wr => !wr._reverse))
-            );
+        );
 
         private readonly bool _defaultSigned;
         private bool _signed;
@@ -87,6 +87,7 @@ namespace STROOP.Controls.VariablePanel
 
         private readonly Type _baseType;
         private readonly Type _defaultEffectiveType;
+
         private Type _effectiveType
         {
             get
@@ -191,16 +192,19 @@ namespace STROOP.Controls.VariablePanel
                 {
                     doubleValue += 32768;
                 }
+
                 if (_truncateToMultipleOf16)
                 {
                     doubleValue = MoreMath.TruncateToMultipleOf16(doubleValue);
                 }
+
                 doubleValue = MoreMath.NormalizeAngleUsingType(doubleValue, _effectiveType);
                 doubleValue = (doubleValue / 65536) * GetAngleUnitTypeMaxValue();
 
                 result = (TNumber)Convert.ChangeType(doubleValue, typeof(TNumber));
                 return true;
             }
+
             return base.TryParseValue(value, out result);
         }
 

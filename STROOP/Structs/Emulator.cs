@@ -9,7 +9,7 @@ namespace STROOP.Structs
         public uint RamStart;
         public bool AllowAutoDetect;
         public string Dll;
-        public Type IOType; 
+        public Type IOType;
         public EndiannessType Endianness = EndiannessType.Little;
     }
 }

@@ -2,7 +2,6 @@
 {
     public static class ProcessGroupUtilities
     {
-
         public static string GetProcessGroupDescription(uint processGroup)
         {
             switch (processGroup)
@@ -33,6 +32,5 @@
                     return "Unknown";
             }
         }
-
     }
 }

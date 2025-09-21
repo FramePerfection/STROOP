@@ -229,6 +229,7 @@ namespace STROOP.Controls.VariablePanel
                                 _shownWatchVarControls.Add(ding);
                             lastSelectedEntry = -1;
                         }
+
                         _reorderingWatchVarControls.Clear();
                         return;
                     }

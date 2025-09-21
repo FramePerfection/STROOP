@@ -32,6 +32,7 @@ namespace STROOP.Utilities
             {
                 if (values[i] < min) min = values[i];
             }
+
             return min;
         }
 
@@ -43,6 +44,7 @@ namespace STROOP.Utilities
             {
                 if (values[i] > max) max = values[i];
             }
+
             return max;
         }
 
@@ -54,6 +56,7 @@ namespace STROOP.Utilities
             {
                 if (values[i] < min) min = values[i];
             }
+
             return min;
         }
 
@@ -65,6 +68,7 @@ namespace STROOP.Utilities
             {
                 if (values[i] > max) max = values[i];
             }
+
             return max;
         }
 
@@ -76,6 +80,7 @@ namespace STROOP.Utilities
             {
                 sum += values[i];
             }
+
             return sum / values.Length;
         }
 
@@ -380,6 +385,7 @@ namespace STROOP.Utilities
             {
                 angleShort = (short)angleUshort;
             }
+
             return angleShort;
         }
 
@@ -750,6 +756,7 @@ namespace STROOP.Utilities
                 effectiveX *= 64 / hypotenuse;
                 effectiveY *= 64 / hypotenuse;
             }
+
             return (effectiveX, effectiveY);
         }
 
@@ -808,6 +815,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             return (bestX, bestY);
         }
 
@@ -874,9 +882,7 @@ namespace STROOP.Utilities
                 positiveB = true;
             }
 
-            double ratio = useX ?
-                    Math.Cos(goalMarioAngleRadians) / Math.Sin(goalMarioAngleRadians) :
-                    Math.Sin(goalMarioAngleRadians) / Math.Cos(goalMarioAngleRadians);
+            double ratio = useX ? Math.Cos(goalMarioAngleRadians) / Math.Sin(goalMarioAngleRadians) : Math.Sin(goalMarioAngleRadians) / Math.Cos(goalMarioAngleRadians);
             double ratioAbs = Math.Abs(ratio);
             int max = positiveA ? 121 : 122;
 
@@ -945,6 +951,7 @@ namespace STROOP.Utilities
                 bool bitBool = bitChar == "1";
                 if (bitBool) byteValue = (byte)(byteValue | (1 << i));
             }
+
             int exponent = byteValue - 127;
             return exponent;
         }
@@ -962,6 +969,7 @@ namespace STROOP.Utilities
                 bool bitBool = bitChar == "1";
                 if (bitBool) sum += multiplier;
             }
+
             return sum;
         }
 
@@ -980,6 +988,7 @@ namespace STROOP.Utilities
                 bool bit = (b & (1 << i)) != 0;
                 builder.Append(bit ? "1" : "0");
             }
+
             return builder.ToString();
         }
 
@@ -1034,6 +1043,7 @@ namespace STROOP.Utilities
             {
                 value = num > 0 ? GetNextFloat(value) : GetPreviousFloat(value);
             }
+
             return value;
         }
 

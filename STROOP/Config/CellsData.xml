@@ -28,7 +28,7 @@
   <Data type="byte" offset="0x04" base="CellsTriangle" subclass="Boolean" mask="0x01">Belongs to Object</Data>
   <Data type="byte" offset="0x04" base="CellsTriangle" subclass="Boolean" mask="0x02">No Cam Collision</Data>
   <Data type="byte" offset="0x05" base="CellsTriangle">Room</Data>
-  
+
   <Data base="CellsTriangle" specialType="TriangleExertion" subclass="Boolean">Exertion</Data>
   <Data type="byte" offset="0x03" base="CellsTriangle">Exertion Angle</Data>
   <Data type="byte" offset="0x02" base="CellsTriangle">Exertion Force Index</Data>

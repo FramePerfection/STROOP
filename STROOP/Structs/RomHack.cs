@@ -66,12 +66,12 @@ namespace STROOP.Structs
                             goto invalidPayload;
 
                     _payload.Add(new Tuple<uint, byte[]>(address, hackBytes));
-                    invalidPayload:;
+                invalidPayload: ;
                 }
+
                 remData = remData.Substring(nextEnd + 1);
                 prevEnd += nextEnd + 1;
-            }
-            while (nextEnd != -1);
+            } while (nextEnd != -1);
         }
 
         public void LoadPayload()
@@ -123,6 +123,7 @@ namespace STROOP.Structs
                 Status = EnabledStatus.Disabled;
                 _originalMemory.Clear();
             }
+
             return success;
         }
 
@@ -142,6 +143,7 @@ namespace STROOP.Structs
                         return;
                     }
                 }
+
                 i++;
             }
         }

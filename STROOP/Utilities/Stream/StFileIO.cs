@@ -8,7 +8,6 @@ namespace STROOP.Utilities
 {
     class StFileIO : BaseProcessIO
     {
-
         public override bool IsSuspended => false;
 
         public override event EventHandler OnClose;
@@ -56,9 +55,15 @@ namespace STROOP.Utilities
             }
         }
 
-        public override bool Resume() { return true; }
+        public override bool Resume()
+        {
+            return true;
+        }
 
-        public override bool Suspend() { return true; }
+        public override bool Suspend()
+        {
+            return true;
+        }
 
         protected override bool WriteFunc(UIntPtr address, byte[] buffer)
         {

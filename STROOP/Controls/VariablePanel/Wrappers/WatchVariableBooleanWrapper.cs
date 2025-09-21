@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
 using STROOP.Core.Variables;
 using STROOP.Utilities;
 
@@ -15,7 +14,7 @@ namespace STROOP.Controls.VariablePanel
             ("Default", () => true, WrapperProperty<WatchVariableBooleanWrapperBase<T>>(wr => wr._displayAsCheckbox == true)),
             ("Display as Checkbox", () => true, WrapperProperty<WatchVariableBooleanWrapperBase<T>>(wr => wr._displayAsCheckbox)),
             ("Don't display as Checkbox", () => false, WrapperProperty<WatchVariableBooleanWrapperBase<T>>(wr => !wr._displayAsCheckbox))
-            );
+        );
 
         public static readonly WatchVariableSetting DisplayAsInverted = new WatchVariableSetting(
             "Boolean: Display as Inverted",
@@ -23,7 +22,7 @@ namespace STROOP.Controls.VariablePanel
             ("Default", () => false, WrapperProperty<WatchVariableBooleanWrapperBase<T>>(wr => wr._displayAsInverted == false)),
             ("Display as Inverted", () => true, WrapperProperty<WatchVariableBooleanWrapperBase<T>>(wr => wr._displayAsInverted)),
             ("Don't display as Inverted", () => false, WrapperProperty<WatchVariableBooleanWrapperBase<T>>(wr => !wr._displayAsInverted))
-            );
+        );
 
         private bool _displayAsCheckbox;
         private bool _displayAsInverted;
@@ -125,7 +124,8 @@ namespace STROOP.Controls.VariablePanel
 
         public WatchVariableBooleanWrapper(NamedVariableCollection.IView<bool> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
-        { }
+        {
+        }
 
         public override bool TryParseValue(string value, out bool result)
             => bool.TryParse(value, out result);
@@ -137,7 +137,8 @@ namespace STROOP.Controls.VariablePanel
     {
         public WatchVariableBooleanWrapper(NamedVariableCollection.IView<TNumber> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
-        { }
+        {
+        }
 
         private static TNumber MaxValue = (TNumber)typeof(TNumber).GetField(nameof(MaxValue)).GetValue(null);
 

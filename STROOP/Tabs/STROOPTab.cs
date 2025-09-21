@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using STROOP.Controls.VariablePanel;
 
 namespace STROOP.Tabs
@@ -21,6 +20,7 @@ namespace STROOP.Tabs
         }
 
         public TabPage Tab => Parent as TabPage;
+
         public bool IsActiveTab
         {
             get
@@ -29,14 +29,17 @@ namespace STROOP.Tabs
                 return form != null && form.tabControlMain.SelectedTab == Tab;
             }
         }
+
         static readonly Size InitSize = new Size(915, 463);
 
         bool initialized = false;
+
         public override Size MinimumSize
         {
             get => initialized ? base.MinimumSize : InitSize;
             set => base.MinimumSize = initialized ? value : InitSize;
         }
+
         public override Size MaximumSize
         {
             get => initialized ? base.MinimumSize : InitSize;
@@ -77,6 +80,7 @@ namespace STROOP.Tabs
                 InitializeTab();
                 initialized = true;
             }
+
             Update(active);
         }
 
@@ -86,6 +90,8 @@ namespace STROOP.Tabs
                 PerformRecursiveAction(this, panel => panel.UpdatePanel());
         }
 
-        public virtual void InitializeTab() { }
+        public virtual void InitializeTab()
+        {
+        }
     }
 }

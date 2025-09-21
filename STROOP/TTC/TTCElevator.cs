@@ -6,7 +6,7 @@ namespace STROOP.Ttc
 {
     /** An elevator is the yellow rectangle platform that moves up and down
      *  and will periodically stops and switches directions.
-     *  
+     *
      *  An elevator moves up or down and will switch directions
      *  when it reaches its min height or max height. In addition,
      *  when the counter variable exceeds the max variable,
@@ -16,7 +16,6 @@ namespace STROOP.Ttc
      */
     public class TtcElevator : TtcObject
     {
-
         public readonly int MIN_HEIGHT;
         public readonly int MAX_HEIGHT;
 
@@ -83,16 +82,17 @@ namespace STROOP.Ttc
             {
                 _direction *= -1;
             }
+
             _timer++;
         }
 
         public override string ToString()
         {
             return _id + OPENER + _height + SEPARATOR +
-                      _verticalSpeed + SEPARATOR +
-                      _direction + SEPARATOR +
-                      _timerMax + SEPARATOR +
-                      _timer + CLOSER;
+                   _verticalSpeed + SEPARATOR +
+                   _direction + SEPARATOR +
+                   _timerMax + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -116,6 +116,4 @@ namespace STROOP.Ttc
             return new TtcElevator(rng, MIN_HEIGHT, MAX_HEIGHT, _height, _verticalSpeed, _direction, _timerMax, _timer);
         }
     }
-
-
 }

@@ -21,6 +21,7 @@ namespace STROOP.Tabs.MapTab
         }
 
         static Dictionary<(string, string, string), int> simpleShaders = new Dictionary<(string, string, string), int>();
+
         public static int GetShaderProgram(string vertexShaderFile, string fragmentShaderFile, string geometryShaderFile = null)
         {
             (string, string, string) tuple = (vertexShaderFile, fragmentShaderFile, geometryShaderFile);
@@ -84,8 +85,10 @@ namespace STROOP.Tabs.MapTab
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                     g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
                 }
+
                 g.DrawImage(orig, new Rectangle(0, 0, newWidth, newHeight));
             }
+
             return clone;
         }
 
@@ -109,6 +112,7 @@ namespace STROOP.Tabs.MapTab
                 bitmapData[i + 1] = tmp2;
                 bitmapData[i + 2] = tmp1;
             }
+
             if (useTemporary)
                 tmp.Dispose();
             return bitmapData;
@@ -142,6 +146,7 @@ namespace STROOP.Tabs.MapTab
         }
 
         static Dictionary<string, int> loadedTextures = new Dictionary<string, int>();
+
         public static int TextureFromFile(string file)
         {
             if (loadedTextures.TryGetValue(file, out int existing))
@@ -158,6 +163,7 @@ namespace STROOP.Tabs.MapTab
         }
 
         static Dictionary<Image, int> imageTextures = new Dictionary<Image, int>();
+
         public static int TextureFromImage(Image image)
         {
             if (imageTextures.TryGetValue(image, out int existing))

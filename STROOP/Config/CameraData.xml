@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <VarData>
-  
+
   <Data type="byte" offset="0x165" base="Camera" subclass="Boolean" mask="0x04">Mario Cam Possible</Data>
   <Data type="byte" offset="0x165" base="Camera" subclass="Boolean" mask="0x01">Mario Cam</Data>
   <Data type="byte" offset="0x16D" base="Camera" subclass="Boolean" mask="0x20">Fixed Cam</Data>
@@ -8,7 +8,7 @@
   <Data type="byte" offset="0x329" base="Camera" subclass="Boolean" mask="0x02">Far Cam</Data>
   <Data type="byte" offset="0x329" base="Camera" subclass="Boolean" mask="0x08">Left Cam</Data>
   <Data type="byte" offset="0x329" base="Camera" subclass="Boolean" mask="0x04">Right Cam</Data>
-  
+
   <Data type="float" offset="0x184" base="Camera" coord="X">Camera X</Data>
   <Data type="float" offset="0x188" base="Camera" coord="Y">Camera Y</Data>
   <Data type="float" offset="0x18C" base="Camera" coord="Z">Camera Z</Data>
@@ -57,12 +57,12 @@
   <Data type="short" offset="0x218" base="Camera" color="Blue">Yaw Shake Speed</Data>
   <Data type="short" offset="0x21A" base="Camera" color="Blue">Yaw Shake Decrease</Data>
   <Data type="short" offset="0x216" base="Camera" color="Blue">Yaw Shake Osc.</Data>
-  
+
   <Data type="short" offset="0x1CA" base="Camera" color="Blue">Pitch Shake</Data>
   <Data type="short" offset="0x1D2" base="Camera" color="Blue">Pitch Shake Speed</Data>
   <Data type="short" offset="0x1D4" base="Camera" color="Blue">Pitch Shake Decrease</Data>
   <Data type="short" offset="0x1D0" base="Camera" color="Blue">Pitch Shake Osc.</Data>
-  
+
   <Data type="short" offset="0x1CE" base="Camera" color="Blue">Roll Shake</Data>
   <Data type="short" offset="0x212" base="Camera" color="Blue">Roll Shake Speed</Data>
   <Data type="short" offset="0x214" base="Camera" color="Blue">Roll Shake Decrease</Data>
@@ -77,7 +77,7 @@
   <Data groupList="Bruteforce" type="float" offsetUS="0x8033c568" offsetJP="0x8033b1f8" base="Relative" coord="X">Camera Old Position X</Data>
   <Data groupList="Bruteforce" type="float" offsetUS="0x8033c56C" offsetJP="0x8033b1fc" base="Relative" coord="Y">Camera Old Position Y</Data>
   <Data groupList="Bruteforce" type="float" offsetUS="0x8033c570" offsetJP="0x8033b200" base="Relative" coord="Z">Camera Old Position Z</Data>
-  
+
   <Data groupList="Bruteforce" type="float" offsetUS="0x8033c578" offsetJP="0x8033b208" base="Relative" coord="X">Camera Old Focus X</Data>
   <Data groupList="Bruteforce" type="float" offsetUS="0x8033c57C" offsetJP="0x8033b20C" base="Relative" coord="Y">Camera Old Focus Y</Data>
   <Data groupList="Bruteforce" type="float" offsetUS="0x8033c580" offsetJP="0x8033b210" base="Relative" coord="Z">Camera Old Focus Z</Data>
@@ -103,13 +103,13 @@
   <Data groupList="Bruteforce" type="float" offset="0x24" base="LakituStruct" coord="X" jsonName="camera_lakitu_goal_pos_x">Lakitu Goal Pos X</Data>
   <Data groupList="Bruteforce" type="float" offset="0x28" base="LakituStruct" coord="Y" jsonName="camera_lakitu_goal_pos_y">Lakitu Goal Pos Y</Data>
   <Data groupList="Bruteforce" type="float" offset="0x2C" base="LakituStruct" coord="Z" jsonName="camera_lakitu_goal_pos_z">Lakitu Goal Pos Z</Data>
-  
+
   <Data groupList="Bruteforce" type="short" offset="0x7C" base="LakituStruct" coord="Z" jsonName="camera_lakitu_yaw">Lakitu Yaw</Data>
   <Data groupList="Bruteforce" type="short" offset="0x7E" base="LakituStruct" coord="Z" jsonName="camera_lakitu_next_yaw">Lakitu Yaw</Data>
 
   <Data groupList="Bruteforce" type="byte" offset="0x3C" base="LakituStruct" jsonName="camera_lakitu_mode">Lakitu Mode</Data>
   <Data groupList="Bruteforce" type="byte" offset="0x3D" base="LakituStruct" jsonName="camera_lakitu_def_mode">Lakitu Default Mode</Data>
-  
+
   <Data groupList="Bruteforce" type="float" offset="0xA4" base="LakituStruct" jsonName="camera_lakitu_foc_hspeed">Lakitu Foc H-Speed</Data>
   <Data groupList="Bruteforce" type="float" offset="0xA8" base="LakituStruct" jsonName="camera_lakitu_foc_vspeed">Lakitu Foc V-Speed</Data>
   <Data groupList="Bruteforce" type="float" offset="0xAC" base="LakituStruct" jsonName="camera_lakitu_pos_hspeed">Lakitu Pos H-Speed</Data>
@@ -127,15 +127,15 @@
   <Data groupList="Bruteforce" type="short" offsetUS="0x8033c778" offsetJP="0x8033b408" base="Relative" jsonName="camera_8dir_mode_yaw_offset">8Dir Mode Yaw Offset</Data>
 
   <Data groupList="Bruteforce" type="float" offsetUS="0x8033c77c" offsetJP="0x8033b40c" base="Relative">Camera Pan Distance</Data>
-  
+
   <Data groupList="Bruteforce" type="short" offsetUS="0x8033c848" offsetJP="0x8033b4d8" base="Relative" useHex="true">Camera Movement Flags</Data>
   <Data groupList="Bruteforce" type="short" offsetUS="0x8033c84a" offsetJP="0x8033b4da" base="Relative" useHex="true">Camera Status Flags</Data>
 
-  <Data groupList="Bruteforce" type="byte"  offset="0x0" base="CameraStruct" useHex="true" jsonName="camera_mode">Camera Mode</Data>
-  <Data groupList="Bruteforce" type="byte"  offset="0x1" base="CameraStruct" useHex="true" jsonName="camera_def_mode">Camera Default Mode</Data>
+  <Data groupList="Bruteforce" type="byte" offset="0x0" base="CameraStruct" useHex="true" jsonName="camera_mode">Camera Mode</Data>
+  <Data groupList="Bruteforce" type="byte" offset="0x1" base="CameraStruct" useHex="true" jsonName="camera_def_mode">Camera Default Mode</Data>
   <Data groupList="Bruteforce" type="short" offset="0x2" base="CameraStruct" jsonName="camera_yaw">Camera Yaw</Data>
   <Data groupList="Bruteforce" type="short" offset="0x3A" base="CameraStruct" jsonName="camera_next_yaw">Camera Next Yaw</Data>
-  <Data groupList="Bruteforce" type="byte"  offset="0x30" base="CameraStruct" useHex="true">Camera Cutscene</Data>
+  <Data groupList="Bruteforce" type="byte" offset="0x30" base="CameraStruct" useHex="true">Camera Cutscene</Data>
 
   <Data groupList="Bruteforce" type="float" offset="0x4" base="CameraStruct" coord="X">Camera Focus X</Data>
   <Data groupList="Bruteforce" type="float" offset="0x8" base="CameraStruct" coord="Y">Camera Focus Y</Data>
@@ -147,7 +147,7 @@
 
   <Data groupList="Bruteforce" type="float" offset="0x28" base="CameraStruct" coord="X">Camera Area Center X</Data>
   <Data groupList="Bruteforce" type="float" offset="0x2C" base="CameraStruct" coord="Z">Camera Area Center Z</Data>
-  
+
   <Data groupList="BruteForce" type="short" offset="0x00" base="CameraModeTransition" jsonName="camera_transition_pos_pitch">MT Pos Pitch</Data>
   <Data groupList="BruteForce" type="short" offset="0x02" base="CameraModeTransition" jsonName="camera_transition_pos_yaw">MT Pos Yaw</Data>
   <Data groupList="BruteForce" type="float" offset="0x04" base="CameraModeTransition" jsonName="camera_transition_pos_dist">MT Pos Dist</Data>
@@ -158,7 +158,7 @@
   <Data groupList="BruteForce" type="float" offset="0x14" base="CameraModeTransition" jsonName="camera_transition_mario_pos_x">MT Mario Pos X</Data>
   <Data groupList="BruteForce" type="float" offset="0x18" base="CameraModeTransition" jsonName="camera_transition_mario_pos_y">MT Mario Pos Y</Data>
   <Data groupList="BruteForce" type="float" offset="0x1C" base="CameraModeTransition" jsonName="camera_transition_mario_pos_z">MT Mario Pos Z</Data>
-  
+
   <Data groupList="BruteForce" type="short" offset="0x00" base="CameraModeInfo" jsonName="camera_mode_info_new_mode">MI New Mode</Data>
   <Data groupList="BruteForce" type="short" offset="0x02" base="CameraModeInfo" jsonName="camera_mode_info_last_mode">MI Last Mode</Data>
   <Data groupList="BruteForce" type="short" offset="0x04" base="CameraModeInfo" jsonName="camera_mode_info_max">MI Max</Data>
@@ -181,14 +181,14 @@
   <Data groupList="BruteForce" type="float" offset="0x40" base="CameraModeInfo" jsonName="camera_mode_info_transition_end_dist">MI End Dist</Data>
   <Data groupList="BruteForce" type="short" offset="0x44" base="CameraModeInfo" jsonName="camera_mode_info_transition_end_pitch">MI End Pitch</Data>
   <Data groupList="BruteForce" type="short" offset="0x46" base="CameraModeInfo" jsonName="camera_mode_info_transition_end_yaw">MI End Yaw</Data>
-  
+
   <Data groupList="BruteForce" type="float" offsetUS="0x8033c7d0" offsetJP="0x8033b460" base="Relative" jsonName="camera_castle_entrance_offset_x">Castle Entrance Offset X</Data>
   <Data groupList="BruteForce" type="float" offsetUS="0x8033c7d4" offsetJP="0x8033b464" base="Relative" jsonName="camera_castle_entrance_offset_y">Castle Entrance Offset X</Data>
   <Data groupList="BruteForce" type="float" offsetUS="0x8033c7d8" offsetJP="0x8033b468" base="Relative" jsonName="camera_castle_entrance_offset_z">Castle Entrance Offset X</Data>
 
   <Data groupList="BruteForce" type="short" offsetUS="0x8033c53e" offsetJP="0x8033b1ce" base="Relative" jsonName="camera_state_camera_event">Camera Event</Data>
   <Data groupList="BruteForce" type="uint" offsetUS="0x8033c540" offsetJP="0x8033b1d0" base="Relative" jsonName="camera_state_usedObj" subclass="Object">Camera Used Obj</Data>
-  
+
   <Data groupList="BruteForce" type="short" offsetUS="0x8033c620" offsetJP="0x8033b2b0" base="Relative" jsonName="camera_yaw_after_door_cutscene">Camera Yaw After Door Cutscene</Data>
   <Data groupList="BruteForce" type="short" offsetUS="0x8033c768" offsetJP="0x8033b3f8" base="Relative" jsonName="camera_c_side_button_yaw">C Side Button Yaw</Data>
   <Data groupList="BruteForce" type="short" offsetUS="0x8033c770" offsetJP="0x8033b400" base="Relative" jsonName="camera_c_up_camera_pitch">C Up Pitch</Data>

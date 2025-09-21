@@ -12,6 +12,7 @@ namespace STROOP.Tabs.MapTab.Renderers
             ShapeRenderer parent;
 
             protected override int GetShader() => GraphicsUtil.GetShaderProgram("Resources/Shaders/Circles.vert.glsl", "Resources/Shaders/DepthMask.frag.glsl");
+
             public TransparentShapeRenderer(ShapeRenderer parent, int maxExpectedInstances) : base(maxExpectedInstances)
             {
                 this.parent = parent;
@@ -86,6 +87,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                     GL.VertexAttribDivisor(i, 1);
                     GL.VertexAttribPointer(i, 4, VertexAttribPointerType.Float, false, instanceSize, sizeof(float) * i * 4);
                 }
+
                 GL.EnableVertexAttribArray(6);
                 GL.VertexAttribDivisor(6, 1);
                 GL.VertexAttribPointer(6, 1, VertexAttribPointerType.Float, false, instanceSize, sizeof(float) * 6 * 4);
@@ -115,17 +117,17 @@ namespace STROOP.Tabs.MapTab.Renderers
             instances.Clear();
             transparentRenderer.instances.Clear();
             graphics.drawLayers[(int)layer].Add(() =>
-           {
-               if (instances.Count == 0)
-                   return;
+            {
+                if (instances.Count == 0)
+                    return;
 
-               BeginDraw(graphics);
-               GL.Disable(EnableCap.CullFace);
-               GL.Disable(EnableCap.DepthTest);
+                BeginDraw(graphics);
+                GL.Disable(EnableCap.CullFace);
+                GL.Disable(EnableCap.DepthTest);
 
-               GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, instances.Count);
-               GL.BindVertexArray(0);
-           });
+                GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, instances.Count);
+                GL.BindVertexArray(0);
+            });
         }
     }
 }

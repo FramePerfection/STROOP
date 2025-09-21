@@ -53,7 +53,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             public static GetDimensions CustomSize(Func<float> customSizeProvider) =>
                 posAngle =>
-                ((float)posAngle.X, (float)posAngle.Y, (float)posAngle.Z, customSizeProvider());
+                    ((float)posAngle.X, (float)posAngle.Y, (float)posAngle.Z, customSizeProvider());
         }
     }
 }

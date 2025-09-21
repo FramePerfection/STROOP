@@ -54,6 +54,7 @@ namespace STROOP.Structs
                     double currentDistance = previousDistance + deltaDistance;
                     _distanceDictionary[currentWaypoint] = currentDistance;
                 }
+
                 previousWaypoint = currentWaypoint;
             }
 
@@ -68,8 +69,10 @@ namespace STROOP.Structs
                 {
                     _nextWaypointDictionary[previousWaypoint.Value] = currentWaypoint;
                 }
+
                 previousWaypoint = currentWaypoint;
             }
+
             _nextWaypointDictionary[previousWaypoint.Value] = null;
         }
 

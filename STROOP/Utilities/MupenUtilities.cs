@@ -18,12 +18,13 @@ namespace STROOP.Utilities
                         return (UIntPtr)0x004D614C;
                     case "mupen64":
                         return (UIntPtr)0x004E8A64;
-                        //return (UIntPtr)0x004ABA54;
+                    //return (UIntPtr)0x004ABA54;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
         }
+
         private static UIntPtr VICountAddress
         {
             get
@@ -36,12 +37,13 @@ namespace STROOP.Utilities
                         return (UIntPtr)0x004D6150;
                     case "mupen64":
                         return (UIntPtr)0x004E8A68;
-                        //return (UIntPtr)0x004ABA58;
+                    //return (UIntPtr)0x004ABA58;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
         }
+
         private static int FrameCountOffset
         {
             get
@@ -102,9 +104,8 @@ namespace STROOP.Utilities
         public static bool IsUsingMupen()
         {
             return Config.Stream.ProcessName == "mupen64-rerecording" ||
-                Config.Stream.ProcessName == "mupen64_lua" ||
-                Config.Stream.ProcessName == "mupen64";
+                   Config.Stream.ProcessName == "mupen64_lua" ||
+                   Config.Stream.ProcessName == "mupen64";
         }
-
     }
 }

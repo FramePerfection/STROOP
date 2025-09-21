@@ -2,7 +2,11 @@
 {
     public static class CamHackConfig
     {
-        public static uint StructAddress { get => RomVersionConfig.SwitchMap(StructAddressUS, StructAddressJP); }
+        public static uint StructAddress
+        {
+            get => RomVersionConfig.SwitchMap(StructAddressUS, StructAddressJP);
+        }
+
         public static readonly uint StructAddressUS = 0x803E0000;
         public static readonly uint StructAddressJP = 0x803E0000;
 
@@ -18,6 +22,5 @@
         public static readonly uint RadiusOffset = 0x20;
         public static readonly uint RelativeHeightOffset = 0x24;
         public static readonly uint ObjectOffset = 0x28;
-
     }
 }

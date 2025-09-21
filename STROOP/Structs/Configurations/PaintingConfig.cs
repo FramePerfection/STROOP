@@ -26,6 +26,7 @@ namespace STROOP.Structs
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             uint offset = (uint)index * PaintingStructSize;
             uint segmentedAddress = startAddress + offset;
             uint address = SegmentationUtilities.DecodeSegmentedAddress(segmentedAddress);

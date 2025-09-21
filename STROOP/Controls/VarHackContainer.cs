@@ -52,7 +52,8 @@ namespace STROOP.Controls
             // Special
             _specialType = specialType;
             _isSpecial = specialType != null;
-            if (_isSpecial) (varName, _getterFunction) =
+            if (_isSpecial)
+                (varName, _getterFunction) =
                     VarHackSpecialUtilities.CreateGetterFunction(specialType);
 
             // Misc
@@ -225,6 +226,7 @@ namespace STROOP.Controls
                     root.Add(new XAttribute("pointerOffset", textBoxPointerOffsetValue.Text));
                 root.Add(new XAttribute("noNum", checkBoxNoNumber.Checked));
             }
+
             return root;
         }
 
@@ -326,10 +328,12 @@ namespace STROOP.Controls
                 string formatterString = useHex ? "%x" : "%d";
                 name = name.Replace(VarHackConfig.EscapeChar, formatterString);
             }
+
             if (_isSpecial)
             {
                 name = name.Replace(VarHackConfig.EscapeChar, _getterFunction());
             }
+
             name = StringUtilities.Cap(name, VarHackConfig.MaxStringLength);
             byte[] nameBytes = Encoding.ASCII.GetBytes(name);
             WriteBytes(nameBytes, bytes, VarHackConfig.StringOffset, false);
@@ -388,6 +392,7 @@ namespace STROOP.Controls
                 stringBuilder.Append(" ");
                 if (i % 16 == 15) stringBuilder.Append("\r\n");
             }
+
             return stringBuilder.ToString();
         }
 

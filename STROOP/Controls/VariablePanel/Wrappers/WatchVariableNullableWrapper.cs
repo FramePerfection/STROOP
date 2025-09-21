@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-
 using STROOP.Core.Variables;
 
 namespace STROOP.Controls.VariablePanel
@@ -9,8 +8,8 @@ namespace STROOP.Controls.VariablePanel
         where TBaseWrapper : WatchVariableWrapper<TBackingType>
         where TBackingType : struct
     {
-
         private TBaseWrapper baseWrapper;
+
         public WatchVariableNullableWrapper(NamedVariableCollection.IView<TBackingType?> var, WatchVariableControl control)
             : base(var, control)
         {
@@ -18,12 +17,17 @@ namespace STROOP.Controls.VariablePanel
             interfaceType = interfaceType.GetGenericTypeDefinition().MakeGenericType(interfaceType.GenericTypeArguments[0].GenericTypeArguments[0]);
             baseWrapper = (TBaseWrapper)
                 typeof(TBaseWrapper)
-                .GetConstructor(new Type[] { interfaceType, typeof(WatchVariableControl) })
-                .Invoke(new object[] { new NamedVariableCollection.CustomView<TBackingType>(typeof(TBaseWrapper)) {
-                    Name = view.Name,
-                    _getterFunction = () => view._getterFunction().Select(x => x.HasValue ? x.Value : default(TBackingType)).ToArray(),
-                    _setterFunction = value => view._setterFunction(value),
-                }, control });
+                    .GetConstructor(new Type[] { interfaceType, typeof(WatchVariableControl) })
+                    .Invoke(new object[]
+                    {
+                        new NamedVariableCollection.CustomView<TBackingType>(typeof(TBaseWrapper))
+                        {
+                            Name = view.Name,
+                            _getterFunction = () => view._getterFunction().Select(x => x.HasValue ? x.Value : default(TBackingType)).ToArray(),
+                            _setterFunction = value => view._setterFunction(value),
+                        },
+                        control
+                    });
         }
 
         public override sealed bool TryParseValue(string value, out TBackingType? result)
@@ -33,6 +37,7 @@ namespace STROOP.Controls.VariablePanel
                 result = null;
                 return false;
             }
+
             result = baseResult;
             return true;
         }

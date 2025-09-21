@@ -13,7 +13,7 @@
   <Data groupList="Basic" base="None" specialType="ActionDescription" subclass="String">Action Description</Data>
   <Data groupList="Basic" type="uint" offset="0x10" base="Mario" jsonName="mario_previous_action" useHex="true">Previous Action</Data>
   <Data groupList="Basic" base="None" specialType="PrevActionDescription" subclass="String">Prev. Action Desc.</Data>
-  
+
   <Data groupList="Advanced" base="None" specialType="SpeedMultiplier">Speed Multiplier</Data>
 
   <Data groupList="Advanced" base="None" specialType="RotationDisplacementX">Rot Disp X</Data>
@@ -25,15 +25,15 @@
   <Data groupList="Trajectory" base="None" specialType="DoubleJumpVerticalSpeed">DJ V Speed</Data>
   <Data groupList="Trajectory" base="None" specialType="DoubleJumpHeight">DJ Height</Data>
   <Data groupList="Trajectory" base="None" specialType="DoubleJumpPeakHeight">DJ Peak Height</Data>
-  
+
   <Data groupList="Basic" base="None" specialType="DeFactoSpeed">De Facto Speed</Data>
   <Data groupList="Basic" type="float" offset="0x58" base="Mario" jsonName="mario_slide_vel_x">X Sliding Speed</Data>
   <Data groupList="Basic" type="float" offset="0x5C" base="Mario" jsonName="mario_slide_vel_z">Z Sliding Speed</Data>
   <Data groupList="Basic" base="None" specialType="SlidingSpeed">H Sliding Speed</Data>
-  
+
   <Data groupList="Basic" base="None" specialType="SlidingAngle" display="ushort" subclass="Angle" yaw="true" jsonName="">Sliding Yaw</Data>
   <Data groupList="Basic" type="ushort" offset="0x38" base="Mario" subclass="Angle" yaw="true" jsonName="mario_slide_yaw">Yaw Moving</Data>
-  
+
   <Data groupList="Hacks" base="None" specialType="MovementX" coord="X">Delta X</Data>
   <Data groupList="Hacks" base="None" specialType="MovementY" coord="Y">Delta Y</Data>
   <Data groupList="Hacks" base="None" specialType="MovementZ" coord="Z">Delta Z</Data>
@@ -43,7 +43,7 @@
   <Data groupList="Hacks" base="None" specialType="MovementTotal">Delta Total</Data>
   <Data groupList="Hacks" base="None" specialType="MovementAngle" subclass="Angle" display="ushort" yaw="true">Delta Angle</Data>
   <Data groupList="Hacks" base="None" specialType="QFrameCountEstimate">QFrames Est.</Data>
-  
+
   <Data groupList="Basic" type="ushort" offset="0x2E" base="Mario" subclass="Angle" jsonName="mario_yaw_facing" yaw="true">Yaw Facing</Data>
   <Data groupList="Basic" type="ushort" offset="0x24" base="Mario" subclass="Angle" jsonName="mario_yaw_intended" yaw="true">Yaw Intended</Data>
   <Data groupList="Basic" base="None" specialType="DeltaYawIntendedFacing" subclass="Angle" display="short">DYaw Intend-Face</Data>
@@ -62,22 +62,22 @@
   <Data groupList="Advanced" type="short" offset="0x24E" base="Mario" subclass="Angle" yaw="true">Torso Yaw</Data>
   <Data groupList="Advanced" type="short" offset="0x24C" base="Mario" subclass="Angle">Torso Pitch</Data>
   <Data groupList="Advanced" type="short" offset="0x250" base="Mario" subclass="Angle">Torso Roll</Data>
-  
+
   <Data groupList="Advanced" type="short" offset="0x1602" base="Mario" subclass="Angle" yaw="true">First Person Yaw</Data>
   <Data groupList="Advanced" type="short" offset="0x1600" base="Mario" subclass="Angle">First Person Pitch</Data>
   <Data groupList="Advanced" type="short" offset="0x13C8" base="Mario" subclass="Angle" yaw="true">First Person Yaw 2</Data>
   <Data groupList="Advanced" type="short" offset="0x13C6" base="Mario" subclass="Angle">First Person Pitch 2</Data>
-  
+
   <Data groupList="Basic" type="uint" offsetUS="0x80330E34" offsetJP="0x8032FED4" offsetSH="0x80310564" base="Relative" subclass="Object">Stood On Object</Data>
   <Data groupList="Intermediate" type="uint" offset="0x84" base="Mario" subclass="Object">Ridden Object</Data>
   <Data groupList="Intermediate" type="uint" offset="0x78" base="Mario" subclass="Object">Interaction Object</Data>
   <Data groupList="Intermediate" type="uint" offset="0x80" base="Mario" subclass="Object">Used Object</Data>
   <Data groupList="Basic" type="uint" offset="0x7C" base="Mario" subclass="Object">Held Object</Data>
-  
+
   <Data groupList="Basic" type="float" offset="0x258" base="Mario" coord="X">HOLP X</Data>
   <Data groupList="Basic" type="float" offset="0x25C" base="Mario" coord="Y">HOLP Y</Data>
   <Data groupList="Basic" type="float" offset="0x260" base="Mario" coord="Z">HOLP Z</Data>
-  
+
   <Data groupList="HolpMario" base="None" specialType="XDistMarioToHolp" coord="X">XDist Mario to HOLP</Data>
   <Data groupList="HolpMario" base="None" specialType="YDistMarioToHolp" coord="Y">YDist Mario to HOLP</Data>
   <Data groupList="HolpMario" base="None" specialType="ZDistMarioToHolp" coord="Z">ZDist Mario to HOLP</Data>
@@ -86,7 +86,7 @@
   <Data groupList="HolpMario" base="None" specialType="AngleMarioToHolp" subclass="Angle" display="ushort" yaw="true">Angle Mario to HOLP</Data>
   <Data groupList="HolpMario" base="None" specialType="DAngleMarioToHolp" subclass="Angle" display="short">DAngle Mario to HOLP</Data>
   <Data groupList="HolpMario" base="None" specialType="AngleHolpToMario" subclass="Angle" display="ushort" yaw="true">Angle HOLP to Mario</Data>
-  
+
   <Data groupList="HolpPoint" base="None" specialType="PointPosType" subclass="String">Point Pos Type</Data>
   <Data groupList="HolpPoint" base="None" specialType="PointX" coord="X">Point X</Data>
   <Data groupList="HolpPoint" base="None" specialType="PointY" coord="Y">Point Y</Data>
@@ -104,7 +104,7 @@
   <Data groupList="HolpPoint" base="None" specialType="BobombTrajectoryFramesToPoint">Bob-omb Traj Frames</Data>
   <Data groupList="HolpPoint" base="None" specialType="CorkBoxTrajectoryFramesToPoint">Cork Box Traj Frames</Data>
 
-  <Data groupList="Basic" type="byte" offset="0x24A" base="Mario">HOLP Type</Data>  
+  <Data groupList="Basic" type="byte" offset="0x24A" base="Mario">HOLP Type</Data>
   <Data groupList="Basic" type="uint" offset="0x04" base="Mario" useHex="true" jsonName="mario_flags">Flags</Data>
   <Data groupList="Basic" type="uint" offset="0x04" base="Mario" subclass="Boolean" mask="0x10">Hat on Head</Data>
   <Data groupList="Basic" type="uint" offset="0x04" base="Mario" subclass="Boolean" mask="0x20">Hat in Hand</Data>
@@ -112,13 +112,13 @@
   <Data groupList="Basic" type="uint" offset="0x04" base="Mario" subclass="Boolean" mask="0x04">Metal Cap</Data>
   <Data groupList="Basic" type="uint" offset="0x04" base="Mario" subclass="Boolean" mask="0x02">Vanish Cap</Data>
   <Data groupList="Basic" type="uint" offset="0x04" base="Mario" subclass="Boolean" mask="0x01">Should Have Hat</Data>
-  
+
   <Data groupList="Basic" type="ushort" offset="0xB6" base="Mario" jsonName="mario_cap_timer">Cap Timer</Data>
   <Data groupList="Intermediate" type="short" offset="0x26" base="Mario">Hitstun Timer</Data>
   <Data groupList="Intermediate" type="sbyte" offset="0xB4" base="Mario">Unsquishing Timer</Data>
   <Data groupList="Intermediate" type="ushort" offset="0x1E" base="Mario">Squished Timer</Data>
   <Data groupList="Intermediate" type="short" offset="0x1A" base="Mario">Water Shell Timer</Data>
-  
+
   <Data groupList="Intermediate" type="float" offset="0xBC" base="Mario" jsonName="mario_peak_height">Peak Height</Data>
   <Data groupList="Intermediate" type="float" offset="0x70" base="Mario" jsonName="mario_floor_height">Floor Height</Data>
   <Data groupList="Intermediate" base="None" specialType="FallHeight">Fall Height</Data>
@@ -131,12 +131,12 @@
   <Data groupList="Advanced" type="byte" offsetUS="0x8032DA94" offsetJP="0x8032CB34" base="Relative" subclass="Boolean" mask="0x01">Just Teleported</Data>
   <Data groupList="Advanced" type="int" offsetUS="0x800F0A5C" offsetJP="0x800EDBDC" base="Relative">Blinking State</Data>
   <Data groupList="Advanced" type="short" offsetUS="0x8032DF08" offsetJP="0x8032CFA8" base="Relative">Blinking Timer</Data>
-  
+
   <Data groupList="Intermediate" type="uint" offsetUS="0x80361158" offsetJP="0x8035FDE8" offsetSH="0x80343318" base="Relative" subclass="Object">Effective Mario Object</Data>
   <Data groupList="Intermediate" type="uint" offset="0x88" base="Mario" subclass="Object">Visual Mario Object</Data>
 
   <Data groupList="Advanced" type="short" offsetUS="0x8033b4b0" offsetJP="0x8033a160" base="Relative" jsonName="mario_spawn_x">Spawn X</Data>
   <Data groupList="Advanced" type="short" offsetUS="0x8033b4b2" offsetJP="0x8033a162" base="Relative" jsonName="mario_spawn_y">Spawn Y</Data>
   <Data groupList="Advanced" type="short" offsetUS="0x8033b4b4" offsetJP="0x8033a164" base="Relative" jsonName="mario_spawn_z">Spawn Z</Data>
-    
+
 </VarData>

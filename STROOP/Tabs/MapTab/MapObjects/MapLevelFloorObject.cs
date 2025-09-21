@@ -50,10 +50,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             };
 
             ToolStripMenuItem itemShowTriData = new ToolStripMenuItem("Show Tri Data");
-            itemShowTriData.Click += (sender, e) =>
-            {
-                TriangleUtilities.ShowTriangles(_tris);
-            };
+            itemShowTriData.Click += (sender, e) => { TriangleUtilities.ShowTriangles(_tris); };
 
             ToolStripMenuItem itemOpenForm = new ToolStripMenuItem("Open Form");
             itemOpenForm.Click += (sender, e) =>
@@ -90,6 +87,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             _triangleListForm?.RefreshAndSort();
         }
+
         public void NullifyTriangleListForm()
         {
             _triangleListForm = null;

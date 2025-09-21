@@ -26,6 +26,7 @@ namespace STROOP.Tabs
                 VariableGroup.QuarterFrameHack,
                 VariableGroup.Custom,
             };
+
         public QuarterFramesTab()
         {
             InitializeComponent();

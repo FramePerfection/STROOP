@@ -75,6 +75,7 @@ namespace STROOP.Utilities
                 uint processGroupStructAddress = ObjectSlotsConfig.ProcessGroupsStartAddress + processGroup * ObjectSlotsConfig.ProcessGroupStructSize;
                 if (address == processGroupStructAddress) return processGroup;
             }
+
             return null;
         }
 
@@ -86,6 +87,6 @@ namespace STROOP.Utilities
             return color;
         }
 
-        public static float HoverAlpha() => (float)Math.Sin(DateTime.Now.Ticks / 2000000.0) *0.25f + 0.75f;
+        public static float HoverAlpha() => (float)Math.Sin(DateTime.Now.Ticks / 2000000.0) * 0.25f + 0.75f;
     }
 }

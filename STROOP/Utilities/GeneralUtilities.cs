@@ -7,19 +7,28 @@ namespace STROOP.Utilities
     public class Wrapper<T>
     {
         public T value;
-        public Wrapper() { }
-        public Wrapper(T value) { this.value = value; }
+
+        public Wrapper()
+        {
+        }
+
+        public Wrapper(T value)
+        {
+            this.value = value;
+        }
     }
 
     public class EqualityComparer<T> : IEqualityComparer<T>
     {
         Func<T, T, bool> equalsFunc;
         Func<T, int> getHashCodeFunc;
+
         public EqualityComparer(Func<T, T, bool> equalsFunc, Func<T, int> getHashCodeFunc = null)
         {
             this.equalsFunc = equalsFunc;
             this.getHashCodeFunc = getHashCodeFunc ?? (_ => _.GetHashCode());
         }
+
         bool IEqualityComparer<T>.Equals(T x, T y) => equalsFunc(x, y);
 
         int IEqualityComparer<T>.GetHashCode(T obj) => getHashCodeFunc(obj);
@@ -28,7 +37,12 @@ namespace STROOP.Utilities
     public class OrderComparer<T> : IComparer<T>
     {
         Func<T, T, int> func;
-        public OrderComparer(Func<T, T, int> func) { this.func = func; }
+
+        public OrderComparer(Func<T, T, int> func)
+        {
+            this.func = func;
+        }
+
         int IComparer<T>.Compare(T x, T y) => func(x, y);
     }
 
@@ -73,6 +87,7 @@ namespace STROOP.Utilities
                 if (convertedObj != null)
                     lstOut.Add(convertedObj);
             }
+
             return lstOut;
         }
 
@@ -85,6 +100,7 @@ namespace STROOP.Utilities
                 if (convertedObj != null)
                     lstOut.Add(convertedObj);
             }
+
             return lstOut;
         }
 

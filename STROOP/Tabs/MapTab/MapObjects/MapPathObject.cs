@@ -89,6 +89,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 }
             });
         }
+
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
 
         public override void Update()
@@ -128,6 +129,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         {
                             tempDictionary[key] = dic[key];
                         }
+
                         _dictionary.Clear();
                         foreach (uint key in tempDictionary.Keys)
                         {
@@ -202,7 +204,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "Pause", isPaused.ToString());
                 SaveValueNode(node, "GlobalTimerModulo", _modulo.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

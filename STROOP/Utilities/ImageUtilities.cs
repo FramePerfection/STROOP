@@ -23,6 +23,7 @@ namespace STROOP.Utilities
                 System.Diagnostics.Debugger.Break();
                 return NullImage;
             }
+
             return new Lazy<Image>(() => Image.FromFile(path));
         }
 
@@ -48,6 +49,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             return multiBitmap;
         }
 

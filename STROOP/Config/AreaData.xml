@@ -23,7 +23,7 @@
 
   <Data type="uint" offset="0x24" base="Area" subclass="Address">Level Camera Ptr</Data>
   <Data type="uint" offset="0x28" base="Area" subclass="Address">Mystery 4</Data>
-  
+
   <Data type="uint" offset="0x2C" base="Area" subclass="Address">Whirlpools</Data>
   <Data type="short" offset="0x00" base="Whirlpool1" coord="X">Whirlpool 1 X</Data>
   <Data type="short" offset="0x02" base="Whirlpool1" coord="Y">Whirlpool 1 Y</Data>

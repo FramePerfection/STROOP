@@ -8,6 +8,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     public abstract class MapMapObject : MapBackgroundObject
     {
         Renderers.SpriteRenderer renderer;
+
         public MapMapObject() : base()
         {
             InternalRotates = true;
@@ -38,16 +39,16 @@ namespace STROOP.Tabs.MapTab.MapObjects
             });
         }
 
-        protected override void DrawOrthogonal(MapGraphics graphics) { }
+        protected override void DrawOrthogonal(MapGraphics graphics)
+        {
+        }
 
         protected List<(PointF loc, SizeF size)> GetDimensions(MapGraphics graphics)
         {
             RectangleF rectangle = GetMapLayout().Coordinates;
             float rectangleCenterX = rectangle.X + rectangle.Width / 2;
             float rectangleCenterZ = rectangle.Y + rectangle.Height / 2;
-            List<(float x, float z)> rectangleCenters = graphics.MapViewEnablePuView ?
-                currentMapTab.GetPuCoordinates(graphics, rectangleCenterX, rectangleCenterZ) :
-                new List<(float x, float z)>() { (rectangleCenterX, rectangleCenterZ) };
+            List<(float x, float z)> rectangleCenters = graphics.MapViewEnablePuView ? currentMapTab.GetPuCoordinates(graphics, rectangleCenterX, rectangleCenterZ) : new List<(float x, float z)>() { (rectangleCenterX, rectangleCenterZ) };
 
             List<(PointF loc, SizeF size)> dimensions = rectangleCenters.ConvertAll(
                 rectangleCenter => (new PointF(rectangleCenter.x, rectangleCenter.z), new SizeF(rectangle.Width, rectangle.Height)));

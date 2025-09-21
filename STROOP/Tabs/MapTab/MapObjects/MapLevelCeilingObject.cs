@@ -47,10 +47,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             };
 
             ToolStripMenuItem itemShowTriData = new ToolStripMenuItem("Show Tri Data");
-            itemShowTriData.Click += (sender, e) =>
-            {
-                TriangleUtilities.ShowTriangles(_bufferedTris);
-            };
+            itemShowTriData.Click += (sender, e) => { TriangleUtilities.ShowTriangles(_bufferedTris); };
 
             ToolStripMenuItem itemOpenForm = new ToolStripMenuItem("Open Form");
             itemOpenForm.Click += (sender, e) =>

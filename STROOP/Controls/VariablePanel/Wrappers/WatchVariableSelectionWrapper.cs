@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -29,8 +28,8 @@ namespace STROOP.Controls.VariablePanel
             var interfaceType = view.GetType().GetInterfaces().First(x => x.Name == $"{nameof(NamedVariableCollection.IView)}`1");
             baseWrapper = (TBaseWrapper)
                 typeof(TBaseWrapper)
-                .GetConstructor(new Type[] { interfaceType, typeof(WatchVariableControl) })
-                .Invoke(new object[] { view, control });
+                    .GetConstructor(new Type[] { interfaceType, typeof(WatchVariableControl) })
+                    .Invoke(new object[] { view, control });
             _view.ValueSet += () => selectedOption = (null, null);
         }
 
@@ -55,6 +54,7 @@ namespace STROOP.Controls.VariablePanel
                 drawRectangle = new Rectangle(rect.Left + marginX, rect.Top + marginY, sideLength, sideLength);
                 screenRect = _watchVarControl.containingPanel.RectangleToScreen(drawRectangle);
             }
+
             return Cursor.Position.IsInsideRect(screenRect);
         }
 
@@ -73,6 +73,7 @@ namespace STROOP.Controls.VariablePanel
                         var option_cap = option_it;
                         ctx.Items.AddHandlerToItem(option_cap.name, () => SetOption(option_cap));
                     }
+
                     ctx.Show(Cursor.Position);
                 }
             }
@@ -108,6 +109,7 @@ namespace STROOP.Controls.VariablePanel
         }
 
         public void SelectOption(int index) => SetOption(options[index]);
+
         public void UpdateOption(int index)
         {
             if (selectedOption.Equals(options[index]))

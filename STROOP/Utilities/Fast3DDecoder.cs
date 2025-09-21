@@ -156,6 +156,7 @@ namespace STROOP.Utilities
                             var a = Config.Stream.GetByte(add + 0x0F);
                             res.AppendLine(Indent(recursionDepth) + $"({x}, {y}, {z}) 0x{flags:X4} ({texX}, {texY}) ({r}, {g}, {b}, {a})");
                         }
+
                         break;
                     case F3DOpcode.G_TRI1:
                         var v1 = ((secondWord >> 16) & 0xFF) / 0x0A;
@@ -200,6 +201,7 @@ namespace STROOP.Utilities
             {
                 if ((word & flag) != 0) res += Enum.GetName(typeof(GeometryFlags), word) + " ";
             }
+
             return res;
         }
     }

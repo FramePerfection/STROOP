@@ -6,7 +6,7 @@ namespace STROOP.Ttc
     /** Rotating block is the triangular prism that rotates around a
      *  horizontal axis (i.e. changes its pitch). They look like
      *  and function like the rotating blocks.
-     *  
+     *
      *  When it completes a rotation, it calls RNG to determine
      *  how long it should wait until the next rotation.
      *  Once it has waited this long, it begins rotating
@@ -14,7 +14,6 @@ namespace STROOP.Ttc
      */
     public class TtcRotatingTriangularPrism : TtcObject
     {
-
         //the turning time for rotating triangular prisms
         public static readonly int TURNING_TIME = 45;
 
@@ -42,11 +41,13 @@ namespace STROOP.Ttc
         public override void Update()
         {
             if (_timer < _timerMax + TURNING_TIME)
-            { //waiting
+            {
+                //waiting
                 _timer++;
             }
             else
-            { //done waiting
+            {
+                //done waiting
                 _timerMax = (PollRNG() % 7) * 20 + 5; // = 5, 25, 45, 65, 85, 105, 125
                 _timer = 0;
                 _timer++;
@@ -56,7 +57,7 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _timerMax + SEPARATOR +
-                    _timer + CLOSER;
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -75,5 +76,4 @@ namespace STROOP.Ttc
             return new TtcRotatingTriangularPrism(rng, _timerMax, _timer);
         }
     }
-
 }

@@ -36,6 +36,7 @@ namespace STROOP.Ttc
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             _counter = (_counter + 1) % 4;
             return returnValue;
         }

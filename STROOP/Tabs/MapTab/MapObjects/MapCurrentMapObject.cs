@@ -2,7 +2,9 @@
 {
     public class MapCurrentMapObject : MapMapObject
     {
-        public MapCurrentMapObject() : base() { }
+        public MapCurrentMapObject() : base()
+        {
+        }
 
         public override MapLayout GetMapLayout()
         {

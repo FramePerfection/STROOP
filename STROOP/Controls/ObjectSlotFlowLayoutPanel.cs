@@ -31,10 +31,7 @@ namespace STROOP.Controls
                 Config.ObjectSlotsManager.MarkedSlotsAddressesDictionary.Clear();
 
             ToolStripMenuItem itemClearSelectedSlots = new ToolStripMenuItem("Clear Selected Slots");
-            itemClearSelectedSlots.Click += (sender, e) =>
-            {
-                Config.ObjectSlotsManager.SelectedSlotsAddresses.Clear();
-            };
+            itemClearSelectedSlots.Click += (sender, e) => { Config.ObjectSlotsManager.SelectedSlotsAddresses.Clear(); };
 
             ToolStripMenuItem itemUnloadAllButMarkedSlots = new ToolStripMenuItem("Unload All but Marked Slots");
             itemUnloadAllButMarkedSlots.Click += (sender, e) =>
@@ -53,10 +50,12 @@ namespace STROOP.Controls
                 {
                     controls.Add(control);
                 }
+
                 while (Controls.Count > 0)
                 {
                     Controls.RemoveAt(0);
                 }
+
                 foreach (Control control in controls)
                 {
                     Controls.Add(control);

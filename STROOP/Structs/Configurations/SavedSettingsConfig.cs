@@ -15,6 +15,7 @@ namespace STROOP.Structs.Configurations
             T _value;
             public readonly T defaultValue;
             public readonly string name;
+
             public T value
             {
                 get => _value;
@@ -32,11 +33,13 @@ namespace STROOP.Structs.Configurations
                 this.defaultValue = defaultValue;
                 this._value = defaultValue;
             }
+
             public static implicit operator T(SavedVariable<T> var) => var.value;
             public void Reset() => value = defaultValue;
         }
 
         static Dictionary<string, FieldInfo> savedFieldsByName = GetFieldsByNames();
+
         static Dictionary<string, FieldInfo> GetFieldsByNames()
         {
             var result = new Dictionary<string, FieldInfo>();
@@ -45,6 +48,7 @@ namespace STROOP.Structs.Configurations
                     result[savedVariable.Name] = savedVariable;
             return result;
         }
+
         static Dictionary<Type, (Func<string, object> parse, Func<object, string> tostring)> typeParsers = new Dictionary<Type, (Func<string, object>, Func<object, string>)>()
         {
             [typeof(bool)] = (_ => bool.Parse(_), _ => (Convert.ToBoolean(_)).ToString()),
@@ -111,6 +115,7 @@ namespace STROOP.Structs.Configurations
                 if (tabPage == null) continue;
                 initiallySavedTabPages.Add(tabPage);
             }
+
             InvokeTabOrderCleanly(initiallySavedTabPages);
         }
 
@@ -201,6 +206,7 @@ namespace STROOP.Structs.Configurations
                 item.Click += (sender, e) => AddTab(tab);
                 tabItems.Add(item);
             }
+
             tabItems.Sort((item1, item2) => item1.Text.CompareTo(item2.Text));
             tabItems.ForEach(item => items.Add(item));
 
@@ -248,25 +254,27 @@ namespace STROOP.Structs.Configurations
                 switch (element.Name.ToString())
                 {
                     case "TabOrder":
+                    {
+                        List<string> tabNames = new List<string>();
+                        foreach (var tabName in element.Elements())
                         {
-                            List<string> tabNames = new List<string>();
-                            foreach (var tabName in element.Elements())
-                            {
-                                tabNames.Add(tabName.Value);
-                            }
-                            InitiallySavedTabOrder = tabNames;
+                            tabNames.Add(tabName.Value);
                         }
+
+                        InitiallySavedTabOrder = tabNames;
+                    }
                         break;
 
                     case "RemovedTabs":
+                    {
+                        List<string> tabNames = new List<string>();
+                        foreach (var tabName in element.Elements())
                         {
-                            List<string> tabNames = new List<string>();
-                            foreach (var tabName in element.Elements())
-                            {
-                                tabNames.Add(tabName.Value);
-                            }
-                            InitiallySavedRemovedTabs = tabNames;
+                            tabNames.Add(tabName.Value);
                         }
+
+                        InitiallySavedRemovedTabs = tabNames;
+                    }
                         break;
                     default:
                         if (savedFieldsByName.TryGetValue(element.Name.ToString(), out var var))
@@ -275,6 +283,7 @@ namespace STROOP.Structs.Configurations
                         break;
                 }
             }
+
             _isLoaded = true;
         }
 

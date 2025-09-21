@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
@@ -21,7 +20,6 @@ namespace STROOP.Tabs.GfxTab
         * there are nodes setting up a camera, rotationg / scaling models, handling animation, all kinds of stuff
         * This manager makes it easy to browse all the nodes and edit them
         */
-        
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
@@ -86,6 +84,7 @@ namespace STROOP.Tabs.GfxTab
             {
                 MessageBox.Show("Hack files are missing in Resources\\Hacks folder");
             }
+
             hck?.LoadPayload();
         }
 
@@ -101,11 +100,10 @@ namespace STROOP.Tabs.GfxTab
         private void DumpButton_Click(object sender, EventArgs e)
         {
             if (SelectedNode != null && (SelectedNode is GfxDisplayList || SelectedNode is GfxAnimationNode
-                || SelectedNode is GfxTranslatedModel || SelectedNode is GfxRotationNode))
+                                                                        || SelectedNode is GfxTranslatedModel || SelectedNode is GfxRotationNode))
             {
                 uint address = Config.Stream.GetUInt32(SelectedNode.Address + 0x14);
                 richTextBoxGfx.Text = Fast3DDecoder.DecodeList(SegmentationUtilities.DecodeSegmentedAddress(address));
-
             }
             else
             {
@@ -126,7 +124,6 @@ namespace STROOP.Tabs.GfxTab
         // Build a GFX tree for every object that is selected in the object slot view
         private void RefreshButtonObject_Click(object sender, EventArgs e)
         {
-
             HashSet<uint> list = Config.ObjectSlotsManager.SelectedSlotsAddresses;
             if (list != null && list.Count > 0)
             {
@@ -135,6 +132,7 @@ namespace STROOP.Tabs.GfxTab
                 {
                     AddToTreeView(address);
                 }
+
                 ExpandNodesUpTo(treeViewGfx.Nodes, 4);
             }
             else

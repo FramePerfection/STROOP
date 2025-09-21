@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using STROOP.Core.Variables;
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
@@ -22,8 +21,9 @@ namespace STROOP.Forms
         private readonly List<DescribedMemoryState> _variableMemoryStates;
 
         public VariableControllerForm(string varName, WatchVariableWrapper watchVarWrapper) :
-                this(new List<string>() { varName }, new List<WatchVariableWrapper>() { watchVarWrapper })
-        { }
+            this(new List<string>() { varName }, new List<WatchVariableWrapper>() { watchVarWrapper })
+        {
+        }
 
         public VariableControllerForm(List<string> varNames, List<WatchVariableWrapper> watchVarWrappers)
         {
@@ -55,6 +55,7 @@ namespace STROOP.Forms
                     tableLayoutPanel1.Controls.Add(_buttonAdd, 2, 2);
                     tableLayoutPanel1.Controls.Add(_buttonSubtract, 0, 2);
                 }
+
                 itemInvertedAdd.Checked = inverted;
                 itemInvertedSubtract.Checked = inverted;
             };

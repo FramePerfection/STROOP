@@ -34,6 +34,7 @@ namespace STROOP.Structs.Configurations
                 uint address = addressNullable.Value;
                 dictionary[address] = part2;
             }
+
             return dictionary;
         }
 
@@ -131,6 +132,7 @@ namespace STROOP.Structs.Configurations
                 string name = word.Substring(0, word.Length - suffix.Length);
                 return (type, name);
             }
+
             return (null, null);
         }
 

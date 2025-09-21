@@ -16,12 +16,14 @@ namespace STROOP.Tabs.MapTab
         Dictionary<string, BackgroundImage> _backgroundImageDictionary = new Dictionary<string, BackgroundImage>();
 
         public MapLayout DefaultMap;
-        public MapLayout ROMHackMap = new MapLayout() {
+
+        public MapLayout ROMHackMap = new MapLayout()
+        {
             ImagePath = "Transparent.png",
             Background = new BackgroundImage(
-                "ROM Hack Background", 
+                "ROM Hack Background",
                 "Resources/Maps/Background Images/Blue Background.png"
-                ),
+            ),
             Coordinates = new RectangleF(-8192, -8192, 2 * 8192, 2 * 8192)
         };
 
@@ -63,6 +65,7 @@ namespace STROOP.Tabs.MapTab
             {
                 if (map.Y > bestMap.Y) bestMap = map;
             }
+
             return bestMap;
         }
 

@@ -8,6 +8,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     public abstract class MapBackgroundObject : MapIconObject
     {
         Renderers.SpriteRenderer renderer;
+
         public MapBackgroundObject()
             : base(null)
         {

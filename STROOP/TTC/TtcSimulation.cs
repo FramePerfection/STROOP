@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace STROOP.Ttc
 {
-
     public class TtcSimulation
     {
         private readonly TtcRng _rng;
@@ -116,6 +115,7 @@ namespace STROOP.Ttc
             {
                 lines.Add(rngObject.ToString());
             }
+
             lines.Add("RNG Value = " + _rng.GetRng());
             lines.Add("RNG Index = " + _rng.GetIndex());
             lines.Add("");
@@ -192,7 +192,7 @@ namespace STROOP.Ttc
                         cogConfigurations[5].LowerCogCurrentAngularVelocity >= lowerCogMinAngularVelocity;
 
                     if (upperCogGoal && lowerCogGoal)
-                    //if (upperCogPreGoal)
+                        //if (upperCogPreGoal)
                     {
                         return frame;
                     }
@@ -263,7 +263,7 @@ namespace STROOP.Ttc
             int? pendulum1SwingIndexBaselineNullable = pendulum1.GetSwingIndex();
             if (!pendulum1SwingIndexBaselineNullable.HasValue) return (false, null, 0);
             int pendulum1SwingIndexBaseline = pendulum1SwingIndexBaselineNullable.Value;
-            
+
             TtcPendulum pendulum2 = GetFarPendulum();
             int? pendulum2SwingIndexBaselineNullable = pendulum2.GetSwingIndex();
             if (!pendulum2SwingIndexBaselineNullable.HasValue) return (false, null, 0);
@@ -408,11 +408,9 @@ namespace STROOP.Ttc
                     }
                     else if (atEndAngle)
                     {
-
                     }
                     else if (atResetAngle)
                     {
-
                     }
                 }
 
@@ -455,7 +453,7 @@ namespace STROOP.Ttc
                     rngObject.SetFrame(frame);
                     rngObject.Update();
                 }
-                
+
                 if (pendulumAnglesForDust.Contains(pendulum._angle))
                 {
                     output.Add(frame);
@@ -612,11 +610,13 @@ namespace STROOP.Ttc
                     {
                         _rng.PollRNG(3);
                     }
+
                     // coin for bobomb 2
                     if (counter == 258 && rngObject == secondBobomb)
                     {
                         _rng.PollRNG(3);
                     }
+
                     rngObject.SetFrame(frame);
                     rngObject.Update();
                 }
@@ -789,6 +789,7 @@ namespace STROOP.Ttc
                     return _currentFrame;
                 }
             }
+
             return null;
         }
 
@@ -914,6 +915,7 @@ namespace STROOP.Ttc
             {
                 List<int> pendulumState = dictionary[frame];
             }
+
             InfoForm.ShowValue(string.Join("\r\n", outputLines));
         }
     }

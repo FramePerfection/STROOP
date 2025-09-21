@@ -13,6 +13,7 @@ namespace STROOP.Controls.VariablePanel
                 if (value.meaning == CombinedValuesMeaning.SameValue)
                     AccessScope<StroopMainForm>.content.GetTab<Tabs.TrianglesTab>().SetCustomTriangleAddresses((uint)value.value);
             }
+
             return false;
         });
 

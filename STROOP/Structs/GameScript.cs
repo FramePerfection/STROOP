@@ -1,6 +1,12 @@
 ﻿namespace STROOP.Structs
 {
-    public enum ExecuteModeType {Once, Always, UserCalledS };
+    public enum ExecuteModeType
+    {
+        Once,
+        Always,
+        UserCalledS
+    };
+
     public class GameScript
     {
         public uint[] Script;

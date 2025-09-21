@@ -13,7 +13,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("Custom Gridlines", "Grid", nameof(CreateCustom))]
     public class MapGridlinesObject : MapLineObject
     {
-
         int _hExpanse = 16;
         int _vExpanse = 8;
         int _verticalLineDistance = 1;
@@ -26,8 +25,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 c.W *= (graphics.pixelsPerUnit.Y * Size - 2) / (maxSize - 2);
             return c;
         }
+
         protected readonly Func<float, float> GetSize;
         protected readonly string name;
+
         protected MapGridlinesObject(string name, Func<float, float> GetSize)
             : base()
         {
@@ -137,6 +138,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 minY = (int)((positionAngle.Y - vExpanse) / verticalIncrement - 1) * verticalIncrement;
                 maxY = (int)((positionAngle.Y + vExpanse) / verticalIncrement + 1) * verticalIncrement;
             }
+
             for (float y = minY; y <= maxY; y += verticalMultiplier)
             {
                 for (var x = viewXMin; x <= viewXMax; x += increment)
@@ -144,12 +146,14 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     vertices.Add(new Vector3(x, y, viewZMin));
                     vertices.Add(new Vector3(x, y, viewZMax));
                 }
+
                 for (var z = viewZMin; z <= viewZMax; z += increment)
                 {
                     vertices.Add(new Vector3(viewXMin, y, z));
                     vertices.Add(new Vector3(viewXMax, y, z));
                 }
             }
+
             if (is3DGrid && verticalConnectorSpacing != 0)
             {
                 var scaledIncrement = increment * verticalConnectorSpacing;
@@ -178,7 +182,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "VerticalExpanse", _vExpanse.ToString());
                 SaveValueNode(node, "VerticalLineDistance", _verticalLineDistance.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

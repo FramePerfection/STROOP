@@ -13,6 +13,5 @@ namespace STROOP.Controls
                 return cp;
             }
         }
-
     }
 }

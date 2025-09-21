@@ -56,7 +56,7 @@ namespace STROOP.Utilities
             public IntPtr VirtualAddress;
             public ulong VirtualAttributes;
         }
-        
+
         /// <summary>
         /// C# representation of SYMBOL_INFO in dbghelp.h. <para/>
         /// https://learn.microsoft.com/de-de/windows/win32/api/dbghelp/ns-dbghelp-symbol_info <para/>
@@ -93,6 +93,7 @@ namespace STROOP.Utilities
         }
 
         #region DLL Import
+
         [DllImport("kernel32.dll")]
         static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
 
@@ -127,10 +128,10 @@ namespace STROOP.Utilities
 
         [DllImport("dbghelp", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SymCleanup", ExactSpelling = true)]
         public static extern bool SymCleanup(IntPtr hProcess);
-        
+
         [DllImport("dbghelp", SetLastError = true)]
         public static extern bool SymFromName(IntPtr hProcess, string name, ref Win32SymbolInfo win32Symbol);
-        
+
         [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsWow64Process([In] IntPtr process, [Out] out bool wow64Process);

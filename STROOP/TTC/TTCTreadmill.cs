@@ -8,7 +8,7 @@ namespace STROOP.Ttc
      *  in TTC, only the first one actually updates meaningfully
      *  using RNG, and the others simply copy what this
      *  first one is doing.
-     *  
+     *
      *  When a treadmill comes to a stop, it calls RNG to determine
      *  whether it should move forwards or backwards and also
      *  how long it should move in that direction. Then the treadmill
@@ -18,21 +18,20 @@ namespace STROOP.Ttc
      */
     public class TtcTreadmill : TtcObject
     {
-
         public readonly int _subType;
-		public int _currentSpeed;
+        public int _currentSpeed;
         public int _targetSpeed;
         public int _timerMax;
         public int _timer;
 
         public TtcTreadmill(TtcRng rng, uint address) :
-             this(
-                 rng: rng,
-                 subType: Config.Stream.GetInt32(address + 0x144),
-                 currentSpeed: (int)Config.Stream.GetSingle(address + 0xFC),
-                 targetSpeed: (int)Config.Stream.GetSingle(address + 0x100),
-                 timerMax: Config.Stream.GetInt32(address + 0x104),
-                 timer: Config.Stream.GetInt32(address + 0x154))
+            this(
+                rng: rng,
+                subType: Config.Stream.GetInt32(address + 0x144),
+                currentSpeed: (int)Config.Stream.GetSingle(address + 0xFC),
+                targetSpeed: (int)Config.Stream.GetSingle(address + 0x100),
+                timerMax: Config.Stream.GetInt32(address + 0x104),
+                timer: Config.Stream.GetInt32(address + 0x154))
         {
         }
 
@@ -54,32 +53,39 @@ namespace STROOP.Ttc
         public override void Update()
         {
             if (_subType != 0)
-            { //if not first treadmill, do nothing
+            {
+                //if not first treadmill, do nothing
                 _timer++;
                 return;
             }
 
             if (_timer <= _timerMax)
-            { //still/accelerate/move
+            {
+                //still/accelerate/move
                 if (_timer <= 5)
-                { //be still
+                {
+                    //be still
                     _timer++;
                 }
                 else
-                { //accelerate/move
+                {
+                    //accelerate/move
                     _currentSpeed = MoveNumberTowards(_currentSpeed, _targetSpeed, 10);
                     _timer++;
                 }
             }
             else
-            { //slow down
+            {
+                //slow down
                 _currentSpeed = MoveNumberTowards(_currentSpeed, 0, 10);
                 if (_currentSpeed == 0)
-                { //came to a stop
+                {
+                    //came to a stop
                     _timerMax = (PollRNG() % 7) * 20 + 10; // = 10, 30, 50, 70, 90, 110, 130
                     _targetSpeed = (PollRNG() <= 32766) ? -50 : 50; // = -50, 50
                     _timer = 0;
                 }
+
                 _timer++;
             }
         }
@@ -87,9 +93,9 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _currentSpeed + SEPARATOR +
-                      _targetSpeed + SEPARATOR +
-                      _timerMax + SEPARATOR +
-                      _timer + CLOSER;
+                   _targetSpeed + SEPARATOR +
+                   _timerMax + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -111,5 +117,4 @@ namespace STROOP.Ttc
             return new TtcTreadmill(rng, _subType, _currentSpeed, _targetSpeed, _timerMax, _timer);
         }
     }
-
 }

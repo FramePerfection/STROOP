@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VarData>
-  
+
   <Data groupList="Basic" type="uint" offsetUS="0x8032D5D4" offsetJP="0x8032C694" base="Relative" color="Yellow">Global Timer</Data>
   <Data groupList="Basic" base="None" specialType="GlobalTimerMod64" color="Yellow">Global Timer Mod 64</Data>
   <Data groupList="Basic" type="ushort" offsetUS="0x8038EEE0" offsetJP="0x8038EEE0" base="Relative" color="Yellow">RNG Value</Data>

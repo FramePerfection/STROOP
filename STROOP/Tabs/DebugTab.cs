@@ -7,7 +7,7 @@ namespace STROOP.Tabs
     public partial class DebugTab : STROOPTab
     {
         RadioButton[] _advancedModeSettingRadioButtons;
-        
+
         public DebugTab()
         {
             InitializeComponent();
@@ -32,7 +32,8 @@ namespace STROOP.Tabs
                 Config.Stream.SetValue((byte)0, DebugConfig.AdvancedModeSettingAddress);
             };
 
-            _advancedModeSettingRadioButtons = new RadioButton[] {
+            _advancedModeSettingRadioButtons = new RadioButton[]
+            {
                 radioButtonAdvancedModeObjectCounter,
                 radioButtonAdvancedModeCheckInfo,
                 radioButtonAdvancedModeMapInfo,
@@ -72,10 +73,7 @@ namespace STROOP.Tabs
 
             // Misc debug
 
-            checkBoxClassicMode.Click += (sender, e) =>
-            {
-                Config.Stream.SetValue(checkBoxClassicMode.Checked ? (byte)0x01 : (byte)0x00, DebugConfig.ClassicModeAddress);
-            };
+            checkBoxClassicMode.Click += (sender, e) => { Config.Stream.SetValue(checkBoxClassicMode.Checked ? (byte)0x01 : (byte)0x00, DebugConfig.ClassicModeAddress); };
 
             checkBoxSpawnMode.Click += (sender, e) =>
             {
@@ -83,10 +81,7 @@ namespace STROOP.Tabs
                 Config.Stream.SetValue(checkBoxSpawnMode.Checked ? (byte)0x01 : (byte)0x00, DebugConfig.SpawnModeAddress);
             };
 
-            checkBoxStageSelect.Click += (sender, e) =>
-            {
-                Config.Stream.SetValue(checkBoxStageSelect.Checked ? (byte)0x01 : (byte)0x00, DebugConfig.StageSelectAddress);
-            };
+            checkBoxStageSelect.Click += (sender, e) => { Config.Stream.SetValue(checkBoxStageSelect.Checked ? (byte)0x01 : (byte)0x00, DebugConfig.StageSelectAddress); };
 
             checkBoxFreeMovement.Click += (sender, e) =>
             {
@@ -134,7 +129,7 @@ namespace STROOP.Tabs
             // Misc debug
             checkBoxClassicMode.Checked = Config.Stream.GetByte(DebugConfig.ClassicModeAddress) == 0x01;
             checkBoxSpawnMode.Checked = Config.Stream.GetByte(DebugConfig.AdvancedModeSettingAddress) == 0x03
-                 && Config.Stream.GetByte(DebugConfig.SpawnModeAddress) == 0x01;
+                                        && Config.Stream.GetByte(DebugConfig.SpawnModeAddress) == 0x01;
             checkBoxStageSelect.Checked = Config.Stream.GetByte(DebugConfig.StageSelectAddress) == 0x01;
             checkBoxFreeMovement.Checked = Config.Stream.GetUInt16(DebugConfig.FreeMovementAddress) == DebugConfig.FreeMovementOnValue;
         }

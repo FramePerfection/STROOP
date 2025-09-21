@@ -15,6 +15,7 @@ namespace STROOP.Utilities
                 wr.WriteLine(text);
                 wr.WriteLine();
             }
+
             firstError = false;
         }
     }

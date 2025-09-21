@@ -11,11 +11,12 @@ namespace STROOP.Tabs.GhostTab
 {
     partial class GhostTab
     {
-
         // <--- static utility and information --->
 
         private static int defaultGhostColorCounter = 1;
-        private static readonly Vector4[] DefaultGhostColors = new[] {
+
+        private static readonly Vector4[] DefaultGhostColors = new[]
+        {
             new Vector4(1, 0, 0, 1),
             new Vector4(1, 0.5f, 0, 1),
             new Vector4(1, 1, 0, 1),
@@ -41,7 +42,8 @@ namespace STROOP.Tabs.GhostTab
             using (Config.Stream.Suspend())
             {
                 // Displaylist nodes that point to these should generate hats dynamically instead.
-                var originalDisplayListPointers = new uint[] {
+                var originalDisplayListPointers = new uint[]
+                {
                     0x40119A0,
                     0x4011A90,
                     0x4011B80,
@@ -69,7 +71,7 @@ namespace STROOP.Tabs.GhostTab
                         }
                     }
                 }
-                
+
                 var findOutWhatToCallThis = RomVersionConfig.Version == RomVersion.JP ? 0x8D720 : 0x90580;
                 uint jumpOutOfHeadAddr = (uint)(findOutWhatToCallThis + bank0x04Offset) + 0x8;
                 Config.Stream.WriteRam(new byte[] { 0xB8, 0, 0, 0, 0, 0, 0, 0 }, jumpOutOfHeadAddr, EndiannessType.Big);
@@ -122,6 +124,7 @@ namespace STROOP.Tabs.GhostTab
         // <--- controls --->
 
         bool suspendSelectedIndexChanged = false;
+
         private void listBoxGhosts_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (suspendSelectedIndexChanged)
@@ -135,6 +138,7 @@ namespace STROOP.Tabs.GhostTab
                 buttonGhostColor.BackColor = ColorUtilities.Vec4ToColor(ghost.hatColor);
                 buttonGhostColor.Enabled = true;
             }
+
             UpdateGhostInfoControls();
         }
 

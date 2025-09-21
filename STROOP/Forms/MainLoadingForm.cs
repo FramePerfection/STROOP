@@ -42,6 +42,7 @@ namespace STROOP.Forms
                 }));
                 tasks[i].task();
             }
+
             Invoke(new Action(() => labelLoadingStatus.Text = "Finishing"));
         }
 

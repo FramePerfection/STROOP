@@ -45,6 +45,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 lst.AddRange(getTriangles());
                 return lst;
             }
+
             return keptTris;
         }
     }

@@ -6,37 +6,38 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
 using Microsoft.WindowsAPICodePack.Dialogs;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
 using STROOP.Utilities;
-
 using AutomaticParameterGetters = System.Collections.Generic.Dictionary<STROOP.Tabs.BruteforceTab.ValueGetters.GetterFuncs, System.Collections.Generic.HashSet<string>>;
 
 namespace STROOP.Tabs.BruteforceTab
 {
-
     public partial class BruteforceTab : STROOPTab
     {
         public const int MAX_CONSOLE_LINES = 500;
 
-        public class UnmuteScoringFuncs { }
+        public class UnmuteScoringFuncs
+        {
+        }
 
         static string BRUTEFORCER_PATH = "Bruteforcers";
         static readonly string[] variableSourceFiles = { "MarioData.xml", "CameraData.xml", "ActionsData.xml", "MiscData.xml" };
         static IEnumerable<(Type type, SurfaceAttribute attribute)> moduleTypes;
 
         static XElement configNode = null;
+
         [InitializeConfigParser]
         static void InitConfig() => XmlConfigParser.AddConfigParser("BruteforcerModulesPath", ParseBruteforcerModdulesPath);
+
         static void ParseBruteforcerModdulesPath(XElement node)
         {
             configNode = node;
             BRUTEFORCER_PATH = node.Attribute("path").Value;
         }
+
         static void SaveBruteforcerModulePath()
         {
             if (configNode == null)
@@ -52,8 +53,12 @@ namespace STROOP.Tabs.BruteforceTab
                 foreach (var attrObj in t.GetCustomAttributes(false))
                 {
                     if (attrObj is SurfaceAttribute attr)
-                    { lst.Add((t, attr)); break; }
+                    {
+                        lst.Add((t, attr));
+                        break;
+                    }
                 }
+
             moduleTypes = lst;
         }
 
@@ -128,6 +133,7 @@ namespace STROOP.Tabs.BruteforceTab
                     return (() => (manualParameterVar_cap is BruteforceVariableView<T> compatible) ? compatible._getterFunction().First() : default(T),
                         () => manualParameterVar_cap.ValueSet -= onValueChange);
                 }
+
             return (null, () => { });
         }
 
@@ -178,6 +184,7 @@ namespace STROOP.Tabs.BruteforceTab
                     documentationToolTip.Active = true;
                     documentationToolTip.Show(doc, FindForm(), FindForm().PointToClient(Cursor.Position));
                 }
+
                 Updating?.Invoke();
             }
         }
@@ -251,6 +258,7 @@ namespace STROOP.Tabs.BruteforceTab
                                     docs[varName] = comment;
                             }
                         }
+
                         comment = null;
                     }
                 }
@@ -282,7 +290,8 @@ namespace STROOP.Tabs.BruteforceTab
                 if (ValueGetters.valueGetters.TryGetValue((moduleName, v.Key), out var fns))
                 {
                     if (fns.displayName == null)
-                    { // null indicates this shall be the only available option
+                    {
+                        // null indicates this shall be the only available option
                         var vKey = v.Key;
                         Func<string> fn = () => fns.dic.FirstOrDefault().Value().moduleVariableGetter(vKey);
                         parameterGetters[vKey] = fn;
@@ -347,9 +356,11 @@ namespace STROOP.Tabs.BruteforceTab
                             fn = option.moduleVariableGetter;
                             selectedStr = option.optionName;
                         }
+
                         SetConcreteOption((selectedStr, fn));
                         return selectedStr;
                     }
+
                     foreach (var option_it in options)
                     {
                         var option_cap = option_it;
@@ -361,6 +372,7 @@ namespace STROOP.Tabs.BruteforceTab
                         };
                         wrapper.options.Add((option_cap, geledate));
                     }
+
                     SetSelected("[Keep]");
                     if (fns.Key.defaultOption != null)
                         SetConcreteOption(fns.Key.defaultOption);
@@ -387,6 +399,7 @@ namespace STROOP.Tabs.BruteforceTab
                         ctrl.BaseColor = ColorUtilities.GetColorFromString("Yellow");
                         newWatchVar.ValueSet += UpdateControlState;
                     }
+
                     parameterGetters[v.Key] = fn;
                 }
             }
@@ -455,6 +468,7 @@ namespace STROOP.Tabs.BruteforceTab
                     if (jsonName != null)
                         knownStateVariablesLookup[jsonName] = helpMeGodIsNotReal;
                 }
+
                 foreach (var variable in variables)
                 {
                     if (variable.Value.modifier == "dynamic"
@@ -502,6 +516,7 @@ namespace STROOP.Tabs.BruteforceTab
                                 format = "%f";
                                 break;
                         }
+
                         if (readMethod == null)
                             continue;
 
@@ -569,9 +584,10 @@ emu.atstop(WriteOutput);
                             targetVariable.value = StringUtilities.GetJsonValue(targetVariable.GetWrapperType(), kvp.Value.valueObject.ToString()) as IConvertible ?? 0;
                             goto skipNew;
                         }
+
                     if (!knownStateVariables.Any(view => view.GetJsonName() == kvp.Key))
                         variableKeepObjects[kvp.Key] = kvp.Value;
-                    skipNew:;
+                skipNew: ;
                 }
         }
 
@@ -673,11 +689,11 @@ emu.atstop(WriteOutput);
             if (bruteforcerModules.Count == 0)
             {
                 if (MessageBox.Show($"No bruteforcer modules have been found at{Environment.NewLine}" +
-                    $"\"{BRUTEFORCER_PATH}\"{Environment.NewLine}" +
-                    $"Do you want to locate your modules directory now?{Environment.NewLine}" +
-                    "(This should be the \"binaries\" directory from the sm64_bruteforcers repository)",
-                    "No bruteforcer modules found",
-                    MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                    $"\"{BRUTEFORCER_PATH}\"{Environment.NewLine}" +
+                                    $"Do you want to locate your modules directory now?{Environment.NewLine}" +
+                                    "(This should be the \"binaries\" directory from the sm64_bruteforcers repository)",
+                        "No bruteforcer modules found",
+                        MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     var dlg = new CommonOpenFileDialog();
                     dlg.IsFolderPicker = true;
@@ -697,8 +713,13 @@ emu.atstop(WriteOutput);
                     if (File.Exists($"{bf_it}/main.exe"))
                     {
                         var bf = bf_it;
-                        moduleStrip.Items.AddHandlerToItem(bf.Substring(BRUTEFORCER_PATH.Length + 1), () => { LoadModule(bf); ChooseM64(); });
+                        moduleStrip.Items.AddHandlerToItem(bf.Substring(BRUTEFORCER_PATH.Length + 1), () =>
+                        {
+                            LoadModule(bf);
+                            ChooseM64();
+                        });
                     }
+
             moduleStrip.Show(clickPosition);
         }
 

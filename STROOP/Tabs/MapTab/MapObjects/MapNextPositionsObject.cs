@@ -60,6 +60,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 float yNorm = Config.Stream.GetSingle(floorTri + TriangleOffsetsConfig.NormY);
                 multiplier = yNorm;
             }
+
             float effectiveSpeed = marioHSpeed * multiplier;
 
             List<(float x, float z)> points2D = Enumerable.Range(0, (int)(_numFrames * 4)).ToList()
@@ -79,6 +80,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 var tex = isFullStep ? fullStepTex : quarterStepTex;
                 data.Add((x, marioY, z, marioAngle, tex));
             }
+
             return data;
         }
 

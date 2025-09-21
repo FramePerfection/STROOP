@@ -40,10 +40,8 @@ namespace STROOP.Tabs
                 string soundEffectString = HexUtilities.FormatValue(soundEffect, 4);
                 listBoxSoundSoundEffect.Items.Add(soundEffectString);
             }
-            listBoxSoundSoundEffect.Click += (sender, e) =>
-            {
-                textBoxSoundSoundEffect.Text = listBoxSoundSoundEffect.SelectedItem.ToString() + "FF81";
-            };
+
+            listBoxSoundSoundEffect.Click += (sender, e) => { textBoxSoundSoundEffect.Text = listBoxSoundSoundEffect.SelectedItem.ToString() + "FF81"; };
             buttonSoundPlaySoundEffect.Click += (sender, e) =>
             {
                 uint setSound = RomVersionConfig.SwitchMap(0x8031EB00, 0x8031DC78);

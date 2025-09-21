@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 
@@ -17,7 +16,7 @@ namespace STROOP.Core.Variables
                 memoryState.descriptor.UseAbsoluteAddressing,
                 memoryState.descriptor.Mask,
                 memoryState.descriptor.Shift
-                ));
+            ));
 
         private static IEnumerable<bool> SetAll<T>(DescribedMemoryState memoryState, T value) where T : struct, IConvertible
             => memoryState.GetAddressList().Select(address => Config.Stream.SetValueRoundingWrapping(
@@ -27,9 +26,10 @@ namespace STROOP.Core.Variables
                 memoryState.descriptor.UseAbsoluteAddressing,
                 memoryState.descriptor.Mask,
                 memoryState.descriptor.Shift
-                )).ToArray();
+            )).ToArray();
 
         public delegate IEnumerable<T> GetterFunction<out T>();
+
         public delegate IEnumerable<bool> SetterFunction<T>(T value);
 
         public static class ViewProperties
@@ -43,8 +43,7 @@ namespace STROOP.Core.Variables
                 specialType,
                 roundingLimit,
                 display,
-                color
-                ;
+                color;
         }
 
         public interface IView
@@ -75,8 +74,17 @@ namespace STROOP.Core.Variables
             public Action ValueSet { get; set; }
             public Action OnDelete { get; set; }
             public string Name { get; set; }
-            public string Color { set { SetValueByKey(ViewProperties.color, value); } }
-            public string Display { set { SetValueByKey(ViewProperties.display, value); } }
+
+            public string Color
+            {
+                set { SetValueByKey(ViewProperties.color, value); }
+            }
+
+            public string Display
+            {
+                set { SetValueByKey(ViewProperties.display, value); }
+            }
+
             public int DislpayPriority { get; }
 
             Dictionary<string, string> keyedValues = new Dictionary<string, string>();
@@ -90,12 +98,14 @@ namespace STROOP.Core.Variables
                     System.Diagnostics.Debugger.Break();
                 this.wrapperType = wrapperType;
             }
+
             public virtual string GetValueByKey(string key)
             {
                 if (keyedValues.TryGetValue(key, out var result))
                     return result;
                 return null;
             }
+
             public virtual bool SetValueByKey(string key, object value)
             {
                 keyedValues[key] = value.ToString();
@@ -108,7 +118,8 @@ namespace STROOP.Core.Variables
             public GetterFunction<T> _getterFunction { get; set; }
             public SetterFunction<T> _setterFunction { get; set; }
 
-            public CustomView(Type wrapperType) : base(wrapperType) {
+            public CustomView(Type wrapperType) : base(wrapperType)
+            {
                 _getterFunction = WatchVariableSpecialUtilities.Defaults<T>.DEFAULT_GETTER;
                 _setterFunction = WatchVariableSpecialUtilities.Defaults<T>.DEFAULT_SETTER;
             }
@@ -160,8 +171,10 @@ namespace STROOP.Core.Variables
                 Name = xElement.Value;
                 wrapper = xElement.Attribute(XName.Get("subclass"))?.Value ?? "Number";
             }
+
             public Type GetWrapperType() => WatchVariableUtilities.GetWrapperType(memoryDescriptor.MemoryType, wrapper);
             public string GetValueByKey(string key) => xElement.Attribute(key)?.Value ?? null;
+
             public bool SetValueByKey(string key, object value)
             {
                 xElement.SetAttributeValue(XName.Get(key), value.ToString());
@@ -196,8 +209,10 @@ namespace STROOP.Core.Variables
                             return value;
                         return null;
                     }
+
                     return MemoryDescriptor.FromXml(element).view;
             }
+
             return null;
         }
     }

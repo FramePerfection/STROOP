@@ -39,7 +39,7 @@ namespace STROOP.Tabs.MapTab
         public override int GetHashCode()
         {
             return ImagePath.GetHashCode() * 127 + Level.GetHashCode() * 31 + Area.GetHashCode() * 17 + Y.GetHashCode()
-                + 257 * MissionLayout.GetHashCode() + 67 * LoadingPoint.GetHashCode();
+                   + 257 * MissionLayout.GetHashCode() + 67 * LoadingPoint.GetHashCode();
         }
 
         public override string ToString()

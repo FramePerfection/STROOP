@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
@@ -9,7 +8,9 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
 {
     public class CheckAction : IMethodController
     {
-        void IMethodController.Remove() { }
+        void IMethodController.Remove()
+        {
+        }
 
         void IMethodController.SetTargetFunc(ScoringFunc target)
         {
@@ -33,12 +34,12 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                 var ctrl = (WatchVariableSelectionWrapper<WatchVariableStringWrapper, string>)panel.AddVariable(view).WatchVarWrapper;
                 ctrl.DisplaySingleOption = true;
                 ctrl.options.Add(("Set action now", () =>
-                {
-                    var action = Config.Stream.GetInt32(Structs.MarioConfig.StructAddress + Structs.MarioConfig.ActionOffset);
-                    currentActionVariable.SetValue(action);
-                    return null;
-                }
-                ));
+                        {
+                            var action = Config.Stream.GetInt32(Structs.MarioConfig.StructAddress + Structs.MarioConfig.ActionOffset);
+                            currentActionVariable.SetValue(action);
+                            return null;
+                        }
+                    ));
             }
         }
     }

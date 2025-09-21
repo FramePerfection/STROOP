@@ -24,12 +24,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     if (tri.IsFloor())
                         lst.Add(tri);
             }
+
             return lst;
         }
 
         public override string GetName() => $"Floor Tris for {PositionAngle.NameOfMultiple(positionAngleProvider())}";
 
         public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.TriangleFloorImage;
-
     }
 }

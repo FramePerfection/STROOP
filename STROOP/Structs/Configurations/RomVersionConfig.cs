@@ -47,6 +47,7 @@ namespace STROOP.Structs.Configurations
                                 throw new ArgumentOutOfRangeException();
                         }
                     }
+
                     break;
                 case RomVersionSelection.US:
                     Version = RomVersion.US;
@@ -106,6 +107,7 @@ namespace STROOP.Structs.Configurations
                     if (valEU.HasValue) return valEU.Value;
                     break;
             }
+
             return 0;
         }
 
@@ -126,6 +128,7 @@ namespace STROOP.Structs.Configurations
                     if (valEU.HasValue) return valEU.Value;
                     break;
             }
+
             return 0;
         }
     }

@@ -13,7 +13,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         CustomTriangleList customTris = new CustomTriangleList(() => TriangleUtilities.GetObjectTriangles().FindAll(tri => tri.IsCeiling()));
         protected override List<TriangleDataModel> GetTrianglesOfAnyDist() => customTris.GetTriangles();
-        
+
         public override string GetName()
         {
             return "All Object Ceiling Tris";
@@ -22,4 +22,3 @@ namespace STROOP.Tabs.MapTab.MapObjects
         public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.TriangleCeilingImage;
     }
 }
-

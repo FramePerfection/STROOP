@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using OpenTK.Mathematics;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
 
@@ -113,6 +111,7 @@ namespace STROOP.Utilities
             {
                 varNameFunc = varName => varName;
             }
+
             List<string> lines = new List<string>();
             foreach (WatchVariableControl watchVar in controls)
             {
@@ -126,6 +125,7 @@ namespace STROOP.Utilities
                     type == typeof(float) ? "f" : "");
                 lines.Add(line);
             }
+
             if (lines.Count > 0)
             {
                 Clipboard.SetText(string.Join("\r\n", lines));
@@ -152,6 +152,7 @@ namespace STROOP.Utilities
                     v = dataVector;
                 }
             }
+
             return hasData;
         }
     }

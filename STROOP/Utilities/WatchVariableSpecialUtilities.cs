@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Models;
@@ -120,20 +119,20 @@ namespace STROOP.Utilities
             Func<IEnumerable<PositionAngle>, double> getter,
             Func<IEnumerable<PositionAngle>, double, bool> setter
             )[] distFuncs =
-                        new(
-            string type,
-            Func<IEnumerable<PositionAngle>, double> getter,
-            Func<IEnumerable<PositionAngle>, double, bool> setter
-            )[]
-                {
-                    DeclareGetterSetter<PositionAngle, double>("X", PositionAngle.GetXDistance, PositionAngle.SetXDistance, double.NaN),
-                    DeclareGetterSetter<PositionAngle, double>("Y", PositionAngle.GetYDistance, PositionAngle.SetYDistance, double.NaN),
-                    DeclareGetterSetter<PositionAngle, double>("Z", PositionAngle.GetZDistance, PositionAngle.SetZDistance, double.NaN),
-                    DeclareGetterSetter<PositionAngle, double>("H", PositionAngle.GetHDistance, PositionAngle.SetHDistance, double.NaN),
-                    DeclareGetterSetter<PositionAngle, double>("", PositionAngle.GetDistance, PositionAngle.SetDistance, double.NaN),
-                    DeclareGetterSetter<PositionAngle, double>("F", PositionAngle.GetFDistance, PositionAngle.SetFDistance, double.NaN),
-                    DeclareGetterSetter<PositionAngle, double>("S", PositionAngle.GetSDistance, PositionAngle.SetSDistance, double.NaN),
-                };
+                new (
+                    string type,
+                    Func<IEnumerable<PositionAngle>, double> getter,
+                    Func<IEnumerable<PositionAngle>, double, bool> setter
+                    )[]
+                    {
+                        DeclareGetterSetter<PositionAngle, double>("X", PositionAngle.GetXDistance, PositionAngle.SetXDistance, double.NaN),
+                        DeclareGetterSetter<PositionAngle, double>("Y", PositionAngle.GetYDistance, PositionAngle.SetYDistance, double.NaN),
+                        DeclareGetterSetter<PositionAngle, double>("Z", PositionAngle.GetZDistance, PositionAngle.SetZDistance, double.NaN),
+                        DeclareGetterSetter<PositionAngle, double>("H", PositionAngle.GetHDistance, PositionAngle.SetHDistance, double.NaN),
+                        DeclareGetterSetter<PositionAngle, double>("", PositionAngle.GetDistance, PositionAngle.SetDistance, double.NaN),
+                        DeclareGetterSetter<PositionAngle, double>("F", PositionAngle.GetFDistance, PositionAngle.SetFDistance, double.NaN),
+                        DeclareGetterSetter<PositionAngle, double>("S", PositionAngle.GetSDistance, PositionAngle.SetSDistance, double.NaN),
+                    };
 
         public static void AddGeneratedEntriesToDictionary()
         {
@@ -209,7 +208,7 @@ namespace STROOP.Utilities
                 new List<(string, Func<double>, Action<double>)>()
                 {
                     ("NumPans", () => SpecialConfig.NumPans, (double value) => SpecialConfig.NumPans = value),
-                    ("CurrentPan", () => SpecialConfig.CurrentPan, (double value) => {}),
+                    ("CurrentPan", () => SpecialConfig.CurrentPan, (double value) => { }),
                     ("PanCamPos", () => SpecialConfig.PanCamPos, (double value) => SpecialConfig.PanCamPos = value),
                     ("PanCamAngle", () => SpecialConfig.PanCamAngle, (double value) => SpecialConfig.PanCamAngle = value),
                     ("PanCamRotation", () => SpecialConfig.PanCamRotation, (double value) => SpecialConfig.PanCamRotation = value),
@@ -382,7 +381,7 @@ namespace STROOP.Utilities
                     return BoolUtilities.Combine(
                         marioPos.SetValues(x: newMarioX, z: newMarioZ),
                         PositionAngle.MarioObj().SetValues(x: newMarioX, z: newMarioZ)
-                        );
+                    );
                 }
             );
 
@@ -419,7 +418,7 @@ namespace STROOP.Utilities
                     return BoolUtilities.Combine(
                         PositionAngle.Mario.SetY(newMarioY),
                         PositionAngle.MarioObj().SetY(newMarioY)
-                        );
+                    );
                 }
             );
 
@@ -458,7 +457,7 @@ namespace STROOP.Utilities
                     return BoolUtilities.Combine(
                         PositionAngle.Mario.SetY(newMarioY),
                         PositionAngle.MarioObj().SetY(newMarioY)
-                        );
+                    );
                 }
             );
 
@@ -529,7 +528,7 @@ namespace STROOP.Utilities
                     return BoolUtilities.Combine(
                         marioPos.SetValues(x: newMarioX, z: newMarioZ),
                         PositionAngle.MarioObj().SetValues(x: newMarioX, z: newMarioZ)
-                        );
+                    );
                 }
             );
 
@@ -565,7 +564,7 @@ namespace STROOP.Utilities
                     return BoolUtilities.Combine(
                         PositionAngle.Mario.SetY(newMarioY),
                         PositionAngle.MarioObj().SetY(newMarioY)
-                        );
+                    );
                 }
             );
 
@@ -604,7 +603,7 @@ namespace STROOP.Utilities
                     return BoolUtilities.Combine(
                         PositionAngle.Mario.SetY(newMarioY),
                         PositionAngle.MarioObj().SetY(newMarioY)
-                        );
+                    );
                 }
             );
 
@@ -688,6 +687,7 @@ namespace STROOP.Utilities
                         numOfCalls = RngIndexer.GetRngIndexDiff(preRng, postRng);
                         break;
                     }
+
                     return numOfCalls;
                 },
                 Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
@@ -1553,7 +1553,7 @@ namespace STROOP.Utilities
                     double distLimit = Math.Sqrt(distLimitSquared);
                     return distLimit;
                 }
-            ,
+                ,
                 (double newDistLimit, uint objAddress) =>
                 {
                     double newDistLimitSquared = newDistLimit * newDistLimit;
@@ -2016,7 +2016,7 @@ namespace STROOP.Utilities
                         return null;
                     return qframes;
                 }
-            ,
+                ,
                 Defaults<int?>.DEFAULT_SETTER);
 
             dictionary.Add("DeltaYawIntendedFacing",
@@ -2079,7 +2079,7 @@ namespace STROOP.Utilities
                     int minuteComponent = (totalDeciSeconds / 600);
                     return minuteComponent + "'" + secondComponent.ToString("D2") + "\"" + deciSecondComponent;
                 }
-            ,
+                ,
                 (string timerString) =>
                 {
                     if (timerString.Length == 0) timerString = "0" + timerString;
@@ -2253,7 +2253,7 @@ namespace STROOP.Utilities
                     double angleDiff = marioAngle - lefthillAngle;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
                 }
-            ,
+                ,
                 (double angleDiff, uint triAddress) =>
                 {
                     double uphillAngle = GetTriangleUphillAngle(triAddress);
@@ -2274,7 +2274,7 @@ namespace STROOP.Utilities
                     double angleDiff = marioAngle - righthillAngle;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
                 }
-            ,
+                ,
                 (double angleDiff, uint triAddress) =>
                 {
                     double uphillAngle = GetTriangleUphillAngle(triAddress);
@@ -2419,10 +2419,10 @@ namespace STROOP.Utilities
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
 
                     double missingDist = distAway -
-                        marioPos.X * triStruct.NormX -
-                        marioPos.Y * triStruct.NormY -
-                        marioPos.Z * triStruct.NormZ -
-                        triStruct.NormOffset;
+                                         marioPos.X * triStruct.NormX -
+                                         marioPos.Y * triStruct.NormY -
+                                         marioPos.Z * triStruct.NormZ -
+                                         triStruct.NormOffset;
 
                     double xDiff = missingDist * triStruct.NormX;
                     double yDiff = missingDist * triStruct.NormY;
@@ -2585,7 +2585,7 @@ namespace STROOP.Utilities
                     int levelNodeCount = Config.Stream.GetInt32(TriangleConfig.LevelNodeCountAddress);
                     return totalNodeCount - levelNodeCount;
                 }
-            ,
+                ,
                 Defaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("TriMinX",
@@ -2773,7 +2773,8 @@ namespace STROOP.Utilities
                 (double angleDiff, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
-                    TriangleDataModel triStruct = TriangleDataModel.Create(triAddress); ;
+                    TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
+                    ;
                     double angleV1ToV2 = MoreMath.AngleTo_AngleUnits(
                         triStruct.X1, triStruct.Z1, triStruct.X2, triStruct.Z2);
                     double newMarioAngleDouble = angleV1ToV2 + angleDiff;
@@ -3470,7 +3471,7 @@ namespace STROOP.Utilities
                     int rngIndexDiff = rngIndex - SpecialConfig.GoalRngIndex;
                     return rngIndexDiff;
                 }
-            ,
+                ,
                 (int rngIndexDiff) =>
                 {
                     int rngIndex = SpecialConfig.GoalRngIndex + rngIndexDiff;
@@ -3531,11 +3532,8 @@ namespace STROOP.Utilities
                 Defaults<uint>.DEFAULT_SETTER);
 
             dictionary.Add("SegmentedToVirtualAddress",
-                () =>
-                {
-                    return SpecialConfig.SegmentedToVirtualAddress;
-                }
-            ,
+                () => { return SpecialConfig.SegmentedToVirtualAddress; }
+                ,
                 (uint value) =>
                 {
                     SpecialConfig.SegmentedToVirtualAddress = value;
@@ -3791,6 +3789,7 @@ namespace STROOP.Utilities
                 double multiplier = Math.Abs(Math.Cos(deltaAngle));
                 vDist /= multiplier;
             }
+
             double steepnessRadians = Math.Acos(triStruct.NormY);
             double hDist = vDist / Math.Tan(steepnessRadians);
             double hSpeed = hDist * 4 / triStruct.NormY;
@@ -3893,6 +3892,7 @@ namespace STROOP.Utilities
                 effortTarget = 1000;
                 effortChange = 30;
             }
+
             effort = MoreMath.MoveNumberTowards(effort, effortTarget, effortChange);
 
             double hSpeedTarget = (effort - heightDiff) * 0.1;
@@ -3926,7 +3926,7 @@ namespace STROOP.Utilities
         }
 
         public static int GetPendulumCountdown(
-             float accelerationDirection, float accelerationMagnitude, float angularVelocity, float angle, int waitingTimer)
+            float accelerationDirection, float accelerationMagnitude, float angularVelocity, float angle, int waitingTimer)
         {
             return GetPendulumVars(accelerationDirection, accelerationMagnitude, angularVelocity, angle).ToTuple().Item2 + waitingTimer;
         }
@@ -4057,6 +4057,7 @@ namespace STROOP.Utilities
                 frames = MoreMath.ReflectValueAboutValue(frames, 7.5);
                 reflected = true;
             }
+
             double yDist;
             if (frames <= 38)
             {
@@ -4066,6 +4067,7 @@ namespace STROOP.Utilities
             {
                 yDist = -75 * (frames - 38) - 1092.5;
             }
+
             if (reflected) yDist = MoreMath.ReflectValueAboutValue(yDist, 70.3125);
             return yDist;
         }
@@ -4078,6 +4080,7 @@ namespace STROOP.Utilities
                 yDist = MoreMath.ReflectValueAboutValue(yDist, 70.3125);
                 reflected = true;
             }
+
             double frames;
             if (yDist >= -1092.5)
             {
@@ -4088,6 +4091,7 @@ namespace STROOP.Utilities
             {
                 frames = (yDist + 1092.5) / -75 + 38;
             }
+
             if (reflected) frames = MoreMath.ReflectValueAboutValue(frames, 7.5);
             return frames;
         }
@@ -4452,6 +4456,7 @@ namespace STROOP.Utilities
                 numWarpNodes++;
                 address = Config.Stream.GetUInt32(address + 0x8);
             }
+
             return numWarpNodes;
         }
 
@@ -4464,6 +4469,7 @@ namespace STROOP.Utilities
                 addresses.Add(address);
                 address = Config.Stream.GetUInt32(address + 0x8);
             }
+
             return addresses;
         }
 

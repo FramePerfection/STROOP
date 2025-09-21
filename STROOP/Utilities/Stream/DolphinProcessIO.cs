@@ -10,7 +10,9 @@ namespace STROOP.Utilities
     class DolphinProcessIO : WindowsProcessRamIO
     {
         public DolphinProcessIO(Process process, Emulator emulator)
-            : base(process, emulator) { }
+            : base(process, emulator)
+        {
+        }
 
         protected override void CalculateOffset()
         {
@@ -20,8 +22,9 @@ namespace STROOP.Utilities
 
             _baseOffset = (UIntPtr)0;
             bool mem1Found = false;
-            for (IntPtr p = new IntPtr(); VQueryEx(_processHandle, p, out info, infoSize) == infoSize; 
-                p = (IntPtr) (p.ToInt64() + info.RegionSize.ToInt64()))
+            for (IntPtr p = new IntPtr();
+                 VQueryEx(_processHandle, p, out info, infoSize) == infoSize;
+                 p = (IntPtr) (p.ToInt64() + info.RegionSize.ToInt64()))
             {
                 if (mem1Found)
                 {
@@ -33,6 +36,7 @@ namespace STROOP.Utilities
                     {
                         break;
                     }
+
                     continue;
                 }
 
@@ -54,6 +58,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             if (_baseOffset.ToUInt64() == 0)
                 throw new DolphinNotRunningGameException();
 

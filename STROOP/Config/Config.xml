@@ -25,10 +25,10 @@
   <RomVersion>US</RomVersion>
 
   <RefreshRateFreq>30</RefreshRateFreq>
-  
+
   <GhostFileWatchers>
-	<FileWatcher path="recordghost.lua"/>
+    <FileWatcher path="recordghost.lua"/>
   </GhostFileWatchers>
-  
+
   <BruteforcerModulesPath path="Bruteforcers"/>
 </Config>

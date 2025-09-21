@@ -1,295 +1,295 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <OutputType>WinExe</OutputType>
-    <UseWindowsForms>true</UseWindowsForms>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <UseWindowsForms>true</UseWindowsForms>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
 
-<!--  Package references -->
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OpenTK" Version="4.9.4" />
-    <PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
-    <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="WindowsAPICodePack" Version="8.0.9" />
-  </ItemGroup>
+    <!--  Package references -->
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="OpenTK" Version="4.9.4"/>
+        <PackageReference Include="OpenTK.GLControl" Version="4.0.2"/>
+        <PackageReference Include="SharpZipLib" Version="1.4.2"/>
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
+        <PackageReference Include="WindowsAPICodePack" Version="8.0.9"/>
+    </ItemGroup>
 
-<!--  Currently unsupported files -->
-  <ItemGroup>
-    <Compile Remove="Forms\MapPopOutForm.cs" />
-    <Compile Remove="Forms\MapPopOutForm.Designer.cs" />
-    <Compile Remove="Managers\IVariableAdder.cs" />
-    <Compile Remove="Tabs\MapTab\Simulations\Collision.cs" />
-    <Compile Remove="Tabs\MapTab\Simulations\CollisionStructure.cs" />
-    <Compile Remove="Tabs\MapTab\Simulations\CorkBox.cs" />
-    <Compile Remove="Tabs\MapTab\Simulations\CorkBoxBreakerTracker.cs" />
-    <Compile Remove="Tabs\SimulationsTab\SimulationsTab.cs" />
-    <Compile Remove="Tabs\SimulationsTab\SimulationsTab.Designer.cs" />
-    <Compile Remove="Utilities\Stream\IProcessMemory.cs" />
-    <EmbeddedResource Remove="Forms\MapPopOutForm.resx" />
-    <EmbeddedResource Remove="Tabs\SimulationsTab\SimulationsTab.resx" />
-  </ItemGroup>
-  
-<!--  WinForms Components and Controls -->
-  <ItemGroup>
-    <Compile Update="Controls\BetterSplitContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\DoubleBufferedTableLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\CoinRingDisplayPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\ReorderFlowLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\TrackBarEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\TabControlEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\CarretlessTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\MainSaveTextbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\ColorSelector.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\ObjectSlotFlowLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\PanelEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\VariablePanel\WatchVariablePanelRenderer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\VarHackContainer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\NoTearFlowLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\BorderedTableLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\BinaryButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\BetterTextbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\VarHackFlowLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\InputDisplayPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileHatPositionTextbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileTextbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileHatLocationPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileKeyDoorPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileCourseLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileCoinScoreTextbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FilePictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileBinaryPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\FileStarPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\IntPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\VariablePanel\WatchVariableFlowLayoutPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\RichTextBoxEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tabs\BruteforceTab\BruteforceTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\BruteforceTab\Surfaces\GeneralPurpose\GeneralPurpose.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\BruteforceTab\Surfaces\GeneralPurpose\Perturbator.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\BruteforceTab\Surfaces\GeneralPurpose\ScoringFunc.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\GhostTab\FileWatchers.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\GhostTab\GhostTabHelp.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MapTab\MapTracker.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MapTab\MapTrackerFlowLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tabs\ActionsTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\AreaTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\CameraTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\CamHackTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\CellsTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\CoinTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\CustomTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\DebugTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\DisassemblyTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\FileTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\GfxTab\GfxTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\GhostTab\GhostTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\HackTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\HudTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\InputTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\M64Tab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MainSaveTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MapTab\MapTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MarioTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MemoryTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MiscTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\ModelTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\MusicTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\ObjectTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\OptionsTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\PaintingTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\PuTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\QuarterFramesTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\SearchTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\SnowTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\SoundTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\STROOPTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\TrianglesTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\VarHackTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\WarpTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Tabs\WaterTab.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\ObjectSlot.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
-  
-<!--  Resources -->
-  <ItemGroup>
-    <Content Include="icon.ico" />
-    <Content Include="Licenses.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Update="Mappings\**\*.map">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="MapTrackers.default.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="recordghost.lua">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="Config\**\*.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <EmbeddedResource Include="Schemas\**\*.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  
+    <!--  Currently unsupported files -->
+    <ItemGroup>
+        <Compile Remove="Forms\MapPopOutForm.cs"/>
+        <Compile Remove="Forms\MapPopOutForm.Designer.cs"/>
+        <Compile Remove="Managers\IVariableAdder.cs"/>
+        <Compile Remove="Tabs\MapTab\Simulations\Collision.cs"/>
+        <Compile Remove="Tabs\MapTab\Simulations\CollisionStructure.cs"/>
+        <Compile Remove="Tabs\MapTab\Simulations\CorkBox.cs"/>
+        <Compile Remove="Tabs\MapTab\Simulations\CorkBoxBreakerTracker.cs"/>
+        <Compile Remove="Tabs\SimulationsTab\SimulationsTab.cs"/>
+        <Compile Remove="Tabs\SimulationsTab\SimulationsTab.Designer.cs"/>
+        <Compile Remove="Utilities\Stream\IProcessMemory.cs"/>
+        <EmbeddedResource Remove="Forms\MapPopOutForm.resx"/>
+        <EmbeddedResource Remove="Tabs\SimulationsTab\SimulationsTab.resx"/>
+    </ItemGroup>
+
+    <!--  WinForms Components and Controls -->
+    <ItemGroup>
+        <Compile Update="Controls\BetterSplitContainer.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\DoubleBufferedTableLayoutPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\CoinRingDisplayPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\ReorderFlowLayoutPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\TrackBarEx.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\TabControlEx.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\CarretlessTextBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\MainSaveTextbox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\ColorSelector.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ObjectSlotFlowLayoutPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\PanelEx.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\VariablePanel\WatchVariablePanelRenderer.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\VarHackContainer.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\NoTearFlowLayoutPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\BorderedTableLayoutPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\BinaryButton.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\BetterTextbox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\VarHackFlowLayoutPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\InputDisplayPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileHatPositionTextbox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileTextbox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileHatLocationPictureBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileKeyDoorPictureBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileCourseLabel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileCoinScoreTextbox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FilePictureBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileBinaryPictureBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\FileStarPictureBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\IntPictureBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\VariablePanel\WatchVariableFlowLayoutPanel.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\RichTextBoxEx.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Tabs\BruteforceTab\BruteforceTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\BruteforceTab\Surfaces\GeneralPurpose\GeneralPurpose.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\BruteforceTab\Surfaces\GeneralPurpose\Perturbator.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\BruteforceTab\Surfaces\GeneralPurpose\ScoringFunc.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\GhostTab\FileWatchers.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\GhostTab\GhostTabHelp.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MapTab\MapTracker.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MapTab\MapTrackerFlowLayoutPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Tabs\ActionsTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\AreaTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\CameraTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\CamHackTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\CellsTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\CoinTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\CustomTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\DebugTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\DisassemblyTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\FileTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\GfxTab\GfxTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\GhostTab\GhostTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\HackTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\HudTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\InputTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\M64Tab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MainSaveTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MapTab\MapTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MarioTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MemoryTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MiscTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\ModelTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\MusicTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\ObjectTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\OptionsTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\PaintingTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\PuTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\QuarterFramesTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\SearchTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\SnowTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\SoundTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\STROOPTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\TrianglesTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\VarHackTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\WarpTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Tabs\WaterTab.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ObjectSlot.cs">
+            <SubType>Component</SubType>
+        </Compile>
+    </ItemGroup>
+
+    <!--  Resources -->
+    <ItemGroup>
+        <Content Include="icon.ico"/>
+        <Content Include="Licenses.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Update="Mappings\**\*.map">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="MapTrackers.default.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="recordghost.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Resources\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <Content Include="Config\**\*.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <EmbeddedResource Include="Schemas\**\*.xsd">
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+    </ItemGroup>
+
 </Project>
