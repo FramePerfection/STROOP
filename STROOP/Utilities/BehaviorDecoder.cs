@@ -169,137 +169,137 @@ namespace STROOP.Utilities
         {
             bool incrementIndentation = false;
             string decoded = "";
-            uint address = (uint) lineAddress;
+            uint address = (uint)lineAddress;
             var stream = Config.Stream;
 
             // Get command
             int cmdByte = stream.GetByte(address++);
-            BehaviorCommandType? cmd = typeof(BehaviorCommandType).IsEnumDefined(cmdByte) ? (BehaviorCommandType?) cmdByte : null;
+            BehaviorCommandType? cmd = typeof(BehaviorCommandType).IsEnumDefined(cmdByte) ? (BehaviorCommandType?)cmdByte : null;
 
             switch (cmd)
             {
                 case BehaviorCommandType.Start:
-                {
-                    byte processGroup = stream.GetByte(address++);
-                    decoded = $"obj.process_group = 0x{processGroup:X2}";
-                    break;
-                }
+                    {
+                        byte processGroup = stream.GetByte(address++);
+                        decoded = $"obj.process_group = 0x{processGroup:X2}";
+                        break;
+                    }
                 case BehaviorCommandType.LoopStart:
-                {
-                    decoded = "while(True):";
-                    incrementIndentation = true;
-                    break;
-                }
+                    {
+                        decoded = "while(True):";
+                        incrementIndentation = true;
+                        break;
+                    }
                 case BehaviorCommandType.LoopEnd:
-                {
-                    decoded = "";
-                    _indentationLevel--;
-                    break;
-                }
+                    {
+                        decoded = "";
+                        _indentationLevel--;
+                        break;
+                    }
                 case BehaviorCommandType.Call:
-                {
-                    address += 3; // Ignored
-                    uint function = stream.GetUInt32(address);
-                    decoded = $"fn{function:X8}()";
-                    break;
-                }
+                    {
+                        address += 3; // Ignored
+                        uint function = stream.GetUInt32(address);
+                        decoded = $"fn{function:X8}()";
+                        break;
+                    }
                 case BehaviorCommandType.LogicalOr:
-                {
-                    short offset = (short)(0x88 + stream.GetByte(address++) * 4);
-                    ushort operand = BitConverter.ToUInt16(stream.ReadRam(address, sizeof(UInt16), EndiannessType.Big), 0);
-                    decoded = $"obj{GetOffsetName(offset)} |= 0x{operand:X4}";
-                    break;
-                }
+                    {
+                        short offset = (short)(0x88 + stream.GetByte(address++) * 4);
+                        ushort operand = BitConverter.ToUInt16(stream.ReadRam(address, sizeof(UInt16), EndiannessType.Big), 0);
+                        decoded = $"obj{GetOffsetName(offset)} |= 0x{operand:X4}";
+                        break;
+                    }
                 case BehaviorCommandType.JumpBack:
-                {
-                    decoded = $"ExecutePrevious()";
-                    break;
-                }
+                    {
+                        decoded = $"ExecutePrevious()";
+                        break;
+                    }
                 case BehaviorCommandType.SetHitbox:
-                {
-                    address += 3; // Ignored
-                    UInt32 hitboxPtr = BitConverter.ToUInt32(stream.ReadRam(address, sizeof(UInt32), EndiannessType.Big), 0);
-                    decoded = $"obj.hitbox_ptr = 0x{hitboxPtr:X8}";
-                    break;
-                }
+                    {
+                        address += 3; // Ignored
+                        UInt32 hitboxPtr = BitConverter.ToUInt32(stream.ReadRam(address, sizeof(UInt32), EndiannessType.Big), 0);
+                        decoded = $"obj.hitbox_ptr = 0x{hitboxPtr:X8}";
+                        break;
+                    }
                 case BehaviorCommandType.SetPositionOffset:
                 case BehaviorCommandType.SetParameter:
-                {
-                    short offset = (short)(0x88 + stream.GetByte(address++) * 4);
-                    ushort operand = BitConverter.ToUInt16(stream.ReadRam(address, sizeof(UInt16), EndiannessType.Big), 0);
-                    decoded = $"obj{GetOffsetName(offset)} += 0x{operand:X4}";
-                    break;
-                }
+                    {
+                        short offset = (short)(0x88 + stream.GetByte(address++) * 4);
+                        ushort operand = BitConverter.ToUInt16(stream.ReadRam(address, sizeof(UInt16), EndiannessType.Big), 0);
+                        decoded = $"obj{GetOffsetName(offset)} += 0x{operand:X4}";
+                        break;
+                    }
                 case BehaviorCommandType.SetAnimationRate:
                 case BehaviorCommandType.SetSightDistance:
-                {
-                    short offset = (short)(0x88 + stream.GetByte(address++) * 4);
-                    ushort operand = BitConverter.ToUInt16(stream.ReadRam(address, sizeof(UInt16), EndiannessType.Big), 0);
-                    decoded = $"obj{GetOffsetName(offset)} = 0x{operand:X4}";
-                    break;
-                }
+                    {
+                        short offset = (short)(0x88 + stream.GetByte(address++) * 4);
+                        ushort operand = BitConverter.ToUInt16(stream.ReadRam(address, sizeof(UInt16), EndiannessType.Big), 0);
+                        decoded = $"obj{GetOffsetName(offset)} = 0x{operand:X4}";
+                        break;
+                    }
                 case BehaviorCommandType.PositionOnGround:
-                {
-                    decoded = $"obj.position_on_ground()\nobj[0xEC] = 2";
-                    break;
-                }
+                    {
+                        decoded = $"obj.position_on_ground()\nobj[0xEC] = 2";
+                        break;
+                    }
                 case BehaviorCommandType.SetHitboxSphere:
-                {
-                    address += 3;
-                    UInt16 xz = stream.GetUInt16(address);
-                    address += 2;
-                    UInt16 y = stream.GetUInt16(address);
-                    decoded = $"obj.set_sphere_hitbox(radius_xz={xz}, radius_y={y})";
-                    break;
-                }
+                    {
+                        address += 3;
+                        UInt16 xz = stream.GetUInt16(address);
+                        address += 2;
+                        UInt16 y = stream.GetUInt16(address);
+                        decoded = $"obj.set_sphere_hitbox(radius_xz={xz}, radius_y={y})";
+                        break;
+                    }
                 case BehaviorCommandType.SetHome:
-                {
-                    decoded = $"obj.set_current_pos_as_home()";
-                    break;
-                }
+                    {
+                        decoded = $"obj.set_current_pos_as_home()";
+                        break;
+                    }
                 case BehaviorCommandType.SetPhysics:
-                {
-                    address += 3;
-                    UInt16 minWallDistance = stream.GetUInt16(address);
-                    address += 2;
-                    float floorHeight = stream.GetUInt16(address) / 100.0f;
-                    address += 2;
-                    float bounce = stream.GetUInt16(address) / 100.0f;
-                    address += 2;
-                    float drag = stream.GetUInt16(address) / 100.0f;
-                    address += 2;
-                    float v_174 = stream.GetUInt16(address) / 100.0f;
-                    address += 2;
-                    float buoyancy = stream.GetUInt16(address) / 100.0f;
-                    address += 2;
-                    address += 4; // Ignored?
-                    decoded = $"SetGravity(min_wall_distance={minWallDistance}, floor_height={floorHeight}, bounce={bounce}, drag={drag}, obj[0x174] = {v_174}), bouyancy={buoyancy})";
-                    break;
-                }
+                    {
+                        address += 3;
+                        UInt16 minWallDistance = stream.GetUInt16(address);
+                        address += 2;
+                        float floorHeight = stream.GetUInt16(address) / 100.0f;
+                        address += 2;
+                        float bounce = stream.GetUInt16(address) / 100.0f;
+                        address += 2;
+                        float drag = stream.GetUInt16(address) / 100.0f;
+                        address += 2;
+                        float v_174 = stream.GetUInt16(address) / 100.0f;
+                        address += 2;
+                        float buoyancy = stream.GetUInt16(address) / 100.0f;
+                        address += 2;
+                        address += 4; // Ignored?
+                        decoded = $"SetGravity(min_wall_distance={minWallDistance}, floor_height={floorHeight}, bounce={bounce}, drag={drag}, obj[0x174] = {v_174}), bouyancy={buoyancy})";
+                        break;
+                    }
                 case BehaviorCommandType.Animate:
-                {
-                    byte number = stream.GetByte(address++);
-                    decoded = $"obj.animate(animation_number={number})";
-                    break;
-                }
+                    {
+                        byte number = stream.GetByte(address++);
+                        decoded = $"obj.animate(animation_number={number})";
+                        break;
+                    }
                 case BehaviorCommandType.SpawnChildObject:
-                {
-                    address += 3; // Ignored
-                    UInt32 modelId = stream.GetUInt32(address);
-                    address += 4;
-                    UInt32 behavior = stream.GetUInt32(address);
-                    decoded = $"obj.SpawnChildObject(model=0x{modelId:X8}, behavior=0x{behavior:X8})";
-                    break;
-                }
+                    {
+                        address += 3; // Ignored
+                        UInt32 modelId = stream.GetUInt32(address);
+                        address += 4;
+                        UInt32 behavior = stream.GetUInt32(address);
+                        decoded = $"obj.SpawnChildObject(model=0x{modelId:X8}, behavior=0x{behavior:X8})";
+                        break;
+                    }
                 case BehaviorCommandType.SpawnObject:
-                {
-                    address += 3; // Ignored
-                    UInt32 modelId = stream.GetUInt32(address);
-                    address += 4;
-                    UInt32 behavior = stream.GetUInt32(address);
-                    decoded = $"SpawnObject(model=0x{modelId:X8}, behavior=0x{behavior:X8})";
-                    break;
-                }
+                    {
+                        address += 3; // Ignored
+                        UInt32 modelId = stream.GetUInt32(address);
+                        address += 4;
+                        UInt32 behavior = stream.GetUInt32(address);
+                        decoded = $"SpawnObject(model=0x{modelId:X8}, behavior=0x{behavior:X8})";
+                        break;
+                    }
 
                 case BehaviorCommandType.Empty_0A:
                 case BehaviorCommandType.Empty_0B:

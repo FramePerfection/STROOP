@@ -284,7 +284,7 @@ namespace STROOP.Tabs
 
                     return vars;
                 }
-            );
+        );
 
         public enum TriangleMode
         {

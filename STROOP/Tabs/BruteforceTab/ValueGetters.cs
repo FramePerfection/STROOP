@@ -51,10 +51,10 @@ namespace STROOP.Tabs.BruteforceTab
             )
             {
                 [(null, "static_tris")] = new GetterFuncs("Static Triangles", new GetterFuncsDic
-                    {
-                        ["From Map Tracker"] = () => ("From Map Tracker", GetTrackedTriangles),
-                        ["All Level Triangles"] = () => ("All Level Triangles", GetLevelTriangles)
-                    }, ("All Level Triangles", GetLevelTriangles)
+                {
+                    ["From Map Tracker"] = () => ("From Map Tracker", GetTrackedTriangles),
+                    ["All Level Triangles"] = () => ("All Level Triangles", GetLevelTriangles)
+                }, ("All Level Triangles", GetLevelTriangles)
                 ),
 
                 [(null, "dynamic_tris")] = GetDynamicTriangles,
@@ -93,7 +93,7 @@ namespace STROOP.Tabs.BruteforceTab
             ""collided_obj_interact_types"": {Config.Stream.GetUInt32(obj.Address + 0x70)},
             ""active_flags"": {Config.Stream.GetInt16(obj.Address + 0x74)},
             ""num_collided_objs"": {Config.Stream.GetInt16(obj.Address + 0x76)},
-            ""behavior_stack_index"": { Config.Stream.GetUInt32(obj.Address + 0x1D0)},
+            ""behavior_stack_index"": {Config.Stream.GetUInt32(obj.Address + 0x1D0)},
             ""behavior_stack"": [{string.Join(", ", Config.Stream.ReadRam(obj.Address + 0x1D4, 8, EndiannessType.Little))}],
             ""behavior_delay_timer"": {Config.Stream.GetInt16(obj.Address + 0x1F4)},
             ""hitbox_radius"": {Config.Stream.GetSingle(obj.Address + 0x1F8)},

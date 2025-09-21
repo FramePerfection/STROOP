@@ -183,8 +183,8 @@ namespace STROOP.Utilities
 
                 (double newXSpeed2, double newZSpeed2) = MoreMath.GetComponentsFromVector(
                     newHSpeed, MoreMath.TruncateToMultipleOf16(newAngle));
-                newXSpeed = (float) newXSpeed2;
-                newZSpeed = (float) newZSpeed2;
+                newXSpeed = (float)newXSpeed2;
+                newZSpeed = (float)newZSpeed2;
 
                 return new CoinState(
                     newX, newY, newZ,

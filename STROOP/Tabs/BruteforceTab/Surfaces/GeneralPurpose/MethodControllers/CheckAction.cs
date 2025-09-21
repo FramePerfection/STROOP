@@ -39,7 +39,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                             currentActionVariable.SetValue(action);
                             return null;
                         }
-                    ));
+                ));
             }
         }
     }

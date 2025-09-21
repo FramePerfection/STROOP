@@ -254,27 +254,27 @@ namespace STROOP.Structs.Configurations
                 switch (element.Name.ToString())
                 {
                     case "TabOrder":
-                    {
-                        List<string> tabNames = new List<string>();
-                        foreach (var tabName in element.Elements())
                         {
-                            tabNames.Add(tabName.Value);
-                        }
+                            List<string> tabNames = new List<string>();
+                            foreach (var tabName in element.Elements())
+                            {
+                                tabNames.Add(tabName.Value);
+                            }
 
-                        InitiallySavedTabOrder = tabNames;
-                    }
+                            InitiallySavedTabOrder = tabNames;
+                        }
                         break;
 
                     case "RemovedTabs":
-                    {
-                        List<string> tabNames = new List<string>();
-                        foreach (var tabName in element.Elements())
                         {
-                            tabNames.Add(tabName.Value);
-                        }
+                            List<string> tabNames = new List<string>();
+                            foreach (var tabName in element.Elements())
+                            {
+                                tabNames.Add(tabName.Value);
+                            }
 
-                        InitiallySavedRemovedTabs = tabNames;
-                    }
+                            InitiallySavedRemovedTabs = tabNames;
+                        }
                         break;
                     default:
                         if (savedFieldsByName.TryGetValue(element.Name.ToString(), out var var))

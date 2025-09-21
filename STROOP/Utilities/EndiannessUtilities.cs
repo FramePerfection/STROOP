@@ -110,10 +110,10 @@ namespace STROOP.Utilities
             byte[] result = new byte[bytes.Length];
             for (int i = 0; i < bytes.Length; i += 4)
             {
-                result[i]       = bytes[i + 3];
-                result[i + 1]   = bytes[i + 2];
-                result[i + 2]   = bytes[i + 1];
-                result[i + 3]   = bytes[i];
+                result[i] = bytes[i + 3];
+                result[i + 1] = bytes[i + 2];
+                result[i + 2] = bytes[i + 1];
+                result[i + 3] = bytes[i];
             }
 
             return result;

@@ -2625,7 +2625,7 @@ namespace STROOP.Utilities
 
             dictionary.Add("TriRangeY",
                 BaseAddressType.Triangle,
-                triAddress => TriangleDataModel.Create(triAddress).GetRangeY()            ,
+                triAddress => TriangleDataModel.Create(triAddress).GetRangeY(),
                 Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriRangeZ",
@@ -2661,7 +2661,7 @@ namespace STROOP.Utilities
                         triStruct.X3, triStruct.Z3, 1, 2,
                         TriangleDataModel.Create(triAddress).Classification);
                     return signedDistToLine12;
-                }            ,
+                },
                 (double dist, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2698,7 +2698,7 @@ namespace STROOP.Utilities
                         triStruct.X3, triStruct.Z3, 2, 3,
                         TriangleDataModel.Create(triAddress).Classification);
                     return signedDistToLine23;
-                }            ,
+                },
                 (double dist, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2735,7 +2735,7 @@ namespace STROOP.Utilities
                         triStruct.X3, triStruct.Z3, 3, 1,
                         TriangleDataModel.Create(triAddress).Classification);
                     return signedDistToLine31;
-                }            ,
+                },
                 (double dist, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2769,7 +2769,7 @@ namespace STROOP.Utilities
                         triStruct.X1, triStruct.Z1, triStruct.X2, triStruct.Z2);
                     double angleDiff = marioPos.Angle - angleV1ToV2;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
-                }            ,
+                },
                 (double angleDiff, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2794,7 +2794,7 @@ namespace STROOP.Utilities
                         triStruct.X2, triStruct.Z2, triStruct.X1, triStruct.Z1);
                     double angleDiff = marioPos.Angle - angleV2ToV1;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
-                }            ,
+                },
                 (double angleDiff, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2818,7 +2818,7 @@ namespace STROOP.Utilities
                         triStruct.X2, triStruct.Z2, triStruct.X3, triStruct.Z3);
                     double angleDiff = marioPos.Angle - angleV2ToV3;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
-                }            ,
+                },
                 (double angleDiff, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2829,7 +2829,7 @@ namespace STROOP.Utilities
                     ushort newMarioAngleUShort = MoreMath.NormalizeAngleUshort(newMarioAngleDouble);
                     return Config.Stream.SetValue(
                         newMarioAngleUShort, MarioConfig.StructAddress + MarioConfig.FacingYawOffset);
-                }            );
+                });
 
             dictionary.Add("DeltaAngleLine32",
                 BaseAddressType.Triangle,
@@ -2841,7 +2841,7 @@ namespace STROOP.Utilities
                         triStruct.X3, triStruct.Z3, triStruct.X2, triStruct.Z2);
                     double angleDiff = marioPos.Angle - angleV3ToV2;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
-                }            ,
+                },
                 (double angleDiff, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2865,7 +2865,7 @@ namespace STROOP.Utilities
                         triStruct.X3, triStruct.Z3, triStruct.X1, triStruct.Z1);
                     double angleDiff = marioPos.Angle - angleV3ToV1;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
-                }            ,
+                },
                 (double angleDiff, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
@@ -2889,7 +2889,7 @@ namespace STROOP.Utilities
                         triStruct.X1, triStruct.Z1, triStruct.X3, triStruct.Z3);
                     double angleDiff = marioPos.Angle - angleV1ToV3;
                     return MoreMath.NormalizeAngleDoubleSigned(angleDiff);
-                }            ,
+                },
                 (double angleDiff, uint triAddress) =>
                 {
                     PositionAngle marioPos = PositionAngle.Mario;

@@ -135,9 +135,9 @@ namespace STROOP.Models
             _y = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.YOffset);
             _z = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.ZOffset);
 
-            _facingYaw =    Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingYawOffset);
-            _facingPitch =  Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingPitchOffset);
-            _facingRoll =   Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingRollOffset);
+            _facingYaw = Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingYawOffset);
+            _facingPitch = Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingPitchOffset);
+            _facingRoll = Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingRollOffset);
 
             _fov = Config.Stream.GetSingle(CameraConfig.FOVStructAddress + CameraConfig.FOVValueOffset);
 

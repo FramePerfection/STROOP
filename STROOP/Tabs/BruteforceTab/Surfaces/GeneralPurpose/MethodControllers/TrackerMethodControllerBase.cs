@@ -39,7 +39,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                         AccessScope<StroopMainForm>.content.SwitchTab(mapTab);
                         return null;
                     }
-                ));
+            ));
 
             mapObject.tracker.ConfirmRemoveFromMap = ConfirmDeleteScoringFunc;
         }

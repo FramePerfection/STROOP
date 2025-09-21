@@ -230,7 +230,7 @@ namespace STROOP.Tabs.MapTab
                                 toolStripItem.Click += (sender, e) => addNewTracker();
                                 return toolStripItem;
                             }
-                        ));
+                    ));
                 }
             }
 

@@ -557,7 +557,7 @@ emu.atinput(RecordFrame);
 emu.atstop(WriteOutput);
 ");
 
-            File.WriteAllText($"{ modulePath}/record_reference.lua", scriptOutputBuilder.ToString());
+            File.WriteAllText($"{modulePath}/record_reference.lua", scriptOutputBuilder.ToString());
         }
 
         private void ApplyKnownState()
@@ -587,7 +587,7 @@ emu.atstop(WriteOutput);
 
                     if (!knownStateVariables.Any(view => view.GetJsonName() == kvp.Key))
                         variableKeepObjects[kvp.Key] = kvp.Value;
-                skipNew: ;
+                    skipNew:;
                 }
         }
 

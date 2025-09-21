@@ -96,7 +96,7 @@ namespace STROOP.Utilities
                         };
                         return vars;
                     }
-                );
+            );
 
             public static (string, WatchVariablePanel.SpecialFuncWatchVariables) GenerateRelations(HybridPositionAngle relation) =>
                 ($"Relations to {relation.name}",
@@ -177,7 +177,7 @@ namespace STROOP.Utilities
 
                         return vars;
                     }
-                );
+            );
 
 
             public Action OnDelete = null;

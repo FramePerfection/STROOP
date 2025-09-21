@@ -683,20 +683,20 @@ namespace STROOP.Tabs.MapTab
                     switch (view.mode)
                     {
                         case MapView.ViewMode.TopDown:
-                        {
-                            (float rotatedX, float rotatedY) = ((float, float))
-                                MoreMath.RotatePointAboutPointAnAngularDistance(
-                                    unitDiffX, unitDiffY, 0, 0, MapViewAngleValue);
-                            view.position.X = _translateStartCenter.X - rotatedX;
-                            view.position.Z = _translateStartCenter.Z - rotatedY;
-                            SetCustomCenter($"{view.position.X}; {view.position.Y}; {view.position.Z}");
-                            break;
-                        }
+                            {
+                                (float rotatedX, float rotatedY) = ((float, float))
+                                    MoreMath.RotatePointAboutPointAnAngularDistance(
+                                        unitDiffX, unitDiffY, 0, 0, MapViewAngleValue);
+                                view.position.X = _translateStartCenter.X - rotatedX;
+                                view.position.Z = _translateStartCenter.Z - rotatedY;
+                                SetCustomCenter($"{view.position.X}; {view.position.Y}; {view.position.Z}");
+                                break;
+                            }
                         case MapView.ViewMode.Orthogonal:
-                        {
-                            view.orthoOffset = _translateStartOrthoOffset + new Vector2(-unitDiffX, unitDiffY);
-                            break;
-                        }
+                            {
+                                view.orthoOffset = _translateStartOrthoOffset + new Vector2(-unitDiffX, unitDiffY);
+                                break;
+                            }
                         case MapView.ViewMode.ThreeDimensional:
                             if (view.camera3DMode != MapView.Camera3DMode.InGame)
                             {
@@ -723,36 +723,36 @@ namespace STROOP.Tabs.MapTab
                     switch (view.mode)
                     {
                         case MapView.ViewMode.TopDown:
-                        {
-                            double oldAngle = Math.Atan2(glControl.Height / 2 - _dragStartMouseY, _dragStartMouseX - glControl.Width / 2);
-                            double thingAngle = Math.Atan2(glControl.Height / 2 - e.Y, e.X - glControl.Width / 2);
-                            float angleToMouse = (float)MoreMath.RadiansToAngleUnits(thingAngle - oldAngle) * mapTab.MaybeReverse(-1);
-                            MapViewAngleValue = _rotateStartAngle + angleToMouse;
-                            SetCustomAngle(MapViewAngleValue);
-                            break;
-                        }
+                            {
+                                double oldAngle = Math.Atan2(glControl.Height / 2 - _dragStartMouseY, _dragStartMouseX - glControl.Width / 2);
+                                double thingAngle = Math.Atan2(glControl.Height / 2 - e.Y, e.X - glControl.Width / 2);
+                                float angleToMouse = (float)MoreMath.RadiansToAngleUnits(thingAngle - oldAngle) * mapTab.MaybeReverse(-1);
+                                MapViewAngleValue = _rotateStartAngle + angleToMouse;
+                                SetCustomAngle(MapViewAngleValue);
+                                break;
+                            }
                         case MapView.ViewMode.Orthogonal:
-                        {
-                            float newAngle = _rotateStartAngle - (e.X - _dragStartMouseX) * 128;
-                            newAngle %= 0x10000;
-                            if (newAngle < 0) newAngle += 0x10000;
-                            int increment = 0x2000;
-                            int snapMargin = Math.Min(0x800, increment / 2);
-                            for (var snapValue = 0; snapValue <= 0x10000; snapValue += increment)
-                                if (Math.Abs(newAngle - snapValue) < snapMargin)
-                                    newAngle = snapValue;
-                            MapViewAngleValue = newAngle;
-                            SetCustomAngle(MapViewAngleValue);
-                            break;
-                        }
+                            {
+                                float newAngle = _rotateStartAngle - (e.X - _dragStartMouseX) * 128;
+                                newAngle %= 0x10000;
+                                if (newAngle < 0) newAngle += 0x10000;
+                                int increment = 0x2000;
+                                int snapMargin = Math.Min(0x800, increment / 2);
+                                for (var snapValue = 0; snapValue <= 0x10000; snapValue += increment)
+                                    if (Math.Abs(newAngle - snapValue) < snapMargin)
+                                        newAngle = snapValue;
+                                MapViewAngleValue = newAngle;
+                                SetCustomAngle(MapViewAngleValue);
+                                break;
+                            }
                         case MapView.ViewMode.ThreeDimensional:
-                        {
-                            view.camera3DMode = MapView.Camera3DMode.Free;
-                            float dx = -(float)(e.X - _dragStartMouseX) / glControl.Height * view.movementSpeed;
-                            float dy = (float)(e.Y - _dragStartMouseY) / glControl.Height * view.movementSpeed;
-                            view.position = _translateStartCenter + BillboardMatrix.Row0.Xyz * dx + BillboardMatrix.Row1.Xyz * dy;
-                            break;
-                        }
+                            {
+                                view.camera3DMode = MapView.Camera3DMode.Free;
+                                float dx = -(float)(e.X - _dragStartMouseX) / glControl.Height * view.movementSpeed;
+                                float dy = (float)(e.Y - _dragStartMouseY) / glControl.Height * view.movementSpeed;
+                                view.position = _translateStartCenter + BillboardMatrix.Row0.Xyz * dx + BillboardMatrix.Row1.Xyz * dy;
+                                break;
+                            }
                     }
                 }
             }

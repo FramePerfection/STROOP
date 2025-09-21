@@ -25,7 +25,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             List<Vector3> vertices = new List<Vector3>();
             for (int x = -8192; x <= 8192; x += 1024)
             {
-                vertices.Add(new Vector3(x, marioY, - 8192));
+                vertices.Add(new Vector3(x, marioY, -8192));
                 vertices.Add(new Vector3(x, marioY, 8192));
             }
 

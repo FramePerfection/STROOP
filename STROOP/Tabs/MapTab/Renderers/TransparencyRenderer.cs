@@ -46,7 +46,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                 colorBuffer = GL.GenTexture();
 
                 canStencil = true;
-                //Generate the Framebuffer for creating the masks front to back
+            //Generate the Framebuffer for creating the masks front to back
             tryMakeMaskFBO:
                 maskFBO = GL.GenFramebuffer();
                 stencilBuffer = GL.GenRenderbuffer();

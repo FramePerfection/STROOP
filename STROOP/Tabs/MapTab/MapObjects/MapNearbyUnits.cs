@@ -273,6 +273,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     if (float.TryParse(LoadValueNode(node, "DiscardUnitsBelow"), out var discardBelow))
                         discardUnitsBelow = discardBelow;
                 }
-            );
+        );
     }
 }

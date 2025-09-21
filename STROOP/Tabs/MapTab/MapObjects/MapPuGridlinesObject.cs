@@ -36,88 +36,88 @@ namespace STROOP.Tabs.MapTab.MapObjects
             switch (_setting)
             {
                 case PuGridlineSetting.SETTING1:
-                {
-                    float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
-
-                    int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
-                    int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
-                    int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
-                    int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536;
-
-                    var vertices = new List<Vector3>();
-                    for (int x = xMin; x <= xMax; x += 65536)
                     {
-                        vertices.Add(new Vector3(x, marioY, zMin));
-                        vertices.Add(new Vector3(x, marioY, zMax));
-                    }
+                        float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
 
-                    for (int z = zMin; z <= zMax; z += 65536)
-                    {
-                        vertices.Add(new Vector3(xMin, marioY, z));
-                        vertices.Add(new Vector3(xMax, marioY, z));
-                    }
+                        int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
+                        int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
+                        int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
+                        int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536;
 
-                    return vertices;
-                }
-                case PuGridlineSetting.SETTING2:
-                {
-                    float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
+                        var vertices = new List<Vector3>();
+                        for (int x = xMin; x <= xMax; x += 65536)
+                        {
+                            vertices.Add(new Vector3(x, marioY, zMin));
+                            vertices.Add(new Vector3(x, marioY, zMax));
+                        }
 
-                    int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536 - 32768;
-                    int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536 + 32768;
-                    int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536 - 32768;
-                    int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536 + 32768;
-
-                    var vertices = new List<Vector3>();
-                    for (int x = xMin; x <= xMax; x += 65536)
-                    {
-                        vertices.Add(new Vector3(x, marioY, zMin));
-                        vertices.Add(new Vector3(x, marioY, zMax));
-                    }
-
-                    for (int z = zMin; z <= zMax; z += 65536)
-                    {
-                        vertices.Add(new Vector3(xMin, marioY, z));
-                        vertices.Add(new Vector3(xMax, marioY, z));
-                    }
-
-                    return vertices;
-                }
-                case PuGridlineSetting.SETTING3:
-                {
-                    float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
-
-                    int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
-                    int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
-                    int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
-                    int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536;
-
-                    List<Vector3> vertices = new List<Vector3>();
-                    for (int x = xMin; x <= xMax; x += 65536)
-                    {
                         for (int z = zMin; z <= zMax; z += 65536)
                         {
-                            float x1 = x - 8192;
-                            float x2 = x + 8192;
-                            float z1 = z - 8192;
-                            float z2 = z + 8192;
-
-                            vertices.Add(new Vector3(x1, marioY, z1));
-                            vertices.Add(new Vector3(x1, marioY, z2));
-
-                            vertices.Add(new Vector3(x2, marioY, z1));
-                            vertices.Add(new Vector3(x2, marioY, z2));
-
-                            vertices.Add(new Vector3(x1, marioY, z1));
-                            vertices.Add(new Vector3(x2, marioY, z1));
-
-                            vertices.Add(new Vector3(x1, marioY, z2));
-                            vertices.Add(new Vector3(x2, marioY, z2));
+                            vertices.Add(new Vector3(xMin, marioY, z));
+                            vertices.Add(new Vector3(xMax, marioY, z));
                         }
-                    }
 
-                    return vertices;
-                }
+                        return vertices;
+                    }
+                case PuGridlineSetting.SETTING2:
+                    {
+                        float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
+
+                        int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536 - 32768;
+                        int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536 + 32768;
+                        int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536 - 32768;
+                        int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536 + 32768;
+
+                        var vertices = new List<Vector3>();
+                        for (int x = xMin; x <= xMax; x += 65536)
+                        {
+                            vertices.Add(new Vector3(x, marioY, zMin));
+                            vertices.Add(new Vector3(x, marioY, zMax));
+                        }
+
+                        for (int z = zMin; z <= zMax; z += 65536)
+                        {
+                            vertices.Add(new Vector3(xMin, marioY, z));
+                            vertices.Add(new Vector3(xMax, marioY, z));
+                        }
+
+                        return vertices;
+                    }
+                case PuGridlineSetting.SETTING3:
+                    {
+                        float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
+
+                        int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
+                        int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
+                        int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
+                        int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536;
+
+                        List<Vector3> vertices = new List<Vector3>();
+                        for (int x = xMin; x <= xMax; x += 65536)
+                        {
+                            for (int z = zMin; z <= zMax; z += 65536)
+                            {
+                                float x1 = x - 8192;
+                                float x2 = x + 8192;
+                                float z1 = z - 8192;
+                                float z2 = z + 8192;
+
+                                vertices.Add(new Vector3(x1, marioY, z1));
+                                vertices.Add(new Vector3(x1, marioY, z2));
+
+                                vertices.Add(new Vector3(x2, marioY, z1));
+                                vertices.Add(new Vector3(x2, marioY, z2));
+
+                                vertices.Add(new Vector3(x1, marioY, z1));
+                                vertices.Add(new Vector3(x2, marioY, z1));
+
+                                vertices.Add(new Vector3(x1, marioY, z2));
+                                vertices.Add(new Vector3(x2, marioY, z2));
+                            }
+                        }
+
+                        return vertices;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException();
             }

@@ -179,7 +179,7 @@ namespace STROOP.Ttc
 
                     bool lowerCogGoal =
                         lowerCogAngleDist <= 64 && // close to some right angle
-                        // was moving slowly leading up to right angle
+                                                   // was moving slowly leading up to right angle
                         cogConfigurations[1].LowerCogCurrentAngularVelocity <= lowerCogMaxAngularVelocity &&
                         cogConfigurations[2].LowerCogCurrentAngularVelocity <= lowerCogMaxAngularVelocity &&
                         cogConfigurations[3].LowerCogCurrentAngularVelocity <= lowerCogMaxAngularVelocity &&
@@ -192,7 +192,7 @@ namespace STROOP.Ttc
                         cogConfigurations[5].LowerCogCurrentAngularVelocity >= lowerCogMinAngularVelocity;
 
                     if (upperCogGoal && lowerCogGoal)
-                        //if (upperCogPreGoal)
+                    //if (upperCogPreGoal)
                     {
                         return frame;
                     }

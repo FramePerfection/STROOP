@@ -407,7 +407,7 @@ namespace STROOP.Models
             return true;
         }
 
-        static int Side(short pX, short  pZ, short v1X, short v1Z, short v2X, short v2Z) => (v1Z - pZ) * (v2X - v1X) - (v1X - pX) * (v2Z - v1Z);
+        static int Side(short pX, short pZ, short v1X, short v1Z, short v2X, short v2Z) => (v1Z - pZ) * (v2X - v1X) - (v1X - pX) * (v2Z - v1Z);
 
         static bool IsInsideTriangle(short pX, short pZ, short v1X, short v1Z, short v2X, short v2Z, short v3X, short v3Z)
         {

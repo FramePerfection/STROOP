@@ -127,7 +127,7 @@ namespace STROOP.Tabs.BruteforceTab
                     }
 
                     throw new System.Exception("Expected '}' at end of input");
-                ValidNumber: ;
+                ValidNumber:;
                 }
                 else if (c == '"')
                 {

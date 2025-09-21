@@ -55,7 +55,7 @@ namespace STROOP
                         config = XmlConfigParser.OpenConfig(@"Config/Config.xml");
                         SavedSettingsConfig.Load(@"Config/SavedSettings.xml");
                     }
-                ),
+            ),
                 ("Loading Object Associations",
                     () => Config.ObjectAssociations = XmlConfigParser.OpenObjectAssoc(@"Config/ObjectAssociations.xml")
                 ),
@@ -85,7 +85,7 @@ namespace STROOP
                         TableConfig.WdwRotatingPlatformTable = new ObjectAngleTable(1120);
                         TableConfig.ElevatorAxleTable = new ObjectAngleTable(400);
                     }
-                ),
+            ),
                 ("Initialize Main Form",
                     () => tmpMainForm = new StroopMainForm(true)
                 ),

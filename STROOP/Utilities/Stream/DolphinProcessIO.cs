@@ -24,7 +24,7 @@ namespace STROOP.Utilities
             bool mem1Found = false;
             for (IntPtr p = new IntPtr();
                  VQueryEx(_processHandle, p, out info, infoSize) == infoSize;
-                 p = (IntPtr) (p.ToInt64() + info.RegionSize.ToInt64()))
+                 p = (IntPtr)(p.ToInt64() + info.RegionSize.ToInt64()))
             {
                 if (mem1Found)
                 {

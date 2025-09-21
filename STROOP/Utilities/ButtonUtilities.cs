@@ -1331,58 +1331,58 @@ namespace STROOP.Utilities
             switch (camHackMode)
             {
                 case CamHackMode.REGULAR:
-                {
-                    return TranslateCamera(xOffset, yOffset, zOffset, useRelative);
-                }
+                    {
+                        return TranslateCamera(xOffset, yOffset, zOffset, useRelative);
+                    }
 
                 case CamHackMode.FIXED_POS:
                 case CamHackMode.FIXED_ORIENTATION:
-                {
-                    return ChangeValues(
-                        new List<PositionAngle> { PositionAngle.CamHackCamera },
-                        xOffset,
-                        yOffset,
-                        zOffset,
-                        Change.ADD,
-                        useRelative);
-                }
+                    {
+                        return ChangeValues(
+                            new List<PositionAngle> { PositionAngle.CamHackCamera },
+                            xOffset,
+                            yOffset,
+                            zOffset,
+                            Change.ADD,
+                            useRelative);
+                    }
 
                 case CamHackMode.RELATIVE_ANGLE:
                 case CamHackMode.ABSOLUTE_ANGLE:
-                {
-                    HandleScaling(ref xOffset, ref zOffset);
-
-                    HandleRelativeAngle(ref xOffset, ref zOffset, useRelative, getCamHackYawFacing(camHackMode));
-                    float xDestination = xOffset + Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
-                    float yDestination = yOffset + Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
-                    float zDestination = zOffset + Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
-
-                    float xFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusXOffset);
-                    float yFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusYOffset);
-                    float zFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusZOffset);
-
-                    double radius, theta, height;
-                    (radius, theta, height) = MoreMath.EulerToCylindricalAboutPivot(xDestination, yDestination, zDestination, xFocus, yFocus, zFocus);
-
-                    ushort relativeYawOffset = 0;
-                    if (camHackMode == CamHackMode.RELATIVE_ANGLE)
                     {
-                        uint camHackObject = Config.Stream.GetUInt32(CamHackConfig.StructAddress + CamHackConfig.ObjectOffset);
-                        relativeYawOffset = camHackObject == 0
-                            ? Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.FacingYawOffset)
-                            : Config.Stream.GetUInt16(camHackObject + ObjectConfig.YawFacingOffset);
-                    }
+                        HandleScaling(ref xOffset, ref zOffset);
 
-                    bool success = true;
-                    using (Config.Stream.Suspend())
-                    {
-                        success &= Config.Stream.SetValue((float)radius, CamHackConfig.StructAddress + CamHackConfig.RadiusOffset);
-                        success &= Config.Stream.SetValue(MoreMath.NormalizeAngleUshort(theta + 32768 - relativeYawOffset), CamHackConfig.StructAddress + CamHackConfig.ThetaOffset);
-                        success &= Config.Stream.SetValue((float)height, CamHackConfig.StructAddress + CamHackConfig.RelativeHeightOffset);
-                    }
+                        HandleRelativeAngle(ref xOffset, ref zOffset, useRelative, getCamHackYawFacing(camHackMode));
+                        float xDestination = xOffset + Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
+                        float yDestination = yOffset + Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
+                        float zDestination = zOffset + Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
 
-                    return success;
-                }
+                        float xFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusXOffset);
+                        float yFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusYOffset);
+                        float zFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusZOffset);
+
+                        double radius, theta, height;
+                        (radius, theta, height) = MoreMath.EulerToCylindricalAboutPivot(xDestination, yDestination, zDestination, xFocus, yFocus, zFocus);
+
+                        ushort relativeYawOffset = 0;
+                        if (camHackMode == CamHackMode.RELATIVE_ANGLE)
+                        {
+                            uint camHackObject = Config.Stream.GetUInt32(CamHackConfig.StructAddress + CamHackConfig.ObjectOffset);
+                            relativeYawOffset = camHackObject == 0
+                                ? Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.FacingYawOffset)
+                                : Config.Stream.GetUInt16(camHackObject + ObjectConfig.YawFacingOffset);
+                        }
+
+                        bool success = true;
+                        using (Config.Stream.Suspend())
+                        {
+                            success &= Config.Stream.SetValue((float)radius, CamHackConfig.StructAddress + CamHackConfig.RadiusOffset);
+                            success &= Config.Stream.SetValue(MoreMath.NormalizeAngleUshort(theta + 32768 - relativeYawOffset), CamHackConfig.StructAddress + CamHackConfig.ThetaOffset);
+                            success &= Config.Stream.SetValue((float)height, CamHackConfig.StructAddress + CamHackConfig.RelativeHeightOffset);
+                        }
+
+                        return success;
+                    }
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -1394,78 +1394,78 @@ namespace STROOP.Utilities
             switch (camHackMode)
             {
                 case CamHackMode.REGULAR:
-                {
-                    float xFocus = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.FocusXOffset);
-                    float yFocus = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.FocusYOffset);
-                    float zFocus = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.FocusZOffset);
-                    return TranslateCameraSpherically(radiusOffset, thetaOffset, phiOffset, (xFocus, yFocus, zFocus));
-                }
+                    {
+                        float xFocus = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.FocusXOffset);
+                        float yFocus = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.FocusYOffset);
+                        float zFocus = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.FocusZOffset);
+                        return TranslateCameraSpherically(radiusOffset, thetaOffset, phiOffset, (xFocus, yFocus, zFocus));
+                    }
 
                 case CamHackMode.FIXED_POS:
                 case CamHackMode.FIXED_ORIENTATION:
-                {
-                    HandleScaling(ref thetaOffset, ref phiOffset);
+                    {
+                        HandleScaling(ref thetaOffset, ref phiOffset);
 
-                    PositionAngle focusPosAngle = GetCamHackFocusPosAngle(camHackMode);
-                    float xFocus = (float)focusPosAngle.X;
-                    float yFocus = (float)focusPosAngle.Y;
-                    float zFocus = (float)focusPosAngle.Z;
+                        PositionAngle focusPosAngle = GetCamHackFocusPosAngle(camHackMode);
+                        float xFocus = (float)focusPosAngle.X;
+                        float yFocus = (float)focusPosAngle.Y;
+                        float zFocus = (float)focusPosAngle.Z;
 
-                    float xCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
-                    float yCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
-                    float zCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
+                        float xCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
+                        float yCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
+                        float zCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
 
-                    double xDestination, yDestination, zDestination;
-                    (xDestination, yDestination, zDestination) =
-                        MoreMath.OffsetSphericallyAboutPivot(xCamPos, yCamPos, zCamPos, radiusOffset, thetaOffset, phiOffset, xFocus, yFocus, zFocus);
+                        double xDestination, yDestination, zDestination;
+                        (xDestination, yDestination, zDestination) =
+                            MoreMath.OffsetSphericallyAboutPivot(xCamPos, yCamPos, zCamPos, radiusOffset, thetaOffset, phiOffset, xFocus, yFocus, zFocus);
 
-                    return ChangeValues(
-                        new List<PositionAngle> { PositionAngle.CamHackCamera },
-                        (float)xDestination,
-                        (float)yDestination,
-                        (float)zDestination,
-                        Change.SET);
-                }
+                        return ChangeValues(
+                            new List<PositionAngle> { PositionAngle.CamHackCamera },
+                            (float)xDestination,
+                            (float)yDestination,
+                            (float)zDestination,
+                            Change.SET);
+                    }
 
                 case CamHackMode.RELATIVE_ANGLE:
                 case CamHackMode.ABSOLUTE_ANGLE:
-                {
-                    HandleScaling(ref thetaOffset, ref phiOffset);
-
-                    float xCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
-                    float yCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
-                    float zCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
-
-                    float xFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusXOffset);
-                    float yFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusYOffset);
-                    float zFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusZOffset);
-
-                    double xDestination, yDestination, zDestination;
-                    (xDestination, yDestination, zDestination) =
-                        MoreMath.OffsetSphericallyAboutPivot(xCamPos, yCamPos, zCamPos, radiusOffset, thetaOffset, phiOffset, xFocus, yFocus, zFocus);
-
-                    double radius, theta, height;
-                    (radius, theta, height) = MoreMath.EulerToCylindricalAboutPivot(xDestination, yDestination, zDestination, xFocus, yFocus, zFocus);
-
-                    ushort relativeYawOffset = 0;
-                    if (camHackMode == CamHackMode.RELATIVE_ANGLE)
                     {
-                        uint camHackObject = Config.Stream.GetUInt32(CamHackConfig.StructAddress + CamHackConfig.ObjectOffset);
-                        relativeYawOffset = camHackObject == 0
-                            ? Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.FacingYawOffset)
-                            : Config.Stream.GetUInt16(camHackObject + ObjectConfig.YawFacingOffset);
-                    }
+                        HandleScaling(ref thetaOffset, ref phiOffset);
 
-                    bool success = true;
-                    using (Config.Stream.Suspend())
-                    {
-                        success &= Config.Stream.SetValue((float)radius, CamHackConfig.StructAddress + CamHackConfig.RadiusOffset);
-                        success &= Config.Stream.SetValue(MoreMath.NormalizeAngleUshort(theta + 32768 - relativeYawOffset), CamHackConfig.StructAddress + CamHackConfig.ThetaOffset);
-                        success &= Config.Stream.SetValue((float)height, CamHackConfig.StructAddress + CamHackConfig.RelativeHeightOffset);
-                    }
+                        float xCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
+                        float yCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
+                        float zCamPos = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
 
-                    return success;
-                }
+                        float xFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusXOffset);
+                        float yFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusYOffset);
+                        float zFocus = Config.Stream.GetSingle(CamHackConfig.StructAddress + CamHackConfig.FocusZOffset);
+
+                        double xDestination, yDestination, zDestination;
+                        (xDestination, yDestination, zDestination) =
+                            MoreMath.OffsetSphericallyAboutPivot(xCamPos, yCamPos, zCamPos, radiusOffset, thetaOffset, phiOffset, xFocus, yFocus, zFocus);
+
+                        double radius, theta, height;
+                        (radius, theta, height) = MoreMath.EulerToCylindricalAboutPivot(xDestination, yDestination, zDestination, xFocus, yFocus, zFocus);
+
+                        ushort relativeYawOffset = 0;
+                        if (camHackMode == CamHackMode.RELATIVE_ANGLE)
+                        {
+                            uint camHackObject = Config.Stream.GetUInt32(CamHackConfig.StructAddress + CamHackConfig.ObjectOffset);
+                            relativeYawOffset = camHackObject == 0
+                                ? Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.FacingYawOffset)
+                                : Config.Stream.GetUInt16(camHackObject + ObjectConfig.YawFacingOffset);
+                        }
+
+                        bool success = true;
+                        using (Config.Stream.Suspend())
+                        {
+                            success &= Config.Stream.SetValue((float)radius, CamHackConfig.StructAddress + CamHackConfig.RadiusOffset);
+                            success &= Config.Stream.SetValue(MoreMath.NormalizeAngleUshort(theta + 32768 - relativeYawOffset), CamHackConfig.StructAddress + CamHackConfig.ThetaOffset);
+                            success &= Config.Stream.SetValue((float)height, CamHackConfig.StructAddress + CamHackConfig.RelativeHeightOffset);
+                        }
+
+                        return success;
+                    }
 
                 default:
                     throw new ArgumentOutOfRangeException();

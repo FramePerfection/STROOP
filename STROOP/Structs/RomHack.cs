@@ -66,7 +66,7 @@ namespace STROOP.Structs
                             goto invalidPayload;
 
                     _payload.Add(new Tuple<uint, byte[]>(address, hackBytes));
-                invalidPayload: ;
+                invalidPayload:;
                 }
 
                 remData = remData.Substring(nextEnd + 1);

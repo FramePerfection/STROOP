@@ -44,7 +44,7 @@ namespace STROOP.Utilities
             catch (Exception e)
             {
                 CloseProcess(_processHandle);
-                throw e;
+                throw;
             }
 
             _process.Exited += _process_Exited;
@@ -178,7 +178,7 @@ namespace STROOP.Utilities
             }
 
             messageLogBuilder.AppendLine("Unable to verify or correct RAM start.\r\nVerify that the game is currently running.");
-        verified: ;
+        verified:;
 
             bool VerifyCandidate(UIntPtr candidate)
             {

@@ -46,7 +46,7 @@ namespace STROOP.Utilities
             return ts;
         }
 
-        public static string CreatePointList(List<(float x, float y , float z)> points) => StringUtilities.Concat(points, p => $"({p.x}, {p.y}, {p.z});");
+        public static string CreatePointList(List<(float x, float y, float z)> points) => StringUtilities.Concat(points, p => $"({p.x}, {p.y}, {p.z});");
 
         public static List<(float, float, float)> ParsePointList(string input) =>
             ParseTupleList(input, vals =>
