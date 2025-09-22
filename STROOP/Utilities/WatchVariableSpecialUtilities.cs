@@ -10,6 +10,7 @@ using STROOP.Models;
 using STROOP.Structs.Configurations;
 using STROOP.Ttc;
 using STROOP.Structs;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Utilities
 {

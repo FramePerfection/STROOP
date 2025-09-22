@@ -12,6 +12,7 @@ using STROOP.Forms;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -486,9 +487,6 @@ namespace STROOP.Controls.VariablePanel
                 form.Show();
             };
 
-            ToolStripMenuItem addMappingVariablesItem = new ToolStripMenuItem("Add Mapping Variables");
-            addMappingVariablesItem.Click += (sender, e) => AddVariables(MappingConfig.GetVariables());
-
             ToolStripMenuItem addDummyVariableItem = new ToolStripMenuItem("Add Dummy Variable...");
             foreach (string typeString in TypeUtilities.InGameTypeList)
             {
@@ -613,7 +611,6 @@ namespace STROOP.Controls.VariablePanel
             strip.Items.Add(addPointVariableItem);
             strip.Items.Add(removePointVariableItem);
             strip.Items.Add(addCustomVariablesItem);
-            strip.Items.Add(addMappingVariablesItem);
             strip.Items.Add(addDummyVariableItem);
             strip.Items.Add(new ToolStripSeparator());
             strip.Items.Add(openSaveClearItem);

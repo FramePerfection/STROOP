@@ -9,6 +9,7 @@ using STROOP.Core.Utilities;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.GfxTab
 {
@@ -69,11 +70,11 @@ namespace STROOP.Tabs.GfxTab
             RomHack hck = null;
             try
             {
-                if (RomVersionConfig.Version == Structs.RomVersion.US)
+                if (RomVersionConfig.Version == RomVersion.US)
                 {
                     hck = new RomHack("Resources\\Hacks\\HitboxViewU.hck", "HitboxView");
                 }
-                else if (RomVersionConfig.Version == Structs.RomVersion.JP)
+                else if (RomVersionConfig.Version == RomVersion.JP)
                 {
                     hck = new RomHack("Resources\\Hacks\\HitboxViewJ.hck", "HitboxView");
                 }

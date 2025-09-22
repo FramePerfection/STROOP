@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
+using STROOP.Core.Utilities;
 
 namespace STROOP.Utilities
 {
@@ -28,7 +29,7 @@ namespace STROOP.Utilities
                 .ConvertAll(html => ColorTranslator.FromHtml(html));
 
         private static readonly Dictionary<string, string> ParamsToColorDictionary =
-            DictionaryUtilities.ReverseDictionary(ColorToParamsDictionary);
+            GeneralUtilities.ReverseDictionary(ColorToParamsDictionary);
 
         public static Color GetColorFromString(string colorString)
         {

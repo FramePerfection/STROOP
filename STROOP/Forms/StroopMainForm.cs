@@ -18,6 +18,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
 using STROOP.Core.Variables;
+using STROOP.Variables.SM64MemoryLayout;
 using System.Reflection;
 using System.Threading;
 
@@ -256,7 +257,13 @@ namespace STROOP
                 },
                 new List<Action>()
                 {
-                    () => MappingConfig.OpenMapping(),
+                    () =>
+                    {
+                        OpenFileDialog openFileDialog = DialogUtilities.CreateOpenFileDialog(FileType.Mapping);
+                        DialogResult result = openFileDialog.ShowDialog();
+                        if (result == DialogResult.OK)
+                            MappingConfig.OpenMapping(openFileDialog.FileName);
+                    },
                     () => MappingConfig.ClearMapping(),
                     () => GetTab<Tabs.GfxTab.GfxTab>().InjectHitboxViewCode(),
                     () => Config.Stream.SetValue(MarioConfig.FreeMovementAction, MarioConfig.StructAddress + MarioConfig.ActionOffset),
@@ -420,7 +427,7 @@ namespace STROOP
         private void UpdateGlobalConfig()
         {
             // Rom Version
-            RomVersionConfig.UpdateRomVersion(comboBoxRomVersion);
+            UpdateRomVersion(comboBoxRomVersion);
 
             // Readonly / Read+Write
             Config.Stream.Readonly = (ReadWriteMode)comboBoxReadWriteMode.SelectedItem == ReadWriteMode.ReadOnly;

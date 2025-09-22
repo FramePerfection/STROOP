@@ -1,6 +1,4 @@
-﻿using STROOP.Structs.Configurations;
-
-namespace STROOP.Structs
+﻿namespace STROOP.Variables.SM64MemoryLayout
 {
     public static class MarioConfig
     {

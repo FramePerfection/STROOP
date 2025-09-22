@@ -1,51 +1,59 @@
-﻿using STROOP.Core.Variables;
-using STROOP.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using STROOP.Core;
+using STROOP.Core.Utilities;
+using System.Globalization;
 
-namespace STROOP.Structs.Configurations
+namespace STROOP.Variables.SM64MemoryLayout
 {
     public static class MappingConfig
     {
         private static readonly Dictionary<uint, string> mappingUS = GetMappingDictionary(@"Mappings/MappingUS.map");
         private static readonly Dictionary<uint, string> mappingJP = GetMappingDictionary(@"Mappings/MappingJP.map");
-        private static readonly Dictionary<string, uint> mappingUSReversed = DictionaryUtilities.ReverseDictionary(mappingUS);
-        private static readonly Dictionary<string, uint> mappingJPReversed = DictionaryUtilities.ReverseDictionary(mappingJP);
+        private static readonly Dictionary<string, uint> mappingUSReversed = GeneralUtilities.ReverseDictionary(mappingUS);
+        private static readonly Dictionary<string, uint> mappingJPReversed = GeneralUtilities.ReverseDictionary(mappingJP);
 
         private static Dictionary<uint, string> mappingCurrent = null;
         private static Dictionary<string, uint> mappingCurrentReversed = null;
 
+        static List<string> ReadFileLines(string filePath)
+        {
+            List<string> lines = new List<string>();
+            string line;
+
+            StreamReader file = new StreamReader(filePath);
+            while ((line = file.ReadLine()) != null)
+            {
+                lines.Add(line);
+            }
+
+            file.Close();
+            return lines;
+        }
+
         public static Dictionary<uint, string> GetMappingDictionary(string filePath)
         {
             Dictionary<uint, string> dictionary = new Dictionary<uint, string>();
-            List<string> lines = DialogUtilities.ReadFileLines(filePath);
+            List<string> lines = ReadFileLines(filePath);
             foreach (string line in lines)
             {
-                List<string> parts = ParsingUtilities.ParseStringList(line, false);
-                if (parts.Count != 2) continue;
+                // splits by whitespace, see the #Remarks section of https://learn.microsoft.com/en-us/dotnet/api/system.string.split?view=net-8.0
+                string[] parts = line.Split(null);
+
+                if (parts.Length != 2) continue;
                 string part1 = parts[0];
                 string part2 = parts[1];
                 if (!part1.StartsWith("0x00000000")) continue;
                 string addressString = "0x" + part1.Substring(10);
-                uint? addressNullable = ParsingUtilities.ParseHexNullable(addressString);
-                if (!addressNullable.HasValue) continue;
-                uint address = addressNullable.Value;
+                uint address = uint.Parse(addressString, NumberStyles.HexNumber);
                 dictionary[address] = part2;
             }
 
             return dictionary;
         }
 
-        public static void OpenMapping()
+        public static void OpenMapping(string fileName)
         {
-            OpenFileDialog openFileDialog = DialogUtilities.CreateOpenFileDialog(FileType.Mapping);
-            DialogResult result = openFileDialog.ShowDialog();
-            if (result != DialogResult.OK) return;
-            string fileName = openFileDialog.FileName;
             mappingCurrent = GetMappingDictionary(fileName);
-            mappingCurrentReversed = DictionaryUtilities.ReverseDictionary(mappingCurrent);
+            mappingCurrentReversed = GeneralUtilities.ReverseDictionary(mappingCurrent);
         }
 
         public static void ClearMapping()
@@ -98,28 +106,6 @@ namespace STROOP.Structs.Configurations
             string name = mappingCurrent[address];
             if (!mappingOriginalReversed.ContainsKey(name)) return address;
             return mappingOriginalReversed[name];
-        }
-
-        /**
-         *  Gets user added variables from the mapping,
-         *  assuming they're suffixed with "_f32", "_s16", etc.
-         */
-        public static IEnumerable<NamedVariableCollection.IView> GetVariables()
-        {
-            if (mappingCurrent == null) return new NamedVariableCollection.IView[0];
-
-            var controls = new List<NamedVariableCollection.IView>();
-            // TODO: get back the mapping feature, but cooler
-            //foreach (uint address in mappingCurrent.Keys)
-            //{
-            //    string stringValue = mappingCurrent[address];
-            //    (Type type, string name) = GetInfoIfUserAddedWord(stringValue);
-            //    if (type == null) continue;
-            //    string typeString = TypeUtilities.TypeToString[type];
-
-            //    controls.Add(new MemoryDescriptor(name, type));
-            //}
-            return controls;
         }
 
         private static (Type type, string name) GetInfoIfUserAddedWord(string word)

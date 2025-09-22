@@ -4,6 +4,7 @@ using System.Linq;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables.SM64MemoryLayout;
 using System.Diagnostics;
 
 namespace STROOP.Utilities

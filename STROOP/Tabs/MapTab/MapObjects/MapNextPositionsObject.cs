@@ -8,6 +8,7 @@ using STROOP.Structs;
 using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Mathematics;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Drawing;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Structs
 {

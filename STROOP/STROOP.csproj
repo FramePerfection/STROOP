@@ -291,6 +291,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\STROOP.Core\STROOP.Core.csproj"/>
+        <ProjectReference Include="..\STROOP.Variables\STROOP.Variables.csproj" />
     </ItemGroup>
 
 </Project>

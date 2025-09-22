@@ -9,6 +9,7 @@ using STROOP.Core.Utilities;
 using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Utilities
 {

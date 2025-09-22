@@ -1,7 +1,6 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using STROOP.Core;
 
-namespace STROOP.Structs.Configurations
+namespace STROOP.Variables.SM64MemoryLayout
 {
     public static class RomVersionConfig
     {
@@ -13,62 +12,9 @@ namespace STROOP.Structs.Configurations
         public static uint RomVersionTellValueSH = 0x8F250004;
         public static uint RomVersionTellValueEU = 0x0C0BD4AC;
 
-        public static void UpdateRomVersion(ComboBox comboBoxRomVersion)
+        public static RomVersion? GetRomVersionUsingTell()
         {
-            RomVersionSelection romVersionSelection = (RomVersionSelection)comboBoxRomVersion.SelectedItem;
-            switch (romVersionSelection)
-            {
-                case RomVersionSelection.AUTO:
-                case RomVersionSelection.AUTO_US:
-                case RomVersionSelection.AUTO_JP:
-                case RomVersionSelection.AUTO_SH:
-                case RomVersionSelection.AUTO_EU:
-                    RomVersion? autoRomVersionNullable = GetRomVersionUsingTell();
-                    if (!autoRomVersionNullable.HasValue) return;
-                    RomVersion autoRomVersion = autoRomVersionNullable.Value;
-                    Version = autoRomVersion;
-                    if (!comboBoxRomVersion.DroppedDown)
-                    {
-                        switch (autoRomVersion)
-                        {
-                            case RomVersion.US:
-                                comboBoxRomVersion.SelectedItem = RomVersionSelection.AUTO_US;
-                                break;
-                            case RomVersion.JP:
-                                comboBoxRomVersion.SelectedItem = RomVersionSelection.AUTO_JP;
-                                break;
-                            case RomVersion.SH:
-                                comboBoxRomVersion.SelectedItem = RomVersionSelection.AUTO_SH;
-                                break;
-                            case RomVersion.EU:
-                                comboBoxRomVersion.SelectedItem = RomVersionSelection.AUTO_EU;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }
-
-                    break;
-                case RomVersionSelection.US:
-                    Version = RomVersion.US;
-                    break;
-                case RomVersionSelection.JP:
-                    Version = RomVersion.JP;
-                    break;
-                case RomVersionSelection.SH:
-                    Version = RomVersion.SH;
-                    break;
-                case RomVersionSelection.EU:
-                    Version = RomVersion.EU;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private static RomVersion? GetRomVersionUsingTell()
-        {
-            uint tell = Config.Stream.GetUInt32(RomVersionTellAddress);
+            uint tell = ProcessStream.Instance.GetUInt32(RomVersionTellAddress);
             if (tell == RomVersionTellValueUS) return RomVersion.US;
             if (tell == RomVersionTellValueJP) return RomVersion.JP;
             if (tell == RomVersionTellValueSH) return RomVersion.SH;

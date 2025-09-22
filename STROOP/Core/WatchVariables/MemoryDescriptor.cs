@@ -4,6 +4,7 @@ using System.Linq;
 using STROOP.Utilities;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.SM64MemoryLayout;
 using System.Xml.Linq;
 
 namespace STROOP.Core.Variables

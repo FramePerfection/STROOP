@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using STROOP.Core;
 
-namespace STROOP.Structs.Configurations
+namespace STROOP.Variables.SM64MemoryLayout
 {
     public static class CameraConfig
     {
@@ -14,7 +14,7 @@ namespace STROOP.Structs.Configurations
         public static readonly uint StructAddressSH = 0x8031EC78;
         public static readonly uint StructAddressEU = 0x8030A7E0;
 
-        public static uint CamStructAddress => Config.Stream.GetUInt32(RomVersionConfig.SwitchMap(0x8033cbd0, 0x8033b860));
+        public static uint CamStructAddress => ProcessStream.Instance.GetUInt32(RomVersionConfig.SwitchMap(0x8033cbd0, 0x8033b860));
         public static uint LakituStructAddress => RomVersionConfig.SwitchMap(0x8033c698, 0x8033b328);
         public static uint ModeInfoAddress => RomVersionConfig.SwitchMap(0x8033c788, 0x8033b418, null, null);
         public static uint ModeTransitionAddress => RomVersionConfig.SwitchMap(0x8033c5c0, 0x8033b250, null, null);

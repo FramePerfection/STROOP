@@ -5,13 +5,6 @@ namespace STROOP.Utilities
 {
     public static class DictionaryUtilities
     {
-        public static Dictionary<V, K> ReverseDictionary<K, V>(Dictionary<K, V> dictionary)
-        {
-            Dictionary<V, K> reverseDictionary = new Dictionary<V, K>();
-            dictionary.ToList().ForEach(keyValuePair => { reverseDictionary.Add(keyValuePair.Value, keyValuePair.Key); });
-            return reverseDictionary;
-        }
-
         public static string GetString<K, V>(Dictionary<K, V> dictionary)
         {
             List<string> entries = new List<string>();

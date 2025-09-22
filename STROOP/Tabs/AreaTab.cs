@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs
 {

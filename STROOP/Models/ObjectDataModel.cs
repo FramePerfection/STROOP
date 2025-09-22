@@ -1,6 +1,7 @@
 ﻿using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 using System;
 
 namespace STROOP.Models

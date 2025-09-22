@@ -11,6 +11,7 @@ using STROOP.Extensions;
 using System.Drawing.Drawing2D;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables.SM64MemoryLayout;
 using static STROOP.Managers.ObjectSlotsManager;
 using System.Windows.Input;
 using System.Xml.Linq;

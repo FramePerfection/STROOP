@@ -7,6 +7,7 @@ using STROOP.Structs;
 using STROOP.Models;
 using System.Windows.Forms;
 using STROOP.Forms;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {

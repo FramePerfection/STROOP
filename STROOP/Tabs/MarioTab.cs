@@ -4,6 +4,7 @@ using STROOP.Structs;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs
 {

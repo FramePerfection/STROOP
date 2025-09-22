@@ -7,6 +7,7 @@ using STROOP.Utilities;
 using System.Drawing;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables.SM64MemoryLayout;
 using System.Collections.ObjectModel;
 
 namespace STROOP.Managers

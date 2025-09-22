@@ -4,7 +4,6 @@ namespace STROOP.Core.Utilities
 {
     public static class GeneralUtilities
     {
-
         public static IEnumerable<T> Yield<T>(this T value)
         {
             yield return value;
@@ -69,6 +68,13 @@ namespace STROOP.Core.Utilities
                     result = input;
                 else if (!(input?.Equals(result) ?? result == null))
                     result = fail;
+        }
+
+        public static Dictionary<V, K> ReverseDictionary<K, V>(Dictionary<K, V> dictionary)
+        {
+            Dictionary<V, K> reverseDictionary = new Dictionary<V, K>();
+            dictionary.ToList().ForEach(keyValuePair => { reverseDictionary.Add(keyValuePair.Value, keyValuePair.Key); });
+            return reverseDictionary;
         }
     }
 }
