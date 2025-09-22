@@ -4,11 +4,11 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using STROOP.Controls.VariablePanel;
-using STROOP.Core.Variables;
 using STROOP.Models;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
@@ -266,7 +266,7 @@ namespace STROOP.Tabs
             if (coord != null) xElement.Add(new XAttribute("coord", coord));
             if (display != null) xElement.Add(new XAttribute("display", display));
             if (yaw != null) xElement.Add(new XAttribute("yaw", yaw));
-            return NamedVariableCollection.ParseXml(xElement);
+            return WatchVariableWrapperFactory.ParseXml(xElement);
         }
 
         private List<NamedVariableCollection.IView> CreatePanVars(int index)

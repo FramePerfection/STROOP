@@ -1,5 +1,5 @@
-﻿using STROOP.Core.Variables;
-using STROOP.Structs.Configurations;
+﻿using STROOP.Structs.Configurations;
+using STROOP.Variables;
 using System.Collections.Generic;
 
 namespace STROOP.Structs

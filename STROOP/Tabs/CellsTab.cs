@@ -5,6 +5,7 @@ using STROOP.Utilities;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using STROOP.Structs;
+using STROOP.Variables;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs

@@ -1,4 +1,5 @@
-﻿using STROOP.Core;
+﻿using STROOP.Controls.VariablePanel;
+using STROOP.Core;
 using STROOP.Core.Emulators;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using STROOP.Extensions;
 using System.Xml;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
@@ -141,7 +142,7 @@ namespace STROOP.Utilities
             {
                 if (element.Name.ToString() != "Data")
                     continue;
-                var view = NamedVariableCollection.ParseXml(element);
+                var view = WatchVariableWrapperFactory.ParseXml(element);
                 if (view != null)
                     objectData.Add(view);
             }
@@ -272,7 +273,7 @@ namespace STROOP.Utilities
                             List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
                             foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
                             {
-                                var variableView = NamedVariableCollection.ParseXml(subElement);
+                                var variableView = WatchVariableWrapperFactory.ParseXml(subElement);
                                 if (variableView != null)
                                     precursors.Add(variableView);
                             }

@@ -1,8 +1,8 @@
-﻿using STROOP.Core.Variables;
-using STROOP.Models;
+﻿using STROOP.Models;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
 
 namespace STROOP.Controls.VariablePanel
 {

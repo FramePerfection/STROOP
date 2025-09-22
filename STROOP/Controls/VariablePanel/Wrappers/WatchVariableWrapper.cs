@@ -3,18 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using STROOP.Core.Variables;
 using STROOP.Forms;
+using STROOP.Variables;
 
 namespace STROOP.Controls.VariablePanel
 {
-    public enum CombinedValuesMeaning
-    {
-        NoValue,
-        SameValue,
-        MultipleValues,
-    }
-
     public abstract class WatchVariableWrapper
     {
         public readonly NamedVariableCollection.IView _view;

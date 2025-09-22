@@ -1,40 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using STROOP.Core;
 using STROOP.Utilities;
-using STROOP.Structs;
-using STROOP.Structs.Configurations;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
-using System.Xml.Linq;
 
-namespace STROOP.Core.Variables
+namespace STROOP.Variables
 {
     public class MemoryDescriptor
     {
-        public static (MemoryDescriptor descriptor, NamedVariableCollection.XmlMemoryView view) FromXml(XElement element)
-        {
-            string typeName = (element.Attribute(XName.Get("type"))?.Value);
-            string baseAddressType = element.Attribute(XName.Get("base")).Value;
-            uint? offsetUS = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offsetUS"))?.Value);
-            uint? offsetJP = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offsetJP"))?.Value);
-            uint? offsetSH = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offsetSH"))?.Value);
-            uint? offsetEU = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offsetEU"))?.Value);
-            uint? offsetDefault = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offset"))?.Value);
-            uint? mask = element.Attribute(XName.Get("mask")) != null ? ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("mask")).Value) : null;
-            int? shift = element.Attribute(XName.Get("shift")) != null ? int.Parse(element.Attribute(XName.Get("shift")).Value) : (int?)null;
-            bool handleMapping = (element.Attribute(XName.Get("handleMapping")) != null) ? bool.Parse(element.Attribute(XName.Get("handleMapping")).Value) : true;
-
-            var memoryDescriptor = new MemoryDescriptor(TypeUtilities.StringToType[typeName], baseAddressType, offsetUS, offsetJP, offsetSH, offsetEU, offsetDefault, mask, shift, handleMapping);
-            var view = (NamedVariableCollection.XmlMemoryView)
-                typeof(NamedVariableCollection.XmlMemoryView<>)
-                    .MakeGenericType(memoryDescriptor.MemoryType)
-                    .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(XElement) })
-                    .Invoke(new object[] { memoryDescriptor, element });
-            return (memoryDescriptor, view);
-        }
-
-        public readonly Type MemoryType;
+        public readonly Type ClrType;
         public readonly int? ByteCount;
         public readonly bool? SignedType;
 
@@ -91,19 +64,19 @@ namespace STROOP.Core.Variables
             return baseAddresses.ConvertAll(baseAddress => baseAddress + offset).ToList();
         }
 
-        public MemoryDescriptor(Type memoryTypeName, string baseAddress, uint offset, uint? mask = null, int? shift = null)
-            : this(memoryTypeName, baseAddress, null, null, null, null, offset, mask, shift, false)
+        public MemoryDescriptor(Type clrTypeName, string baseAddress, uint offset, uint? mask = null, int? shift = null)
+            : this(clrTypeName, baseAddress, null, null, null, null, offset, mask, shift, false)
         {
         }
 
         public NamedVariableCollection.MemoryDescriptorView CreateView(string wrapper = "Number")
             => (NamedVariableCollection.MemoryDescriptorView)
                 typeof(NamedVariableCollection.MemoryDescriptorView<>)
-                    .MakeGenericType(MemoryType)
+                    .MakeGenericType(ClrType)
                     .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(string) })
                     .Invoke(new object[] { this, wrapper });
 
-        private MemoryDescriptor(Type memoryType, string baseAddressType,
+        public MemoryDescriptor(Type clrType, string baseAddressType,
             uint? offsetUS, uint? offsetJP, uint? offsetSH, uint? offsetEU, uint? offsetDefault, uint? mask, int? shift, bool handleMapping)
         {
             if (offsetDefault.HasValue && (offsetUS.HasValue || offsetJP.HasValue || offsetSH.HasValue || offsetEU.HasValue))
@@ -119,9 +92,9 @@ namespace STROOP.Core.Variables
             OffsetEU = offsetEU;
             OffsetDefault = offsetDefault;
 
-            MemoryType = memoryType;
-            ByteCount = TypeUtilities.TypeSize[MemoryType];
-            SignedType = TypeUtilities.TypeSign[MemoryType];
+            ClrType = clrType;
+            ByteCount = TypeUtilities.TypeSize[ClrType];
+            SignedType = TypeUtilities.TypeSign[ClrType];
 
             Mask = mask;
             Shift = shift;
@@ -149,7 +122,7 @@ namespace STROOP.Core.Variables
                 byteCountString = string.Format(" ({0} byte{1})", ByteCount.Value, pluralSuffix);
             }
 
-            return TypeUtilities.TypeToString[MemoryType] + maskString + shiftString + byteCountString;
+            return TypeUtilities.TypeToString[ClrType] + maskString + shiftString + byteCountString;
         }
 
         public string GetBaseTypeOffsetDescription() => $"{BaseAddressType} + {HexUtilities.FormatValue(Offset)}";
@@ -166,7 +139,7 @@ namespace STROOP.Core.Variables
         private List<UIntPtr> GetProcessAddressList(List<uint> addresses = null)
         {
             List<uint> ramAddressList = GetRamAddressList(false, addresses);
-            return ramAddressList.ConvertAll(address => Config.Stream.GetAbsoluteAddress(address, ByteCount.Value));
+            return ramAddressList.ConvertAll(address => ProcessStream.Instance.GetAbsoluteAddress(address, ByteCount.Value));
         }
 
         public string GetRamAddressListString(bool addressArea = true, List<uint> addresses = null)
@@ -191,7 +164,7 @@ namespace STROOP.Core.Variables
 
             if (UseAbsoluteAddressing)
                 address = EndiannessUtilities.SwapAddressEndianness(
-                    Config.Stream.GetRelativeAddress(addressPtr, ByteCount.Value), ByteCount.Value);
+                    ProcessStream.Instance.GetRelativeAddress(addressPtr, ByteCount.Value), ByteCount.Value);
             else
                 address = addressPtr.ToUInt32();
 

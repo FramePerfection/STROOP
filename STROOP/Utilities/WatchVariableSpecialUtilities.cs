@@ -5,11 +5,12 @@ using System.Text;
 using STROOP.Controls.VariablePanel;
 using STROOP.Core;
 using STROOP.Core.Utilities;
-using STROOP.Core.Variables;
 using STROOP.Models;
 using STROOP.Structs.Configurations;
 using STROOP.Ttc;
 using STROOP.Structs;
+using STROOP.Tabs;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
@@ -17,12 +18,6 @@ namespace STROOP.Utilities
 {
     public static class WatchVariableSpecialUtilities
     {
-        public class Defaults<T>
-        {
-            public readonly static NamedVariableCollection.GetterFunction<T> DEFAULT_GETTER = () => Array.Empty<T>();
-            public readonly static NamedVariableCollection.SetterFunction<T> DEFAULT_SETTER = value => Array.Empty<bool>();
-            public readonly static Func<T, uint, bool> DEFAULT_SETTER_WITH_ADDRESS = (_, __) => false;
-        }
 
         public static WatchVariableSpecialDictionary dictionary { get; private set; }
 
@@ -290,7 +285,7 @@ namespace STROOP.Utilities
                     double dAngle = PositionAngle.GetDAngleTo(PositionAngle.Mario, PositionAngle.Obj(objAddress));
                     return MoreMath.MaybeNegativeModulus(dAngle, 512);
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("PitchMarioToObj",
                 BaseAddressType.Object,
@@ -300,7 +295,7 @@ namespace STROOP.Utilities
                     PositionAngle obj = PositionAngle.Obj(objAddress);
                     return MoreMath.GetPitch(mario.X, mario.Y, mario.Z, obj.X, obj.Y, obj.Z);
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("DPitchMarioToObj",
                 BaseAddressType.Object,
@@ -325,7 +320,7 @@ namespace STROOP.Utilities
             dictionary.Add("ObjectInGameDeltaYaw",
                 BaseAddressType.Object,
                 objAddress => GetDeltaInGameAngle(Config.Stream.GetUInt16(objAddress + ObjectConfig.YawFacingOffset)),
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("EffectiveHitboxRadius",
                 BaseAddressType.Object,
@@ -336,7 +331,7 @@ namespace STROOP.Utilities
                     float objHitboxRadius = Config.Stream.GetSingle(objAddress + ObjectConfig.HitboxRadiusOffset);
                     return mObjHitboxRadius + objHitboxRadius;
                 },
-                Defaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("EffectiveHurtboxRadius",
                 BaseAddressType.Object,
@@ -347,7 +342,7 @@ namespace STROOP.Utilities
                     float objHurtboxRadius = Config.Stream.GetSingle(objAddress + ObjectConfig.HurtboxRadiusOffset);
                     return mObjHurtboxRadius + objHurtboxRadius;
                 },
-                Defaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MarioHitboxAwayFromObject",
                 BaseAddressType.Object,
@@ -494,7 +489,7 @@ namespace STROOP.Utilities
 
                     return marioHitboxAwayFromObject < 0 && marioHitboxAboveObject <= 0 && marioHitboxBelowObject <= 0;
                 },
-                Defaults<bool>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<bool>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MarioHurtboxAwayFromObject",
                 BaseAddressType.Object,
@@ -640,7 +635,7 @@ namespace STROOP.Utilities
 
                     return marioHurtboxAwayFromObject < 0 && marioHurtboxAboveObject <= 0 && marioHurtboxBelowObject <= 0;
                 },
-                Defaults<bool>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<bool>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MarioPunchAngleAway",
                 BaseAddressType.Object,
@@ -694,17 +689,17 @@ namespace STROOP.Utilities
 
                     return numOfCalls;
                 },
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ObjectProcessGroup",
                 BaseAddressType.ProcessGroup,
                 processGroupUint => processGroupUint == uint.MaxValue ? (sbyte)(-1) : (sbyte)processGroupUint,
-                Defaults<sbyte>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<sbyte>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ObjectProcessGroupDescription",
                 BaseAddressType.ProcessGroup,
                 processGroupUint => ProcessGroupUtilities.GetProcessGroupDescription(processGroupUint),
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ObjectRngIndex",
                 BaseAddressType.Object,
@@ -747,7 +742,7 @@ namespace STROOP.Utilities
                     int pendulumCountdown = GetPendulumCountdown(objAddress);
                     return pendulumCountdown;
                 },
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("PendulumAmplitude",
                 BaseAddressType.Object,
@@ -799,12 +794,12 @@ namespace STROOP.Utilities
             dictionary.Add("CogCountdown",
                 BaseAddressType.Object,
                 objAddress => GetCogNumFramesInRotation(objAddress),
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("CogEndingYaw",
                 BaseAddressType.Object,
                 objAddress => GetCogEndingYaw(objAddress),
-                Defaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("CogRotationIndex",
                 BaseAddressType.Object,
@@ -814,7 +809,7 @@ namespace STROOP.Utilities
                     double rotationIndex = CogUtilities.GetRotationIndex(yawFacing) ?? Double.NaN;
                     return rotationIndex;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Waypoint
 
@@ -826,7 +821,7 @@ namespace STROOP.Utilities
                         GetWaypointSpecialVars(objAddress);
                     return dotProduct;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ObjectDistanceToWaypointPlane",
                 BaseAddressType.Object,
@@ -836,7 +831,7 @@ namespace STROOP.Utilities
                         GetWaypointSpecialVars(objAddress);
                     return distToWaypointPlane;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ObjectDistanceToWaypoint",
                 BaseAddressType.Object,
@@ -846,7 +841,7 @@ namespace STROOP.Utilities
                         GetWaypointSpecialVars(objAddress);
                     return distToWaypoint;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Racing Penguin
 
@@ -858,7 +853,7 @@ namespace STROOP.Utilities
                         GetRacingPenguinSpecialVars(objAddress);
                     return effortTarget;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("RacingPenguinEffortChange",
                 BaseAddressType.Object,
@@ -868,7 +863,7 @@ namespace STROOP.Utilities
                         GetRacingPenguinSpecialVars(objAddress);
                     return effortChange;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("RacingPenguinMinHSpeed",
                 BaseAddressType.Object,
@@ -878,7 +873,7 @@ namespace STROOP.Utilities
                         GetRacingPenguinSpecialVars(objAddress);
                     return minHSpeed;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("RacingPenguinHSpeedTarget",
                 BaseAddressType.Object,
@@ -888,7 +883,7 @@ namespace STROOP.Utilities
                         GetRacingPenguinSpecialVars(objAddress);
                     return hSpeedTarget;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("RacingPenguinDiffHSpeedTarget",
                 BaseAddressType.Object,
@@ -900,12 +895,12 @@ namespace STROOP.Utilities
                     double hSpeedDiff = hSpeed - hSpeedTarget;
                     return hSpeedDiff;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("RacingPenguinProgress",
                 BaseAddressType.Object,
                 objAddress => TableConfig.RacingPenguinWaypoints.GetProgress(objAddress),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Koopa the Quick
 
@@ -916,7 +911,7 @@ namespace STROOP.Utilities
                     (double hSpeedTarget, double hSpeedChange) = GetKoopaTheQuickSpecialVars(objAddress);
                     return hSpeedTarget;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("KoopaTheQuickHSpeedChange",
                 BaseAddressType.Object,
@@ -925,22 +920,22 @@ namespace STROOP.Utilities
                     (double hSpeedTarget, double hSpeedChange) = GetKoopaTheQuickSpecialVars(objAddress);
                     return hSpeedChange;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("KoopaTheQuick1Progress",
                 BaseAddressType.Object,
                 objAddress => TableConfig.KoopaTheQuick1Waypoints.GetProgress(objAddress),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("KoopaTheQuick2Progress",
                 BaseAddressType.Object,
                 objAddress => TableConfig.KoopaTheQuick2Waypoints.GetProgress(objAddress),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("KoopaTheQuick1ProgressOld",
                 BaseAddressType.Object,
                 objAddress => PlushUtilities.GetProgress(Config.Stream.GetUInt32(MiscConfig.GlobalTimerAddress)),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("KoopaTheQuick1ProgressDiff",
                 BaseAddressType.Object,
@@ -951,7 +946,7 @@ namespace STROOP.Utilities
                     double progressNew = TableConfig.KoopaTheQuick1Waypoints.GetProgress(objAddress);
                     return progressNew - progressOld;
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Fly Guy
 
@@ -966,7 +961,7 @@ namespace STROOP.Utilities
                     if (heightDiff > -200) return "High";
                     return "Medium";
                 },
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("FlyGuyRelativeHeight",
                 BaseAddressType.Object,
@@ -975,7 +970,7 @@ namespace STROOP.Utilities
                     int oscillationTimer = Config.Stream.GetInt32(objAddress + ObjectConfig.FlyGuyOscillationTimerOffset);
                     return TableConfig.FlyGuyData.GetRelativeHeight(oscillationTimer);
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("FlyGuyMinHeight",
                 BaseAddressType.Object,
@@ -1130,7 +1125,7 @@ namespace STROOP.Utilities
             dictionary.Add("ChuckyaAngleMod1024",
                 BaseAddressType.Object,
                 objAddress => Config.Stream.GetUInt16(objAddress + ObjectConfig.YawMovingOffset) % 1024,
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Scuttlebug
 
@@ -1215,7 +1210,7 @@ namespace STROOP.Utilities
                     int timer = Config.Stream.GetInt32(objAddress + ObjectConfig.BitfsPlatformGroupTimerOffset);
                     return BitfsPlatformGroupTable.GetRelativeHeightFromMin(timer);
                 },
-                Defaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("BitfsPlatformGroupDisplacedHeight",
                 BaseAddressType.Object,
@@ -1266,7 +1261,7 @@ namespace STROOP.Utilities
                     int missionIndex = Config.Stream.GetByte(objAddress + ObjectConfig.PowerStarMissionIndexOffset);
                     return TableConfig.Missions.GetInGameMissionName(courseIndex, missionIndex);
                 },
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Coordinates
 
@@ -1545,7 +1540,7 @@ namespace STROOP.Utilities
                     });
                     return coordinates.Max(coord => MoreMath.GetDistanceBetween(objX, objY, objZ, coord.Item1, coord.Item2, coord.Item3));
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Rolling Log
 
@@ -1575,7 +1570,7 @@ namespace STROOP.Utilities
                     float zCenter = Config.Stream.GetSingle(objAddress + ObjectConfig.RollingLogZCenterOffset);
                     return MoreMath.GetDistanceBetween(xCenter, zCenter, x, z);
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Object specific vars - Object Spawner
 
@@ -1713,21 +1708,21 @@ namespace STROOP.Utilities
                     int targetAngle = Config.Stream.GetInt32(objAddress + ObjectConfig.SwooperTargetYawOffset);
                     return targetAngle + (short)(3000 * InGameTrigUtilities.InGameCosine(4000 * (int)globalTimer));
                 },
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Mario vars
 
             dictionary.Add("RotationDisplacementX",
                 () => GetRotationDisplacement().ToTuple().Item1,
-                Defaults<float>.DEFAULT_SETTER);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER);
 
             dictionary.Add("RotationDisplacementY",
                 () => GetRotationDisplacement().ToTuple().Item2,
-                Defaults<float>.DEFAULT_SETTER);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER);
 
             dictionary.Add("RotationDisplacementZ",
                 () => GetRotationDisplacement().ToTuple().Item3,
-                Defaults<float>.DEFAULT_SETTER);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER);
 
             dictionary.Add("SpeedMultiplier",
                 () =>
@@ -1759,7 +1754,7 @@ namespace STROOP.Utilities
                     double K = InGameTrigUtilities.InGameCosine(intendedDYaw) < 0 && hSpeed >= 0 ? 0.5 + 0.5 * hSpeed / 100 : 1;
                     return (scaledMagnitude / 32) * InGameTrigUtilities.InGameCosine(intendedDYaw) * K * 0.02 + A;
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("DeFactoSpeed",
                 () => GetMarioDeFactoSpeed(),
@@ -1810,11 +1805,11 @@ namespace STROOP.Utilities
 
             dictionary.Add("TwirlYawMod2048",
                 () => Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.TwirlYawOffset) % 2048,
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("FlyingEnergy",
                 () => FlyingUtilities.GetEnergy(),
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("TrajectoryRemainingHeight",
                 () =>
@@ -1904,7 +1899,7 @@ namespace STROOP.Utilities
                     float startX = Config.Stream.GetSingle(MiscConfig.HackedAreaAddress + 0x1C);
                     return endX - startX;
                 },
-                Defaults<float>.DEFAULT_SETTER);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER);
 
             dictionary.Add("MovementY",
                 () =>
@@ -1913,7 +1908,7 @@ namespace STROOP.Utilities
                     float startY = Config.Stream.GetSingle(MiscConfig.HackedAreaAddress + 0x20);
                     return endY - startY;
                 },
-                Defaults<float>.DEFAULT_SETTER);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER);
 
             dictionary.Add("MovementZ",
                 () =>
@@ -1922,7 +1917,7 @@ namespace STROOP.Utilities
                     float startZ = Config.Stream.GetSingle(MiscConfig.HackedAreaAddress + 0x24);
                     return endZ - startZ;
                 },
-                Defaults<float>.DEFAULT_SETTER);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER);
 
             dictionary.Add("MovementForwards",
                 () =>
@@ -1940,7 +1935,7 @@ namespace STROOP.Utilities
                         MoreMath.GetComponentsFromVectorRelatively(movementHorizontal, movementAngle, marioAngle);
                     return movementForwards;
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("MovementSideways",
                 () =>
@@ -1958,7 +1953,7 @@ namespace STROOP.Utilities
                         MoreMath.GetComponentsFromVectorRelatively(movementHorizontal, movementAngle, marioAngle);
                     return movementSideways;
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("MovementHorizontal",
                 () =>
@@ -1971,7 +1966,7 @@ namespace STROOP.Utilities
                     float movementZ = endZ - startZ;
                     return MoreMath.GetHypotenuse(movementX, movementZ);
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("MovementTotal",
                 () =>
@@ -1987,7 +1982,7 @@ namespace STROOP.Utilities
                     float movementZ = endZ - startZ;
                     return MoreMath.GetHypotenuse(movementX, movementY, movementZ);
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("MovementAngle",
                 () =>
@@ -2000,7 +1995,7 @@ namespace STROOP.Utilities
                     float movementZ = endZ - startZ;
                     return MoreMath.AngleTo_AngleUnits(movementX, movementZ);
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("QFrameCountEstimate",
                 () =>
@@ -2021,19 +2016,19 @@ namespace STROOP.Utilities
                     return qframes;
                 }
                 ,
-                Defaults<int?>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int?>.DEFAULT_SETTER);
 
             dictionary.Add("DeltaYawIntendedFacing",
                 () => GetDeltaYawIntendedFacing(),
-                Defaults<short>.DEFAULT_SETTER);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER);
 
             dictionary.Add("DeltaYawIntendedBackwards",
                 () => GetDeltaYawIntendedBackwards(),
-                Defaults<short>.DEFAULT_SETTER);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER);
 
             dictionary.Add("MarioInGameDeltaYaw",
                 () => GetDeltaInGameAngle(Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.FacingYawOffset)),
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("FallHeight",
                 () =>
@@ -2060,7 +2055,7 @@ namespace STROOP.Utilities
                     float sum = (hSpeed + remainder) * numFrames / 2;
                     return sum - hSpeed;
                 },
-                Defaults<float>.DEFAULT_SETTER);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER);
 
             dictionary.Add("ScheduleOffset",
                 () => PositionAngle.ScheduleOffset,
@@ -2126,32 +2121,32 @@ namespace STROOP.Utilities
             dictionary.Add("Classification",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).Classification.ToString(),
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriangleTypeDescription",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).Description,
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriangleSlipperiness",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).Slipperiness,
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriangleSlipperinessDescription",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).SlipperinessDescription,
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriangleFrictionMultiplier",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).FrictionMultiplier,
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriangleExertion",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).Exertion,
-                Defaults<bool>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<bool>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriangleHorizontalNormal",
                 BaseAddressType.Triangle,
@@ -2161,52 +2156,52 @@ namespace STROOP.Utilities
                     float normalZ = Config.Stream.GetSingle(triAddress + TriangleOffsetsConfig.NormZ);
                     return (float)Math.Sqrt(normalX * normalX + normalZ * normalZ);
                 },
-                Defaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<float>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ClosestVertexIndex",
                 BaseAddressType.Triangle,
                 triAddress => GetClosestTriangleVertexIndex(triAddress),
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ClosestVertexX",
                 BaseAddressType.Triangle,
                 triAddress => (short)GetClosestTriangleVertexPosition(triAddress).X,
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ClosestVertexY",
                 BaseAddressType.Triangle,
                 triAddress => (short)GetClosestTriangleVertexPosition(triAddress).Y,
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("ClosestVertexZ",
                 BaseAddressType.Triangle,
                 triAddress => (short)GetClosestTriangleVertexPosition(triAddress).Z,
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("Steepness",
                 BaseAddressType.Triangle,
                 triAddress => MoreMath.RadiansToAngleUnits(Math.Acos(TriangleDataModel.Create(triAddress).NormY)),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("UpHillAngle",
                 BaseAddressType.Triangle,
                 triAddress => GetTriangleUphillAngle(triAddress),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("DownHillAngle",
                 BaseAddressType.Triangle,
                 triAddress => MoreMath.ReverseAngle(GetTriangleUphillAngle(triAddress)),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("LeftHillAngle",
                 BaseAddressType.Triangle,
                 triAddress => MoreMath.RotateAngleCCW(GetTriangleUphillAngle(triAddress), 0x4000),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("RightHillAngle",
                 BaseAddressType.Triangle,
                 triAddress => MoreMath.RotateAngleCW(GetTriangleUphillAngle(triAddress), 0x4000),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("UpHillDeltaAngle",
                 BaseAddressType.Triangle,
@@ -2301,7 +2296,7 @@ namespace STROOP.Utilities
                     bool uphill = angleDiff >= -16384 && angleDiff <= 16384;
                     return uphill ? "Uphill" : "Downhill";
                 },
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("WallKickAngleAway",
                 BaseAddressType.Triangle,
@@ -2341,7 +2336,7 @@ namespace STROOP.Utilities
                     ushort wallAngle = InGameTrigUtilities.InGameATan(normZ, normX);
                     return MoreMath.NormalizeAngleUshort(wallAngle - (marioAngle - wallAngle) + 32768);
                 },
-                Defaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("WallHugAngleAway",
                 BaseAddressType.Triangle,
@@ -2467,27 +2462,27 @@ namespace STROOP.Utilities
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
                     return triStruct.GetHeightOnTriangle(marioPos.X, marioPos.Z);
                 },
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MaxHSpeedUphill",
                 BaseAddressType.Triangle,
                 triAddress => GetMaxHorizontalSpeedOnTriangle(triAddress, true, false),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MaxHSpeedUphillAtAngle",
                 BaseAddressType.Triangle,
                 triAddress => GetMaxHorizontalSpeedOnTriangle(triAddress, true, true),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MaxHSpeedDownhill",
                 BaseAddressType.Triangle,
                 triAddress => GetMaxHorizontalSpeedOnTriangle(triAddress, false, false),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MaxHSpeedDownhillAtAngle",
                 BaseAddressType.Triangle,
                 triAddress => GetMaxHorizontalSpeedOnTriangle(triAddress, false, true),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriangleCells",
                 BaseAddressType.Triangle,
@@ -2501,7 +2496,7 @@ namespace STROOP.Utilities
                     return string.Format("X:{0}-{1},Z:{2}-{3}",
                         minCellX, maxCellX, minCellZ, maxCellZ);
                 },
-                Defaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("MarioCell",
                 () =>
@@ -2509,7 +2504,7 @@ namespace STROOP.Utilities
                     (int cellX, int cellZ) = GetMarioCell();
                     return string.Format("X:{0},Z:{1}", cellX, cellZ);
                 },
-                Defaults<string>.DEFAULT_SETTER);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER);
 
             dictionary.Add("ObjectTriCount",
                 () =>
@@ -2519,7 +2514,7 @@ namespace STROOP.Utilities
                     int objectTriangleCount = totalTriangleCount - levelTriangleCount;
                     return objectTriangleCount;
                 },
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("CurrentTriangleIndex",
                 BaseAddressType.Triangle,
@@ -2561,7 +2556,7 @@ namespace STROOP.Utilities
                             return i;
                     return null;
                 },
-                Defaults<int?>.DEFAULT_SETTER_WITH_ADDRESS
+                SpecialVariableDefaults<int?>.DEFAULT_SETTER_WITH_ADDRESS
             );
 
             dictionary.Add("CurrentTriangleAddress",
@@ -2590,67 +2585,67 @@ namespace STROOP.Utilities
                     return totalNodeCount - levelNodeCount;
                 }
                 ,
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("TriMinX",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMinX(),
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMaxX",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMaxX(),
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMinY",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMinY(),
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMaxY",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMaxY(),
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMinZ",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMinZ(),
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMaxZ",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMaxZ(),
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriRangeX",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetRangeX(),
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriRangeY",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetRangeY(),
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriRangeZ",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetRangeZ(),
-                Defaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMidpointX",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMidpointX(),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMidpointY",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMidpointY(),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("TriMidpointZ",
                 BaseAddressType.Triangle,
                 triAddress => TriangleDataModel.Create(triAddress).GetMidpointZ(),
-                Defaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("DistanceToLine12",
                 BaseAddressType.Triangle,
@@ -2966,37 +2961,37 @@ namespace STROOP.Utilities
             dictionary.Add("StarsInFile",
                 BaseAddressType.File,
                 fileAddress => AccessScope<StroopMainForm>.content.GetTab<Tabs.FileTab>().CalculateNumStars(fileAddress),
-                Defaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<short>.DEFAULT_SETTER_WITH_ADDRESS);
 
             dictionary.Add("FileChecksumCalculated",
                 BaseAddressType.File,
                 fileAddress => AccessScope<StroopMainForm>.content.GetTab<Tabs.FileTab>().GetChecksum(fileAddress),
-                Defaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Main Save vars
 
             dictionary.Add("MainSaveChecksumCalculated",
                 BaseAddressType.MainSave,
                 mainSaveAddress => AccessScope<StroopMainForm>.content.GetTab<Tabs.MainSaveTab>().GetChecksum(mainSaveAddress),
-                Defaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
+                SpecialVariableDefaults<ushort>.DEFAULT_SETTER_WITH_ADDRESS);
 
             // Action vars
 
             dictionary.Add("ActionDescription",
                 () => TableConfig.MarioActions.GetActionName(),
-                Defaults<string>.DEFAULT_SETTER);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER);
 
             dictionary.Add("PrevActionDescription",
                 () => TableConfig.MarioActions.GetPrevActionName(),
-                Defaults<string>.DEFAULT_SETTER);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER);
 
             dictionary.Add("ActionGroupDescription",
                 () => TableConfig.MarioActions.GetGroupName(),
-                Defaults<string>.DEFAULT_SETTER);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER);
 
             dictionary.Add("AnimationDescription",
                 () => TableConfig.MarioAnimations.GetAnimationName(),
-                Defaults<string>.DEFAULT_SETTER);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER);
 
             // Water vars
 
@@ -3008,7 +3003,7 @@ namespace STROOP.Utilities
                     double waterAboveMedian = waterLevel - waterLevelMedian;
                     return waterAboveMedian;
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             dictionary.Add("MarioAboveWater",
                 () =>
@@ -3029,7 +3024,7 @@ namespace STROOP.Utilities
 
             dictionary.Add("CurrentWater",
                 () => WaterUtilities.GetCurrentWater(),
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             // Cam Hack Vars
 
@@ -3415,7 +3410,7 @@ namespace STROOP.Utilities
 
             dictionary.Add("GlobalTimerMod64",
                 () => Config.Stream.GetUInt32(MiscConfig.GlobalTimerAddress),
-                Defaults<uint>.DEFAULT_SETTER);
+                SpecialVariableDefaults<uint>.DEFAULT_SETTER);
 
             dictionary.Add("RngIndex",
                 () => RngIndexer.GetRngIndex(Config.Stream.GetUInt16(MiscConfig.RngAddress)),
@@ -3424,7 +3419,7 @@ namespace STROOP.Utilities
 
             dictionary.Add("RngIndexMod4",
                 () => RngIndexer.GetRngIndex() % 4,
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("LastCoinRngIndex",
                 BaseAddressType.Coin,
@@ -3486,15 +3481,15 @@ namespace STROOP.Utilities
 
             dictionary.Add("NumRngCalls",
                 () => ObjectRngUtilities.GetNumRngUsages(),
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("NumberOfLoadedObjects",
                 () => DataModels.ObjectProcessor.ActiveObjectCount,
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("PlayTime",
                 () => GetRealTime(Config.Stream.GetUInt32(MiscConfig.GlobalTimerAddress)),
-                Defaults<string>.DEFAULT_SETTER);
+                SpecialVariableDefaults<string>.DEFAULT_SETTER);
 
             dictionary.Add("DemoCounterDescription",
                 () => DemoCounterUtilities.GetDemoCounterDescription(),
@@ -3533,7 +3528,7 @@ namespace STROOP.Utilities
                     uint gfxBufferEnd = Config.Stream.GetUInt32(0x8033B070);
                     return gfxBufferEnd - gfxBufferStart;
                 },
-                Defaults<uint>.DEFAULT_SETTER);
+                SpecialVariableDefaults<uint>.DEFAULT_SETTER);
 
             dictionary.Add("SegmentedToVirtualAddress",
                 () => { return SpecialConfig.SegmentedToVirtualAddress; }
@@ -3547,7 +3542,7 @@ namespace STROOP.Utilities
 
             dictionary.Add("SegmentedToVirtualOutput",
                 () => SpecialConfig.SegmentedToVirtualOutput,
-                Defaults<uint>.DEFAULT_SETTER);
+                SpecialVariableDefaults<uint>.DEFAULT_SETTER);
 
             dictionary.Add("VirtualToSegmentedSegment",
                 () => SpecialConfig.VirtualToSegmentedSegment,
@@ -3569,7 +3564,7 @@ namespace STROOP.Utilities
 
             dictionary.Add("VirtualToSegmentedOutput",
                 () => SpecialConfig.VirtualToSegmentedOutput,
-                Defaults<uint>.DEFAULT_SETTER);
+                SpecialVariableDefaults<uint>.DEFAULT_SETTER);
 
             // Options vars
 
@@ -3668,7 +3663,7 @@ namespace STROOP.Utilities
             dictionary.Add("AreaTerrainDescription",
                 () =>
                 {
-                    short terrainType = Config.Stream.GetInt16(AreaConfig.SelectedAreaAddress + AreaConfig.TerrainTypeOffset);
+                    short terrainType = Config.Stream.GetInt16(AreaTab.SelectedAreaAddress + AreaConfig.TerrainTypeOffset);
                     return AreaUtilities.GetTerrainDescription(terrainType);
                 },
                 (string terrainDescription) =>
@@ -3676,7 +3671,7 @@ namespace STROOP.Utilities
                     var type = AreaUtilities.GetTerrainType(terrainDescription);
                     if (!type.HasValue)
                         return false;
-                    return Config.Stream.SetValue(type.Value, AreaConfig.SelectedAreaAddress + AreaConfig.TerrainTypeOffset);
+                    return Config.Stream.SetValue(type.Value, AreaTab.SelectedAreaAddress + AreaConfig.TerrainTypeOffset);
                 }
             );
 
@@ -3684,11 +3679,11 @@ namespace STROOP.Utilities
 
             dictionary.Add("WarpNodesAddress",
                 () => GetWarpNodesAddress(),
-                Defaults<uint>.DEFAULT_SETTER);
+                SpecialVariableDefaults<uint>.DEFAULT_SETTER);
 
             dictionary.Add("NumWarpNodes",
                 () => GetNumWarpNodes(),
-                Defaults<int>.DEFAULT_SETTER);
+                SpecialVariableDefaults<int>.DEFAULT_SETTER);
 
             dictionary.Add("HorizontalMovement",
                 () =>
@@ -3699,7 +3694,7 @@ namespace STROOP.Utilities
                     float pos15Z = Config.Stream.GetSingle(0x80372FE8);
                     return MoreMath.GetDistanceBetween(pos01X, pos01Z, pos15X, pos15Z);
                 },
-                Defaults<double>.DEFAULT_SETTER);
+                SpecialVariableDefaults<double>.DEFAULT_SETTER);
 
             // Mupen vars
 

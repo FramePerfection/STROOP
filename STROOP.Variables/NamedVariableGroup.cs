@@ -1,17 +1,19 @@
-﻿using STROOP.Core.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using STROOP.Core;
+using STROOP.Core.Utilities;
+using System.Reflection;
 using System.Xml.Linq;
-using STROOP.Structs.Configurations;
-using STROOP.Utilities;
 
-namespace STROOP.Core.Variables
+namespace STROOP.Variables
 {
     public class NamedVariableCollection
     {
+        // HACK: delegate the variable rounding to the view for now with this
+        public delegate bool SetVariableValueFunc(ProcessStream processStream, Type type, object value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null);
+
+        public static SetVariableValueFunc SetVariableValue = null!;
+
         private static IEnumerable<T> GetValues<T>(DescribedMemoryState memoryState) where T : struct, IConvertible
-            => memoryState.GetAddressList().ConvertAll(address => (T)Config.Stream.GetValue(
+            => memoryState.GetAddressList().ConvertAll(address => (T)ProcessStream.Instance.GetValue(
                 typeof(T),
                 address,
                 memoryState.descriptor.UseAbsoluteAddressing,
@@ -20,7 +22,8 @@ namespace STROOP.Core.Variables
             ));
 
         private static IEnumerable<bool> SetAll<T>(DescribedMemoryState memoryState, T value) where T : struct, IConvertible
-            => memoryState.GetAddressList().Select(address => Config.Stream.SetValueRoundingWrapping(
+            => memoryState.GetAddressList().Select(address => SetVariableValue(
+                ProcessStream.Instance,
                 typeof(T),
                 value,
                 address,
@@ -54,8 +57,9 @@ namespace STROOP.Core.Variables
             string Name { get; }
             bool SetValueByKey(string key, object value);
             string GetValueByKey(string key);
-            Type GetWrapperType();
             int DislpayPriority { get; }
+            string Subclass { get; }
+            public Type ClrType { get; }
         }
 
         public interface IView<T> : IView
@@ -75,6 +79,8 @@ namespace STROOP.Core.Variables
             public Action ValueSet { get; set; }
             public Action OnDelete { get; set; }
             public string Name { get; set; }
+            public string Subclass { get; }
+            public Type ClrType { get; }
 
             public string Color
             {
@@ -90,14 +96,10 @@ namespace STROOP.Core.Variables
 
             Dictionary<string, string> keyedValues = new Dictionary<string, string>();
 
-            protected readonly Type wrapperType;
-            public Type GetWrapperType() => wrapperType;
-
-            public CustomView(Type wrapperType)
+            public CustomView(string subclass, Type clrType)
             {
-                if (wrapperType == null)
-                    System.Diagnostics.Debugger.Break();
-                this.wrapperType = wrapperType;
+                Subclass = subclass;
+                ClrType = clrType;
             }
 
             public virtual string GetValueByKey(string key)
@@ -119,10 +121,10 @@ namespace STROOP.Core.Variables
             public GetterFunction<T> _getterFunction { get; set; }
             public SetterFunction<T> _setterFunction { get; set; }
 
-            public CustomView(Type wrapperType) : base(wrapperType)
+            public CustomView(string subclass) : base(subclass, typeof(T))
             {
-                _getterFunction = WatchVariableSpecialUtilities.Defaults<T>.DEFAULT_GETTER;
-                _setterFunction = WatchVariableSpecialUtilities.Defaults<T>.DEFAULT_SETTER;
+                _getterFunction = SpecialVariableDefaults<T>.DEFAULT_GETTER;
+                _setterFunction = SpecialVariableDefaults<T>.DEFAULT_SETTER;
             }
         }
 
@@ -131,8 +133,8 @@ namespace STROOP.Core.Variables
             public MemoryDescriptor memoryDescriptor { get; }
             public DescribedMemoryState describedMemoryState { get; }
 
-            public MemoryDescriptorView(MemoryDescriptor memoryDescriptor, string wrapper)
-                : base(WatchVariableUtilities.GetWrapperType(memoryDescriptor.MemoryType, wrapper))
+            public MemoryDescriptorView(string subclass, MemoryDescriptor memoryDescriptor)
+                : base(subclass, memoryDescriptor.ClrType)
             {
                 this.memoryDescriptor = memoryDescriptor;
                 this.describedMemoryState = new DescribedMemoryState(memoryDescriptor);
@@ -141,8 +143,8 @@ namespace STROOP.Core.Variables
 
         public class MemoryDescriptorView<T> : MemoryDescriptorView, IView<T> where T : struct, IConvertible
         {
-            public MemoryDescriptorView(MemoryDescriptor memoryDescriptor, string wrapper = "Number")
-                : base(memoryDescriptor, wrapper)
+            public MemoryDescriptorView(string subclass, MemoryDescriptor memoryDescriptor)
+                : base(subclass, memoryDescriptor)
             {
                 _getterFunction = () => GetValues<T>(describedMemoryState);
                 _setterFunction = (T value) => SetAll(describedMemoryState, value);
@@ -157,9 +159,10 @@ namespace STROOP.Core.Variables
             public Action ValueSet { get; set; }
             public Action OnDelete { get; set; }
             public string Name { get; private set; }
+            public string Subclass { get; }
             int IView.DislpayPriority => 0;
+            public Type ClrType => describedMemoryState.descriptor.ClrType;
 
-            readonly string wrapper;
             readonly XElement xElement;
             public MemoryDescriptor memoryDescriptor { get; }
             public DescribedMemoryState describedMemoryState { get; }
@@ -170,10 +173,13 @@ namespace STROOP.Core.Variables
                 this.memoryDescriptor = memoryDescriptor;
                 this.describedMemoryState = new DescribedMemoryState(memoryDescriptor);
                 Name = xElement.Value;
-                wrapper = xElement.Attribute(XName.Get("subclass"))?.Value ?? "Number";
+                var subclassName = xElement.Attribute("subclass")?.Value;
+                Subclass = subclassName != null
+                    ? (string?)typeof(WatchVariableSubclass).GetFields( BindingFlags.Static | BindingFlags.Public)
+                        .SingleOrDefault(x => x.Name == subclassName)?.GetValue(null) ?? WatchVariableSubclass.Number
+                    : WatchVariableSubclass.Number;
             }
 
-            public Type GetWrapperType() => WatchVariableUtilities.GetWrapperType(memoryDescriptor.MemoryType, wrapper);
             public string GetValueByKey(string key) => xElement.Attribute(key)?.Value ?? null;
 
             public bool SetValueByKey(string key, object value)
@@ -196,25 +202,6 @@ namespace STROOP.Core.Variables
 
             public GetterFunction<T> _getterFunction { get; private set; }
             public SetterFunction<T> _setterFunction { get; private set; }
-        }
-
-        public static IView ParseXml(XElement element)
-        {
-            switch (element.Name.LocalName)
-            {
-                case "Data":
-                    var specialType = element.Attribute(XName.Get("specialType"))?.Value;
-                    if (specialType != null)
-                    {
-                        if (WatchVariableSpecialUtilities.dictionary.TryGetValue(specialType, out var value))
-                            return value;
-                        return null;
-                    }
-
-                    return MemoryDescriptor.FromXml(element).view;
-            }
-
-            return null;
         }
     }
 }

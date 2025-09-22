@@ -5,7 +5,7 @@ using System.Drawing;
 using STROOP.Utilities;
 using STROOP.Extensions;
 using STROOP.Structs.Configurations;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Structs

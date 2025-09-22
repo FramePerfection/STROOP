@@ -17,7 +17,7 @@ using STROOP.Extensions;
 using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using System.Reflection;
 using System.Threading;

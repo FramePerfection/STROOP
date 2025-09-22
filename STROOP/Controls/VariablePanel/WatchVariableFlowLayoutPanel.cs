@@ -1,4 +1,5 @@
-﻿using STROOP.Core.Utilities;
+﻿using STROOP.Core;
+using STROOP.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,11 +8,11 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using STROOP.Core.Variables;
 using STROOP.Forms;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
@@ -19,6 +20,18 @@ namespace STROOP.Controls.VariablePanel
 {
     public partial class WatchVariablePanel : UserControl
     {
+        static void ViewInMemoryTab(DescribedMemoryState memoryDescriptor)
+        {
+            List<uint> addressList = memoryDescriptor.GetAddressList().ToList();
+            if (addressList.Count == 0) return;
+            uint address = addressList[0];
+            var tab = AccessScope<StroopMainForm>.content.GetTab<Tabs.MemoryTab>();
+            tab.UpdateOrInitialize(true);
+            Config.TabControlMain.SelectedTab = tab.Tab;
+            tab.SetCustomAddress(address);
+            tab.UpdateHexDisplay();
+        }
+
         public override bool Focused => renderer.Focused;
 
         public delegate void CustomDraw(Graphics g, Rectangle rect);
@@ -356,7 +369,7 @@ namespace STROOP.Controls.VariablePanel
                 if (memoryDescriptorView != null)
                 {
                     UnselectAllVariables();
-                    memoryDescriptorView.describedMemoryState.ViewInMemoryTab();
+                    ViewInMemoryTab(memoryDescriptorView.describedMemoryState);
                 }
             }
             else if (isFKeyHeld)
@@ -458,18 +471,19 @@ namespace STROOP.Controls.VariablePanel
 
         private static NamedVariableCollection.CustomView<T> CreateDummyVariable<T>() where T : struct, IConvertible
         {
-            T capturedValue = default(T);
-
-            return new NamedVariableCollection.CustomView<T>(WatchVariableUtilities.GetWrapperType(typeof(T)))
-            {
-                Name = $"Dummy {++numDummies} {StringUtilities.Capitalize(typeof(T).Name)}",
-                _getterFunction = () => capturedValue.Yield(),
-                _setterFunction = (T value) =>
-                {
-                    capturedValue = value;
-                    return true.Yield();
-                }
-            };
+            throw new NotImplementedException();
+            // T capturedValue = default(T);
+            //
+            // return new NamedVariableCollection.CustomView<T>(WatchVariableUtilities.GetWrapperType(typeof(T)))
+            // {
+            //     Name = $"Dummy {++numDummies} {StringUtilities.Capitalize(typeof(T).Name)}",
+            //     _getterFunction = () => capturedValue.Yield(),
+            //     _setterFunction = (T value) =>
+            //     {
+            //         capturedValue = value;
+            //         return true.Yield();
+            //     }
+            // };
         }
 
         private void ShowContextMenu()
@@ -774,13 +788,13 @@ namespace STROOP.Controls.VariablePanel
             List<XElement> elements = DialogUtilities.OpenXmlElements(FileType.StroopVariables);
             if (elements.Count == 0) return;
             VariablePopOutForm form = new VariablePopOutForm();
-            form.Initialize(elements.ConvertAndRemoveNull(element => NamedVariableCollection.ParseXml(element)));
+            form.Initialize(elements.ConvertAndRemoveNull(WatchVariableWrapperFactory.ParseXml));
             form.ShowForm();
         }
 
         public void OpenVariables(List<XElement> elements)
         {
-            AddVariables(elements.ConvertAll(element => NamedVariableCollection.ParseXml(element)));
+            AddVariables(elements.ConvertAll(WatchVariableWrapperFactory.ParseXml));
         }
 
         public void SaveVariablesInPlace()

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Utilities;
-using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
 
 namespace STROOP.Tabs
 {
@@ -97,7 +97,7 @@ namespace STROOP.Tabs
             var controls = new List<NamedVariableCollection.IView>();
             for (int i = 0; i < 3; i++)
             {
-                var view = new NamedVariableCollection.CustomView<int>(typeof(WatchVariableNumberWrapper<uint>))
+                var view = new NamedVariableCollection.CustomView<int>(WatchVariableSubclass.Number)
                 {
                     Name = names[i],
                     _getterFunction = () => Config.Stream.GetInt32(Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield(),

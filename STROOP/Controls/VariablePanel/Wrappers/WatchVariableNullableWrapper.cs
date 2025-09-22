@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -20,7 +20,7 @@ namespace STROOP.Controls.VariablePanel
                     .GetConstructor(new Type[] { interfaceType, typeof(WatchVariableControl) })
                     .Invoke(new object[]
                     {
-                        new NamedVariableCollection.CustomView<TBackingType>(typeof(TBaseWrapper))
+                        new NamedVariableCollection.CustomView<TBackingType>(var.Subclass)
                         {
                             Name = view.Name,
                             _getterFunction = () => view._getterFunction().Select(x => x.HasValue ? x.Value : default(TBackingType)).ToArray(),

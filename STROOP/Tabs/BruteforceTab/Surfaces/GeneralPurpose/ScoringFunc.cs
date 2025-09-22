@@ -104,7 +104,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
             bruteforceTab.Updating += UpdateTooltip;
             Disposed += (_, __) => bruteforceTab.Updating -= UpdateTooltip;
 
-            variablePanelBaseValues.AddVariable(new NamedVariableCollection.CustomView<double>(typeof(WatchVariableNumberWrapper<double>))
+            variablePanelBaseValues.AddVariable(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
             {
                 Name = "weight",
                 _getterFunction = () => precursor.weight.Yield(),

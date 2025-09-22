@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using STROOP.Structs.Configurations;
-using STROOP.Utilities;
-
-namespace STROOP.Core.Variables
+﻿namespace STROOP.Variables
 {
     public class DescribedMemoryState
     {
         public readonly MemoryDescriptor descriptor;
 
-        public bool locked => HasLocks() != System.Windows.Forms.CheckState.Unchecked;
+        public bool locked => HasLocks() != false;
         Dictionary<uint, object> locks = new Dictionary<uint, object>();
 
         private Func<IEnumerable<uint>> _fixedAddressGetter = null;
@@ -38,18 +32,6 @@ namespace STROOP.Core.Variables
         public void ToggleLocked(bool? locked)
         {
             // TODO: work out locking feature
-        }
-
-        public void ViewInMemoryTab()
-        {
-            List<uint> addressList = GetAddressList().ToList();
-            if (addressList.Count == 0) return;
-            uint address = addressList[0];
-            var tab = AccessScope<StroopMainForm>.content.GetTab<Tabs.MemoryTab>();
-            tab.UpdateOrInitialize(true);
-            Config.TabControlMain.SelectedTab = tab.Tab;
-            tab.SetCustomAddress(address);
-            tab.UpdateHexDisplay();
         }
 
         public bool SetLocked(bool locked, List<uint> addresses)
@@ -85,7 +67,7 @@ namespace STROOP.Core.Variables
             return true;
         }
 
-        public System.Windows.Forms.CheckState HasLocks()
+        public bool? HasLocks()
         {
             bool? firstLockValue = null;
             foreach (var addr in GetAddressList())
@@ -94,12 +76,10 @@ namespace STROOP.Core.Variables
                 if (firstLockValue == null)
                     firstLockValue = v;
                 else if (v != firstLockValue)
-                    return System.Windows.Forms.CheckState.Indeterminate;
+                    return null;
             }
 
-            if (!firstLockValue.HasValue)
-                return System.Windows.Forms.CheckState.Unchecked;
-            return firstLockValue.Value ? System.Windows.Forms.CheckState.Checked : System.Windows.Forms.CheckState.Unchecked;
+            return firstLockValue ?? false;
         }
     }
 }

@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
-using STROOP.Core.Variables;
 using STROOP.Variables;
 using STROOP.Variables.Utilities;
 
@@ -332,17 +331,13 @@ namespace STROOP.Tabs
 
             public NamedVariableCollection.IView CreatePrecursor(bool useObjAddress, bool useHex, bool useObj, bool useRelativeName)
             {
-                WatchVariableSubclass subclass = useObj
-                    ? WatchVariableSubclass.Object
-                    : WatchVariableSubclass.Number;
+                string subclass = useObj ? WatchVariableSubclass.Object : WatchVariableSubclass.Number;
                 if (GlobalKeyboard.IsDown(Keys.A)) subclass = WatchVariableSubclass.Angle;
                 if (GlobalKeyboard.IsDown(Keys.B)) subclass = WatchVariableSubclass.Boolean;
                 if (GlobalKeyboard.IsDown(Keys.Q)) subclass = WatchVariableSubclass.Object;
                 if (GlobalKeyboard.IsDown(Keys.T)) subclass = WatchVariableSubclass.Triangle;
 
-                bool isObjectOrTriangle =
-                    subclass == WatchVariableSubclass.Object ||
-                    subclass == WatchVariableSubclass.Triangle;
+                bool isObjectOrTriangle = subclass == WatchVariableSubclass.Object || subclass == WatchVariableSubclass.Triangle;
 
                 Type effectiveType = isObjectOrTriangle
                     ? typeof(uint)

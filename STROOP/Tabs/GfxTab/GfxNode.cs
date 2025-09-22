@@ -4,7 +4,6 @@ using System.Drawing;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using STROOP.Utilities;
-using STROOP.Core.Variables;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 
@@ -113,10 +112,11 @@ namespace STROOP.Tabs.GfxTab
         protected static NamedVariableCollection.IView<T> gfxProperty<T>(
             string name,
             uint offset,
-            WatchVariableSubclass subclass = WatchVariableSubclass.Number,
+            string? subclass = null,
             uint? mask = null)
             where T : struct, IConvertible
         {
+            subclass ??= WatchVariableSubclass.Number;
             mask = mask ?? 0xFFFFFFFF;
             Color color = (offset <= 0x13)
                 ? ColorUtilities.GetColorFromString("Yellow")

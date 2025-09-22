@@ -28,6 +28,7 @@
         <Compile Remove="Tabs\MapTab\Simulations\CorkBoxBreakerTracker.cs"/>
         <Compile Remove="Tabs\SimulationsTab\SimulationsTab.cs"/>
         <Compile Remove="Tabs\SimulationsTab\SimulationsTab.Designer.cs"/>
+        <Compile Remove="Tabs\BruteforceTab\**\*.cs"/>
         <EmbeddedResource Remove="Forms\MapPopOutForm.resx"/>
         <EmbeddedResource Remove="Tabs\SimulationsTab\SimulationsTab.resx"/>
     </ItemGroup>

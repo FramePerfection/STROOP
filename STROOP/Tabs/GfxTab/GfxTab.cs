@@ -9,6 +9,7 @@ using STROOP.Core.Utilities;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
@@ -64,7 +65,7 @@ namespace STROOP.Tabs.GfxTab
         // Inject code that shows hitboxes in-game
         // Note: a bit ugly at the moment. Hack folder is hardcoded instead of taken from Config file,
         // and it's put here in the GFX tab by a lack of a better place. The hacks in the hack tab are
-        // constantly reapplied when memory is changed, which doesn't work with this hack which initializes 
+        // constantly reapplied when memory is changed, which doesn't work with this hack which initializes
         // variables that are later changed.
         public void InjectHitboxViewCode()
         {

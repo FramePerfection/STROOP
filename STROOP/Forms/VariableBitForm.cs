@@ -8,7 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Models;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Forms
@@ -80,7 +80,7 @@ namespace STROOP.Forms
             }
 
             List<object> values = _addressGetter().Select(address => Config.Stream.GetValue(
-                    _memoryDescriptor.MemoryType,
+                    _memoryDescriptor.ClrType,
                     address,
                     _memoryDescriptor.UseAbsoluteAddressing,
                     _memoryDescriptor.Mask,
@@ -118,15 +118,15 @@ namespace STROOP.Forms
         public void SetValueInMemory()
         {
             byte[] bytes = _reversedBytes.ConvertAll(b => b.GetByteValue()).ToArray();
-            if (TypeUtilities.ConvertBytes(_memoryDescriptor.MemoryType, bytes) is IConvertible validValue)
+            if (TypeUtilities.ConvertBytes(_memoryDescriptor.ClrType, bytes) is IConvertible validValue)
                 foreach (var address in _addressGetter())
-                    Config.Stream.SetValue(_memoryDescriptor.MemoryType, validValue, address, _memoryDescriptor.UseAbsoluteAddressing, _memoryDescriptor.Mask, _memoryDescriptor.Shift);
+                    Config.Stream.SetValue(_memoryDescriptor.ClrType, validValue, address, _memoryDescriptor.UseAbsoluteAddressing, _memoryDescriptor.Mask, _memoryDescriptor.Shift);
         }
 
         private void DoColoring()
         {
             // Color specially the differents parts of a float
-            if (_memoryDescriptor.MemoryType == typeof(float))
+            if (_memoryDescriptor.ClrType == typeof(float))
             {
                 Color signColor = Color.LightBlue;
                 Color exponentColor = Color.Pink;

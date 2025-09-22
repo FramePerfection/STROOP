@@ -7,11 +7,11 @@ using OpenTK.Mathematics;
 using STROOP.Controls;
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Utilities;
-using STROOP.Core.Variables;
 using STROOP.Extensions;
 using STROOP.Forms;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
 
 namespace STROOP.Structs
 {
@@ -135,7 +135,7 @@ namespace STROOP.Structs
                         binaryMathOperationsInverse1.TryGetValue(operation, out inverseSetter1);
                         binaryMathOperationsInverse2.TryGetValue(operation, out inverseSetter2);
 
-                        var view = new NamedVariableCollection.CustomView<double>(typeof(WatchVariableNumberWrapper<double>))
+                        var view = new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
                         {
                             Name = $"{control1.view.Name} {MathOperationUtilities.GetSymbol(operation)} {control2.view.Name}",
                             _getterFunction = () => func(wrapper1._view.CombineValues<double>().value, wrapper2._view.CombineValues<double>().value).Yield(),
@@ -168,11 +168,11 @@ namespace STROOP.Structs
             {
                 if (vars.Count == 0) return;
                 var getter = WatchVariableSpecialUtilities.AddAggregateMathOperationEntry(vars, operation);
-                var view = new NamedVariableCollection.CustomView<double>(typeof(WatchVariableNumberWrapper<double>))
+                var view = new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
                 {
                     Name = $"{operation}({vars.First().view.Name}-{vars.Last().view.Name})",
                     _getterFunction = getter,
-                    _setterFunction = WatchVariableSpecialUtilities.Defaults<double>.DEFAULT_SETTER
+                    _setterFunction = SpecialVariableDefaults<double>.DEFAULT_SETTER
                 };
                 panel.AddVariable(view);
             }
@@ -284,7 +284,7 @@ namespace STROOP.Structs
                     return result;
                 };
 
-                var view = new NamedVariableCollection.CustomView<double>(typeof(WatchVariableNumberWrapper<double>))
+                var view = new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
                 {
                     Name = name,
                     _getterFunction = use3D ? getter3D : getter2D,

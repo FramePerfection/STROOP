@@ -6,8 +6,6 @@ namespace STROOP.Structs.Configurations
 {
     public static class AreaConfig
     {
-        public static uint SelectedAreaAddress => AccessScope<StroopMainForm>.content.GetTab<Tabs.AreaTab>().SelectedAreaAddress;
-
         public static uint AreaStartAddress
         {
             get => RomVersionConfig.SwitchMap(AreaStartAddressUS, AreaStartAddressJP, 0, AreaStartAddressEU);

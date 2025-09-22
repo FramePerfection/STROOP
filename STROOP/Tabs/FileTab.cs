@@ -1,9 +1,12 @@
-﻿using System;
+﻿using STROOP.Core;
+using System;
 using System.Collections.Generic;
 using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 using System.Drawing;
 
 namespace STROOP.Tabs
@@ -39,7 +42,13 @@ namespace STROOP.Tabs
             Misc
         };
 
-        uint CurrentFileAddress => FileConfig.CurrentFileAddress;
+        public static uint CurrentFileAddress => AccessScope<StroopMainForm>.content.GetTab<FileTab>().GetFileAddress();
+
+        [InitializeBaseAddress]
+        static void InitializeBaseAddress()
+        {
+            WatchVariableUtilities.baseAddressGetters[BaseAddressType.File] = () => new List<uint> { CurrentFileAddress };
+        }
 
         FileImageGui gui;
 
@@ -533,7 +542,7 @@ namespace STROOP.Tabs
 
         private void FileCopyButton_Click(object sender, EventArgs e)
         {
-            uint addressToCopy = checkBoxInGameCopyPaste.Checked ? GetNonSavedFileAddress() : getFileAddress();
+            uint addressToCopy = checkBoxInGameCopyPaste.Checked ? GetNonSavedFileAddress() : GetFileAddress();
             _copiedFile = GetBufferedBytes(addressToCopy);
         }
 
@@ -670,7 +679,7 @@ namespace STROOP.Tabs
             }
         }
 
-        public uint getFileAddress(FileMode? nullableMode = null)
+        public uint GetFileAddress(FileMode? nullableMode = null)
         {
             FileMode mode = nullableMode ?? CurrentFileMode;
             switch (mode)

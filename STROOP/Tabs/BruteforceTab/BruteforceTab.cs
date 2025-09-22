@@ -520,7 +520,7 @@ namespace STROOP.Tabs.BruteforceTab
 
                         string readMethod = null;
                         string format = null;
-                        switch (memoryView.memoryDescriptor.MemoryType)
+                        switch (memoryView.memoryDescriptor.ClrType)
                         {
                             case Type t when t == typeof(sbyte):
                                 readMethod = "bytesigned";
@@ -620,7 +620,7 @@ emu.atstop(WriteOutput);
                     foreach (var targetVariable in manualParameterVariables) // If any of the controllable variables match, set them
                         if (targetVariable.GetJsonName() == kvp.Key)
                         {
-                            targetVariable.value = GetJsonValue(targetVariable.GetWrapperType(), kvp.Value.valueObject.ToString()) as IConvertible ?? 0;
+                            targetVariable.value = GetJsonValue(targetVariable.ClrType, kvp.Value.valueObject.ToString()) as IConvertible ?? 0;
                             goto skipNew;
                         }
 

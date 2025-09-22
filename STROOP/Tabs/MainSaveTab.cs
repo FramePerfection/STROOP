@@ -1,6 +1,10 @@
-﻿using System;
+﻿using STROOP.Core;
+using STROOP.Structs;
+using System;
 using System.Collections.Generic;
 using STROOP.Structs.Configurations;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
@@ -12,12 +16,15 @@ namespace STROOP.Tabs
             MainSaveSaved
         };
 
-        public MainSaveMode CurrentMainSaveMode { get; private set; }
+        public static uint CurrentMainSaveAddress => AccessScope<StroopMainForm>.content.GetTab<MainSaveTab>().GetMainSaveAddress();
 
-        public uint CurrentMainSaveAddress
+        [InitializeBaseAddress]
+        static void InitializeBaseAddress()
         {
-            get => GetMainSaveAddress();
+            WatchVariableUtilities.baseAddressGetters[BaseAddressType.MainSave] = () => [CurrentMainSaveAddress];
         }
+
+        public MainSaveMode CurrentMainSaveMode { get; private set; }
 
         private List<MainSaveTextbox> _mainSaveTextboxes;
 

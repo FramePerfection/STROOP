@@ -1,6 +1,6 @@
 ﻿using STROOP.Core;
-using STROOP.Core.Variables;
 using STROOP.Utilities;
+using STROOP.Variables;
 
 namespace STROOP.Controls.VariablePanel
 {

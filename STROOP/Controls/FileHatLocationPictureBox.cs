@@ -3,6 +3,7 @@ using System.Drawing;
 using STROOP.Utilities;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Tabs;
 
 namespace STROOP
 {
@@ -27,8 +28,8 @@ namespace STROOP
 
         private HatLocation? GetCurrentHatLocation()
         {
-            byte hatLocationLevel = Config.Stream.GetByte(FileConfig.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
-            byte hatLocationMode = (byte)(Config.Stream.GetByte(FileConfig.CurrentFileAddress + FileConfig.HatLocationModeOffset) & FileConfig.HatLocationModeMask);
+            byte hatLocationLevel = Config.Stream.GetByte(FileTab.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
+            byte hatLocationMode = (byte)(Config.Stream.GetByte(FileTab.CurrentFileAddress + FileConfig.HatLocationModeOffset) & FileConfig.HatLocationModeMask);
 
             return hatLocationMode == FileConfig.HatLocationMarioMask ? HatLocation.Mario :
                 hatLocationMode == FileConfig.HatLocationKleptoMask ? HatLocation.SSLKlepto :
@@ -64,8 +65,8 @@ namespace STROOP
 
                 case HatLocation.SSLGround:
                     SetHatMode(FileConfig.HatLocationGroundMask);
-                    Config.Stream.SetValue(FileConfig.HatLocationLevelSSLValue, FileConfig.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
-                    Config.Stream.SetValue(FileConfig.HatLocationAreaSSLValue, FileConfig.CurrentFileAddress + FileConfig.HatLocationAreaOffset);
+                    Config.Stream.SetValue(FileConfig.HatLocationLevelSSLValue, FileTab.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
+                    Config.Stream.SetValue(FileConfig.HatLocationAreaSSLValue, FileTab.CurrentFileAddress + FileConfig.HatLocationAreaOffset);
                     break;
 
                 case HatLocation.SLSnowman:
@@ -74,8 +75,8 @@ namespace STROOP
 
                 case HatLocation.SLGround:
                     SetHatMode(FileConfig.HatLocationGroundMask);
-                    Config.Stream.SetValue(FileConfig.HatLocationLevelSLValue, FileConfig.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
-                    Config.Stream.SetValue(FileConfig.HatLocationAreaSLValue, FileConfig.CurrentFileAddress + FileConfig.HatLocationAreaOffset);
+                    Config.Stream.SetValue(FileConfig.HatLocationLevelSLValue, FileTab.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
+                    Config.Stream.SetValue(FileConfig.HatLocationAreaSLValue, FileTab.CurrentFileAddress + FileConfig.HatLocationAreaOffset);
                     break;
 
                 case HatLocation.TTMUkiki:
@@ -84,17 +85,17 @@ namespace STROOP
 
                 case HatLocation.TTMGround:
                     SetHatMode(FileConfig.HatLocationGroundMask);
-                    Config.Stream.SetValue(FileConfig.HatLocationLevelTTMValue, FileConfig.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
-                    Config.Stream.SetValue(FileConfig.HatLocationAreaTTMValue, FileConfig.CurrentFileAddress + FileConfig.HatLocationAreaOffset);
+                    Config.Stream.SetValue(FileConfig.HatLocationLevelTTMValue, FileTab.CurrentFileAddress + FileConfig.HatLocationLevelOffset);
+                    Config.Stream.SetValue(FileConfig.HatLocationAreaTTMValue, FileTab.CurrentFileAddress + FileConfig.HatLocationAreaOffset);
                     break;
             }
         }
 
         private void SetHatMode(byte hatModeByte)
         {
-            byte oldByte = Config.Stream.GetByte(FileConfig.CurrentFileAddress + FileConfig.HatLocationModeOffset);
+            byte oldByte = Config.Stream.GetByte(FileTab.CurrentFileAddress + FileConfig.HatLocationModeOffset);
             byte newByte = MoreMath.ApplyValueToMaskedByte(oldByte, FileConfig.HatLocationModeMask, hatModeByte);
-            Config.Stream.SetValue(newByte, FileConfig.CurrentFileAddress + FileConfig.HatLocationModeOffset);
+            Config.Stream.SetValue(newByte, FileTab.CurrentFileAddress + FileConfig.HatLocationModeOffset);
         }
 
         public override void UpdateImage()

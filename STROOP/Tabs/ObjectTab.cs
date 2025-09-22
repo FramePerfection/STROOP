@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 
 namespace STROOP.Tabs
 {

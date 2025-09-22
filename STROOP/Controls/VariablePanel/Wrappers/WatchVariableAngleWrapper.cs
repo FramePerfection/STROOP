@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Controls.VariablePanel
@@ -106,7 +106,7 @@ namespace STROOP.Controls.VariablePanel
         public WatchVariableAngleWrapper(NamedVariableCollection.IView<TNumber> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
-            var displayType = (view as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor.MemoryType ?? typeof(double);
+            var displayType = (view as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor.ClrType ?? typeof(double);
             if (TypeUtilities.StringToType.TryGetValue(watchVarControl.view.GetValueByKey(NamedVariableCollection.ViewProperties.display) ?? "", out var dType))
                 displayType = dType;
 

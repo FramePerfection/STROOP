@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 
 namespace STROOP.Structs
 {

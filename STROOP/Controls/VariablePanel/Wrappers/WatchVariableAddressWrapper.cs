@@ -1,9 +1,9 @@
 ﻿using STROOP.Core;
 using System.Linq;
-using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Structs;
+using STROOP.Variables;
 
 namespace STROOP.Controls.VariablePanel
 {

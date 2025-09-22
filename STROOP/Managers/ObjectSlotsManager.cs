@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STROOP.Core.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,7 +8,9 @@ using STROOP.Utilities;
 using System.Drawing;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 using System.Collections.ObjectModel;
 
 namespace STROOP.Managers
@@ -47,6 +50,23 @@ namespace STROOP.Managers
             Ceiling,
             Closest
         };
+
+        [InitializeBaseAddress]
+        static void InitializeBaseAddress()
+        {
+            WatchVariableUtilities.baseAddressGetters[BaseAddressType.Object] = () => Config.ObjectSlotsManager.SelectedSlotsAddresses;
+            WatchVariableUtilities.baseAddressGetters[BaseAddressType.ProcessGroup] = () =>
+                Config.ObjectSlotsManager.SelectedObjects.ConvertAll(obj => obj.CurrentProcessGroup ?? uint.MaxValue);
+
+            WatchVariableUtilities.baseAddressGetters["Graphics"] = () =>
+                Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.BehaviorGfxOffset));
+
+            WatchVariableUtilities.baseAddressGetters["Animation"] = () =>
+                Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.AnimationOffset));
+
+            WatchVariableUtilities.baseAddressGetters["Waypoint"] = () =>
+                Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.WaypointOffset));
+        }
 
         public uint? HoveredObjectAddress;
 

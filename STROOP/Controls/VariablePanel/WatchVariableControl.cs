@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -98,7 +98,7 @@ namespace STROOP.Controls.VariablePanel
             _isFlashing = false;
             _flashStartTime = DateTime.Now;
 
-            if (!WatchVariableUtilities.TryCreateWrapper(view, this, out WatchVarWrapper))
+            if (!WatchVariableWrapperFactory.TryCreateWrapper(view, this, out WatchVarWrapper))
                 BaseColor = Color.DarkRed;
 
             AddSetting(DefaultSettings.BackgroundColorSetting);

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
-using STROOP.Core.Variables;
 using STROOP.Structs;
+using STROOP.Variables;
 
 namespace STROOP.Forms
 {

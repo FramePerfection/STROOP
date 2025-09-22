@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs

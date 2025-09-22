@@ -3,6 +3,7 @@ using STROOP.Structs;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 using System.Linq;
