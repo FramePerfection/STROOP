@@ -14,10 +14,11 @@ namespace STROOP.Core.Utilities
 
         public static void ExecuteInitializers<T>(params object[] args) where T : InitializerAttribute
         {
-            foreach (var type in typeof(T).Assembly.GetTypes())
-                foreach (var m in type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
-                    if (m.GetParameters().Length == 0 && m.GetCustomAttribute<T>() != null)
-                        m.Invoke(null, args);
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName?.StartsWith("STROOP") ?? false))
+                foreach (var type in assembly.GetTypes())
+                    foreach (var m in type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
+                        if (m.GetParameters().Length == 0 && m.GetCustomAttribute<T>() != null)
+                            m.Invoke(null, args);
         }
 
         public static List<TOut> ConvertAndRemoveNull<TIn, TOut>(this IEnumerable<TIn> lstIn, Func<TIn, TOut> converter) where TOut : class
