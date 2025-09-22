@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {

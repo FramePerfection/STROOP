@@ -1,4 +1,4 @@
-﻿namespace STROOP.Structs
+﻿namespace STROOP.Variables
 {
     public enum Coordinate
     {

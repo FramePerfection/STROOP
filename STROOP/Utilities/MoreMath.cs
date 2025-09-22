@@ -7,6 +7,7 @@ using System.Text;
 using OpenTK;
 using OpenTK.Mathematics;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {

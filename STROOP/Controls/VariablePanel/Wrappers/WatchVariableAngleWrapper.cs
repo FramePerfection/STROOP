@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Controls.VariablePanel
 {

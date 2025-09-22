@@ -9,7 +9,10 @@ using STROOP.Core.Utilities;
 using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
+using CombinedValuesMeaning = STROOP.Controls.VariablePanel.CombinedValuesMeaning;
 
 namespace STROOP.Utilities
 {

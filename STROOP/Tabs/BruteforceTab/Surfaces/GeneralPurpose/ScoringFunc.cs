@@ -11,6 +11,7 @@ using STROOP.Core.Utilities;
 using STROOP.Core.Variables;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
 {
@@ -206,7 +207,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 if (!first)
                     strBuilder.AppendLine(",");
                 first = false;
-                strBuilder.Append($"{tabs2}\"{parameterValue.Key}\": {StringUtilities.MakeJsonValue(parameterValue.Value.value.ToString())}");
+                strBuilder.Append($"{tabs2}\"{parameterValue.Key}\": {BruteforceTab.MakeJsonValue(parameterValue.Value.value.ToString())}");
             }
 
             strBuilder.AppendLine($"\n{tabs1}}}");

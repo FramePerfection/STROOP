@@ -2,6 +2,7 @@
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {

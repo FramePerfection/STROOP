@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Models;
 using STROOP.Core.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Forms
 {

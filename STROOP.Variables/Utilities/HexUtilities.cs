@@ -1,4 +1,5 @@
 ﻿using STROOP.Structs;
+using STROOP.Variables.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace STROOP.Utilities
             // Make sure it's a number
             if (!TypeUtilities.IsNumber(numberFormatted))
             {
-                numberFormatted = ParsingUtilities.ParseDoubleNullable(numberFormatted);
+                numberFormatted = double.TryParse((string)numberFormatted, out var result) ? result : null;
                 if (numberFormatted == null) return number.ToString();
             }
 
@@ -21,12 +22,18 @@ namespace STROOP.Utilities
             if (numberFormatted is float || numberFormatted is double)
             {
                 if (numberFormatted is float floatValue) numberFormatted = Math.Round(floatValue);
-                if (numberFormatted is double doubleValue) numberFormatted = Math.Round(doubleValue);
-
-                int? intValueNullable = ParsingUtilities.ParseIntNullable(numberFormatted);
-                if (intValueNullable.HasValue) numberFormatted = intValueNullable.Value;
-                uint? uintValueNullable = ParsingUtilities.ParseUIntNullable(numberFormatted);
-                if (uintValueNullable.HasValue) numberFormatted = uintValueNullable.Value;
+                else if (numberFormatted is double doubleValue) numberFormatted = Math.Round(doubleValue);
+                else
+                {
+                    int? intValueNullable = int.TryParse((string)numberFormatted, out var intValue) ? intValue : null;
+                    if (intValueNullable.HasValue)
+                        numberFormatted = intValueNullable.Value;
+                    else
+                    {
+                        uint? uintValueNullable = uint.TryParse((string)numberFormatted, out var uintValue) ? uintValue : null;
+                        if (uintValueNullable.HasValue) numberFormatted = uintValueNullable.Value;
+                    }
+                }
             }
 
             if (!TypeUtilities.IsIntegerNumber(numberFormatted)) return number.ToString();

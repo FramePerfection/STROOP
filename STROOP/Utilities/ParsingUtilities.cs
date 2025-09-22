@@ -4,6 +4,7 @@ using System.Globalization;
 using OpenTK;
 using System.Text.RegularExpressions;
 using OpenTK.Mathematics;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {

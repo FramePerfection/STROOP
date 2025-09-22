@@ -12,6 +12,8 @@ using STROOP.Core;
 using STROOP.Core.Variables;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
+using System.Globalization;
 using AutomaticParameterGetters = System.Collections.Generic.Dictionary<STROOP.Tabs.BruteforceTab.ValueGetters.GetterFuncs, System.Collections.Generic.HashSet<string>>;
 
 namespace STROOP.Tabs.BruteforceTab
@@ -61,6 +63,42 @@ namespace STROOP.Tabs.BruteforceTab
                 }
 
             moduleTypes = lst;
+        }
+
+        static System.Text.RegularExpressions.Regex needsJsonStringEscapeRegex = new System.Text.RegularExpressions.Regex("^[-]?(([0-9]+)|(([0-9]+)\\.([0-9]+)))$");
+
+        public static string MakeJsonValue(string input)
+        {
+            input = input.Trim(' ', '"');
+            if (!needsJsonStringEscapeRegex.IsMatch(input))
+                return $"\"{input}\"";
+            return input;
+        }
+
+        public static object GetJsonValue(Type variableCrlType, string valueString)
+        {
+            var str = valueString.Trim('"');
+            double numberValue = 0;
+            if (TypeUtilities.IsNumber(variableCrlType))
+            {
+                bool set = true;
+                if (str.StartsWith("0x"))
+                {
+                    if (set = long.TryParse(str.Substring(2, str.Length - 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var hexValue))
+                        numberValue = hexValue;
+                }
+                else
+                    set = double.TryParse(str, out numberValue);
+
+                if (set)
+                    return numberValue;
+            }
+            else if (typeof(WatchVariableBooleanWrapper) == typeof(bool))
+                return valueString.ToLower() != "false" && (!int.TryParse(valueString, out var boolNumber) || boolNumber != 0);
+            else
+                return valueString;
+
+            return 0;
         }
 
         public string modulePath { get; private set; }
@@ -277,7 +315,7 @@ namespace STROOP.Tabs.BruteforceTab
                         stateGetters[v.Key] = () =>
                         {
                             var str = lst.FirstOrDefault().ToString();
-                            return StringUtilities.MakeJsonValue(str);
+                            return MakeJsonValue(str);
                         };
                 }
         }
@@ -393,7 +431,7 @@ namespace STROOP.Tabs.BruteforceTab
                     manualParameterVariables.Add(newWatchVar);
                     newWatchVar.ValueSet += UpdateState;
                     ctrl = watchVariablePanelParams.AddVariable(newWatchVar);
-                    Func<string> fn = () => StringUtilities.MakeJsonValue(newWatchVar.value?.ToString() ?? "0");
+                    Func<string> fn = () => MakeJsonValue(newWatchVar.value?.ToString() ?? "0");
                     if (v.Value.modifier == "control")
                     {
                         controlStateGetters[v.Key] = fn;
@@ -566,7 +604,7 @@ emu.atstop(WriteOutput);
             var strBuilder = new StringBuilder();
             foreach (var v in variables)
                 if (stateGetters.TryGetValue(v.Key, out var getter))
-                    strBuilder.AppendLine($"\t\"{v.Key}\": {StringUtilities.MakeJsonValue(getter())},");
+                    strBuilder.AppendLine($"\t\"{v.Key}\": {MakeJsonValue(getter())},");
             var knownState = strBuilder.ToString();
             jsonTexts["knownState"] = () => knownState;
         }
@@ -582,7 +620,7 @@ emu.atstop(WriteOutput);
                     foreach (var targetVariable in manualParameterVariables) // If any of the controllable variables match, set them
                         if (targetVariable.GetJsonName() == kvp.Key)
                         {
-                            targetVariable.value = StringUtilities.GetJsonValue(targetVariable.GetWrapperType(), kvp.Value.valueObject.ToString()) as IConvertible ?? 0;
+                            targetVariable.value = GetJsonValue(targetVariable.GetWrapperType(), kvp.Value.valueObject.ToString()) as IConvertible ?? 0;
                             goto skipNew;
                         }
 

@@ -224,21 +224,6 @@ namespace STROOP.Utilities
             return null;
         }
 
-        public static List<string> ReadFileLines(string filePath)
-        {
-            List<string> lines = new List<string>();
-            string line;
-
-            StreamReader file = new StreamReader(filePath);
-            while ((line = file.ReadLine()) != null)
-            {
-                lines.Add(line);
-            }
-
-            file.Close();
-            return lines;
-        }
-
         public static Image GetImage()
         {
             string directory = Directory.GetCurrentDirectory() + "\\Resources\\Maps\\Object Images";

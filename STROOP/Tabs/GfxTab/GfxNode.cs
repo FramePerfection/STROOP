@@ -5,6 +5,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Core.Variables;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.GfxTab
@@ -16,7 +17,7 @@ namespace STROOP.Tabs.GfxTab
         public virtual string Name
         {
             get { return "GFX node"; }
-        } //This name is overridden by all the sub classes corresponding 
+        } //This name is overridden by all the sub classes corresponding
 
         public uint Address;
         public List<GfxNode> Children;
@@ -82,7 +83,7 @@ namespace STROOP.Tabs.GfxTab
                 for (int i = 0; i < _maxSiblings; i++)
                 {
                     res.Children.Add(ReadGfxNode(currentAddress));
-                    currentAddress = Config.Stream.GetUInt32(currentAddress + 0x08); //offset 0x08 = next pointer 
+                    currentAddress = Config.Stream.GetUInt32(currentAddress + 0x08); //offset 0x08 = next pointer
                     if (currentAddress == childAddress) break;
                 }
             }
@@ -127,7 +128,7 @@ namespace STROOP.Tabs.GfxTab
             return (NamedVariableCollection.MemoryDescriptorView<T>)view;
         }
 
-        // If there are type specific variables, this should be overridden 
+        // If there are type specific variables, this should be overridden
         public virtual IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables() => Array.Empty<NamedVariableCollection.IView>();
     }
 

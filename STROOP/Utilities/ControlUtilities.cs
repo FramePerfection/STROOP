@@ -7,6 +7,7 @@ using STROOP.Structs;
 using System.Reflection;
 using STROOP.Structs.Configurations;
 using STROOP.Forms;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {

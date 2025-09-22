@@ -15,6 +15,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab;
 using STROOP.Core.Variables;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {
