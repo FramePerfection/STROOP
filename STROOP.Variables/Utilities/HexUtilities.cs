@@ -1,7 +1,4 @@
-﻿using STROOP.Structs;
-using STROOP.Variables.Utilities;
-using System;
-using System.Collections.Generic;
+﻿using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {

@@ -27,7 +27,7 @@ namespace STROOP.Variables
 
         public bool UseAbsoluteAddressing
         {
-            get => BaseAddressType == Structs.BaseAddressType.Absolute;
+            get => BaseAddressType == SM64MemoryLayout.BaseAddressType.Absolute;
         }
 
         public uint Offset

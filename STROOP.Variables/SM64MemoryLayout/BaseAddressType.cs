@@ -1,6 +1,6 @@
 ﻿using STROOP.Core.Utilities;
 
-namespace STROOP.Structs
+namespace STROOP.Variables.SM64MemoryLayout
 {
     public static class BaseAddressType
     {

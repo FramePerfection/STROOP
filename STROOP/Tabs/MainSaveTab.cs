@@ -1,9 +1,9 @@
 ﻿using STROOP.Core;
-using STROOP.Structs;
 using System;
 using System.Collections.Generic;
 using STROOP.Structs.Configurations;
 using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs

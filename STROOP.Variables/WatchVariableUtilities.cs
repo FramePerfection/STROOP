@@ -1,5 +1,4 @@
 ﻿using STROOP.Core;
-using STROOP.Structs;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 

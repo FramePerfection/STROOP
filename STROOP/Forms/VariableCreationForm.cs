@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
-using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Forms
