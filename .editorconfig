@@ -42,3 +42,7 @@ resharper_use_indent_from_vs = false
 [*.map]
 indent_style = space
 indent_size = 2
+
+
+[*.md]
+trim_trailing_whitespace = false # Don't trim forced linebreaks (double space at end of line)
