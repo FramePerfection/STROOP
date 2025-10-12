@@ -1,9 +1,8 @@
-﻿namespace STROOP.Variables
+﻿namespace STROOP.Variables;
+
+public enum CombinedValuesMeaning
 {
-    public enum CombinedValuesMeaning
-    {
-        NoValue,
-        SameValue,
-        MultipleValues,
-    }
+    NoValue,
+    SameValue,
+    MultipleValues,
 }

@@ -1,9 +1,8 @@
-﻿namespace STROOP.Variables
+﻿namespace STROOP.Variables;
+
+public enum Coordinate
 {
-    public enum Coordinate
-    {
-        X,
-        Y,
-        Z,
-    };
-}
+    X,
+    Y,
+    Z,
+};
