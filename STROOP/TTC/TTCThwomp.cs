@@ -7,14 +7,13 @@ namespace STROOP.Ttc
     /** A thwomp is the blue cube-like enemy that moves up and down
      *  in an attempt to squish Mario. There is only one Thwomp
      *  in TTC, near the very top of the clock.
-     *  
+     *
      *  A thwomp moves up, waits, moves down, waits, then repeats.
      *  It calls RNG when it reaches the top to determine how long
      *  it should wait for, and it also does this at the bottom.
      */
     public class TtcThwomp : TtcObject
     {
-
         public readonly static int MIN_HEIGHT = 6192;
         public readonly static int MAX_HEIGHT = 6607;
         public readonly static int RISING_SPEED = 10;
@@ -53,67 +52,84 @@ namespace STROOP.Ttc
         public override void Update()
         {
             if (_state == 0)
-            { //going up
+            {
+                //going up
                 _height = Math.Min(MAX_HEIGHT, _height + RISING_SPEED);
                 _timer++;
                 if (_height == MAX_HEIGHT)
-                { //reached top
+                {
+                    //reached top
                     _state = 1;
                     _timer = 0;
                 }
             }
             else if (_state == 1)
-            { //at top
+            {
+                //at top
                 if (_timer == 0)
-                { //just reached top
+                {
+                    //just reached top
                     _timerMax = (int)(PollRNG() / 65536.0 * 30 + 10); // = [10,40)
                 }
+
                 if (_timer <= _timerMax)
-                { //waiting
+                {
+                    //waiting
                     _timer++;
                 }
                 else
-                { //done waiting
+                {
+                    //done waiting
                     _state = 2;
                     _timer = 0;
                 }
             }
             else if (_state == 2)
-            { //going down
+            {
+                //going down
                 _verticalSpeed -= 4;
                 _height = Math.Max(MIN_HEIGHT, _height + _verticalSpeed);
                 _timer++;
                 if (_height == MIN_HEIGHT)
-                { //reached bottom
+                {
+                    //reached bottom
                     _verticalSpeed = 0;
                     _state = 3;
                     _timer = 0;
                 }
             }
             else if (_state == 3)
-            { //at bottom (1/2)
+            {
+                //at bottom (1/2)
                 if (_timer < 10)
-                { //waiting
+                {
+                    //waiting
                     _timer++;
                 }
                 else
-                { //done waiting
+                {
+                    //done waiting
                     _state = 4;
                     _timer = 0;
                 }
             }
             else
-            { //at bottom (2/2)
+            {
+                //at bottom (2/2)
                 if (_timer == 0)
-                { //just reached bottom
+                {
+                    //just reached bottom
                     _timerMax = (int)(PollRNG() / 65536.0 * 10 + 20); // = [20,30)
                 }
+
                 if (_timer <= _timerMax)
-                { //waiting
+                {
+                    //waiting
                     _timer++;
                 }
                 else
-                { //done waiting
+                {
+                    //done waiting
                     _state = 0;
                     _timer = 0;
                 }
@@ -123,10 +139,10 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _height + SEPARATOR +
-                    _verticalSpeed + SEPARATOR +
-                    _timerMax + SEPARATOR +
-                    _state + SEPARATOR +
-                    _timer + CLOSER;
+                   _verticalSpeed + SEPARATOR +
+                   _timerMax + SEPARATOR +
+                   _state + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -151,7 +167,4 @@ namespace STROOP.Ttc
             return new TtcThwomp(rng, _height, _verticalSpeed, _timerMax, _state, _timer);
         }
     }
-
-
-
 }

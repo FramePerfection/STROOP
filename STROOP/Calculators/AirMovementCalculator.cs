@@ -39,6 +39,7 @@ namespace STROOP.Structs
             {
                 marioState = ApplyInput(marioState, direction);
             }
+
             return remainderQSteps == 0 ? marioState : ApplyInput(marioState, direction, remainderQSteps);
         }
 
@@ -234,6 +235,7 @@ namespace STROOP.Structs
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             float inputScaledMagnitude = direction == RelativeDirection.Center ? 0 : 32;
 
             float perpSpeed = 0;
@@ -288,6 +290,7 @@ namespace STROOP.Structs
                 hSpeed = ComputeAirHSpeed(hSpeed);
                 position += hSpeed;
             }
+
             return position;
         }
 

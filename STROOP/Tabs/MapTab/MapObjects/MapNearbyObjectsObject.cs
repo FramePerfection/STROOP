@@ -21,7 +21,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         Regex _nameFilterRegex;
 
         public MapNearbyObjectsObject(string srcName, PositionAngleProvider positionAngleProvider)
-        : base($"nearby {srcName}", Config.ObjectAssociations.DefaultImage, Config.ObjectAssociations.DefaultImage)
+            : base($"nearby {srcName}", Config.ObjectAssociations.DefaultImage, Config.ObjectAssociations.DefaultImage)
         {
             predicate = FilterNearby;
             nearbyFunc = NearbyCylindrical;
@@ -43,7 +43,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     ref _withinDist,
                     labelText: "Enter the vertical distance within which to show objects.",
                     textboxText: (float.IsNaN(_withinDist) ? DEFAULT_WITHIN_DIST : _withinDist).ToString()
-                    );
+                );
             ctx.Items.Add(itemSetWithinDist);
 
             ToolStripMenuItem itemSetNameFilter = new ToolStripMenuItem("Set Name Filter");
@@ -77,7 +77,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "WithinDist", _withinDist.ToString());
                 SaveValueNode(node, "NameFilter", _nameFilter.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);
@@ -92,8 +92,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         void UpdateNameFilterRegex() =>
             _nameFilterRegex = _nameFilter == "$"
-            ? null
-            : new Regex($"^{Regex.Escape(_nameFilter.ToLower()).Replace("\\$", ".*")}$");
+                ? null
+                : new Regex($"^{Regex.Escape(_nameFilter.ToLower()).Replace("\\$", ".*")}$");
 
         public override string GetName() => $"{(_nameFilterRegex == null ? "Objects" : _nameFilter)} near {base.GetName()}";
     }

@@ -9,7 +9,11 @@ namespace STROOP.Utilities
         {
             public readonly T content;
             public Node next, previous;
-            public Node(T content) { this.content = content; }
+
+            public Node(T content)
+            {
+                this.content = content;
+            }
         }
 
         public delegate int CompareValues(T a, T b);
@@ -21,6 +25,7 @@ namespace STROOP.Utilities
         public bool Empty => start == null;
 
         CompareValues compareValues;
+
         public SortedList(CompareValues compareValues)
         {
             this.compareValues = compareValues;
@@ -55,9 +60,11 @@ namespace STROOP.Utilities
                         newNode.next = current;
                         break;
                     }
+
                     lag = current;
                     current = current.next;
                 }
+
                 if (current == null)
                     lag.next = end = newNode;
                 if (lag != null)
@@ -65,6 +72,7 @@ namespace STROOP.Utilities
                 else
                     start = newNode;
             }
+
             count++;
         }
 
@@ -86,10 +94,12 @@ namespace STROOP.Utilities
                     }
                     else
                         start = current.next;
+
                     count--;
                     if (!all)
                         return;
                 }
+
                 lag = current;
                 current = current.next;
             }

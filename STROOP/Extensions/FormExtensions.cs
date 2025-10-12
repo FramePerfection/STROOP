@@ -11,7 +11,9 @@ namespace STROOP.Extensions
             {
                 form.Invoke(method);
             }
-            catch (ObjectDisposedException) { }
+            catch (ObjectDisposedException)
+            {
+            }
         }
     }
 }

@@ -5,11 +5,15 @@ namespace STROOP.Utilities
 {
     partial class PositionAngle
     {
-
         public class SnowPositionAngle : PositionAngle
         {
             readonly uint index;
-            public SnowPositionAngle(uint index) { this.index = index; }
+
+            public SnowPositionAngle(uint index)
+            {
+                this.index = index;
+            }
+
             bool GetAddress(out uint address)
             {
                 address = 0;
@@ -30,7 +34,12 @@ namespace STROOP.Utilities
         public class GoombaProjectionPositionAngle : PositionAngle
         {
             readonly uint address;
-            public GoombaProjectionPositionAngle(uint address) { this.address = address; }
+
+            public GoombaProjectionPositionAngle(uint address)
+            {
+                this.address = address;
+            }
+
             private (double x, double z) GetGoombaProjection()
             {
                 double startX = Config.Stream.GetSingle(address + ObjectConfig.XOffset);
@@ -40,6 +49,7 @@ namespace STROOP.Utilities
                 ushort targetAngle = MoreMath.NormalizeAngleUshort(Config.Stream.GetInt32(address + ObjectConfig.GoombaTargetAngleOffset));
                 return MoreMath.AddVectorToPoint(hSpeed * countdown, targetAngle, startX, startZ);
             }
+
             public override double X => GetGoombaProjection().x;
             public override double Y => Config.Stream.GetSingle(address + ObjectConfig.YOffset);
             public override double Z => GetGoombaProjection().z;

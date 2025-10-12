@@ -7,10 +7,10 @@ namespace STROOP.Utilities
 {
     partial class PositionAngle
     {
-
         public class CustomPositionAngle : PositionAngle
         {
             double customX, customY, customZ, customAngle;
+
             public CustomPositionAngle(Vector3 pos, ushort angle = 0)
             {
                 customX = pos.X;
@@ -18,6 +18,7 @@ namespace STROOP.Utilities
                 customZ = pos.Z;
                 customAngle = angle;
             }
+
             public CustomPositionAngle(double x, double y, double z, double ang)
             {
                 customX = x;
@@ -30,10 +31,30 @@ namespace STROOP.Utilities
             public override double Y => customY;
             public override double Z => customZ;
             public override double Angle => customAngle;
-            public override bool SetX(double value) { customX = value; return true; }
-            public override bool SetY(double value) { customY = value; return true; }
-            public override bool SetZ(double value) { customZ = value; return true; }
-            public override bool SetAngle(double value) { customAngle = value; return true; }
+
+            public override bool SetX(double value)
+            {
+                customX = value;
+                return true;
+            }
+
+            public override bool SetY(double value)
+            {
+                customY = value;
+                return true;
+            }
+
+            public override bool SetZ(double value)
+            {
+                customZ = value;
+                return true;
+            }
+
+            public override bool SetAngle(double value)
+            {
+                customAngle = value;
+                return true;
+            }
 
             public override string ToString() => "Custom";
         }
@@ -42,7 +63,8 @@ namespace STROOP.Utilities
         {
             public MarioPositionAngle()
                 : base(() => MarioConfig.StructAddress, MarioConfig.XOffset, MarioConfig.YOffset, MarioConfig.ZOffset, MarioConfig.FacingYawOffset, "Mario")
-            { }
+            {
+            }
 
             bool SetCoordinateComponent(double value, uint structOffset, uint objOffset)
             {
@@ -54,6 +76,7 @@ namespace STROOP.Utilities
                     return success;
                 }
             }
+
             public override bool SetX(double value) => SetCoordinateComponent(value, MarioConfig.XOffset, ObjectConfig.XOffset);
             public override bool SetY(double value) => SetCoordinateComponent(value, MarioConfig.YOffset, ObjectConfig.YOffset);
             public override bool SetZ(double value) => SetCoordinateComponent(value, MarioConfig.ZOffset, ObjectConfig.ZOffset);
@@ -64,9 +87,12 @@ namespace STROOP.Utilities
         public class ObjectPositionAngle : MemoryPositionAngle, IHoldsObjectAddress
         {
             public uint? objectAddress => baseGetter();
+
             public ObjectPositionAngle(Func<uint?> baseGetter)
                 : base(baseGetter, ObjectConfig.XOffset, ObjectConfig.YOffset, ObjectConfig.ZOffset, ObjectConfig.YawFacingOffset)
-            { }
+            {
+            }
+
             public override bool SetAngle(double value)
             {
                 uint? objAddress = baseGetter();
@@ -76,6 +102,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue(MoreMath.NormalizeAngleUshort(value), objAddress.Value + ObjectConfig.YawMovingOffset);
                 return success;
             }
+
             uint IHoldsObjectAddress.GetAddress() => baseGetter().Value;
 
             public override string GetMapName()
@@ -83,6 +110,7 @@ namespace STROOP.Utilities
                 var addr = baseGetter();
                 return addr.HasValue ? GetMapNameForObject(addr.Value) : "(None)";
             }
+
             public override string ToString() => GetMapName();
         }
 
@@ -90,7 +118,9 @@ namespace STROOP.Utilities
         {
             public ObjectHomePositionAngle(Func<uint?> baseGetter)
                 : base(baseGetter, ObjectConfig.HomeXOffset, ObjectConfig.HomeYOffset, ObjectConfig.HomeZOffset)
-            { }
+            {
+            }
+
             public override string GetMapName()
             {
                 var addr = baseGetter();
@@ -104,6 +134,7 @@ namespace STROOP.Utilities
             protected readonly Func<uint?> baseGetter;
             Func<double> angleGetter;
             readonly string name;
+
             public MemoryPositionAngle(Func<uint?> baseGetter, uint? xOffset, uint? yOffset, uint? zOffset, uint? angleOffset = null, string name = null)
             {
                 this.baseGetter = baseGetter;
@@ -113,6 +144,7 @@ namespace STROOP.Utilities
                 this.angleOffset = angleOffset;
                 this.name = name;
             }
+
             public MemoryPositionAngle(Func<uint?> baseGetter, uint? xOffset, uint? yOffset, uint? zOffset, Func<double> angleGetter, string name = null)
                 : this(baseGetter, xOffset, yOffset, zOffset, (uint?)null, name)
             {
@@ -129,6 +161,7 @@ namespace STROOP.Utilities
             public override double X => Get(xOffset);
             public override double Y => Get(yOffset);
             public override double Z => Get(zOffset);
+
             public override double Angle
             {
                 get
@@ -159,11 +192,13 @@ namespace STROOP.Utilities
         {
             readonly Func<uint?> addressGetter;
             readonly uint index;
+
             public TrianglePositionAngle(Func<uint?> addressGetter, uint index)
             {
                 this.addressGetter = addressGetter;
                 this.index = index;
             }
+
             public override double X
             {
                 get
@@ -193,6 +228,7 @@ namespace STROOP.Utilities
                     return TriangleOffsetsConfig.GetZIndex(address.Value, index - 1);
                 }
             }
+
             public override double Angle => Double.NaN;
 
             public override bool SetX(double value)

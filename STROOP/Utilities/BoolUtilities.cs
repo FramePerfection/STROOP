@@ -13,6 +13,7 @@ namespace STROOP.Utilities
             {
                 success &= b;
             }
+
             return success;
         }
 

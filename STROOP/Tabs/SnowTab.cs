@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Structs;
@@ -105,6 +104,7 @@ namespace STROOP.Tabs
                 };
                 controls.Add(view);
             }
+
             return controls;
         }
 
@@ -116,7 +116,7 @@ namespace STROOP.Tabs
             if (numSnowParticles > _numSnowParticles) // need to add controls
             {
                 for (int i = _numSnowParticles; i < numSnowParticles; i++)
-                _snowParticleControls.Add(watchVariablePanelSnow.AddVariables(GetSnowParticleControls(i)));
+                    _snowParticleControls.Add(watchVariablePanelSnow.AddVariables(GetSnowParticleControls(i)));
                 _numSnowParticles = numSnowParticles;
             }
             else if (numSnowParticles < _numSnowParticles) // need to remove controls
@@ -127,11 +127,11 @@ namespace STROOP.Tabs
                     _snowParticleControls.Remove(snowParticleControls);
                     watchVariablePanelSnow.RemoveVariables(snowParticleControls);
                 }
+
                 _numSnowParticles = numSnowParticles;
             }
 
             base.Update(updateView);
         }
-
     }
 }

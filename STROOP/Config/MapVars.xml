@@ -5,11 +5,11 @@
   <Data base="None" specialType="Map3DCameraX">Camera X</Data>
   <Data base="None" specialType="Map3DCameraY">Camera Y</Data>
   <Data base="None" specialType="Map3DCameraZ">Camera Z</Data>
-  
+
   <Data base="None" specialType="Map3DCameraYaw">Camera Yaw</Data>
   <Data base="None" specialType="Map3DCameraPitch">Camera Pitch</Data>
   <Data base="None" specialType="Map3DCameraRoll">Camera Roll</Data>
-  
+
   <Data base="None" specialType="Map3DFocusX">Focus X</Data>
   <Data base="None" specialType="Map3DFocusY">Focus Y</Data>
   <Data base="None" specialType="Map3DFocusZ">Focus Z</Data>

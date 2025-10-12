@@ -10,7 +10,9 @@ namespace STROOP.Models
     public class MarioDataModel : IUpdatableDataModel
     {
         #region Position
+
         private float _x;
+
         public float X
         {
             get => _x;
@@ -22,6 +24,7 @@ namespace STROOP.Models
         }
 
         private float _y;
+
         public float Y
         {
             get => _y;
@@ -33,6 +36,7 @@ namespace STROOP.Models
         }
 
         private float _z;
+
         public float Z
         {
             get => _z;
@@ -42,9 +46,13 @@ namespace STROOP.Models
                     _z = value;
             }
         }
+
         #endregion
+
         #region Rotation
+
         private ushort _facingYaw;
+
         public ushort FacingYaw
         {
             get => _facingYaw;
@@ -54,7 +62,9 @@ namespace STROOP.Models
                     _facingYaw = value;
             }
         }
+
         private ushort _facingPitch;
+
         public ushort FacingPitch
         {
             get => _facingPitch;
@@ -64,7 +74,9 @@ namespace STROOP.Models
                     _facingPitch = value;
             }
         }
+
         private ushort _facingRoll;
+
         public ushort FacingRoll
         {
             get => _facingRoll;
@@ -74,9 +86,13 @@ namespace STROOP.Models
                     _facingRoll = value;
             }
         }
+
         #endregion
+
         #region HOLP/Held
+
         private float _holpX;
+
         public float HolpX
         {
             get => _holpX;
@@ -88,6 +104,7 @@ namespace STROOP.Models
         }
 
         private float _holpY;
+
         public float HolpY
         {
             get => _holpY;
@@ -99,6 +116,7 @@ namespace STROOP.Models
         }
 
         private float _holpZ;
+
         public float HolpZ
         {
             get => _holpZ;
@@ -108,9 +126,13 @@ namespace STROOP.Models
                     _holpZ = value;
             }
         }
+
         #endregion
+
         #region Speed
+
         private float _hSpeed;
+
         public float HSpeed
         {
             get => _hSpeed;
@@ -122,6 +144,7 @@ namespace STROOP.Models
         }
 
         private double _defactoSpeed;
+
         public double DeFactoSpeed
         {
             get => DeFactoMultiplier * _hSpeed;
@@ -138,32 +161,35 @@ namespace STROOP.Models
             get => AboveFloor ? 1.0f : _normalY;
         }
 
-        public bool IsStationary
-        {
-            get;
-            private set;
-        }
+        public bool IsStationary { get; private set; }
+
         #endregion
+
         #region Floors/Ceilings/Walls
+
         private TriangleDataModel _floorTriangle;
+
         public TriangleDataModel FloorTriangle
         {
             get => _floorTriangle;
         }
 
         private TriangleDataModel _wallTriangle;
+
         public TriangleDataModel WallTriangle
         {
             get => _wallTriangle;
         }
 
         private TriangleDataModel _ceilingTriangle;
+
         public TriangleDataModel CeilingTriangle
         {
             get => _ceilingTriangle;
         }
 
         private float _floorY;
+
         public float FloorY
         {
             get => _floorY;
@@ -175,6 +201,7 @@ namespace STROOP.Models
         }
 
         private float _normalY;
+
         public float NormalY
         {
             get => _normalY;
@@ -184,19 +211,14 @@ namespace STROOP.Models
         {
             get => _y > _floorY + 0.001f; // Epsilon
         }
-        #endregion
-        #region QStep
-        public double NextIntendedQStepX
-        {
-            get;
-            private set;
-        }
 
-        public double NextIntendedQStepZ
-        {
-            get;
-            private set;
-        }
+        #endregion
+
+        #region QStep
+
+        public double NextIntendedQStepX { get; private set; }
+
+        public double NextIntendedQStepZ { get; private set; }
 
         public double NextIntendedQStepDirection
         {
@@ -207,8 +229,11 @@ namespace STROOP.Models
         {
             get => DeFactoSpeed / 4;
         }
+
         #endregion
+
         #region PU
+
         public int PU_X
         {
             get => PuUtilities.GetPuIndex(X);
@@ -262,9 +287,13 @@ namespace STROOP.Models
             get => PU_Z / 4;
             set => PU_Z = value * 4;
         }
+
         #endregion
+
         #region Statuses
+
         private uint _action;
+
         public uint Action
         {
             get => _action;
@@ -274,9 +303,13 @@ namespace STROOP.Models
                     _action = value;
             }
         }
+
         #endregion
+
         #region Objects
+
         private uint _heldObject;
+
         public uint HeldObject
         {
             get => _heldObject;
@@ -288,6 +321,7 @@ namespace STROOP.Models
         }
 
         private uint _usedObject;
+
         public uint UsedObject
         {
             get => _usedObject;
@@ -299,6 +333,7 @@ namespace STROOP.Models
         }
 
         private uint _stoodOnObject;
+
         public uint StoodOnObject
         {
             get => _stoodOnObject;
@@ -310,6 +345,7 @@ namespace STROOP.Models
         }
 
         private uint _riddenObject;
+
         public uint RiddenObject
         {
             get => _riddenObject;
@@ -321,6 +357,7 @@ namespace STROOP.Models
         }
 
         private uint _interactionObject;
+
         public uint InteractionObject
         {
             get => _interactionObject;
@@ -330,7 +367,9 @@ namespace STROOP.Models
                     _interactionObject = value;
             }
         }
+
         public uint ClosestObject { get; private set; }
+
         #endregion
 
         public void Update()
@@ -367,7 +406,7 @@ namespace STROOP.Models
             _hSpeed = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.HSpeedOffset);
 
             _action = Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.ActionOffset);
-           
+
             _floorY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.FloorYOffset);
             _normalY = _floorTriangle == null ? 1 : _floorTriangle.NormY;
 
@@ -382,7 +421,7 @@ namespace STROOP.Models
         {
             // Find closest object
             IEnumerable<ObjectDataModel> closestObjectCandidates =
-               DataModels.Objects.Where(o => o != null && o.IsActive && o.BehaviorCriteria.BehaviorAddress != MarioObjectConfig.BehaviorValue);
+                DataModels.Objects.Where(o => o != null && o.IsActive && o.BehaviorCriteria.BehaviorAddress != MarioObjectConfig.BehaviorValue);
             if (SavedSettingsConfig.ExcludeDustForClosestObject)
             {
                 closestObjectCandidates =
@@ -393,6 +432,7 @@ namespace STROOP.Models
                         && o.BehaviorCriteria.BehaviorAddress != ObjectConfig.UnderwaterBubbleSpawnerBehaviorValue
                         && o.BehaviorCriteria.BehaviorAddress != ObjectConfig.UnderwaterBubbleBehaviorValue);
             }
+
             ClosestObject = closestObjectCandidates.OrderBy(o => o.DistanceToMarioCalculated).FirstOrDefault()?.Address ?? 0;
         }
     }

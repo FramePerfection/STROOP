@@ -9,7 +9,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("Custom PositionAngle", "Custom", nameof(Create))]
     public class MapCustomPositionAngleObject : MapIconPointObject
     {
-
         private readonly PositionAngle _posAngle;
 
         public MapCustomPositionAngleObject(ObjectCreateParams createParams, PositionAngle posAngle)

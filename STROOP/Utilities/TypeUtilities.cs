@@ -40,38 +40,38 @@ namespace STROOP.Structs
 
         public readonly static Dictionary<Type, int> TypeSize = new Dictionary<Type, int>()
         {
-            {typeof(byte), 1},
-            {typeof(sbyte), 1},
-            {typeof(short), 2},
-            {typeof(ushort), 2},
-            {typeof(int), 4},
-            {typeof(uint), 4},
-            {typeof(long), 8},
-            {typeof(ulong), 8},
-            {typeof(float), 4},
-            {typeof(double), 8},
+            { typeof(byte), 1 },
+            { typeof(sbyte), 1 },
+            { typeof(short), 2 },
+            { typeof(ushort), 2 },
+            { typeof(int), 4 },
+            { typeof(uint), 4 },
+            { typeof(long), 8 },
+            { typeof(ulong), 8 },
+            { typeof(float), 4 },
+            { typeof(double), 8 },
         };
 
         public readonly static Dictionary<Type, bool> TypeSign = new Dictionary<Type, bool>()
         {
-            {typeof(byte), false},
-            {typeof(sbyte), true},
-            {typeof(short), true},
-            {typeof(ushort), false},
-            {typeof(int), true},
-            {typeof(uint), false},
-            {typeof(long), true},
-            {typeof(ulong), false},
-            {typeof(float), true},
-            {typeof(double), true},
+            { typeof(byte), false },
+            { typeof(sbyte), true },
+            { typeof(short), true },
+            { typeof(ushort), false },
+            { typeof(int), true },
+            { typeof(uint), false },
+            { typeof(long), true },
+            { typeof(ulong), false },
+            { typeof(float), true },
+            { typeof(double), true },
         };
 
         public readonly static Dictionary<int, Type> UnsignedByteType = new Dictionary<int, Type>()
         {
-            {1, typeof(byte)},
-            {2, typeof(ushort)},
-            {4, typeof(uint)},
-            {8, typeof(ulong)},
+            { 1, typeof(byte) },
+            { 2, typeof(ushort) },
+            { 4, typeof(uint) },
+            { 8, typeof(ulong) },
         };
 
         public readonly static List<string> SimpleTypeList =
@@ -108,10 +108,10 @@ namespace STROOP.Structs
             try
             {
                 byte[] bytes = Enumerable.Range(0, hexString.Length)
-                                            .ToList()
-                                            .FindAll(i => i % 2 == 0)
-                                            .ConvertAll(i => Convert.ToByte(hexString.Substring(i, 2), 16))
-                                            .ToArray();
+                    .ToList()
+                    .FindAll(i => i % 2 == 0)
+                    .ConvertAll(i => Convert.ToByte(hexString.Substring(i, 2), 16))
+                    .ToArray();
                 return ConvertBytes(type, bytes, 0, littleEndian);
             }
             catch (Exception)
@@ -131,6 +131,7 @@ namespace STROOP.Structs
                 if (typeSize == 2) newModValue = 2 - modValue;
                 if (typeSize == 1) newModValue = 3 - modValue;
             }
+
             int newStartAddress = baseValue + newModValue;
 
             byte[] bytes = new byte[typeSize];
@@ -232,6 +233,7 @@ namespace STROOP.Structs
                 int index = swapEndianness ? bytes.Length - 1 - i : i;
                 bytes[index] = byteValue;
             }
+
             return bytes;
         }
 
@@ -249,6 +251,7 @@ namespace STROOP.Structs
                     return true;
                 t = t.BaseType;
             }
+
             return false;
         }
 

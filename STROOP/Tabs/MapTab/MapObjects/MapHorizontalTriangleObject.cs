@@ -7,7 +7,6 @@ using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using OpenTK;
 using STROOP.Models;
-
 using System.Windows.Forms;
 using OpenTK.Mathematics;
 
@@ -39,6 +38,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         return hoverData;
                     }
                 }
+
             return base.GetHoverData(graphics, ref position);
         }
 
@@ -89,9 +89,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             bool parseFloatNullable(string text, out float? value)
             {
-                value = text == "" ?
-                    Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) :
-                    ParsingUtilities.ParseFloatNullable(text);
+                value = text == "" ? Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) : ParsingUtilities.ParseFloatNullable(text);
                 return value.HasValue;
             }
 
@@ -111,7 +109,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 ref _maxHeight,
                 labelText: "Enter the max height.",
                 parser: parseFloatNullable
-                );
+            );
 
             ToolStripMenuItem itemClearMaxHeight = new ToolStripMenuItem("Clear Max Height");
             itemClearMaxHeight.Click += (sender, e) => _maxHeight = null;
@@ -121,7 +119,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 ref _minNormalY,
                 labelText: "Enter the min Normal Y component.",
                 parser: parseFloatNullable
-                );
+            );
 
             ToolStripMenuItem itemClearMinNormalY = new ToolStripMenuItem("Clear Min Normal Y");
             itemClearMinNormalY.Click += (sender, e) => _minNormalY = null;
@@ -131,12 +129,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 ref _maxNormalY,
                 labelText: "Enter the Max Normal Y component.",
                 parser: parseFloatNullable
-                );
+            );
 
             ToolStripMenuItem itemClearMaxNormalY = new ToolStripMenuItem("Clear Max Normal Y");
             itemClearMaxNormalY.Click += (sender, e) => _maxNormalY = null;
 
-            itemFilters.DropDownItems.AddRange(new[] {
+            itemFilters.DropDownItems.AddRange(new[]
+            {
                 itemSetMinHeight,
                 itemClearMinHeight,
                 itemSetMaxHeight,
@@ -156,7 +155,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "MinHeight", _minHeight.ToString());
                 SaveValueNode(node, "MaxHeight", _maxHeight.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);
@@ -198,6 +197,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             if (isValid1 != isValid2)
                                 tempVertexList.Add(InterpolatePointForY(x1, y1, z1, x2, y2, z2, minHeight.Value));
                         }
+
                         splicedVertexList.Clear();
                         splicedVertexList.AddRange(tempVertexList);
                     }
@@ -220,6 +220,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             if (isValid1 != isValid2)
                                 tempVertexList.Add(InterpolatePointForY(x1, y1, z1, x2, y2, z2, maxHeight.Value));
                         }
+
                         splicedVertexList.Clear();
                         splicedVertexList.AddRange(tempVertexList);
                     }
@@ -227,6 +228,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
                 splicedVertexLists.Add(splicedVertexList);
             }
+
             return splicedVertexLists;
         }
 

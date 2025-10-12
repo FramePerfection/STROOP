@@ -6,9 +6,14 @@ namespace STROOP.Tabs
 {
     public partial class MainSaveTab : STROOPTab
     {
-        public enum MainSaveMode { MainSave, MainSaveSaved };
+        public enum MainSaveMode
+        {
+            MainSave,
+            MainSaveSaved
+        };
 
         public MainSaveMode CurrentMainSaveMode { get; private set; }
+
         public uint CurrentMainSaveAddress
         {
             get => GetMainSaveAddress();
@@ -67,6 +72,7 @@ namespace STROOP.Tabs
                 byte b = Config.Stream.GetByte(mainSaveAddress + i);
                 checksum += b;
             }
+
             return checksum;
         }
 

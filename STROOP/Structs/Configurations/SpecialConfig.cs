@@ -13,6 +13,7 @@ namespace STROOP.Structs.Configurations
         // Cam Hack vars
 
         private static double _numPans = 0;
+
         public static double NumPans
         {
             get => _numPans;
@@ -22,6 +23,7 @@ namespace STROOP.Structs.Configurations
                 AccessScope<StroopMainForm>.content.GetTab<Tabs.CamHackTab>().NotifyNumPanChange((int)_numPans);
             }
         }
+
         public static double CurrentPan
         {
             get
@@ -35,11 +37,13 @@ namespace STROOP.Structs.Configurations
                         return Math.Max(0, i - 1);
                     }
                 }
+
                 return PanModels.Count - 1;
             }
         }
 
         private static double _panCamPos = 0;
+
         public static double PanCamPos
         {
             get => _panCamPos;
@@ -51,6 +55,7 @@ namespace STROOP.Structs.Configurations
         }
 
         private static double _panCamAngle = 0;
+
         public static double PanCamAngle
         {
             get => _panCamAngle;
@@ -62,6 +67,7 @@ namespace STROOP.Structs.Configurations
         }
 
         private static double _panCamRotation = 0;
+
         public static double PanCamRotation
         {
             get => _panCamRotation;
@@ -87,6 +93,7 @@ namespace STROOP.Structs.Configurations
             get => RngIndexer.GetRngIndex(GoalRngValue);
             set => GoalRngValue = RngIndexer.GetRngValue(value);
         }
+
         public static ushort GoalRngValue = 0;
 
         // PU vars
@@ -110,10 +117,10 @@ namespace STROOP.Structs.Configurations
         public static uint VirtualToSegmentedSegment = 0;
         public static uint VirtualToSegmentedAddress = 0;
         public static uint VirtualToSegmentedOutput => SegmentationUtilities.VirtualToSegmented(VirtualToSegmentedSegment, VirtualToSegmentedAddress);
-        
+
 
         public static double Map2DScrollSpeed = 1.1;
-        
+
         // Release Status
 
         public static uint CustomReleaseStatus = 0;

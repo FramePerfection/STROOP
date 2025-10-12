@@ -33,8 +33,7 @@ namespace STROOP.Tabs.MapTab
             {
                 case MapScale.CourseDefault:
                 case MapScale.MaxCourseSize:
-                    RectangleF rectangle = MapViewScale == MapScale.CourseDefault ?
-                        mapTab.GetMapLayout().Coordinates : MAX_COURSE_SIZE;
+                    RectangleF rectangle = MapViewScale == MapScale.CourseDefault ? mapTab.GetMapLayout().Coordinates : MAX_COURSE_SIZE;
                     List<(float, float)> coordinates = new List<(float, float)>()
                     {
                         (rectangle.Left, rectangle.Top),
@@ -60,8 +59,8 @@ namespace STROOP.Tabs.MapTab
                     break;
                 case MapScale.Custom:
                     MapViewScaleValue = ParsingUtilities.ParseFloatNullable(
-                        mapTab.textBoxMapControllersScaleCustom.LastSubmittedText)
-                        ?? DEFAULT_MAP_VIEW_SCALE_VALUE;
+                                            mapTab.textBoxMapControllersScaleCustom.LastSubmittedText)
+                                        ?? DEFAULT_MAP_VIEW_SCALE_VALUE;
                     break;
             }
 
@@ -91,8 +90,7 @@ namespace STROOP.Tabs.MapTab
             switch (MapViewCenter)
             {
                 case MapCenter.BestFit:
-                    RectangleF rectangle = MapViewScaleWasCourseDefault ?
-                        mapTab.GetMapLayout().Coordinates : MAX_COURSE_SIZE;
+                    RectangleF rectangle = MapViewScaleWasCourseDefault ? mapTab.GetMapLayout().Coordinates : MAX_COURSE_SIZE;
                     view.position.X = rectangle.X + rectangle.Width / 2;
                     view.position.Z = rectangle.Y + rectangle.Height / 2;
                     break;
@@ -112,6 +110,7 @@ namespace STROOP.Tabs.MapTab
                         view.position = posAngle.position;
                         break;
                     }
+
                     List<string> stringValues = ParsingUtilities.ParseStringList(
                         mapTab.textBoxMapControllersCenterCustom.LastSubmittedText, replaceComma: false);
                     if (stringValues.Count >= 3)
@@ -131,6 +130,7 @@ namespace STROOP.Tabs.MapTab
                     }
                     else
                         view.position = new Vector3();
+
                     break;
             }
 
@@ -194,9 +194,10 @@ namespace STROOP.Tabs.MapTab
                         MapViewAngleValue = (float)posAngle.Angle;
                         break;
                     }
+
                     MapViewAngleValue = ParsingUtilities.ParseFloatNullable(
-                        mapTab.textBoxMapControllersAngleCustom.LastSubmittedText)
-                        ?? DEFAULT_MAP_VIEW_ANGLE_VALUE;
+                                            mapTab.textBoxMapControllersAngleCustom.LastSubmittedText)
+                                        ?? DEFAULT_MAP_VIEW_ANGLE_VALUE;
                     break;
             }
 
@@ -211,9 +212,9 @@ namespace STROOP.Tabs.MapTab
             float? parsed = ParsingUtilities.ParseFloatNullable(value);
             if (!parsed.HasValue) return;
             mapTab.radioButtonMapControllersScaleCustom.Checked = true;
-             MapViewScaleValue += sign * parsed.Value;
+            MapViewScaleValue += sign * parsed.Value;
             if (isMainMap)
-            mapTab.textBoxMapControllersScaleCustom.SubmitText(MapViewScaleValue.ToString());
+                mapTab.textBoxMapControllersScaleCustom.SubmitText(MapViewScaleValue.ToString());
         }
 
         public void ChangeScale2(int power, object value)
@@ -222,9 +223,9 @@ namespace STROOP.Tabs.MapTab
             if (!parsed.HasValue) return;
             mapTab.radioButtonMapControllersScaleCustom.Checked = true;
             MapViewScaleValue *= (float)Math.Pow(parsed.Value, power);
-            
+
             if (isMainMap)
-            mapTab.textBoxMapControllersScaleCustom.SubmitText(MapViewScaleValue.ToString());
+                mapTab.textBoxMapControllersScaleCustom.SubmitText(MapViewScaleValue.ToString());
         }
 
         public void ChangeCenter(int xSign, int zSign, object value)

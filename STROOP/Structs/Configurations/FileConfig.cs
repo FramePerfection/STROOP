@@ -6,22 +6,57 @@ namespace STROOP.Structs.Configurations
     {
         public static uint CurrentFileAddress => AccessScope<StroopMainForm>.content.GetTab<Tabs.FileTab>().getFileAddress();
 
-        public static uint FileStructAddress { get => RomVersionConfig.SwitchMap(FileStructAddressUS, FileStructAddressJP, FileStructAddressSH, FileStructAddressEU); }
+        public static uint FileStructAddress
+        {
+            get => RomVersionConfig.SwitchMap(FileStructAddressUS, FileStructAddressJP, FileStructAddressSH, FileStructAddressEU);
+        }
+
         public static readonly uint FileStructAddressUS = 0x80207700;
         public static readonly uint FileStructAddressJP = 0x80207B00;
         public static readonly uint FileStructAddressSH = 0x80203F00;
         public static readonly uint FileStructAddressEU = 0x80202F00;
-        
+
         public static readonly uint FileStructSize = 0x38;
 
-        public static uint FileAAddress { get { return FileStructAddress + 0 * FileStructSize; } }
-        public static uint FileBAddress { get { return FileStructAddress + 2 * FileStructSize; } }
-        public static uint FileCAddress { get { return FileStructAddress + 4 * FileStructSize; } }
-        public static uint FileDAddress { get { return FileStructAddress + 6 * FileStructSize; } }
-        public static uint FileASavedAddress { get { return FileStructAddress + 1 * FileStructSize; } }
-        public static uint FileBSavedAddress { get { return FileStructAddress + 3 * FileStructSize; } }
-        public static uint FileCSavedAddress { get { return FileStructAddress + 5 * FileStructSize; } }
-        public static uint FileDSavedAddress { get { return FileStructAddress + 7 * FileStructSize; } }
+        public static uint FileAAddress
+        {
+            get { return FileStructAddress + 0 * FileStructSize; }
+        }
+
+        public static uint FileBAddress
+        {
+            get { return FileStructAddress + 2 * FileStructSize; }
+        }
+
+        public static uint FileCAddress
+        {
+            get { return FileStructAddress + 4 * FileStructSize; }
+        }
+
+        public static uint FileDAddress
+        {
+            get { return FileStructAddress + 6 * FileStructSize; }
+        }
+
+        public static uint FileASavedAddress
+        {
+            get { return FileStructAddress + 1 * FileStructSize; }
+        }
+
+        public static uint FileBSavedAddress
+        {
+            get { return FileStructAddress + 3 * FileStructSize; }
+        }
+
+        public static uint FileCSavedAddress
+        {
+            get { return FileStructAddress + 5 * FileStructSize; }
+        }
+
+        public static uint FileDSavedAddress
+        {
+            get { return FileStructAddress + 7 * FileStructSize; }
+        }
 
         public static readonly uint ChecksumConstantOffset = 0x34;
         public static readonly ushort ChecksumConstantValue = 0x4441;

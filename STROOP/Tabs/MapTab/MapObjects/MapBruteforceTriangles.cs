@@ -18,6 +18,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             bool? lastAdded = null;
             MapBruteforceTriangles parent;
+
             public HoverData(MapBruteforceTriangles parent)
             {
                 this.parent = parent;
@@ -40,7 +41,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     parent.triangleAddresses.Remove(parent.currentMapTab.graphics.hoverTriangle.Address);
             }
 
-            void IHoverData.SetLookAt(Vector3 lookAt) { }
+            void IHoverData.SetLookAt(Vector3 lookAt)
+            {
+            }
 
             void IHoverData.LeftClick(Vector3 position)
             {
@@ -58,7 +61,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     parent.triangleAddresses.Remove(tri.Address);
             }
 
-            void IHoverData.RightClick(Vector3 position) { }
+            void IHoverData.RightClick(Vector3 position)
+            {
+            }
         }
 
         HoverData hoverData;
@@ -98,19 +103,21 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     var tri = Models.TriangleDataModel.Create(addr);
                     Vector3 offset = new Vector3(tri.NormX, tri.NormY, tri.NormZ) * 0.25f;
                     graphics.triangleRenderer.Add(
-                    tri.p1 + offset,
-                    tri.p2 + offset,
-                    tri.p3 + offset,
-                    false,
-                    ColorUtilities.ColorToVec4(Color, 128),
-                    new Vector4(OutlineColor.R / 255f, OutlineColor.G / 255f, OutlineColor.B / 255f, OutlineColor.A / 255f),
-                    new Vector3(OutlineWidth),
-                    true);
+                        tri.p1 + offset,
+                        tri.p2 + offset,
+                        tri.p3 + offset,
+                        false,
+                        ColorUtilities.ColorToVec4(Color, 128),
+                        new Vector4(OutlineColor.R / 255f, OutlineColor.G / 255f, OutlineColor.B / 255f, OutlineColor.A / 255f),
+                        new Vector3(OutlineWidth),
+                        true);
                 }
             });
         }
 
-        protected override void DrawOrthogonal(MapGraphics graphics) { }
+        protected override void DrawOrthogonal(MapGraphics graphics)
+        {
+        }
 
         protected override void DrawTopDown(MapGraphics graphics)
         {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -16,7 +16,7 @@ public class KeyboardControls
         parent.KeyUp += OnKeyUp;
         parent.Disposed += Unbind;
     }
-    
+
     public bool IsDown(Keys key) => pressedKeys.Contains(key) && _parent.Focused;
 
     private void Unbind(object sender, EventArgs e)

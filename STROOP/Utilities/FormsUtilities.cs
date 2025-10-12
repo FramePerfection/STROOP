@@ -14,9 +14,10 @@ namespace STROOP.Utilities
                     item = dadsa;
                     goto skipNew;
                 }
+
             item = new ToolStripMenuItem(key);
             strip.Add(item);
-            skipNew:
+        skipNew:
             item.Click += (_, __) => handler();
             return item;
         }

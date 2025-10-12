@@ -25,6 +25,7 @@ namespace STROOP.Tabs
                 return modelObjectAddress == 0 ? 0 : Config.Stream.GetUInt32(modelObjectAddress + ObjectConfig.ModelPointerOffset);
             }
         }
+
         private uint _previousModelPointer = 0;
 
         /// <summary>
@@ -78,7 +79,8 @@ namespace STROOP.Tabs
         {
             var selectedSlot = objs.Last();
             uint currentModelObjectAddress = ModelObjectAddress;
-            uint newModelObjectAddress = currentModelObjectAddress == selectedSlot.CurrentObject.Address ? 0
+            uint newModelObjectAddress = currentModelObjectAddress == selectedSlot.CurrentObject.Address
+                ? 0
                 : selectedSlot.CurrentObject.Address;
             ModelObjectAddress = newModelObjectAddress;
             ManualMode = false;
@@ -126,12 +128,14 @@ namespace STROOP.Tabs
                 short[] v = vertices[i];
                 dataGridViewVertices.Rows.Add(i, v[0], v[1], v[2]);
             }
+
             dataGridViewTriangles.Rows.Clear();
             for (int i = 0; i < triangles.Count; i++)
             {
                 int[] t = triangles[i];
                 dataGridViewTriangles.Rows.Add(0, surfaceTypes[i], t[0], t[1], t[2]);
             }
+
             dataGridViewTriangles.SelectAll();
 
             ModelObjectAddress = _previousModelPointer = 0;
@@ -188,7 +192,7 @@ namespace STROOP.Tabs
             {
                 ushort type = Config.Stream.GetUInt16(contModelPtr); // Type (unused, but here anyway for doc.)
 
-                if (contModelPtr > (0x80000000 |Config.RamSize))
+                if (contModelPtr > (0x80000000 | Config.RamSize))
                     return new List<int[]>();
                 if (type == 0x41)
                     break;
@@ -245,6 +249,7 @@ namespace STROOP.Tabs
                 int[] t = triangles[i];
                 dataGridViewTriangles.Rows.Add(t[3], t[4], t[0], t[1], t[2]);
             }
+
             dataGridViewTriangles.SelectAll();
             checkBoxModelLevel.Checked = false;
         }
@@ -260,6 +265,7 @@ namespace STROOP.Tabs
                 _previousModelPointer = currentModelPointer;
                 UpdateModelPointer();
             }
+
             UpdateCounts();
 
             _modelView.Control.Invalidate();

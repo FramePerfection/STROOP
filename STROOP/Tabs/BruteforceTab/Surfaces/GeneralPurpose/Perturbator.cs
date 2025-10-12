@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Utilities;
 
@@ -20,6 +19,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 x = Math.Max(x, ctrl.Right + ctrl.Margin.Right);
                 y = Math.Max(y, ctrl.Bottom + ctrl.Margin.Bottom);
             }
+
             return (x, y);
         }
 
@@ -92,6 +92,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 Controls.Remove(watchVariablePanelParameters);
                 Height = collapsedHeight;
             }
+
             watchVariablePanelParameters.Anchor |= AnchorStyles.Bottom;
             watchVariablePanelParameters.Anchor &= ~AnchorStyles.Top;
             ResumeLayout();

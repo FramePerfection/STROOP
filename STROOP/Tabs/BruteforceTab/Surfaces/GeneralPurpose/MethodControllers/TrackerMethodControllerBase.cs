@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Utilities;
@@ -9,12 +8,14 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
     abstract class TrackerMethodControllerBase<MapObjectType, ControllerType> : IMethodController
         where MapObjectType :
         MapTab.MapObjects.MapObject,
-        ITrackerMethodMapObject<ControllerType> where
+        ITrackerMethodMapObject<ControllerType>
+        where
         ControllerType : TrackerMethodControllerBase<MapObjectType, ControllerType>
     {
         MapObjectType mapObject;
         public ScoringFunc target { get; private set; }
         public WatchVariablePanel parameterPanel => target.watchVariablePanelParameters;
+
         public void SetTargetFunc(ScoringFunc target)
         {
             this.target = target;
@@ -34,10 +35,10 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
             var ctrl = (WatchVariableSelectionWrapper<WatchVariableStringWrapper, string>)parameterPanel.AddVariable(var).WatchVarWrapper;
             ctrl.DisplaySingleOption = true;
             ctrl.options.Add(("Go to Map Tab", () =>
-            {
-                AccessScope<StroopMainForm>.content.SwitchTab(mapTab);
-                return null;
-            }
+                    {
+                        AccessScope<StroopMainForm>.content.SwitchTab(mapTab);
+                        return null;
+                    }
             ));
 
             mapObject.tracker.ConfirmRemoveFromMap = ConfirmDeleteScoringFunc;

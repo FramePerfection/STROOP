@@ -83,26 +83,18 @@ namespace STROOP.Structs
 
         public static uint ReleaseStatusThrownValue
         {
-            get
-            {
-                return SpecialConfig.CustomReleaseStatus != 0 ?
-                    SpecialConfig.CustomReleaseStatus :
-                    RomVersionConfig.SwitchMap(ReleaseStatusThrownValueUS, ReleaseStatusThrownValueJP, ReleaseStatusThrownValueSH);
-            }
+            get { return SpecialConfig.CustomReleaseStatus != 0 ? SpecialConfig.CustomReleaseStatus : RomVersionConfig.SwitchMap(ReleaseStatusThrownValueUS, ReleaseStatusThrownValueJP, ReleaseStatusThrownValueSH); }
         }
+
         public static readonly uint ReleaseStatusThrownValueUS = 0x800EE5F8;
         public static readonly uint ReleaseStatusThrownValueJP = 0x800EB778;
         public static readonly uint ReleaseStatusThrownValueSH = 0x800EB798;
 
         public static uint ReleaseStatusDroppedValue
         {
-            get
-            {
-                return SpecialConfig.CustomReleaseStatus != 0 ?
-                    SpecialConfig.CustomReleaseStatus :
-                    RomVersionConfig.SwitchMap(ReleaseStatusDroppedValueUS, ReleaseStatusDroppedValueJP, ReleaseStatusDroppedValueSH);
-            }
+            get { return SpecialConfig.CustomReleaseStatus != 0 ? SpecialConfig.CustomReleaseStatus : RomVersionConfig.SwitchMap(ReleaseStatusDroppedValueUS, ReleaseStatusDroppedValueJP, ReleaseStatusDroppedValueSH); }
         }
+
         public static readonly uint ReleaseStatusDroppedValueUS = 0x800EE5F0;
         public static readonly uint ReleaseStatusDroppedValueJP = 0x800EB770;
         public static readonly uint ReleaseStatusDroppedValueSH = 0x800EB790;

@@ -4,7 +4,6 @@ namespace STROOP.Structs
 {
     public static class CogUtilities
     {
-
         private static Dictionary<int, int> _rotationIndexDictionary;
 
         static CogUtilities()
@@ -29,6 +28,5 @@ namespace STROOP.Structs
             else
                 return null;
         }
-
     }
 }

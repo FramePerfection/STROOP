@@ -19,19 +19,16 @@ namespace STROOP.Core.Variables
             uint? offsetSH = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offsetSH"))?.Value);
             uint? offsetEU = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offsetEU"))?.Value);
             uint? offsetDefault = ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("offset"))?.Value);
-            uint? mask = element.Attribute(XName.Get("mask")) != null ?
-                ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("mask")).Value) : null;
-            int? shift = element.Attribute(XName.Get("shift")) != null ?
-                int.Parse(element.Attribute(XName.Get("shift")).Value) : (int?)null;
-            bool handleMapping = (element.Attribute(XName.Get("handleMapping")) != null) ?
-                bool.Parse(element.Attribute(XName.Get("handleMapping")).Value) : true;
+            uint? mask = element.Attribute(XName.Get("mask")) != null ? ParsingUtilities.ParseHexNullable(element.Attribute(XName.Get("mask")).Value) : null;
+            int? shift = element.Attribute(XName.Get("shift")) != null ? int.Parse(element.Attribute(XName.Get("shift")).Value) : (int?)null;
+            bool handleMapping = (element.Attribute(XName.Get("handleMapping")) != null) ? bool.Parse(element.Attribute(XName.Get("handleMapping")).Value) : true;
 
             var memoryDescriptor = new MemoryDescriptor(TypeUtilities.StringToType[typeName], baseAddressType, offsetUS, offsetJP, offsetSH, offsetEU, offsetDefault, mask, shift, handleMapping);
             var view = (NamedVariableCollection.XmlMemoryView)
                 typeof(NamedVariableCollection.XmlMemoryView<>)
-                .MakeGenericType(memoryDescriptor.MemoryType)
-                .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(XElement) })
-                .Invoke(new object[] { memoryDescriptor, element });
+                    .MakeGenericType(memoryDescriptor.MemoryType)
+                    .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(XElement) })
+                    .Invoke(new object[] { memoryDescriptor, element });
             return (memoryDescriptor, view);
         }
 
@@ -52,7 +49,11 @@ namespace STROOP.Core.Variables
         public readonly bool HandleMapping;
 
         public int? NibbleCount => ByteCount.HasValue ? (int?)(ByteCount.Value * 2) : null;
-        public bool UseAbsoluteAddressing { get => BaseAddressType == Structs.BaseAddressType.Absolute; }
+
+        public bool UseAbsoluteAddressing
+        {
+            get => BaseAddressType == Structs.BaseAddressType.Absolute;
+        }
 
         public uint Offset
         {
@@ -73,6 +74,7 @@ namespace STROOP.Core.Variables
                             OffsetSH ?? 0,
                             OffsetEU ?? 0);
                 }
+
                 if (OffsetDefault.HasValue) return OffsetDefault.Value;
                 return 0;
             }
@@ -89,14 +91,15 @@ namespace STROOP.Core.Variables
 
         public MemoryDescriptor(Type memoryTypeName, string baseAddress, uint offset, uint? mask = null, int? shift = null)
             : this(memoryTypeName, baseAddress, null, null, null, null, offset, mask, shift, false)
-        { }
+        {
+        }
 
         public NamedVariableCollection.MemoryDescriptorView CreateView(string wrapper = "Number")
             => (NamedVariableCollection.MemoryDescriptorView)
                 typeof(NamedVariableCollection.MemoryDescriptorView<>)
-                .MakeGenericType(MemoryType)
-                .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(string) })
-                .Invoke(new object[] { this, wrapper });
+                    .MakeGenericType(MemoryType)
+                    .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(string) })
+                    .Invoke(new object[] { this, wrapper });
 
         private MemoryDescriptor(Type memoryType, string baseAddressType,
             uint? offsetUS, uint? offsetJP, uint? offsetSH, uint? offsetEU, uint? offsetDefault, uint? mask, int? shift, bool handleMapping)
@@ -130,17 +133,20 @@ namespace STROOP.Core.Variables
             {
                 maskString = " with mask " + HexUtilities.FormatValue(Mask.Value, NibbleCount.Value);
             }
+
             string shiftString = "";
             if (Shift != null)
             {
                 shiftString = " right shifted by " + Shift.Value;
             }
+
             string byteCountString = "";
             if (ByteCount.HasValue)
             {
                 string pluralSuffix = ByteCount.Value == 1 ? "" : "s";
                 byteCountString = string.Format(" ({0} byte{1})", ByteCount.Value, pluralSuffix);
             }
+
             return TypeUtilities.TypeToString[MemoryType] + maskString + shiftString + byteCountString;
         }
 

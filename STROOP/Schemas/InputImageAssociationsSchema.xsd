@@ -1,44 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="InputImageAssociationsSchema"
-    elementFormDefault="qualified"
-    xmlns="http://tempuri.org/InputImageAssociationsSchema.xsd"
-    xmlns:mstns="http://tempuri.org/InputImageAssociationsSchema.xsd"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:types="http://tempuri.org/ReusableTypes.xsd"
+           elementFormDefault="qualified"
+           xmlns="http://tempuri.org/InputImageAssociationsSchema.xsd"
+           xmlns:mstns="http://tempuri.org/InputImageAssociationsSchema.xsd"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:types="http://tempuri.org/ReusableTypes.xsd"
 >
-  <xs:element name ="InputImageAssociations">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="Config">
-          <xs:complexType>
-            <xs:all>
-              <xs:element name="InputImageDirectory" type="xs:string"/>
-            </xs:all>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="InputImages">
-          <xs:complexType>
-            <xs:all>
-			  <xs:element name="Button">
-			    <xs:complexType>
-				  <xs:attribute name="name" use="required" type="xs:string"/>
-				  <xs:attribute name="path" use="required" type="xs:string"/>
-				</xs:complexType>
-			  </xs:element>
-              <xs:element name="ControlStick">
-                <xs:complexType>
-				  <xs:attribute name="path" use="required" type="xs:string"/>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="InputBase">
-                <xs:complexType>
-				  <xs:attribute name="path" use="required" type="xs:string"/>
-                </xs:complexType>
-              </xs:element>
-            </xs:all>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+    <xs:element name="InputImageAssociations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Config">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="InputImageDirectory" type="xs:string"/>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="InputImages">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="Button">
+                                <xs:complexType>
+                                    <xs:attribute name="name" use="required" type="xs:string"/>
+                                    <xs:attribute name="path" use="required" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="ControlStick">
+                                <xs:complexType>
+                                    <xs:attribute name="path" use="required" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="InputBase">
+                                <xs:complexType>
+                                    <xs:attribute name="path" use="required" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>

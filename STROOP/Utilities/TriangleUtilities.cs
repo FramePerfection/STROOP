@@ -92,6 +92,7 @@ namespace STROOP.Utilities
                 uint address = startAddress + (uint)(i * TriangleConfig.TriangleStructSize);
                 triangleAddressList.Add(address);
             }
+
             return triangleAddressList;
         }
 
@@ -123,8 +124,8 @@ namespace STROOP.Utilities
             using (Config.Stream.Suspend())
             {
                 List<uint> ceilingAddresses = GetLevelTriangles()
-                .FindAll(tri => tri.IsCeiling())
-                .ConvertAll(tri => tri.Address);
+                    .FindAll(tri => tri.IsCeiling())
+                    .ConvertAll(tri => tri.Address);
                 ButtonUtilities.AnnihilateTriangle(ceilingAddresses);
             }
         }
@@ -252,6 +253,7 @@ namespace STROOP.Utilities
             {
                 return null;
             }
+
             if (shortZ <= -LEVEL_BOUNDARY_MAX || shortZ >= LEVEL_BOUNDARY_MAX)
             {
                 return null;
@@ -316,6 +318,7 @@ namespace STROOP.Utilities
             {
                 return null;
             }
+
             if (shortZ <= -LEVEL_BOUNDARY_MAX || shortZ >= LEVEL_BOUNDARY_MAX)
             {
                 return null;
@@ -365,12 +368,20 @@ namespace STROOP.Utilities
             strBuilder.AppendLine("\n\t[");
 
             int longestX = 0, longestY = 0, longestZ = 0, longestType = 0;
-            void UpdateLongest(ref int longestValue, int newValue) { longestValue = Math.Max(longestValue, newValue.ToString().Length); };
+
+            void UpdateLongest(ref int longestValue, int newValue)
+            {
+                longestValue = Math.Max(longestValue, newValue.ToString().Length);
+            }
+
+            ;
+
             string PadNumber(int longest, int number)
             {
                 var strA = number.ToString();
                 return new string(' ', longest - strA.Length) + strA;
             }
+
             foreach (var triSource in triangleSources)
             {
                 var tri = sourceToTriangle(triSource);
@@ -397,6 +408,7 @@ namespace STROOP.Utilities
                 strBuilder.Append($" {PadNumber(longestType, tri.SurfaceType)}]");
                 strBuilder.AppendLine(",");
             }
+
             var removeEnd = $",{Environment.NewLine}";
             if (hasEntries)
                 strBuilder.Remove(strBuilder.Length - removeEnd.Length, removeEnd.Length);

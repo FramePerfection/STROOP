@@ -19,6 +19,7 @@ namespace STROOP.Utilities
                 height += InGameTrigUtilities.InGameSine(timer) * -0.58f;
                 timer += 0x100;
             }
+
             _heightRange = _relativeHeights.Max() - _relativeHeights.Min();
         }
 

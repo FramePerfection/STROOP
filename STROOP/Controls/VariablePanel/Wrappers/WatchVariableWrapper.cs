@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using STROOP.Core.Variables;
 using STROOP.Forms;
 
@@ -94,16 +93,26 @@ namespace STROOP.Controls.VariablePanel
 
         public abstract bool TrySetValue(string value);
 
-        public virtual void SingleClick(Control parentCtrl, Rectangle bounds) { }
+        public virtual void SingleClick(Control parentCtrl, Rectangle bounds)
+        {
+        }
+
         public virtual void DoubleClick(Control parentCtrl, Rectangle bounds) => Edit(parentCtrl, bounds);
 
         public abstract void Edit(Control parent, Rectangle bounds);
         public abstract string GetClass();
         public abstract string GetValueText();
         public abstract void Update();
-        public virtual void ToggleDisplay() { }
 
-        protected void OnValueSet() { ValueSet(); _view.ValueSet?.Invoke(); }
+        public virtual void ToggleDisplay()
+        {
+        }
+
+        protected void OnValueSet()
+        {
+            ValueSet();
+            _view.ValueSet?.Invoke();
+        }
     }
 
     public abstract class WatchVariableWrapper<TBackingValue> : WatchVariableWrapper
@@ -111,7 +120,7 @@ namespace STROOP.Controls.VariablePanel
         protected static Func<WatchVariableControl, object, bool> CreateBoolWithDefault<TWrapper>(
             Action<TWrapper, bool> setValue,
             Func<TWrapper, bool> getDefault
-            ) where TWrapper : WatchVariableWrapper<TBackingValue> =>
+        ) where TWrapper : WatchVariableWrapper<TBackingValue> =>
             (ctrl, obj) =>
             {
                 if (ctrl.WatchVarWrapper is TWrapper num)
@@ -141,9 +150,11 @@ namespace STROOP.Controls.VariablePanel
 
         private bool hasNextValue = false;
         private TBackingValue _nextValue;
+
         protected TBackingValue nextValue
         {
-            get => _nextValue; set
+            get => _nextValue;
+            set
             {
                 hasNextValue = true;
                 _nextValue = value;
@@ -152,7 +163,8 @@ namespace STROOP.Controls.VariablePanel
 
         protected WatchVariableWrapper(NamedVariableCollection.IView watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
-        { }
+        {
+        }
 
         public (CombinedValuesMeaning meaning, TBackingValue value) CombineValues()
         {
@@ -174,10 +186,13 @@ namespace STROOP.Controls.VariablePanel
                     OnValueSet();
                 hasNextValue = false;
             }
+
             UpdateControls();
         }
 
-        public virtual void UpdateControls() { }
+        public virtual void UpdateControls()
+        {
+        }
 
         public override void Edit(Control parent, Rectangle bounds)
         {
@@ -242,6 +257,7 @@ namespace STROOP.Controls.VariablePanel
                 view._setterFunction(result);
                 OnValueSet();
             }
+
             return success;
         }
 

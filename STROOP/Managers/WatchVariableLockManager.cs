@@ -42,6 +42,5 @@ namespace STROOP.Structs
         {
             return false;
         }
-
     };
 }

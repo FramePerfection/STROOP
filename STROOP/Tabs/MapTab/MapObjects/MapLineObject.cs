@@ -9,7 +9,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         protected override bool hasDragPoints => false;
 
-        public MapLineObject() : base() { }
+        public MapLineObject() : base()
+        {
+        }
 
         protected virtual Vector4 GetColor(MapGraphics graphics) => ColorUtilities.ColorToVec4(OutlineColor, OpacityByte);
 
@@ -33,7 +35,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 }
             });
         }
-        
+
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
 
         protected abstract List<Vector3> GetVertices(MapGraphics graphics);

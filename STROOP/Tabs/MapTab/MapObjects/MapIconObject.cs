@@ -2,10 +2,10 @@
 {
     public abstract class MapIconObject : MapObject
     {
-
         protected MapObjectHoverData hoverData;
+
         protected MapIconObject(ObjectCreateParams creationParameters)
-        : base(creationParameters)
+            : base(creationParameters)
         {
             hoverData = new MapObjectHoverData(this);
         }

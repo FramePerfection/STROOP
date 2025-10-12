@@ -6,7 +6,10 @@ namespace STROOP.M64
 {
     public class M64CopiedData
     {
-        public int TotalFrames { get => _totalFrames; }
+        public int TotalFrames
+        {
+            get => _totalFrames;
+        }
 
         private readonly int _startFrame;
         private readonly int _endFrame;

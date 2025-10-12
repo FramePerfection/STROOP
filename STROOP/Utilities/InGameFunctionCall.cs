@@ -56,6 +56,7 @@ namespace STROOP.Structs
             {
                 throw new System.Exception("trying to call function with " + arguments.Length + " arguments, max is " + maxArguments);
             }
+
             uint startAddress = 0x803FFF00; // some free 0-memory (hopefully)
             uint currAddress = startAddress;
             const uint A0 = 4; // register index for argument 0
@@ -78,6 +79,7 @@ namespace STROOP.Structs
                 WriteRegisterAssign(ref currAddress, reg, arguments[i]);
                 //WriteWords(ref baseAddress, LUI(reg, (ushort) (arguments[i] >> 16)), ORI(reg, reg, (ushort) (arguments[i] & 0xFFFF)));
             }
+
             WriteWords(ref currAddress, JAL(address), 0x00000000); // NOP for delay slot
 
             // Erase self and return as if nothing happened:
@@ -164,7 +166,7 @@ namespace STROOP.Structs
                 0x8C28BE28,
                 0xAD280000 | (ushort)((cmds.Length + 1) * 4),
                 0xAC29BE28
-                );
+            );
 
             // Erase self and return as if nothing happened:
 

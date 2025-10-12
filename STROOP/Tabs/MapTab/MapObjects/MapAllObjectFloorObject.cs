@@ -14,7 +14,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         CustomTriangleList customTris = new CustomTriangleList(() => TriangleUtilities.GetObjectTriangles().FindAll(tri => tri.IsFloor()));
 
-        public MapAllObjectFloorObject() : base(null) { }
+        public MapAllObjectFloorObject() : base(null)
+        {
+        }
 
         protected override List<TriangleDataModel> GetTrianglesOfAnyDist() => customTris.GetTriangles();
 

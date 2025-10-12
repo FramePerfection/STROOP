@@ -106,12 +106,12 @@ namespace STROOP.Structs
         private List<object> GetFields()
         {
             return new List<object>()
-                {
-                    X, Y, Z,
-                    XSpeed, YSpeed, ZSpeed, HSpeed,
-                    SlidingSpeedX, SlidingSpeedZ, SlidingAngle,
-                    MarioAngle, CameraAngle,
-                };
+            {
+                X, Y, Z,
+                XSpeed, YSpeed, ZSpeed, HSpeed,
+                SlidingSpeedX, SlidingSpeedZ, SlidingAngle,
+                MarioAngle, CameraAngle,
+            };
         }
 
         public override bool Equals(object obj)

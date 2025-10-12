@@ -11,7 +11,6 @@ namespace STROOP.Tabs
 {
     public partial class SearchTab : STROOPTab
     {
-
         private enum ValueRelationship
         {
             EqualTo,
@@ -110,6 +109,7 @@ namespace STROOP.Tabs
                     SetProgressCount(offset, (int)Config.RamSize);
                 }
             }
+
             StopProgressBar();
 
             UpdateControlsBasedOnDictionary();
@@ -146,6 +146,7 @@ namespace STROOP.Tabs
                     SetProgressCount(i, pairs.Count);
                 }
             }
+
             StopProgressBar();
 
             UpdateControlsBasedOnDictionary();
@@ -289,6 +290,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             if (type == typeof(sbyte))
             {
                 sbyte? memoryValue = ParsingUtilities.ParseSByteNullable(memoryObject);
@@ -347,6 +349,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             if (type == typeof(short))
             {
                 short? memoryValue = ParsingUtilities.ParseShortNullable(memoryObject);
@@ -405,6 +408,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             if (type == typeof(ushort))
             {
                 ushort? memoryValue = ParsingUtilities.ParseUShortNullable(memoryObject);
@@ -463,6 +467,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             if (type == typeof(int))
             {
                 int? memoryValue = ParsingUtilities.ParseIntNullable(memoryObject);
@@ -521,6 +526,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             if (type == typeof(uint))
             {
                 uint? memoryValue = ParsingUtilities.ParseUIntNullable(memoryObject);
@@ -579,6 +585,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             if (type == typeof(float))
             {
                 float? memoryValue = ParsingUtilities.ParseFloatNullable(memoryObject);
@@ -637,6 +644,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             if (type == typeof(double))
             {
                 double? memoryValue = ParsingUtilities.ParseDoubleNullable(memoryObject);
@@ -695,6 +703,7 @@ namespace STROOP.Tabs
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             throw new ArgumentOutOfRangeException();
         }
     }

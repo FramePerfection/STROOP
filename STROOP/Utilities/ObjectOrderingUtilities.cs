@@ -9,7 +9,6 @@ namespace STROOP.Utilities
 {
     public static class ObjectOrderingUtilities
     {
-
         private static List<List<uint>> GetProcessGroups()
         {
             List<List<uint>> processGroups = new List<List<uint>>();
@@ -27,6 +26,7 @@ namespace STROOP.Utilities
                     slotIndex++;
                     objAddress = Config.Stream.GetUInt32(objAddress + ObjectConfig.ProcessedNextLinkOffset);
                 }
+
                 processGroups.Add(processGroup);
             }
 
@@ -40,6 +40,7 @@ namespace STROOP.Utilities
                     slotIndex++;
                     objAddress = Config.Stream.GetUInt32(objAddress + ObjectConfig.ProcessedNextLinkOffset);
                 }
+
                 processGroups.Add(processGroup);
             }
 
@@ -94,6 +95,7 @@ namespace STROOP.Utilities
                     index++;
                 }
             }
+
             return -1;
         }
 
@@ -117,6 +119,7 @@ namespace STROOP.Utilities
                     processGroups = Move(address, rightwards, processGroups);
                 }
             }
+
             Apply(processGroups);
         }
 
@@ -136,8 +139,10 @@ namespace STROOP.Utilities
                         break;
                     }
                 }
+
                 if (foundAddress) break;
             }
+
             if (!foundAddress) return processGroups;
 
             // if moving before start or after end, then return
@@ -193,6 +198,7 @@ namespace STROOP.Utilities
                 outputList.Add(nextString);
                 outputList.Add(prevString);
             }
+
             outputList.Add("vacant\t\t" + HexUtilities.FormatValue(ObjectSlotsConfig.VacantSlotsNodeAddress + ObjectConfig.ProcessedNextLinkOffset));
             InfoForm.ShowValue(String.Join("\r\n", outputList));
         }
@@ -202,6 +208,5 @@ namespace STROOP.Utilities
             List<List<uint>> processGroups = GetProcessGroups();
             Apply(processGroups);
         }
-
     }
 }

@@ -9,7 +9,6 @@ namespace STROOP.Tabs
 {
     public partial class MarioTab : STROOPTab
     {
-
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
@@ -91,66 +90,46 @@ namespace STROOP.Tabs
                 buttonMarioStatsYawN,
                 buttonMarioStatsYawP,
                 textBoxMarioStatsYaw,
-                (float value) =>
-                {
-                    ButtonUtilities.MarioChangeYaw((int)Math.Round(value));
-                });
+                (float value) => { ButtonUtilities.MarioChangeYaw((int)Math.Round(value)); });
             ControlUtilities.InitializeScalarController(
                 buttonMarioStatsHspdN,
                 buttonMarioStatsHspdP,
                 textBoxMarioStatsHspd,
-                (float value) =>
-                {
-                    ButtonUtilities.MarioChangeHspd(value);
-                });
+                (float value) => { ButtonUtilities.MarioChangeHspd(value); });
             ControlUtilities.InitializeScalarController(
                 buttonMarioStatsVspdN,
                 buttonMarioStatsVspdP,
                 textBoxMarioStatsVspd,
-                (float value) =>
-                {
-                    ButtonUtilities.MarioChangeVspd(value);
-                });
+                (float value) => { ButtonUtilities.MarioChangeVspd(value); });
 
             var marioSlidingSpeedGroupBox = splitContainerMario.Panel1.Controls["groupBoxMarioSlidingSpeed"] as GroupBox;
             ControlUtilities.InitializeScalarController(
                 buttonMarioSlidingSpeedXn,
                 buttonMarioSlidingSpeedXp,
                 textBoxMarioSlidingSpeedX,
-                (float value) =>
-                {
-                    ButtonUtilities.MarioChangeSlidingSpeedX(value);
-                });
+                (float value) => { ButtonUtilities.MarioChangeSlidingSpeedX(value); });
             ControlUtilities.InitializeScalarController(
                 buttonMarioSlidingSpeedZn,
                 buttonMarioSlidingSpeedZp,
                 textBoxMarioSlidingSpeedZ,
-                (float value) =>
-                {
-                    ButtonUtilities.MarioChangeSlidingSpeedZ(value);
-                });
+                (float value) => { ButtonUtilities.MarioChangeSlidingSpeedZ(value); });
             ControlUtilities.InitializeScalarController(
                 buttonMarioSlidingSpeedHn,
                 buttonMarioSlidingSpeedHp,
                 textBoxMarioSlidingSpeedH,
-                (float value) =>
-                {
-                    ButtonUtilities.MarioChangeSlidingSpeedH(value);
-                });
+                (float value) => { ButtonUtilities.MarioChangeSlidingSpeedH(value); });
             ControlUtilities.InitializeScalarController(
                 buttonMarioSlidingSpeedYawN,
                 buttonMarioSlidingSpeedYawP,
                 textBoxMarioSlidingSpeedYaw,
-                (float value) =>
-                {
-                    ButtonUtilities.MarioChangeSlidingSpeedYaw(value);
-                });
+                (float value) => { ButtonUtilities.MarioChangeSlidingSpeedYaw(value); });
 
             buttonMarioHOLPGoto.Click += (sender, e) => ButtonUtilities.GotoHOLP();
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonMarioHOLPGoto,
                 new List<string>() { "Goto HOLP", "Goto HOLP Laterally", "Goto HOLP X", "Goto HOLP Y", "Goto HOLP Z" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.GotoHOLP((true, true, true)),
                     () => ButtonUtilities.GotoHOLP((true, false, true)),
                     () => ButtonUtilities.GotoHOLP((true, false, false)),
@@ -162,7 +141,8 @@ namespace STROOP.Tabs
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonMarioHOLPRetrieve,
                 new List<string>() { "Retrieve HOLP", "Retrieve HOLP Laterally", "Retrieve HOLP X", "Retrieve HOLP Y", "Retrieve HOLP Z" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.RetrieveHOLP((true, true, true)),
                     () => ButtonUtilities.RetrieveHOLP((true, false, true)),
                     () => ButtonUtilities.RetrieveHOLP((true, false, false)),

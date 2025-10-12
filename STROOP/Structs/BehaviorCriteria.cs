@@ -51,10 +51,10 @@ namespace STROOP.Structs
                 return null;
 
             if (GfxId.HasValue && otherCriteria.GfxId.HasValue && GfxId.Value != otherCriteria.GfxId.Value)
-                return new BehaviorCriteria() { BehaviorAddress = BehaviorAddress};
+                return new BehaviorCriteria() { BehaviorAddress = BehaviorAddress };
 
             if (SubType.HasValue && otherCriteria.SubType.HasValue && SubType.Value != otherCriteria.SubType.Value)
-                return new BehaviorCriteria() { BehaviorAddress = BehaviorAddress, GfxId = GfxId};
+                return new BehaviorCriteria() { BehaviorAddress = BehaviorAddress, GfxId = GfxId };
 
             if (Appearance.HasValue && otherCriteria.Appearance.HasValue && Appearance.Value != otherCriteria.Appearance.Value)
                 return new BehaviorCriteria() { BehaviorAddress = BehaviorAddress, GfxId = GfxId, SubType = SubType };
@@ -68,7 +68,7 @@ namespace STROOP.Structs
         public static bool operator ==(BehaviorCriteria a, BehaviorCriteria b)
         {
             return (a.BehaviorAddress == b.BehaviorAddress && a.GfxId == b.GfxId
-                && a.SubType == b.SubType && a.Appearance == b.Appearance && a.SpawnObj == b.SpawnObj);
+                                                           && a.SubType == b.SubType && a.Appearance == b.Appearance && a.SpawnObj == b.SpawnObj);
         }
 
         public static bool operator !=(BehaviorCriteria a, BehaviorCriteria b)

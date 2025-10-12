@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-
 using OpenTK;
 using OpenTK.Mathematics;
 using STROOP.Controls;
@@ -81,11 +80,11 @@ namespace STROOP.Structs
                     "Variable Info",
                     String.Join("\t",
                         WatchVariableWrapper.GetVarInfoLabels()) +
-                        "\r\n" +
-                        String.Join(
-                            "\r\n",
-                            vars.ConvertAll(control => control.GetVarInfo())
-                                .ConvertAll(infoList => String.Join("\t", infoList))));
+                    "\r\n" +
+                    String.Join(
+                        "\r\n",
+                        vars.ConvertAll(control => control.GetVarInfo())
+                            .ConvertAll(infoList => String.Join("\t", infoList))));
                 infoForm.Show();
             };
             itemList.Add(itemShowVariableInfo);
@@ -183,16 +182,16 @@ namespace STROOP.Structs
                 bool satisfies3D = use3D && vars.Count >= 6;
                 if (!satisfies2D && !satisfies3D) return;
 
-                string name = use3D ?
-                    string.Format(
+                string name = use3D
+                    ? string.Format(
                         "({0},{1},{2}) to ({3},{4},{5})",
                         vars[0].VarName,
                         vars[1].VarName,
                         vars[2].VarName,
                         vars[3].VarName,
                         vars[4].VarName,
-                        vars[5].VarName) :
-                    string.Format(
+                        vars[5].VarName)
+                    : string.Format(
                         "({0},{1}) to ({2},{3})",
                         vars[0].VarName,
                         vars[1].VarName,
@@ -243,10 +242,17 @@ namespace STROOP.Structs
                     {
                         Vector3d a = new Vector3d(x1[i], y1[i], z1[i]);
                         Vector3d b = new Vector3d(x2[i], y2[i], z2[i]);
-                        if (toggle) { var tmp = a; a = b; b = tmp; }
+                        if (toggle)
+                        {
+                            var tmp = a;
+                            a = b;
+                            b = tmp;
+                        }
+
                         b = a + Vector3d.Normalize(b - a) * value;
                         result.Add(vars[off].SetValue(b.X) && vars[off].SetValue(b.Y) && vars[off].SetValue(b.Z));
                     }
+
                     return result;
                 };
                 NamedVariableCollection.SetterFunction<double> setter2D = value =>
@@ -263,10 +269,17 @@ namespace STROOP.Structs
                     {
                         Vector2d a = new Vector2d(x1[i], y1[i]);
                         Vector2d b = new Vector2d(x2[i], y2[i]);
-                        if (toggle) { var tmp = a; a = b; b = tmp; }
+                        if (toggle)
+                        {
+                            var tmp = a;
+                            a = b;
+                            b = tmp;
+                        }
+
                         b = a + Vector2d.Normalize(b - a) * (double)value;
                         result.Add(vars[off].SetValue(b.X) && vars[off].SetValue(b.Y));
                     }
+
                     return result;
                 };
 
@@ -282,8 +295,8 @@ namespace STROOP.Structs
             ToolStripMenuItem itemAddVariables = new ToolStripMenuItem("Add Variable(s)...");
             ControlUtilities.AddDropDownItems(
                 itemAddVariables,
-                        new List<string>()
-                        {
+                new List<string>()
+                {
                     "Addition",
                     "Subtraction",
                     "Multiplication",
@@ -300,9 +313,9 @@ namespace STROOP.Structs
                     "2D Distance",
                     "3D Distance",
                     null,
-                        },
-                        new List<Action>()
-                        {
+                },
+                new List<Action>()
+                {
                     () => createBinaryMathOperationVariable(BinaryMathOperation.Add),
                     () => createBinaryMathOperationVariable(BinaryMathOperation.Subtract),
                     () => createBinaryMathOperationVariable(BinaryMathOperation.Multiply),
@@ -319,7 +332,7 @@ namespace STROOP.Structs
                     () => createDistanceMathOperationVariable(use3D: false),
                     () => createDistanceMathOperationVariable(use3D: true),
                     () => { },
-            });
+                });
             itemList.Add(itemAddVariables);
             itemList.Add(new ToolStripSeparator());
 
@@ -363,6 +376,5 @@ namespace STROOP.Structs
 
             return itemList;
         }
-
     }
 }

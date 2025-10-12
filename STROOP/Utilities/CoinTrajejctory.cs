@@ -24,6 +24,5 @@ namespace STROOP.Utilities
                 "HSpeed:{0}, VSpeed:{1}, Angle:{2}",
                 HSpeed, VSpeed, Angle);
         }
-
     }
 }

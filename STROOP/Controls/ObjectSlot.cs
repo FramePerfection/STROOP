@@ -20,7 +20,9 @@ namespace STROOP
         public class Overlay
         {
             static Dictionary<string, Image> nameToImage = new Dictionary<string, Image>();
+
             public delegate bool OverlayExpression(ObjectSlot slot);
+
             static readonly Overlay[] overlays;
 
             static Overlay()
@@ -88,11 +90,11 @@ namespace STROOP
 
                 lst.Add(new Overlay("ParentNone", GetHoveredExpression((obj, address, hoveredObject) =>
                     (OverlayConfig.ShowOverlayParentObject || GlobalKeyboard.IsDown(Keys.P)) && address == hoveredObject.Address
-                    && hoveredObject.Parent == 0)));
+                                                                                             && hoveredObject.Parent == 0)));
 
                 lst.Add(new Overlay("ParentUnused", GetHoveredExpression((obj, address, hoveredObject) =>
                     (OverlayConfig.ShowOverlayParentObject || GlobalKeyboard.IsDown(Keys.P)) && address == hoveredObject.Address
-                    && hoveredObject.Parent == ObjectSlotsConfig.UnusedSlotAddress)));
+                                                                                             && hoveredObject.Parent == ObjectSlotsConfig.UnusedSlotAddress)));
 
                 lst.Add(new Overlay("Child", GetHoveredExpression((obj, address, hoveredObject) =>
                     (OverlayConfig.ShowOverlayChildObject || GlobalKeyboard.IsDown(Keys.P)) && obj.CurrentObject?.Parent == hoveredObject.Address)));
@@ -104,7 +106,8 @@ namespace STROOP
                     {
                         uint? hoveredAddress = Config.ObjectSlotsManager.HoveredObjectAddress;
                         uint collisionObjAddress = hoveredAddress.HasValue && GlobalKeyboard.IsDown(Keys.C)
-                            ? hoveredAddress.Value : Config.Stream.GetUInt32(MarioObjectConfig.PointerAddress);
+                            ? hoveredAddress.Value
+                            : Config.Stream.GetUInt32(MarioObjectConfig.PointerAddress);
                         return OverlayConfig.ShowOverlayCollisionObject && address == ObjectUtilities.GetCollisionObject(collisionObjAddress, capture);
                     })));
                 }
@@ -171,19 +174,20 @@ namespace STROOP
             return p;
         }
 
-        static Pen[] markPens = new[] {
-               MakeMarkedPen(Color.Red),
-               MakeMarkedPen(Color.Orange),
-               MakeMarkedPen(Color.Yellow),
-               MakeMarkedPen(Color.Green),
-               MakeMarkedPen(Color.LightBlue),
-               MakeMarkedPen(Color.Blue),
-               MakeMarkedPen(Color.Purple),
-               MakeMarkedPen(Color.Pink),
-               MakeMarkedPen(Color.Gray),
-               MakeMarkedPen(Color.White),
-               MakeMarkedPen(Color.Black),
-                };
+        static Pen[] markPens = new[]
+        {
+            MakeMarkedPen(Color.Red),
+            MakeMarkedPen(Color.Orange),
+            MakeMarkedPen(Color.Yellow),
+            MakeMarkedPen(Color.Green),
+            MakeMarkedPen(Color.LightBlue),
+            MakeMarkedPen(Color.Blue),
+            MakeMarkedPen(Color.Purple),
+            MakeMarkedPen(Color.Pink),
+            MakeMarkedPen(Color.Gray),
+            MakeMarkedPen(Color.White),
+            MakeMarkedPen(Color.Black),
+        };
 
         ObjectSlotsManager _manager;
 
@@ -191,19 +195,27 @@ namespace STROOP
         public ObjectDataModel CurrentObject { get; set; }
 
         #region Drawing Variables
+
         Color _mainColor, _borderColor, _backColor;
         SolidBrush _borderBrush = new SolidBrush(Color.White), _backBrush = new SolidBrush(Color.White);
         SolidBrush _textBrush = new SolidBrush(Color.Black);
         Image _objectImage;
         Point _textLocation = new Point();
         string _text;
+
         #endregion
 
         public new bool Show = false;
 
         object _gfxLock = new object();
 
-        public enum MouseStateType { None, Over, Down };
+        public enum MouseStateType
+        {
+            None,
+            Over,
+            Down
+        };
+
         private MouseStateType _mouseState;
         private MouseStateType _mouseEnteredState;
 
@@ -213,10 +225,17 @@ namespace STROOP
         bool _isActive = false;
 
         public override string Text => _text;
+
         Color _textColor
         {
             get => _textBrush.Color;
-            set { lock (_gfxLock) { _textBrush.Color = value; } }
+            set
+            {
+                lock (_gfxLock)
+                {
+                    _textBrush.Color = value;
+                }
+            }
         }
 
         Dictionary<Overlay, Wrapper<bool>> overlayValues = Overlay.NewObjectSlot();
@@ -230,7 +249,11 @@ namespace STROOP
             Font = new Font(FontFamily.GenericSansSerif, 6);
 
             this.MouseDown += OnDrag;
-            this.MouseUp += (s, e) => { _mouseState = _mouseEnteredState; UpdateColors(); };
+            this.MouseUp += (s, e) =>
+            {
+                _mouseState = _mouseEnteredState;
+                UpdateColors();
+            };
             this.MouseEnter += (s, e) =>
             {
                 _manager.HoveredObjectAddress = CurrentObject?.Address;
@@ -334,10 +357,7 @@ namespace STROOP
             };
 
             ToolStripMenuItem itemCopyAddress = new ToolStripMenuItem("Copy Address");
-            itemCopyAddress.Click += (sender, e) =>
-            {
-                Clipboard.SetText(string.Join(",", getObjects().ConvertAll(obj => HexUtilities.FormatValue(obj.Address))));
-            };
+            itemCopyAddress.Click += (sender, e) => { Clipboard.SetText(string.Join(",", getObjects().ConvertAll(obj => HexUtilities.FormatValue(obj.Address)))); };
 
             ToolStripMenuItem itemCopyPosition = new ToolStripMenuItem("Copy Position");
             itemCopyPosition.Click += (sender, e) => Clipboard.SetText(
@@ -379,17 +399,11 @@ namespace STROOP
             {
                 uint? address = ParsingUtilities.ParseHexNullable(Clipboard.GetText());
                 if (!address.HasValue) return;
-                getObjects().ForEach(obj =>
-                {
-                    obj.GraphicsID = address.Value;
-                });
+                getObjects().ForEach(obj => { obj.GraphicsID = address.Value; });
             };
 
             ToolStripMenuItem itemCopyObject = new ToolStripMenuItem("Copy Object");
-            itemCopyObject.Click += (sender, e) =>
-            {
-                ObjectSnapshot.StoredObjectSnapshotList = getObjects().ConvertAll(obj => new ObjectSnapshot(obj.Address));
-            };
+            itemCopyObject.Click += (sender, e) => { ObjectSnapshot.StoredObjectSnapshotList = getObjects().ConvertAll(obj => new ObjectSnapshot(obj.Address)); };
 
             ToolStripMenuItem itemPasteObject = new ToolStripMenuItem("Paste Object");
             itemPasteObject.Click += (sender, e) =>
@@ -456,6 +470,7 @@ namespace STROOP
                     _backColor = newColor.Lighten(0.7);
                     break;
             }
+
             Image newImage = Config.ObjectAssociations.GetObjectImage(_behavior, !_isActive)?.Value ?? Config.ObjectAssociations.DefaultImage.Value;
             if (_objectImage != newImage)
             {
@@ -515,8 +530,8 @@ namespace STROOP
                 if (_objectImage != null)
                 {
                     var objectImageRec = (new Rectangle(BorderSize, BorderSize + 1,
-                    Width - BorderSize * 2, _textLocation.Y - 1 - BorderSize))
-                    .Zoom(_objectImage.Size);
+                            Width - BorderSize * 2, _textLocation.Y - 1 - BorderSize))
+                        .Zoom(_objectImage.Size);
                     e.Graphics.DrawImage(_objectImage, objectImageRec);
                 }
             }
@@ -561,9 +576,7 @@ namespace STROOP
             }
 
             Color mainColor =
-                (SlotLabelType)AccessScope<StroopMainForm>.content.comboBoxLabelMethod.SelectedItem == SlotLabelType.RngUsage ?
-                ObjectRngUtilities.GetColor(CurrentObject) :
-                ObjectSlotsConfig.GetProcessingGroupColor(CurrentObject?.CurrentProcessGroup);
+                (SlotLabelType)AccessScope<StroopMainForm>.content.comboBoxLabelMethod.SelectedItem == SlotLabelType.RngUsage ? ObjectRngUtilities.GetColor(CurrentObject) : ObjectSlotsConfig.GetProcessingGroupColor(CurrentObject?.CurrentProcessGroup);
             Color textColor = _manager.LabelsLocked ? Color.Blue : Color.Black;
             string text = CurrentObject != null ? _manager.SlotLabelsForObjects[CurrentObject] : "";
 
@@ -576,11 +589,13 @@ namespace STROOP
                 _text = text;
                 redraw = true;
             }
+
             if (textColor != _textColor)
             {
                 _textColor = textColor;
                 redraw = true;
             }
+
             if (mainColor != _mainColor)
             {
                 _mainColor = mainColor;
@@ -592,6 +607,7 @@ namespace STROOP
                 _behavior = CurrentObject?.BehaviorCriteria ?? default(BehaviorCriteria);
                 updateColors = true;
             }
+
             if (_isActive != (CurrentObject?.IsActive ?? false))
             {
                 _isActive = CurrentObject?.IsActive ?? false;

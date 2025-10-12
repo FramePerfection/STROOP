@@ -13,7 +13,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("PU Gridlines", "Grid")]
     public class MapPuGridlinesObject : MapLineObject
     {
-        private enum PuGridlineSetting { SETTING1, SETTING2, SETTING3 };
+        private enum PuGridlineSetting
+        {
+            SETTING1,
+            SETTING2,
+            SETTING3
+        };
+
         private PuGridlineSetting _setting;
 
         public MapPuGridlinesObject()
@@ -44,11 +50,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             vertices.Add(new Vector3(x, marioY, zMin));
                             vertices.Add(new Vector3(x, marioY, zMax));
                         }
+
                         for (int z = zMin; z <= zMax; z += 65536)
                         {
                             vertices.Add(new Vector3(xMin, marioY, z));
                             vertices.Add(new Vector3(xMax, marioY, z));
                         }
+
                         return vertices;
                     }
                 case PuGridlineSetting.SETTING2:
@@ -66,11 +74,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             vertices.Add(new Vector3(x, marioY, zMin));
                             vertices.Add(new Vector3(x, marioY, zMax));
                         }
+
                         for (int z = zMin; z <= zMax; z += 65536)
                         {
                             vertices.Add(new Vector3(xMin, marioY, z));
                             vertices.Add(new Vector3(xMax, marioY, z));
                         }
+
                         return vertices;
                     }
                 case PuGridlineSetting.SETTING3:
@@ -105,6 +115,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                 vertices.Add(new Vector3(x2, marioY, z2));
                             }
                         }
+
                         return vertices;
                     }
                 default:

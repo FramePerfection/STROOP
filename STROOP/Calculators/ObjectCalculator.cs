@@ -32,6 +32,7 @@ namespace STROOP.Structs
 
                 return (newMarioX, newMarioZ);
             }
+
             return (marioX, marioZ);
         }
 

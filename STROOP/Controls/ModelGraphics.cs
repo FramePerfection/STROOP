@@ -14,10 +14,9 @@ namespace STROOP.Controls
 {
     public class ModelGraphics
     {
-
         private KeyboardControls _keyboardControls;
         private MouseControls _mouseControls;
-        
+
         volatile float _cameraAngle = 0;
         volatile float _cameraRadius = 0;
         volatile float _cameraHeight = 0;
@@ -92,7 +91,7 @@ namespace STROOP.Controls
             CameraFly();
             _mouseControls.NextFrame();
         }
-        
+
         private void CameraFly()
         {
             // Calculate key speed multiplier

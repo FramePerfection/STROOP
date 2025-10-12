@@ -7,13 +7,12 @@ using STROOP.Structs.Configurations;
 
 namespace STROOP.Managers
 {
-
     public class InjectionManager
     {
         ScriptParser _parser;
         readonly byte[] byteUintFF = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
         CheckBox _useRomHackChecBox;
-      
+
         uint _freeMemPtr;
 
         public InjectionManager(ScriptParser parser, CheckBox useRomHackChecBox)
@@ -21,7 +20,7 @@ namespace STROOP.Managers
             _parser = parser;
             _useRomHackChecBox = useRomHackChecBox;
 
-            _freeMemPtr = _parser.FreeMemoryArea; 
+            _freeMemPtr = _parser.FreeMemoryArea;
 
             // Find spots to allocate script memory
             foreach (var script in _parser.Scripts)
@@ -69,7 +68,7 @@ namespace STROOP.Managers
 
             AllocateScript(script, prevInstBytes);
         }
-        
+
         private uint JumpToAddressInst(uint address)
         {
             return (uint)(address) >> 2 & 0x03FFFFFF | 0x08000000;
@@ -97,7 +96,7 @@ namespace STROOP.Managers
             scriptAddress += (uint)(scriptLength);
             script.PostInstrSpace = scriptAddress;
 
-            scriptAddress += (uint)(2*sizeof(uint));
+            scriptAddress += (uint)(2 * sizeof(uint));
 
             uint jumpBackToInsertPointInst = JumpToAddressInst(script.InsertAddress + 8);
             success &= Config.Stream.WriteRam(BitConverter.GetBytes(jumpBackToInsertPointInst), scriptAddress, EndiannessType.Little);

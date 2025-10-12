@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
@@ -16,6 +15,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
     partial class ScoringFunc : UserControl
     {
         static Dictionary<string, Type> stringToControllerType = new Dictionary<string, Type>();
+
         static ScoringFunc()
         {
             foreach (var t in typeof(ScoringFunc).Assembly.GetTypes())
@@ -32,10 +32,12 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 x = Math.Max(x, ctrl.Right + ctrl.Margin.Right);
                 y = Math.Max(y, ctrl.Bottom + ctrl.Margin.Bottom);
             }
+
             return (x, y);
         }
 
         bool _muted = false;
+
         public bool muted
         {
             get => _muted && AccessScope<BruteforceTab.UnmuteScoringFuncs>.content == null;
@@ -51,6 +53,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
         GeneralPurpose.ScoringFuncPrecursor precursor;
         IMethodController controller;
         ToolTip documentationToolTip;
+
         Dictionary<string, string> docs = new Dictionary<string, string>()
         {
             ["weight"] = "The value to multiply the result of the scoring function by.\nNegative values are allowed and usually invert the effect of the function.",
@@ -174,6 +177,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 Controls.Remove(watchVariablePanelParameters);
                 Height = collapsedHeight;
             }
+
             watchVariablePanelParameters.Anchor |= AnchorStyles.Bottom;
             watchVariablePanelParameters.Anchor &= ~AnchorStyles.Top;
             ResumeLayout();
@@ -202,6 +206,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 first = false;
                 strBuilder.Append($"{tabs2}\"{parameterValue.Key}\": {StringUtilities.MakeJsonValue(parameterValue.Value.value.ToString())}");
             }
+
             strBuilder.AppendLine($"\n{tabs1}}}");
             strBuilder.Append($"{tabs0}}}");
             return strBuilder.ToString();
@@ -210,6 +215,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
         public void DeleteSelf() => this.GetParent<GeneralPurpose>()?.RemoveMethod(this);
 
         bool deleting = false;
+
         public void DeleteFromMap()
         {
             if (deleting)

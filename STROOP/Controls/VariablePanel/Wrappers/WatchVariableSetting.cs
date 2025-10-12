@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using STROOP.Core.Variables;
-
 using STROOP.Utilities;
 
 namespace STROOP.Controls.VariablePanel
@@ -25,7 +23,7 @@ namespace STROOP.Controls.VariablePanel
             string name,
             Func<WatchVariableControl, object, bool> setterFunction,
             params (string name, Func<object> valueGetter, Func<WatchVariableControl, bool> isSelected)[] dropDownValues
-            )
+        )
         {
             this.Name = name;
             this.SetterFunction = setterFunction;
@@ -61,11 +59,13 @@ namespace STROOP.Controls.VariablePanel
                         else if (selected != firstValue)
                             state = CheckState.Indeterminate;
                     }
+
                     if (state == CheckState.Indeterminate)
                         item.CheckState = CheckState.Indeterminate;
                     else
                         item.Checked = !firstValue.HasValue ? false : firstValue.Value;
                 }
+
                 optionsItem.DropDownItems.Add(item);
             }
 
@@ -81,76 +81,79 @@ namespace STROOP.Controls.VariablePanel
         class DefaultSettings
         {
             public static readonly WatchVariableSetting HighlightSetting = new WatchVariableSetting(
-                    "Highlight",
-                    (ctrl, obj) =>
-                    {
-                        if (obj is bool newHighlighted)
-                            ctrl.Highlighted = newHighlighted;
-                        else return false;
-                        return true;
-                    },
-                    ("Highlight", () => true, ctrl => ctrl.Highlighted),
-                    ("Don't Highlight", () => false, ctrl => !ctrl.Highlighted)
-                    );
+                "Highlight",
+                (ctrl, obj) =>
+                {
+                    if (obj is bool newHighlighted)
+                        ctrl.Highlighted = newHighlighted;
+                    else return false;
+                    return true;
+                },
+                ("Highlight", () => true, ctrl => ctrl.Highlighted),
+                ("Don't Highlight", () => false, ctrl => !ctrl.Highlighted)
+            );
 
             public static readonly WatchVariableSetting HighlightColorSetting = new WatchVariableSetting(
-                    "Highlight Color",
-                    (ctrl, obj) =>
+                "Highlight Color",
+                (ctrl, obj) =>
+                {
+                    if (obj is Color newColor)
                     {
-                        if (obj is Color newColor)
-                        {
-                            ctrl.HighlightColor = newColor;
-                            ctrl.Highlighted = true;
-                        }
-                        else return false;
-                        return true;
-                    },
-                    ("Red", () => Color.Red, ctrl => ctrl.HighlightColor == Color.Red),
-                    ("Orange", () => Color.Orange, ctrl => ctrl.HighlightColor == Color.Orange),
-                    ("Yellow", () => Color.Yellow, ctrl => ctrl.HighlightColor == Color.Yellow),
-                    ("Green", () => Color.Green, ctrl => ctrl.HighlightColor == Color.Green),
-                    ("Blue", () => Color.Blue, ctrl => ctrl.HighlightColor == Color.Blue),
-                    ("Purple", () => Color.Purple, ctrl => ctrl.HighlightColor == Color.Purple),
-                    ("Pink", () => Color.Pink, ctrl => ctrl.HighlightColor == Color.Pink),
-                    ("Brown", () => Color.Brown, ctrl => ctrl.HighlightColor == Color.Brown),
-                    ("Black", () => Color.Black, ctrl => ctrl.HighlightColor == Color.Black),
-                    ("White", () => Color.White, ctrl => ctrl.HighlightColor == Color.White)
-                    );
+                        ctrl.HighlightColor = newColor;
+                        ctrl.Highlighted = true;
+                    }
+                    else return false;
+
+                    return true;
+                },
+                ("Red", () => Color.Red, ctrl => ctrl.HighlightColor == Color.Red),
+                ("Orange", () => Color.Orange, ctrl => ctrl.HighlightColor == Color.Orange),
+                ("Yellow", () => Color.Yellow, ctrl => ctrl.HighlightColor == Color.Yellow),
+                ("Green", () => Color.Green, ctrl => ctrl.HighlightColor == Color.Green),
+                ("Blue", () => Color.Blue, ctrl => ctrl.HighlightColor == Color.Blue),
+                ("Purple", () => Color.Purple, ctrl => ctrl.HighlightColor == Color.Purple),
+                ("Pink", () => Color.Pink, ctrl => ctrl.HighlightColor == Color.Pink),
+                ("Brown", () => Color.Brown, ctrl => ctrl.HighlightColor == Color.Brown),
+                ("Black", () => Color.Black, ctrl => ctrl.HighlightColor == Color.Black),
+                ("White", () => Color.White, ctrl => ctrl.HighlightColor == Color.White)
+            );
 
             public static readonly WatchVariableSetting LockSetting = new WatchVariableSetting(
-                    "Lock",
-                    (ctrl, obj) =>
-                    {
-                        if (obj is bool newLock && ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView)
-                            return memoryDescriptorView.describedMemoryState.SetLocked(newLock, null);
-                        else
-                            return false;
-                    },
-                    ("Lock", () => true, ctrl => (ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.locked ?? false),
-                    ("Don't Lock", () => false, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.locked ?? true))
-                    );
+                "Lock",
+                (ctrl, obj) =>
+                {
+                    if (obj is bool newLock && ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView)
+                        return memoryDescriptorView.describedMemoryState.SetLocked(newLock, null);
+                    else
+                        return false;
+                },
+                ("Lock", () => true, ctrl => (ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.locked ?? false),
+                ("Don't Lock", () => false, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.locked ?? true))
+            );
 
 
             public static readonly WatchVariableSetting FixAddressSetting = new WatchVariableSetting(
-                    "Fix Address",
-                    (ctrl, obj) =>
+                "Fix Address",
+                (ctrl, obj) =>
+                {
+                    if (ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView)
                     {
-                        if (ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView)
-                        {
-                            if (obj is bool newFixAddress)
-                                memoryDescriptorView.describedMemoryState.ToggleFixedAddress(newFixAddress);
-                            else if (obj == null)
-                                memoryDescriptorView.describedMemoryState.ToggleFixedAddress(false);
-                            return true;
-                        }
-                        return false;
-                    },
-                    ("Default", () => null, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? false)),
-                    ("Fix Address", () => true, ctrl => (ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? false),
-                    ("Don't Fix Address", () => false, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? true))
-                    );
+                        if (obj is bool newFixAddress)
+                            memoryDescriptorView.describedMemoryState.ToggleFixedAddress(newFixAddress);
+                        else if (obj == null)
+                            memoryDescriptorView.describedMemoryState.ToggleFixedAddress(false);
+                        return true;
+                    }
+
+                    return false;
+                },
+                ("Default", () => null, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? false)),
+                ("Fix Address", () => true, ctrl => (ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? false),
+                ("Don't Fix Address", () => false, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? true))
+            );
 
             private static readonly object RevertToDefaultColor = new object();
+
             public static readonly WatchVariableSetting BackgroundColorSetting = new WatchVariableSetting(
                 "Background Color",
                 (ctrl, obj) =>
@@ -173,11 +176,12 @@ namespace STROOP.Controls.VariablePanel
                         if (colorString == "LightBlue") colorString = "Light Blue";
                         lst.Add((colorString, () => color, ctrl => ctrl.BaseColor == color));
                     }
+
                     lst.Add(("Control (No Color)", () => SystemColors.Control, ctrl => ctrl.BaseColor == SystemColors.Control));
                     lst.Add(("Custom Color", () => ColorUtilities.GetColorFromDialog(SystemColors.Control), null));
                     return lst.ToArray();
                 }))()
-                );
+            );
         }
     }
 }

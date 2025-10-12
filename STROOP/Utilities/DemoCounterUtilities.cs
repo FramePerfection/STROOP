@@ -6,7 +6,6 @@ namespace STROOP.Structs
 {
     public static class DemoCounterUtilities
     {
-
         public static string GetDemoCounterDescription(short? demoCounterNullable = null)
         {
             switch (RomVersionConfig.Version)
@@ -146,6 +145,5 @@ namespace STROOP.Structs
                 "PSS",
             };
         }
-
     }
 }

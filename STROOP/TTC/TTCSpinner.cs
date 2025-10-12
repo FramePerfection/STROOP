@@ -6,7 +6,7 @@ namespace STROOP.Ttc
     /** A spinner is the rectangle platform that spins about
       *  a horizontal axis (i.e. changes its pitch).
       *  They are mostly found near the red coins.
-      *  
+      *
       *  When a spinner completes a spin, it calls
       *  RNG to determine which direction it should rotate next
       *  as well as how long the rotation should be.
@@ -17,7 +17,6 @@ namespace STROOP.Ttc
       */
     public class TtcSpinner : TtcObject
     {
-
         public int _angle;
         public int _direction; //1 = CCW, -1 = CW
         public int _timerMax;
@@ -47,23 +46,26 @@ namespace STROOP.Ttc
 
         public override void Update()
         {
-
             if (_timer <= _timerMax)
-            { //spin normal
+            {
+                //spin normal
                 if (_timer <= 5)
-                { //don't spin
+                {
+                    //don't spin
                     _timer++;
                 }
                 else
-                { //spin
+                {
+                    //spin
                     _angle += _direction * 200;
                     _angle = Normalize(_angle);
                     _timer++;
                 }
             }
             else
-            { //start a new spin
-              //do a CCW spin
+            {
+                //start a new spin
+                //do a CCW spin
                 _angle += 200;
                 _angle = Normalize(_angle);
 
@@ -73,15 +75,14 @@ namespace STROOP.Ttc
                 _timer = 0;
                 _timer++;
             }
-
         }
 
         public override string ToString()
         {
             return _id + OPENER + _angle + SEPARATOR +
-                    _direction + SEPARATOR +
-                    _timerMax + SEPARATOR +
-                    _timer + CLOSER;
+                   _direction + SEPARATOR +
+                   _timerMax + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -102,6 +103,4 @@ namespace STROOP.Ttc
             return new TtcSpinner(rng, _angle, _direction, _timerMax, _timer);
         }
     }
-
-
 }

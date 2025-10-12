@@ -14,7 +14,6 @@ namespace STROOP.Ttc
      */
     public static class TtcMain
     {
-
         private static readonly string testString4050 = "987B550000000A000000550000000A000000190000000A0000007D0000000A000000050000000A0000002D0000000A0000007D000000050000007D000000050000000100000003EAFFFF4AFFFFFF0D000000000000000100000003EAFFFF4AFFFFFF0D000000000000000100000003EAFFFF4AFFFFFF0D000000000000000100000003EAFFFF4AFFFFFF0D0000000000000000000000CEFFFFFFCEFFFFFF5A0000003100000001000000000000000000000000000000320000000100000000000000000000000000000032000000010000000000000000000000000000003200000001000000000000000000000000000000320000003700000014000000000000003200000037000000000000000000000032000000370000003200000000000000320000003700000064000000000000003200000037000000000000000000000032000000370000000A0000000000000032000000370000000000000000000000320000003700000000000000000000003200000037000000000000000000000032000000370000001E0000000000000032000000370000000A000000000000003200000037000000140000000000000032000000AA370000C2010000200300007E1D0000EE0200005802000046BA00005E01000050FBFFFFC6DF0000D4FEFFFFE0FCFFFF807000003200000038FFFFFF8250000012FDFFFFB0040000FA120000A2FEFFFFE8030000B9FFFFFFF7FFFFFF01000000460000003100000010C700000A00000000000000BCFBFFFF0000000032000000BCFB00001E000000BCFB0000BCFBFFFFC90000000A000000781E0000010000007800000012000000A8E40000FFFFFFFF1E0000001200000030DF0000FFFFFFFF780000003100000060220000010000005A0000003100000030DF0000FFFFFFFF3C00000031000000A8E40000FFFFFFFF3C00000012000000781E0000010000007800000012000000781E0000010000005A0000001200000030DF0000FFFFFFFF3C0000003100000060220000010000003C0000003100000060220000010000003C0000003100000030DF0000FFFFFFFF3C0000003100000030DF0000FFFFFFFF5A0000003100000030DF0000FFFFFFFF3C0000003100000068E600001E00000068E6000034F3FFFF6B0000001B00000060DF0000320000009CD9000034F3FFFFA70000000A00000034F300003200000034F3000034F3FFFF2F0000002C00000094FC0000320000000000000034F3FFFF8A0000000D00000094FC00000A00000000000000CC0C00002F0000000D00000068E600003200000068E6000034F3FFFF2F0000001B000000BF02000006000000010000005A00000031000000DEFAFFFFFAFFFFFFFFFFFFFF5A0000003100000050E2000050FBFFFFE803000002000000000000000000000000000000320000000300000000000000000000000000000032000000CF19000000000000100000000100000008000000020000003A590000020000006F2B000000000000010000000000000001000000";
 
         // from game
@@ -83,6 +82,7 @@ namespace STROOP.Ttc
                 currentSaveState = saveState;
                 currentStartFrame += relativeEndFrame;
             }
+
             return dustFrameLists;
         }
 
@@ -100,6 +100,7 @@ namespace STROOP.Ttc
                     return (success, savestate, endFrame, dustFrames);
                 }
             }
+
             return (false, null, 0, null);
         }
 
@@ -115,6 +116,7 @@ namespace STROOP.Ttc
                     return dustFrames;
                 }
             }
+
             return null;
         }
 
@@ -138,6 +140,7 @@ namespace STROOP.Ttc
                 currentSaveState = saveState;
                 currentStartFrame += relativeEndFrame;
             }
+
             return dustFrameLists;
         }
 
@@ -155,6 +158,7 @@ namespace STROOP.Ttc
                     return (success, savestate, endFrame, dustFrames);
                 }
             }
+
             return (false, null, 0, null);
         }
 
@@ -235,6 +239,7 @@ namespace STROOP.Ttc
                         simulation.GetSaveState(), endingFrame, DustFrames.Concat(dustFrameConfiguration).ToList());
                     successors.Add(progress);
                 }
+
                 return successors;
             }
         }
@@ -282,6 +287,7 @@ namespace STROOP.Ttc
                     Config.Print(outputString);
                 }
             }
+
             Config.Print("In total, there were {0} successes:", outputStrings.Count);
             outputStrings.ForEach(output => Config.Print(output));
         }
@@ -305,6 +311,7 @@ namespace STROOP.Ttc
             {
                 AddDustFrameListRecursion(new bool[dustFrameRange], 0, 0, numDustFrames, dustFrameLists, earliestDustFrame);
             }
+
             return dustFrameLists;
         }
 
@@ -319,6 +326,7 @@ namespace STROOP.Ttc
                 {
                     dustFrameLists.Add(ConvertBoolsToDustFrames(bools, earliestDustFrame));
                 }
+
                 return;
             }
 
@@ -349,6 +357,7 @@ namespace STROOP.Ttc
             {
                 if (bools[i]) dustFrames.Add(earliestDustFrame + i);
             }
+
             return dustFrames;
         }
 
@@ -370,6 +379,7 @@ namespace STROOP.Ttc
                 TtcSimulation simulation = new TtcSimulation(saveState, startingFrame, dustFrames);
                 simulation.FindIdealReentryManipulationGivenDustFrames(dustFrames);
             }
+
             Config.Print("END FindIdealReentryManipulation");
         }
 
@@ -399,6 +409,7 @@ namespace STROOP.Ttc
                     Config.Print(syncingFrame.Value + "\t" + FormatDustFrames(dustFrames));
                 }
             }
+
             Config.Print("END FindPendulumSyncingManipulation");
         }
 
@@ -414,6 +425,7 @@ namespace STROOP.Ttc
                 TtcSimulation simulation = new TtcSimulation(saveState, startingFrame, dustFrames);
                 simulation.FindMovingBarManipulationGivenDustFrames(dustFrames);
             }
+
             Config.Print("END FindMovingBarManipulation");
         }
 
@@ -425,5 +437,4 @@ namespace STROOP.Ttc
             simulation.OutputPendulumData();
         }
     }
-
 }

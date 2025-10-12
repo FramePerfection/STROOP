@@ -12,6 +12,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     public class MapObjectWallPrediction : MapWallObject
     {
         ObjectTrianglePrediction predictionProvider;
+
         public MapObjectWallPrediction(PositionAngleProvider p)
         {
             positionAngleProvider = p;
@@ -41,6 +42,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     public class MapObjectFloorPrediction : MapFloorObject
     {
         ObjectTrianglePrediction predictionProvider;
+
         public MapObjectFloorPrediction(PositionAngleProvider p) : base(null)
         {
             positionAngleProvider = p;
@@ -70,6 +72,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     public class MapObjectCeilingPrediction : MapCeilingObject
     {
         ObjectTrianglePrediction predictionProvider;
+
         public MapObjectCeilingPrediction(PositionAngleProvider p)
         {
             positionAngleProvider = p;

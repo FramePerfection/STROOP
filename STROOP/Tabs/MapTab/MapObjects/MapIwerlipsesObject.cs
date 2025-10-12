@@ -47,7 +47,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 base.SettingsSaveLoad.save(node);
                 SaveValueNode(node, "NumQSteps", _numQSteps.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);
@@ -74,7 +74,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         protected override void Draw3D(MapGraphics graphics) => DrawTopDown(graphics);
 
-        protected override void DrawOrthogonal(MapGraphics graphics) { } //Nope lol
+        protected override void DrawOrthogonal(MapGraphics graphics)
+        {
+        } //Nope lol
 
         public override void Update()
         {
@@ -104,10 +106,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 double backwardDist = MoreMath.GetDistanceBetween(cx, cz, bx, bz);
 
                 var newTransform = Matrix4.Identity
-                                    * Matrix4.CreateRotationX((float)Math.PI / 2)
-                                    * Matrix4.CreateScale((float)sideDist, 1, (float)Math.Abs(forwardDist + backwardDist) / 2)
-                                    * Matrix4.CreateRotationY((float)MoreMath.AngleUnitsToRadians(marioStateCenter.MarioAngle))
-                                    * Matrix4.CreateTranslation(marioStateCenter.X, marioStateCenter.Y, marioStateCenter.Z);
+                                   * Matrix4.CreateRotationX((float)Math.PI / 2)
+                                   * Matrix4.CreateScale((float)sideDist, 1, (float)Math.Abs(forwardDist + backwardDist) / 2)
+                                   * Matrix4.CreateRotationY((float)MoreMath.AngleUnitsToRadians(marioStateCenter.MarioAngle))
+                                   * Matrix4.CreateTranslation(marioStateCenter.X, marioStateCenter.Y, marioStateCenter.Z);
                 _ellipseTransforms.Add(newTransform);
             }
         }

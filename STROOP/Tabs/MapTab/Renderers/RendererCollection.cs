@@ -32,15 +32,15 @@ namespace STROOP.Tabs.MapTab.Renderers
                 GL.TexParameter(TextureTarget.Texture2DArray, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.LinearMipmapNearest);
                 GL.TexParameter(TextureTarget.Texture2DArray, TextureParameterName.TextureMinFilter, (int)TextureMagFilter.Linear);
                 GL.TexImage3D(TextureTarget.Texture2DArray,
-                        0,
-                        PixelInternalFormat.Rgba8,
-                        OBJECTS_TEXTURE_SIZE,
-                        OBJECTS_TEXTURE_SIZE,
-                        OBJECTS_TEXTURE_LAYERS,
-                        0,
-                        PixelFormat.Rgba,
-                        PixelType.UnsignedByte,
-                        IntPtr.Zero);
+                    0,
+                    PixelInternalFormat.Rgba8,
+                    OBJECTS_TEXTURE_SIZE,
+                    OBJECTS_TEXTURE_SIZE,
+                    OBJECTS_TEXTURE_LAYERS,
+                    0,
+                    PixelFormat.Rgba,
+                    PixelType.UnsignedByte,
+                    IntPtr.Zero);
             });
 
             renderers.Add(triangleRenderer = new TriangleRenderer(0x10000));
@@ -54,6 +54,7 @@ namespace STROOP.Tabs.MapTab.Renderers
 
         int objectLayer = 0;
         Dictionary<Image, int> knownIcons = new Dictionary<Image, int>();
+
         public int GetObjectTextureLayer(Image image)
         {
             if (knownIcons.TryGetValue(image, out var known))

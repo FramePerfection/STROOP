@@ -57,6 +57,7 @@ namespace STROOP.Tabs.BruteforceTab.BF_Utilities
                         segmentedCollisionPointer = Config.Stream.GetUInt32(cursor + 4);
                         break;
                 }
+
                 var commandSize = GetCommandSize(cmdByte);
                 for (int i = 0; i < commandSize; i++)
                 {
@@ -76,6 +77,7 @@ namespace STROOP.Tabs.BruteforceTab.BF_Utilities
                 lst.Add(nextValue);
                 absoluteCollisionPtr += 2;
             } while (nextValue != 0x41);
+
             return lst.ToArray();
         }
 

@@ -6,7 +6,6 @@ namespace STROOP.Tabs
 {
     public partial class PaintingTab : STROOPTab
     {
-
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {

@@ -12,6 +12,7 @@ namespace STROOP.Structs
                 uint address = (uint)(AreaConfig.AreaStartAddress + i * AreaConfig.AreaStructSize);
                 if (address == areaAddress) return i;
             }
+
             return null;
         }
 
@@ -80,6 +81,5 @@ namespace STROOP.Structs
                 "Slide",
             };
         }
-
     }
 }

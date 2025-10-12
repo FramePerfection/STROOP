@@ -10,7 +10,12 @@ namespace STROOP.Utilities
 {
     public static class ButtonUtilities
     {
-        public enum Change { SET, ADD, MULTIPLY };
+        public enum Change
+        {
+            SET,
+            ADD,
+            MULTIPLY
+        };
 
         public static bool ChangeValues(List<PositionAngle> posAngles,
             float xValue, float yValue, float zValue, Change change, bool useRelative = false, bool handleScaling = true,
@@ -73,6 +78,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             return success;
         }
 
@@ -290,6 +296,7 @@ namespace STROOP.Utilities
                     success &= mario.SetAngle(mario.Angle + yawOffset);
                 }
             }
+
             return success;
         }
 
@@ -337,6 +344,7 @@ namespace STROOP.Utilities
                     Change.SET,
                     affects: affects);
             }
+
             return success;
         }
 
@@ -378,6 +386,7 @@ namespace STROOP.Utilities
                     Change.SET,
                     affects: affects);
             }
+
             return success;
         }
 
@@ -389,7 +398,6 @@ namespace STROOP.Utilities
             bool success = true;
             using (Config.Stream.Suspend())
             {
-
                 // Update action if going from not holding to holding
                 if (updateAction && DataModels.Mario.HeldObject == 0)
                 {
@@ -405,6 +413,7 @@ namespace STROOP.Utilities
                 // Update held value
                 success &= Config.Stream.SetValue(obj.Address, MarioConfig.StructAddress + MarioConfig.HeldObjectPointerOffset);
             }
+
             return success;
         }
 
@@ -423,6 +432,7 @@ namespace STROOP.Utilities
                 // Clear mario's held object
                 success &= Config.Stream.SetValue(0x00000000U, MarioConfig.StructAddress + MarioConfig.HeldObjectPointerOffset);
             }
+
             return success;
         }
 
@@ -441,6 +451,7 @@ namespace STROOP.Utilities
 
                 success &= Config.Stream.SetValue(obj.Address, MarioConfig.StructAddress + MarioConfig.RiddenObjectPointerOffset);
             }
+
             return success;
         }
 
@@ -456,8 +467,10 @@ namespace STROOP.Utilities
 
                 success &= Config.Stream.SetValue(0, MarioConfig.StructAddress + MarioConfig.RiddenObjectPointerOffset);
             }
+
             return success;
         }
+
         public static bool UkikipediaObject(ObjectDataModel obj)
         {
             if (obj == null)
@@ -478,6 +491,7 @@ namespace STROOP.Utilities
                 foreach (var obj in objects)
                     obj.IsActive = false;
             }
+
             return success;
         }
 
@@ -524,6 +538,7 @@ namespace STROOP.Utilities
                                 break;
                             prevObj = curObj;
                         }
+
                         success &= Config.Stream.SetValue(nextObj, prevObj + ObjectConfig.ProcessedNextLinkOffset);
                     }
 
@@ -540,6 +555,7 @@ namespace STROOP.Utilities
                         break;
                 }
             }
+
             return success;
         }
 
@@ -560,6 +576,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue(ObjectConfig.StackIndexReleasedValue, obj.Address + ObjectConfig.StackIndexOffset);
                 }
             }
+
             return success;
         }
 
@@ -578,6 +595,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue(ObjectConfig.StackIndexUnReleasedValue, obj.Address + ObjectConfig.StackIndexOffset);
                 }
             }
+
             return success;
         }
 
@@ -592,6 +610,7 @@ namespace STROOP.Utilities
                 foreach (var obj in objects)
                     obj.InteractionStatus = 0xFFFFFFFF;
             }
+
             return success;
         }
 
@@ -606,6 +625,7 @@ namespace STROOP.Utilities
                 foreach (var obj in objects)
                     obj.InteractionStatus = 0x00000000;
             }
+
             return success;
         }
 
@@ -623,6 +643,7 @@ namespace STROOP.Utilities
                     success = Config.Stream.SetValue(nextAction, MarioConfig.StructAddress + MarioConfig.ActionOffset);
                 }
             }
+
             return success;
         }
 
@@ -645,6 +666,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             return success;
         }
 
@@ -724,6 +746,7 @@ namespace STROOP.Utilities
             {
                 success &= Config.Stream.SetValue(yaw, MarioConfig.StructAddress + MarioConfig.FacingYawOffset);
             }
+
             return success;
         }
 
@@ -737,6 +760,7 @@ namespace STROOP.Utilities
             {
                 success &= Config.Stream.SetValue(hspd, MarioConfig.StructAddress + MarioConfig.HSpeedOffset);
             }
+
             return success;
         }
 
@@ -750,6 +774,7 @@ namespace STROOP.Utilities
             {
                 success &= Config.Stream.SetValue(vspd, MarioConfig.StructAddress + MarioConfig.YSpeedOffset);
             }
+
             return success;
         }
 
@@ -844,6 +869,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue((sbyte)0, MarioConfig.StructAddress + HudConfig.LifeCountOffset);
                 success &= Config.Stream.SetValue(HudConfig.DeathHp, MarioConfig.StructAddress + HudConfig.HpCountOffset);
             }
+
             return success;
         }
 
@@ -862,6 +888,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue((short)HudConfig.StandardLives, MarioConfig.StructAddress + HudConfig.LifeDisplayOffset);
                 success &= Config.Stream.SetValue(HudConfig.StandardStars, MarioConfig.StructAddress + HudConfig.StarDisplayOffset);
             }
+
             return success;
         }
 
@@ -873,6 +900,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue((short)99, MarioConfig.StructAddress + HudConfig.CoinCountOffset);
                 success &= Config.Stream.SetValue((short)99, MarioConfig.StructAddress + HudConfig.CoinDisplayOffset);
             }
+
             return success;
         }
 
@@ -891,6 +919,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue((sbyte)100, MarioConfig.StructAddress + HudConfig.LifeCountOffset);
                 success &= Config.Stream.SetValue((short)100, MarioConfig.StructAddress + HudConfig.LifeDisplayOffset);
             }
+
             return success;
         }
 
@@ -982,6 +1011,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue(normOffset, triangleAddress + TriangleOffsetsConfig.NormOffset);
                 }
             }
+
             return success;
         }
 
@@ -999,6 +1029,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue(neutralizeValue, triangleAddress + TriangleOffsetsConfig.SurfaceType);
                 }
             }
+
             return success;
         }
 
@@ -1014,6 +1045,7 @@ namespace STROOP.Utilities
                 byte newFlags = MoreMath.ApplyValueToMaskedByte(oldFlags, TriangleOffsetsConfig.NoCamCollisionMask, true);
                 success &= Config.Stream.SetValue(newFlags, triangleAddress + TriangleOffsetsConfig.Flags);
             }
+
             return success;
         }
 
@@ -1057,6 +1089,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue(normOffset, triangleAddress + TriangleOffsetsConfig.NormOffset);
                 }
             }
+
             return success;
         }
 
@@ -1120,6 +1153,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue(newYMax, triangleAddress + TriangleOffsetsConfig.YMaxPlus5);
                 }
             }
+
             return success;
         }
 
@@ -1172,6 +1206,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue(newYMax, triangleAddress + TriangleOffsetsConfig.YMaxPlus5);
                 }
             }
+
             return success;
         }
 
@@ -1203,6 +1238,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue((float)newY, CameraConfig.StructAddress + CameraConfig.YOffset);
                 success &= Config.Stream.SetValue((float)newZ, CameraConfig.StructAddress + CameraConfig.ZOffset);
             }
+
             return success;
         }
 
@@ -1236,6 +1272,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue((float)newY, CameraConfig.StructAddress + CameraConfig.FocusYOffset);
                 success &= Config.Stream.SetValue((float)newZ, CameraConfig.StructAddress + CameraConfig.FocusZOffset);
             }
+
             return success;
         }
 
@@ -1343,6 +1380,7 @@ namespace STROOP.Utilities
                             success &= Config.Stream.SetValue(MoreMath.NormalizeAngleUshort(theta + 32768 - relativeYawOffset), CamHackConfig.StructAddress + CamHackConfig.ThetaOffset);
                             success &= Config.Stream.SetValue((float)height, CamHackConfig.StructAddress + CamHackConfig.RelativeHeightOffset);
                         }
+
                         return success;
                     }
 
@@ -1425,6 +1463,7 @@ namespace STROOP.Utilities
                             success &= Config.Stream.SetValue(MoreMath.NormalizeAngleUshort(theta + 32768 - relativeYawOffset), CamHackConfig.StructAddress + CamHackConfig.ThetaOffset);
                             success &= Config.Stream.SetValue((float)height, CamHackConfig.StructAddress + CamHackConfig.RelativeHeightOffset);
                         }
+
                         return success;
                     }
 
@@ -1478,8 +1517,10 @@ namespace STROOP.Utilities
                 {
                     success &= TranslateCameraHack(camHackMode, xOffset, yOffset, zOffset, useRelative);
                 }
+
                 success &= TranslateCameraHackFocus(camHackMode, xOffset, yOffset, zOffset, useRelative);
             }
+
             return success;
         }
 
@@ -1509,6 +1550,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             return success;
         }
     }

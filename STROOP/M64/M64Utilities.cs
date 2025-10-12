@@ -78,6 +78,7 @@ namespace STROOP.M64
                     {
                         inputFrame.X = 0;
                     }
+
                     break;
                 case "Y":
                     if (value)
@@ -92,6 +93,7 @@ namespace STROOP.M64
                     {
                         inputFrame.Y = 0;
                     }
+
                     break;
                 case "A":
                     inputFrame.A = value;
@@ -175,6 +177,7 @@ namespace STROOP.M64
                 {
                     cells.Add(new M64InputCell(cell));
                 }
+
                 return cells;
             }
             else
@@ -196,6 +199,7 @@ namespace STROOP.M64
                         cells.Add(new M64InputCell(tableCell));
                     }
                 }
+
                 return cells;
             }
         }
@@ -211,6 +215,7 @@ namespace STROOP.M64
                 minFrame = ConvertFrameToDisplayedValue(minFrame);
                 maxFrame = ConvertFrameToDisplayedValue(maxFrame);
             }
+
             List<string> headerTexts = cells
                 .FindAll(cell => cell.IsInput)
                 .ConvertAll(cell => cell.HeaderText).Distinct().ToList();
@@ -227,6 +232,7 @@ namespace STROOP.M64
             {
                 inputs.Add(allInputs[row.Index]);
             }
+
             return inputs;
         }
 

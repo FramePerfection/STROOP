@@ -26,5 +26,5 @@ namespace STROOP.Tabs.MapTab.MapObjects
         }
 
         public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.TriangleWallImage;
-            }
+    }
 }

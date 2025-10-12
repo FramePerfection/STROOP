@@ -155,7 +155,6 @@ namespace STROOP.Tabs.MapTab.Renderers
                 result.Value.unusedCount = 0;
 
             return result.Value.brush;
-
         }
     }
 }

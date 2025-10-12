@@ -78,7 +78,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "RelativeMinY", _relativeMinY.ToString());
                 SaveValueNode(node, "RelativeMaxY", _relativeMaxY.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

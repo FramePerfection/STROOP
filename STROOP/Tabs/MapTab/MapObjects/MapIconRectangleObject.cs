@@ -7,7 +7,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         protected MapIconRectangleObject(ObjectCreateParams createParams)
             : base(createParams)
-        { }
+        {
+        }
 
         protected abstract List<(PointF loc, SizeF size)> GetDimensions(MapGraphics graphics);
     }

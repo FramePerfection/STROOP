@@ -143,6 +143,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 lst.Add(TriangleDataModel.Create(Config.Stream.GetUInt32(baseAddress + 4)));
                 baseAddress = Config.Stream.GetUInt32(baseAddress);
             }
+
             return lst;
         }
 

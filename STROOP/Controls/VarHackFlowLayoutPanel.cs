@@ -134,6 +134,7 @@ namespace STROOP.Controls
                     elements.Add(varHackContainer.ToXml());
                 }
             }
+
             return elements;
         }
 
@@ -190,6 +191,7 @@ namespace STROOP.Controls
                     stringBuilder.Append(bytesString);
                 }
             }
+
             infoForm.SetText("Var Hack Info", "Little Endian Bytes", stringBuilder.ToString());
             infoForm.Show();
         }
@@ -208,6 +210,7 @@ namespace STROOP.Controls
                     stringBuilder.Append(bytesString);
                 }
             }
+
             infoForm.SetText("Var Hack Info", "Big Endian Bytes", stringBuilder.ToString());
             infoForm.Show();
         }
@@ -238,6 +241,7 @@ namespace STROOP.Controls
             {
                 bytes = EMPTY_BYTES;
             }
+
             if (bytes == null) return;
             Config.Stream.WriteRam(bytes, address, EndiannessType.Little);
         }
@@ -268,6 +272,5 @@ namespace STROOP.Controls
                 }
             }
         }
-
     }
 }

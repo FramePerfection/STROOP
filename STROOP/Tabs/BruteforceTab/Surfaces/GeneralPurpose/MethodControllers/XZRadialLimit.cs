@@ -17,9 +17,15 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
         class HoverData : IHoverData
         {
             readonly XZRadialLimitMapObject parent;
-            public HoverData(XZRadialLimitMapObject parent) { this.parent = parent; }
 
-            public void AddContextMenuItems(MapTab.MapTab tab, ContextMenuStrip menu) { }
+            public HoverData(XZRadialLimitMapObject parent)
+            {
+                this.parent = parent;
+            }
+
+            public void AddContextMenuItems(MapTab.MapTab tab, ContextMenuStrip menu)
+            {
+            }
 
             public DragMask CanDrag() => parent.dragMask;
 
@@ -30,11 +36,17 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                 parent.UpdateVars();
             }
 
-            public void LeftClick(Vector3 position) { }
+            public void LeftClick(Vector3 position)
+            {
+            }
 
-            public void RightClick(Vector3 position) { }
+            public void RightClick(Vector3 position)
+            {
+            }
 
-            public void SetLookAt(Vector3 lookAt) { }
+            public void SetLookAt(Vector3 lookAt)
+            {
+            }
         }
 
         readonly HoverData hover;
@@ -48,7 +60,10 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
 
         IgnoreScope ignoreUpdates = new IgnoreScope();
 
-        public XZRadialLimitMapObject() : base(null) { hover = new HoverData(this); }
+        public XZRadialLimitMapObject() : base(null)
+        {
+            hover = new HoverData(this);
+        }
 
         public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.CylinderImage;
 
@@ -111,22 +126,22 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                         var cos = (float)Math.Cos(alpha);
                         var sin = (float)Math.Sin(alpha);
                         graphics.lineRenderer.AddArrow(
-                                x + cos * (Size + szThing),
-                                0,
-                                z + sin * (Size + szThing),
-                                szThing, -((float)Utilities.MoreMath.RadiansToAngleUnits(alpha) + 0x4000),
-                                szThing2,
-                                Utilities.ColorUtilities.ColorToVec4(Color),
-                                2);
+                            x + cos * (Size + szThing),
+                            0,
+                            z + sin * (Size + szThing),
+                            szThing, -((float)Utilities.MoreMath.RadiansToAngleUnits(alpha) + 0x4000),
+                            szThing2,
+                            Utilities.ColorUtilities.ColorToVec4(Color),
+                            2);
                     }
                 }
+
                 graphics.textRenderer.AddText(
                     $"XZRadialLimit ({parent.GetFuncIndex()?.ToString() ?? "-"})",
                     new Vector3(x, 0, z),
                     OutlineColor,
                     StringAlignment.Center);
             });
-
         }
 
         protected override void DrawOrthogonal(MapGraphics graphics)

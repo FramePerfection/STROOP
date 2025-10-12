@@ -9,7 +9,6 @@ namespace STROOP.Ttc
      */
     public class TtcAmp : TtcObject
     {
-
         public int _state;
         public int _angle;
 
@@ -38,6 +37,7 @@ namespace STROOP.Ttc
                 _angle = PollRNG();
                 _state = 2;
             }
+
             _angle = Normalize(_angle + 1024);
         }
 

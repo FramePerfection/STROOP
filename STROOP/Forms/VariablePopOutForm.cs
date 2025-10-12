@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Structs;
@@ -9,7 +8,6 @@ namespace STROOP.Forms
 {
     public partial class VariablePopOutForm : Form, IUpdatableForm
     {
-
         public static int? WIDTH = null;
         public static int? HEIGHT = null;
 

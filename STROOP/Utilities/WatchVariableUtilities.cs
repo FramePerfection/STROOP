@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Structs;
@@ -48,18 +47,20 @@ namespace STROOP.Utilities
                     innerResult = qView._getterFunction().Select(x => (T)Convert.ChangeType(x, typeof(T)));
                     return true;
                 }
+
                 return false;
             }
+
             return Get<byte>(out result)
-                || Get<sbyte>(out result)
-                || Get<ushort>(out result)
-                || Get<short>(out result)
-                || Get<uint>(out result)
-                || Get<int>(out result)
-                || Get<ulong>(out result)
-                || Get<long>(out result)
-                || Get<float>(out result)
-                || Get<double>(out result)
+                   || Get<sbyte>(out result)
+                   || Get<ushort>(out result)
+                   || Get<short>(out result)
+                   || Get<uint>(out result)
+                   || Get<int>(out result)
+                   || Get<ulong>(out result)
+                   || Get<long>(out result)
+                   || Get<float>(out result)
+                   || Get<double>(out result)
                 ;
         }
 
@@ -76,21 +77,23 @@ namespace STROOP.Utilities
                 {
                     return null;
                 }
+
                 if (view is NamedVariableCollection.IView<Q> qView)
                     return qView._setterFunction(convertedValue);
                 return null;
             }
+
             return Set<byte>()
-                ?? Set<sbyte>()
-                ?? Set<ushort>()
-                ?? Set<short>()
-                ?? Set<uint>()
-                ?? Set<int>()
-                ?? Set<ulong>()
-                ?? Set<long>()
-                ?? Set<float>()
-                ?? Set<double>()
-                ?? Array.Empty<bool>()
+                   ?? Set<sbyte>()
+                   ?? Set<ushort>()
+                   ?? Set<short>()
+                   ?? Set<uint>()
+                   ?? Set<int>()
+                   ?? Set<ulong>()
+                   ?? Set<long>()
+                   ?? Set<float>()
+                   ?? Set<double>()
+                   ?? Array.Empty<bool>()
                 ;
         }
 
@@ -112,9 +115,12 @@ namespace STROOP.Utilities
         {
             public WatchVariableWrapperFallback(NamedVariableCollection.IView watchVar, WatchVariableControl watchVarControl)
                 : base(watchVar, watchVarControl)
-            { }
+            {
+            }
 
-            public override void Edit(Control parent, Rectangle bounds) { }
+            public override void Edit(Control parent, Rectangle bounds)
+            {
+            }
 
             public override string GetClass() => "INVALID VARIABLE";
 
@@ -122,7 +128,9 @@ namespace STROOP.Utilities
 
             public override bool TrySetValue(string value) => false;
 
-            public override void Update() { }
+            public override void Update()
+            {
+            }
         }
 
         static readonly Dictionary<string, List<(Type wrapperType, Type typeRestriction)>> wrapperTypes = new Dictionary<string, List<(Type, Type)>>();
@@ -150,7 +158,9 @@ namespace STROOP.Utilities
                                 wrapperTypeList.Add((t, parameters[0].ParameterType.GetGenericArguments()[0]));
                                 break;
                             }
-                        };
+                        }
+
+                        ;
                     }
             }
         }
@@ -163,15 +173,16 @@ namespace STROOP.Utilities
 
                 bool Passt(Type restrictionType) =>
                     (variableType == restrictionType
-                    || variableType.IsSubclassOf(restrictionType)
-                    || variableType.GetInterfaces().Any(i => i == restrictionType));
+                     || variableType.IsSubclassOf(restrictionType)
+                     || variableType.GetInterfaces().Any(i => i == restrictionType));
+
                 bool CanWrap((Type wrapperType, Type typeRestriction) wrapper, out Type result)
                 {
                     result = null;
                     if (wrapper.typeRestriction.IsGenericParameter
-                        ? wrapper.typeRestriction.GetGenericParameterConstraints().All(r => Passt(r))
-                        : Passt(wrapper.typeRestriction)
-                        )
+                            ? wrapper.typeRestriction.GetGenericParameterConstraints().All(r => Passt(r))
+                            : Passt(wrapper.typeRestriction)
+                       )
                     {
                         var innermostType = wrapper.wrapperType;
                         Stack<Type> genericTypeArguments = new Stack<Type>();
@@ -189,7 +200,7 @@ namespace STROOP.Utilities
                                 .GetGenericParameterConstraints()
                                 .FirstOrDefault(c => c.IsClass)
                                 ?.GetGenericTypeDefinition()
-                                );
+                            );
                         }
 
                         if (wrapper.wrapperType.IsGenericType)
@@ -209,8 +220,10 @@ namespace STROOP.Utilities
                     }
                     else if (Passt(wrapper.typeRestriction))
                         result = wrapper.wrapperType;
+
                     return result != null;
                 }
+
                 if (wrapperTypes.TryGetValue(wrapperTypeName, out var specificCandidateList))
                     foreach (var specificCandidate in specificCandidateList.OrderBy(GenericTypeArgumentsLength))
                         if (CanWrap(specificCandidate, out var specificWrapper))
@@ -227,8 +240,8 @@ namespace STROOP.Utilities
             var nonNullableWrapper = GetNonNullableWrapper(isNullable ? potentiallyNullableVariableType.GetGenericArguments()[0] : potentiallyNullableVariableType);
             if (nonNullableWrapper != null)
                 return isNullable
-                        ? typeof(WatchVariableNullableWrapper<,>).MakeGenericType(nonNullableWrapper, nonNullableWrapper.GetGenericArguments()[0])
-                        : nonNullableWrapper;
+                    ? typeof(WatchVariableNullableWrapper<,>).MakeGenericType(nonNullableWrapper, nonNullableWrapper.GetGenericArguments()[0])
+                    : nonNullableWrapper;
 
             System.Diagnostics.Debugger.Break();
             throw new InvalidOperationException($"{potentiallyNullableVariableType.FullName} could not be wrapped!");

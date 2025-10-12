@@ -7,7 +7,11 @@ namespace STROOP.Tabs.BruteforceTab
     public class SurfaceAttribute : Attribute
     {
         public readonly string moduleName;
-        public SurfaceAttribute(string moduleName) { this.moduleName = moduleName; }
+
+        public SurfaceAttribute(string moduleName)
+        {
+            this.moduleName = moduleName;
+        }
     }
 
     public class Surface : UserControl
@@ -29,8 +33,12 @@ namespace STROOP.Tabs.BruteforceTab
 
         public virtual string GetParameter(string parameterName) => "";
 
-        public virtual void InitJson() { }
+        public virtual void InitJson()
+        {
+        }
 
-        public virtual void Cleanup() { }
+        public virtual void Cleanup()
+        {
+        }
     }
 }

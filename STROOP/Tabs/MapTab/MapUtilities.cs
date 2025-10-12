@@ -141,6 +141,7 @@ namespace STROOP.Tabs.MapTab
             {
                 return null;
             }
+
             List<float> doubleList = nullableDoubleList.ConvertAll(nullableDouble => nullableDouble.Value);
 
             int numbersPerGroup = useTriplets ? 3 : 2;
@@ -153,9 +154,7 @@ namespace STROOP.Tabs.MapTab
             for (int i = 0; i < doubleList.Count; i += numbersPerGroup)
             {
                 (float x, float y, float z) point =
-                    useTriplets ?
-                    (doubleList[i], doubleList[i + 1], doubleList[i + 2]) :
-                    (doubleList[i], 0, doubleList[i + 1]);
+                    useTriplets ? (doubleList[i], doubleList[i + 1], doubleList[i + 2]) : (doubleList[i], 0, doubleList[i + 1]);
                 points.Add(point);
             }
 

@@ -12,42 +12,42 @@ namespace STROOP
         private static readonly List<uint> _coinRingSpawnerAddresses =
             new List<uint>()
             {
-                0x80347CB8,0x8034B358,0x803483D8,0x80348638,0x80348898
+                0x80347CB8, 0x8034B358, 0x803483D8, 0x80348638, 0x80348898
             };
 
         private static readonly List<uint> _middleCoinAddresses =
             new List<uint>()
             {
-                0x80349B98,0x8034B5B8,0x80349DF8,0x8034A058,0x8034A2B8
+                0x80349B98, 0x8034B5B8, 0x80349DF8, 0x8034A058, 0x8034A2B8
             };
 
         private static readonly List<(int x, int y, int z)> _middleCoinPositions =
             new List<(int x, int y, int z)>()
             {
-                (-1506,5517,1250),
-                (-300,4200,1250),
-                (1000,3600,1250),
-                (2000,3600,1250),
-                (3000,3600,1250),
+                (-1506, 5517, 1250),
+                (-300, 4200, 1250),
+                (1000, 3600, 1250),
+                (2000, 3600, 1250),
+                (3000, 3600, 1250),
             };
 
         private static readonly List<uint> _secretAddresses =
             new List<uint>()
             {
-                0x80347F18,0x8034A518,0x80348AF8,0x80348D58,0x80348FB8
+                0x80347F18, 0x8034A518, 0x80348AF8, 0x80348D58, 0x80348FB8
             };
 
         private static readonly List<(int row, int col)> _coinOffsets =
             new List<(int row, int col)>()
             {
-                (2,4),
-                (1,3),
-                (0,2),
-                (1,1),
-                (2,0),
-                (3,1),
-                (4,2),
-                (3,3),
+                (2, 4),
+                (1, 3),
+                (0, 2),
+                (1, 1),
+                (2, 0),
+                (3, 1),
+                (4, 2),
+                (3, 3),
             };
 
         private readonly Image _coinImage;

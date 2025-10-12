@@ -36,7 +36,7 @@ namespace STROOP.Structs
                 radius = action == 3 ? 180 : 140;
                 extentY = 300;
             }
-            
+
             if (_isRacingPenguin)
             {
                 int subType = Config.Stream.GetInt32(objAddress + ObjectConfig.BehaviorSubtypeOffset);
@@ -77,6 +77,7 @@ namespace STROOP.Structs
                 finalMinY = effectiveMinY;
                 finalMaxY = effectiveMaxY;
             }
+
             return (finalRadius, finalMinY, finalMaxY);
         }
     }

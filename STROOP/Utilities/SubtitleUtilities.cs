@@ -16,7 +16,7 @@ namespace STROOP.Utilities
             List<string> outputLines = ConvertLines(inputLines);
             string output = string.Join("\r\n", outputLines);
             InfoForm.ShowValue(output);
-	    }
+        }
 
         public static List<string> ConvertLines(List<string> inputLines)
         {
@@ -43,7 +43,8 @@ namespace STROOP.Utilities
                     }
                 }
                 else
-                { // inSubtitle
+                {
+                    // inSubtitle
                     if (isSubtitleEnd(inputLine))
                     {
                         inSubtitle = false;
@@ -54,10 +55,12 @@ namespace STROOP.Utilities
                             {
                                 outputLines.Add(line);
                             }
+
                             outputLines.Add("");
                             subtitleList.Add(subtitle);
                             Config.Print(subtitle + "\n");
                         }
+
                         workingList.Clear();
                     }
                     else
@@ -66,6 +69,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             //System.out.println("NUM SUBTITLES: " + subtitleList.size());
             return outputLines;
         }
@@ -96,6 +100,7 @@ namespace STROOP.Utilities
                 int firstSpace = line.IndexOf(" ");
                 return line.Substring(firstSpace + 1);
             }
+
             return line;
         }
 
@@ -105,6 +110,7 @@ namespace STROOP.Utilities
             {
                 return line.Substring(0, line.Length - 4);
             }
+
             return line;
         }
 
@@ -136,12 +142,14 @@ namespace STROOP.Utilities
                 {
                     return false;
                 }
+
                 Subtitle other = (Subtitle)obj;
                 if (this.lines.Count != other.lines.Count) return false;
                 for (int i = 0; i < this.lines.Count; i++)
                 {
                     if (lines[i] != other.lines[i]) return false;
                 }
+
                 return true;
             }
 
@@ -158,8 +166,9 @@ namespace STROOP.Utilities
                     if (output.Length != 0) output += " ";
                     output += line;
                 }
+
                 return output;
             }
         }
     }
-} 
+}

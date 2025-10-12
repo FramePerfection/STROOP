@@ -56,6 +56,7 @@ namespace STROOP.Utilities
                 success &= Config.Stream.SetValue((float)newMarioY, MarioConfig.StructAddress + MarioConfig.YOffset);
                 success &= Config.Stream.SetValue((float)newMarioZ, MarioConfig.StructAddress + MarioConfig.ZOffset);
             }
+
             return success;
         }
 
@@ -89,7 +90,6 @@ namespace STROOP.Utilities
             bool success = true;
             using (Config.Stream.Suspend())
             {
-
                 success &= Config.Stream.SetValue((float)newMarioX, MarioConfig.StructAddress + MarioConfig.XOffset);
                 success &= Config.Stream.SetValue((float)newMarioY, MarioConfig.StructAddress + MarioConfig.YOffset);
                 success &= Config.Stream.SetValue((float)newMarioZ, MarioConfig.StructAddress + MarioConfig.ZOffset);
@@ -100,6 +100,7 @@ namespace STROOP.Utilities
                     success &= Config.Stream.SetValue((float)newCamZ, CameraConfig.StructAddress + CameraConfig.ZOffset);
                 }
             }
+
             return success;
         }
 

@@ -11,7 +11,6 @@ namespace STROOP.Ttc
      */
     public class TtcRng
     {
-
         //start off with RNG 0 by default
         private int _index;
 
@@ -86,6 +85,4 @@ namespace STROOP.Ttc
             return string.Format("Rng({0})[{1}]", GetRng(), GetIndex());
         }
     }
-
-
 }

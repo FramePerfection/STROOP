@@ -68,11 +68,13 @@ namespace STROOP.Tabs
                 MessageBox.Show("Could not parse behavior!");
                 return;
             }
+
             if (!ParsingUtilities.TryParseHex(textBoxSpawnGfxId.Text, out gfxId))
             {
                 MessageBox.Show("Could not parse gfxId!");
                 return;
             }
+
             if (!ParsingUtilities.TryParseHex(textBoxSpawnExtra.Text, out extra))
             {
                 MessageBox.Show("Could not parse extra!");
@@ -90,6 +92,7 @@ namespace STROOP.Tabs
         }
 
         bool suspendCheckHandler = false;
+
         private void _checkList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (suspendCheckHandler)
@@ -113,6 +116,7 @@ namespace STROOP.Tabs
                 if (checkedListBoxHacks.GetItemCheckState(i) != (CheckState)hack.Status)
                     checkedListBoxHacks.SetItemCheckState(i, (CheckState)hack.Status);
             }
+
             suspendCheckHandler = false;
         }
 
@@ -133,7 +137,6 @@ namespace STROOP.Tabs
 
         private void buttonInjectDirect_Click(object sender, EventArgs e)
         {
-
             if (ParsingUtilities.TryParseHex(textBoxInjectFileAddress.Text, out uint address))
             {
                 if (ParsingUtilities.ParseByteString(DialogUtilities.GetStringFromDialog("", "Enter byte data:")?.Trim() ?? "", out var bytes))

@@ -55,38 +55,39 @@ namespace STROOP.Models
         public readonly double SlopeDecelValue;
         public readonly bool Exertion;
 
-        public readonly static List<string> FieldNameList = new List<string> {
-                "Address",
-                "Classification",
-                "SurfaceType",
-                "Description",
-                "Slipperiness",
-                "SlipperinessDescription",
-                "Exertion",
-                "ExertionForceIndex",
-                "ExertionAngle",
-                "Flags",
-                "XProjection",
-                "BelongsToObject",
-                "NoCamCollision",
-                "Room",
-                "YMin-5",
-                "YMax+5",
-                "X1",
-                "Y1",
-                "Z1",
-                "X2",
-                "Y2",
-                "Z2",
-                "X3",
-                "Y3",
-                "Z3",
-                "NormX",
-                "NormY",
-                "NormZ",
-                "NormOffset",
-                "AssociatedObject",
-            };
+        public readonly static List<string> FieldNameList = new List<string>
+        {
+            "Address",
+            "Classification",
+            "SurfaceType",
+            "Description",
+            "Slipperiness",
+            "SlipperinessDescription",
+            "Exertion",
+            "ExertionForceIndex",
+            "ExertionAngle",
+            "Flags",
+            "XProjection",
+            "BelongsToObject",
+            "NoCamCollision",
+            "Room",
+            "YMin-5",
+            "YMax+5",
+            "X1",
+            "Y1",
+            "Z1",
+            "X2",
+            "Y2",
+            "Z2",
+            "X3",
+            "Y3",
+            "Z3",
+            "NormX",
+            "NormY",
+            "NormZ",
+            "NormOffset",
+            "AssociatedObject",
+        };
 
         private readonly List<Object> FieldValueList;
 
@@ -104,6 +105,7 @@ namespace STROOP.Models
                 TriangleDataModel tri = new TriangleDataModel(triangleAddress);
                 _cache[triangleAddress] = tri;
             }
+
             return _cache[triangleAddress];
         }
 
@@ -157,7 +159,8 @@ namespace STROOP.Models
             SlopeDecelValue = TableConfig.TriangleInfo.GetSlopeDecelValue(SurfaceType);
             Exertion = TableConfig.TriangleInfo.GetExertion(SurfaceType) ?? false;
 
-            FieldValueList = new List<object> {
+            FieldValueList = new List<object>
+            {
                 HexUtilities.FormatValue(Address, 8),
                 Classification,
                 HexUtilities.FormatValue(SurfaceType, 2),
@@ -227,6 +230,7 @@ namespace STROOP.Models
                 intersection = rayOrigin + t * rayDirection;
                 normal = Vector3.Normalize(n);
             }
+
             return result;
         }
 
@@ -403,7 +407,8 @@ namespace STROOP.Models
             return true;
         }
 
-        static int Side(short pX, short  pZ, short v1X, short v1Z, short v2X, short v2Z) => (v1Z - pZ) * (v2X - v1X) - (v1X - pX) * (v2Z - v1Z);
+        static int Side(short pX, short pZ, short v1X, short v1Z, short v2X, short v2Z) => (v1Z - pZ) * (v2X - v1X) - (v1X - pX) * (v2Z - v1Z);
+
         static bool IsInsideTriangle(short pX, short pZ, short v1X, short v1Z, short v2X, short v2Z, short v3X, short v3Z)
         {
             int side12 = Side(pX, pZ, v1X, v1Z, v2X, v2Z);

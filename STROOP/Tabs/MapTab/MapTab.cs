@@ -25,6 +25,7 @@ namespace STROOP.Tabs.MapTab
 
         static XElement configNode;
         static string lastTrackerFileName = null;
+
         [InitializeConfigParser]
         static void InitConfigParser()
         {
@@ -141,6 +142,7 @@ namespace STROOP.Tabs.MapTab
                 else
                     LoadTrackerConfigAndDisplay(DEFAULT_TRACKER_FILE);
             }
+
             RequireGeometryUpdate();
         }
 
@@ -177,6 +179,7 @@ namespace STROOP.Tabs.MapTab
                     centers.Add((x, z));
                 }
             }
+
             return centers;
         }
 
@@ -203,36 +206,37 @@ namespace STROOP.Tabs.MapTab
                         newTrackerByName[creationIdentifier] = newObjectFunc = creationParameters =>
                         {
                             var newObj = (MapObject)
-                                    (capturedType.GetMethod(attr.Initializer, BindingFlags.Public | BindingFlags.Static)
-                                    ?.Invoke(null, new object[] { creationParameters })
-                                    ?? null);
+                                (capturedType.GetMethod(attr.Initializer, BindingFlags.Public | BindingFlags.Static)
+                                     ?.Invoke(null, new object[] { creationParameters })
+                                 ?? null);
                             return newObj != null ? new MapTracker(this, creationIdentifier, newObj) : null;
                         };
 
                     Func<MapTracker> addNewTracker = () =>
+                    {
+                        using (new AccessScope<MapTab>(this))
                         {
-                            using (new AccessScope<MapTab>(this))
-                            {
-                                var tracker = newObjectFunc(null);
-                                if (tracker != null)
-                                    flowLayoutPanelMapTrackers.Controls.Add(tracker);
-                                return tracker;
-                            }
-                        };
+                            var tracker = newObjectFunc(null);
+                            if (tracker != null)
+                                flowLayoutPanelMapTrackers.Controls.Add(tracker);
+                            return tracker;
+                        }
+                    };
 
                     addNewTrackers[(type, attr.Initializer)] = addNewTracker;
                     adders[attr.DisplayName] = new Wrapper<(bool, ObjectDescriptionAttribute, Func<ToolStripMenuItem>)>((false, attr, () =>
-                        {
-                            var toolStripItem = new ToolStripMenuItem($"Add Tracker for {attr.DisplayName}");
-                            toolStripItem.Click += (sender, e) => addNewTracker();
-                            return toolStripItem;
-                        }
+                            {
+                                var toolStripItem = new ToolStripMenuItem($"Add Tracker for {attr.DisplayName}");
+                                toolStripItem.Click += (sender, e) => addNewTracker();
+                                return toolStripItem;
+                            }
                     ));
                 }
             }
 
             buttonMapOptionsAddNewTracker.ContextMenuStrip = new ContextMenuStrip();
             var categoryItems = new Dictionary<string, ToolStripMenuItem>();
+
             ToolStripMenuItem GetCategoryItem(string categoryName)
             {
                 ToolStripMenuItem categoryItem;
@@ -241,6 +245,7 @@ namespace STROOP.Tabs.MapTab
                     categoryItems[categoryName] = categoryItem = new ToolStripMenuItem(categoryName);
                     buttonMapOptionsAddNewTracker.ContextMenuStrip.Items.Add(categoryItem);
                 }
+
                 return categoryItem;
             }
 
@@ -265,14 +270,17 @@ namespace STROOP.Tabs.MapTab
                                         categoryItem.DropDownItems.Add(trackThis.value.Item3());
                                         trackThis.value.Item1 = true;
                                     }
+
                                     break;
                                 case "Separator":
                                     categoryItem.DropDownItems.Add(new ToolStripSeparator());
                                     break;
                             }
+
                             trackerNode = trackerNode.NextSibling;
                         }
                     }
+
                     currentNode = currentNode.NextSibling;
                 }
             }
@@ -312,6 +320,7 @@ namespace STROOP.Tabs.MapTab
                         flowLayoutPanelMapTrackers.Controls.Add(capture.tracker);
                 };
             }
+
             for (int i = 0; i < ObjectSlotsConfig.MaxSlots; i++)
             {
                 var capture = i;
@@ -323,10 +332,11 @@ namespace STROOP.Tabs.MapTab
                         this,
                         creationIdentifier,
                         new MapObjectObject(objectSlot.CurrentObject.Address)
-                        );
+                    );
                     return newTracker;
                 };
             }
+
             checkBoxMapOptionsTrackMario.Checked = true;
 
             // FlowLayoutPanel
@@ -351,7 +361,7 @@ namespace STROOP.Tabs.MapTab
             buttonMapOptionsClearAllTrackers.Click += (sender, e) =>
                 flowLayoutPanelMapTrackers.Controls.Clear();
             ControlUtilities.AddContextMenuStripFunctions(
-                 buttonMapOptionsClearAllTrackers,
+                buttonMapOptionsClearAllTrackers,
                 new List<string>()
                 {
                     "Reset to Initial State",
@@ -367,7 +377,7 @@ namespace STROOP.Tabs.MapTab
             buttonMapControllersScaleDivide.Click += (sender, e) => graphics.ChangeScale2(-1, textBoxMapControllersScaleChange2.Text);
             buttonMapControllersScaleTimes.Click += (sender, e) => graphics.ChangeScale2(1, textBoxMapControllersScaleChange2.Text);
             ControlUtilities.AddContextMenuStripFunctions(
-                 groupBoxMapControllersScale,
+                groupBoxMapControllersScale,
                 new List<string>()
                 {
                     "Very Small Unit Squares",
@@ -395,7 +405,7 @@ namespace STROOP.Tabs.MapTab
             buttonMapControllersCenterDownLeft.Click += (sender, e) => graphics.ChangeCenter(-1, 1, textBoxMapControllersCenterChange.Text);
             buttonMapControllersCenterDownRight.Click += (sender, e) => graphics.ChangeCenter(1, 1, textBoxMapControllersCenterChange.Text);
             ControlUtilities.AddContextMenuStripFunctions(
-                 groupBoxMapControllersCenter,
+                groupBoxMapControllersCenter,
                 new List<string>() { "Center on Mario" },
                 new List<Action>()
                 {
@@ -411,7 +421,7 @@ namespace STROOP.Tabs.MapTab
             buttonMapControllersAngleCCW.Click += (sender, e) => graphics.ChangeAngle(-1, textBoxMapControllersAngleChange.Text);
             buttonMapControllersAngleCW.Click += (sender, e) => graphics.ChangeAngle(1, textBoxMapControllersAngleChange.Text);
             ControlUtilities.AddContextMenuStripFunctions(
-                 groupBoxMapControllersAngle,
+                groupBoxMapControllersAngle,
                 new List<string>()
                 {
                     "Use Mario Angle",
@@ -449,14 +459,14 @@ namespace STROOP.Tabs.MapTab
 
             // Global Icon Size
             textBoxMapOptionsGlobalIconSize.AddEnterAction(() =>
-           {
-               float? parsed = ParsingUtilities.ParseFloatNullable(
+            {
+                float? parsed = ParsingUtilities.ParseFloatNullable(
                     textBoxMapOptionsGlobalIconSize.Text);
-               if (!parsed.HasValue) return;
-               SetGlobalIconSize(parsed.Value);
-           });
+                if (!parsed.HasValue) return;
+                SetGlobalIconSize(parsed.Value);
+            });
             trackBarMapOptionsGlobalIconSize.AddManualChangeAction(() =>
-               SetGlobalIconSize(trackBarMapOptionsGlobalIconSize.Value));
+                SetGlobalIconSize(trackBarMapOptionsGlobalIconSize.Value));
             MapUtilities.CreateTrackBarContextMenuStrip(trackBarMapOptionsGlobalIconSize);
 
             glControlMap2D.MouseDown += (sender, e) =>
@@ -468,6 +478,7 @@ namespace STROOP.Tabs.MapTab
 
         bool IsContextMenuOpen() => contextMenu != null && contextMenu.Visible;
         ContextMenuStrip contextMenu;
+
         void ShowRightClickMenu()
         {
             contextMenu = new ContextMenuStrip();
@@ -496,7 +507,7 @@ namespace STROOP.Tabs.MapTab
             {
                 contextMenu.Items.Add(new ToolStripSeparator());
             }
-            
+
             var openPopoutItem = new ToolStripMenuItem("Open Popout");
             openPopoutItem.Click += (e, args) =>
             {
@@ -599,10 +610,7 @@ namespace STROOP.Tabs.MapTab
 
                         var itemFollowInGame = new ToolStripMenuItem("Match Cam Hack to view");
                         itemFollowInGame.Checked = makeInGameCameraFollow;
-                        itemFollowInGame.Click += (__, ___) =>
-                        {
-                            makeInGameCameraFollow = (itemFollowInGame.Checked = !itemFollowInGame.Checked);
-                        };
+                        itemFollowInGame.Click += (__, ___) => { makeInGameCameraFollow = (itemFollowInGame.Checked = !itemFollowInGame.Checked); };
 
                         ctx.Items.Add(new ToolStripSeparator());
                         ctx.Items.Add(itemFollowInGame);
@@ -634,8 +642,8 @@ namespace STROOP.Tabs.MapTab
                         var itemClearRelativeFarPlane = new ToolStripMenuItem("Clear Relative Far Plane");
                         itemClearRelativeFarPlane.Click += (__, ___) => graphics.view.orthoRelativeFarPlane = float.NaN;
                         ctx.Items.Add(itemClearRelativeFarPlane);
-
                     }
+
                     ctx.Show(Cursor.Position);
                 }
             };
@@ -800,19 +808,24 @@ namespace STROOP.Tabs.MapTab
         {
             "2D Scroll Speed", "3D Scroll Speed", "3D Translate Speed", "3D Rotate Speed",
         };
+
         private static readonly List<string> inGameColoredVars = new List<string>() { };
+
         private static readonly List<string> cameraPosAndFocusColoredVars = new List<string>()
         {
             "Camera X", "Camera Y", "Camera Z", "Focus X", "Focus Y", "Focus Z", "FOV",
         };
+
         private static readonly List<string> cameraPosAndAngleColoredVars = new List<string>()
         {
             "Camera X", "Camera Y", "Camera Z", "Camera Yaw", "Camera Pitch", "Camera Roll", "FOV",
         };
+
         private static readonly List<string> followFocusRelativeAngleColoredVars = new List<string>()
         {
             "Focus Pos PA", "Focus Angle PA", "Following Radius", "Following Y Offset", "Following Yaw", "FOV",
         };
+
         private static readonly List<string> followFocusAbsoluteAngleColoredVars = new List<string>()
         {
             "Focus Pos PA", "Following Radius", "Following Y Offset", "Following Yaw", "FOV",
@@ -923,6 +936,7 @@ namespace STROOP.Tabs.MapTab
                 loadedTrackers = new List<MapTracker>();
                 return false;
             }
+
             return true;
         }
 
@@ -940,6 +954,7 @@ namespace STROOP.Tabs.MapTab
                     tracker.SaveChildTrackers(trackerNode);
                     root.AppendChild(trackerNode);
                 }
+
             doc.AppendChild(root);
             doc.Save(targetFileName);
         }

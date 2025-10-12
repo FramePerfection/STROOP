@@ -21,18 +21,120 @@ namespace STROOP.Models
             _form = form;
         }
 
-        public int Index { get => _byteIndex; }
-        public string Dec { get => _byteValue.ToString(); set { SetDec(value); NotifyChange(true); } }
-        public string Hex { get => HexUtilities.FormatValue(_byteValue, 2, false); set { SetHex(value); NotifyChange(true); } }
-        public string Binary { get => GetBinary(); set { SetBinary(value); NotifyChange(true); } }
-        public bool Bit7 { get => GetBit(7); set { SetBit(7, value); NotifyChange(true); } }
-        public bool Bit6 { get => GetBit(6); set { SetBit(6, value); NotifyChange(true); } }
-        public bool Bit5 { get => GetBit(5); set { SetBit(5, value); NotifyChange(true); } }
-        public bool Bit4 { get => GetBit(4); set { SetBit(4, value); NotifyChange(true); } }
-        public bool Bit3 { get => GetBit(3); set { SetBit(3, value); NotifyChange(true); } }
-        public bool Bit2 { get => GetBit(2); set { SetBit(2, value); NotifyChange(true); } }
-        public bool Bit1 { get => GetBit(1); set { SetBit(1, value); NotifyChange(true); } }
-        public bool Bit0 { get => GetBit(0); set { SetBit(0, value); NotifyChange(true); } }
+        public int Index
+        {
+            get => _byteIndex;
+        }
+
+        public string Dec
+        {
+            get => _byteValue.ToString();
+            set
+            {
+                SetDec(value);
+                NotifyChange(true);
+            }
+        }
+
+        public string Hex
+        {
+            get => HexUtilities.FormatValue(_byteValue, 2, false);
+            set
+            {
+                SetHex(value);
+                NotifyChange(true);
+            }
+        }
+
+        public string Binary
+        {
+            get => GetBinary();
+            set
+            {
+                SetBinary(value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit7
+        {
+            get => GetBit(7);
+            set
+            {
+                SetBit(7, value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit6
+        {
+            get => GetBit(6);
+            set
+            {
+                SetBit(6, value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit5
+        {
+            get => GetBit(5);
+            set
+            {
+                SetBit(5, value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit4
+        {
+            get => GetBit(4);
+            set
+            {
+                SetBit(4, value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit3
+        {
+            get => GetBit(3);
+            set
+            {
+                SetBit(3, value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit2
+        {
+            get => GetBit(2);
+            set
+            {
+                SetBit(2, value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit1
+        {
+            get => GetBit(1);
+            set
+            {
+                SetBit(1, value);
+                NotifyChange(true);
+            }
+        }
+
+        public bool Bit0
+        {
+            get => GetBit(0);
+            set
+            {
+                SetBit(0, value);
+                NotifyChange(true);
+            }
+        }
 
         public void SetByteValue(byte byteValue, bool userChange)
         {
@@ -53,6 +155,7 @@ namespace STROOP.Models
                 _table.ClearSelection();
                 _table.Parent.Focus();
             }
+
             _table.Refresh();
         }
 
@@ -75,6 +178,7 @@ namespace STROOP.Models
                 string bitString = bitBool ? "1" : "0";
                 builder.Append(bitString);
             }
+
             return builder.ToString();
         }
 
@@ -90,6 +194,7 @@ namespace STROOP.Models
                     newValue = MoreMath.ApplyValueToMaskedByte(newValue, (byte)(1 << i), binaryBool);
                 }
             }
+
             _byteValue = newValue;
         }
 
