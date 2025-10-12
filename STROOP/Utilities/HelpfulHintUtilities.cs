@@ -33,7 +33,6 @@ namespace STROOP.Structs
                 "Click on a variable while holding Alt to enable custom functionality for that variable, i.e. fixing its address, renaming, deleting.",
                 "Click on a variable while holding Backtick to add that variable to the Var Hack tab, so that it can be displayed on screen.",
                 "Click on a variable while holding H to highlight that variable.",
-                "Click on a variable while holding L to lock that variable.",
                 "Click on a variable while holding S to add that variable to the Custom tab.",
                 "Click on a variable while holding M to add that variable to the Memory tab.",
                 "Click on a variable while holding P to add that variable to any tab of your choice.",

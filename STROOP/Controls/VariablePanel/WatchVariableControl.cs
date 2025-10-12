@@ -108,8 +108,6 @@ namespace STROOP.Controls.VariablePanel
             if (view is NamedVariableCollection.IMemoryDescriptorView)
             {
                 AddSetting(DefaultSettings.FixAddressSetting);
-                // TODO: work out locking setting
-                //AddSetting(DefaultSettings.LockSetting);
             }
         }
 

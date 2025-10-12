@@ -329,7 +329,6 @@ namespace STROOP.Controls.VariablePanel
             bool isAltKeyHeld = GlobalKeyboard.IsAltDown();
             bool isFKeyHeld = GlobalKeyboard.IsDown(Keys.F);
             bool isHKeyHeld = GlobalKeyboard.IsDown(Keys.H);
-            bool isLKeyHeld = GlobalKeyboard.IsDown(Keys.L);
             bool isDKeyHeld = GlobalKeyboard.IsDown(Keys.D);
             bool isRKeyHeld = GlobalKeyboard.IsDown(Keys.R);
             bool isCKeyHeld = GlobalKeyboard.IsDown(Keys.C);
@@ -387,15 +386,6 @@ namespace STROOP.Controls.VariablePanel
                 UnselectAllVariables();
                 Color? color = ColorUtilities.GetColorForHighlight();
                 watchVars.ForEach(watchVar => watchVar.ToggleHighlighted(color));
-            }
-            else if (isLKeyHeld)
-            {
-                var memoryDescriptorView = watchVars.FirstOrDefault()?.view as NamedVariableCollection.IMemoryDescriptorView;
-                if (memoryDescriptorView != null)
-                {
-                    UnselectAllVariables();
-                    memoryDescriptorView.describedMemoryState.ToggleLocked(null);
-                }
             }
             else if (isDKeyHeld)
             {

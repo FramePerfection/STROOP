@@ -73,32 +73,7 @@ namespace STROOP.Controls.VariablePanel
                 public string lastRenderedNameText;
             }
 
-            private static readonly Image _lockedImage = Properties.Resources.img_lock;
-            private static readonly Image _someLockedImage = Properties.Resources.img_lock_grey;
-            private static readonly Image _disabledLockImage = Properties.Resources.lock_blue;
             private static readonly Image _pinnedImage = Properties.Resources.img_pin;
-
-            private static Image GetLockImageForCheckState(CheckState checkState)
-            {
-                Image image;
-                switch (checkState)
-                {
-                    case CheckState.Unchecked:
-                        return null;
-                    case CheckState.Checked:
-                        image = _lockedImage;
-                        break;
-                    case CheckState.Indeterminate:
-                        image = _someLockedImage;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                if (LockConfig.LockingDisabled)
-                    image = _disabledLockImage;
-                return image;
-            }
 
             Dictionary<WatchVariableControl, WatchVariableControlRenderData> renderDatas = new Dictionary<WatchVariableControl, WatchVariableControlRenderData>();
 
@@ -200,24 +175,10 @@ namespace STROOP.Controls.VariablePanel
                     target.ClientRectangle.Width,
                     target.ClientRectangle.Height);
 
-                void DrawLockAndFixImages(WatchVariableControl ctrl, int baseX, int baseY)
+                void DrawFixImage(WatchVariableControl ctrl, int baseX, int baseY)
                 {
-                    // TODO: work out locking feature
-                    //var lockImg = GetLockImageForCheckState(ctrl.view.HasLocks());
                     var xCoord = baseX + 2;
                     var iconHeight = elementHeight - elementMarginTopBottom * 2;
-                    //if (lockImg != null)
-                    //{
-                    //    var iconWidth = (int)(iconHeight * (lockImg.Width / (float)lockImg.Height));
-                    //    g.DrawImage(lockImg,
-                    //        new Rectangle(
-                    //            xCoord,
-                    //            baseY + elementMarginTopBottom,
-                    //            iconWidth,
-                    //            iconHeight)
-                    //            );
-                    //    xCoord += iconWidth + 2;
-                    //}
                     if (ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView && memoryDescriptorView.describedMemoryState.fixedAddresses)
                         g.DrawImage(_pinnedImage,
                             new Rectangle(
@@ -354,7 +315,7 @@ namespace STROOP.Controls.VariablePanel
                             g.DrawString(ctrl.WatchVarWrapper.GetValueText(), Font, ctrl.IsSelected ? Brushes.White : Brushes.Black, txtPoint, rightAlignFormat);
                         }
 
-                        DrawLockAndFixImages(ctrl, x * elementWidth + elementNameWidth, yCoord);
+                        DrawFixImage(ctrl, x * elementWidth + elementNameWidth, yCoord);
                     }
 
                     g.ResetClip();
@@ -447,7 +408,7 @@ namespace STROOP.Controls.VariablePanel
                                 elementHeight));
                         txtPoint = new Point((int)ctrlData.positionWhileMoving.X + elementWidth - elementMarginLeftRight, yCoord + elementMarginTopBottom);
                         g.DrawString(ctrl.WatchVarWrapper.GetValueText(), Font, Brushes.Black, txtPoint, rightAlignFormat);
-                        DrawLockAndFixImages(ctrl, valueX, yCoord);
+                        DrawFixImage(ctrl, valueX, yCoord);
 
                         g.ResetClip();
 

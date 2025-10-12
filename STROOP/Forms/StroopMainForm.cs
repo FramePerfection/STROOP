@@ -418,7 +418,6 @@ namespace STROOP
                 foreach (TabPage page in tabControlMain.TabPages)
                     Tabs.STROOPTab.UpdateTab(page, tabControlMain.SelectedTab == page);
 
-                WatchVariableLockManager.Update();
                 TriangleDataModel.ClearCache();
                 Updating?.Invoke();
             }

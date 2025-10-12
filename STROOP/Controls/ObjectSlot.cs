@@ -115,13 +115,6 @@ namespace STROOP
                     })));
                 }
 
-                lst.Add(new Overlay("Locked", GetAddressExpression((obj, address) =>
-                    !LockConfig.LockingDisabled && WatchVariableLockManager.ContainsAnyLocksForObject(address))));
-
-                lst.Add(new Overlay("LockDisabled", GetAddressExpression((obj, address) =>
-                    LockConfig.LockingDisabled && WatchVariableLockManager.ContainsAnyLocksForObject(address))));
-
-                //TODO: Figure out what "LockReadOnly" is supposed to be
                 Func<ObjectSlot, uint, bool> shownOnMap = (obj, address) =>
                     AccessScope<StroopMainForm>.content.GetTab<Tabs.MapTab.MapTab>().TracksObject(address);
 

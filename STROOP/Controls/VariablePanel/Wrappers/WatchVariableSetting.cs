@@ -118,20 +118,6 @@ namespace STROOP.Controls.VariablePanel
                 ("White", () => Color.White, ctrl => ctrl.HighlightColor == Color.White)
             );
 
-            public static readonly WatchVariableSetting LockSetting = new WatchVariableSetting(
-                "Lock",
-                (ctrl, obj) =>
-                {
-                    if (obj is bool newLock && ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView)
-                        return memoryDescriptorView.describedMemoryState.SetLocked(newLock, null);
-                    else
-                        return false;
-                },
-                ("Lock", () => true, ctrl => (ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.locked ?? false),
-                ("Don't Lock", () => false, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.locked ?? true))
-            );
-
-
             public static readonly WatchVariableSetting FixAddressSetting = new WatchVariableSetting(
                 "Fix Address",
                 (ctrl, obj) =>

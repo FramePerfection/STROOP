@@ -76,17 +76,6 @@ namespace STROOP.Forms
 
             _checkBoxFixAddress.Click += (s, e) => ToggleFixedAddress();
 
-            // TODO: work out locking feature
-            //_checkBoxLock.Click += (s, e) =>
-            //{
-            //    List<bool> lockedBools = new List<bool>();
-            //    for (int i = 0; i < _watchVarWrappers.Count; i++)
-            //        lockedBools.Add(_watchVarWrappers[i]._view.locked);
-            //    bool anyLocked = lockedBools.Any(b => b);
-            //    for (int i = 0; i < _watchVarWrappers.Count; i++)
-            //        _watchVarWrappers[i].ToggleLocked(!anyLocked, _fixedAddressLists[i]);
-            //};
-
             UpdateFixedCheckState();
         }
 
@@ -134,11 +123,6 @@ namespace STROOP.Forms
         public void UpdateForm()
         {
             _textBoxCurrentValue.Text = GetValues();
-            List<bool> lockedBools = new List<bool>();
-            // TODO: work out locking feature
-            //for (int i = 0; i < _watchVarWrappers.Count; i++)
-            //    lockedBools.Add(_watchVarWrappers[i]._view.locked);
-            _checkBoxLock.CheckState = BoolUtilities.GetCheckState(lockedBools);
         }
 
         public void ToggleFixedAddress()

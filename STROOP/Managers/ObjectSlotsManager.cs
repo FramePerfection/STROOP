@@ -241,9 +241,6 @@ namespace STROOP.Managers
             LabelMethod = (SlotLabelType)mainForm.comboBoxLabelMethod.SelectedItem;
             SortMethod = (SortMethodType)mainForm.comboBoxSortMethod.SelectedItem;
 
-            // Lock label update
-            LabelsLocked = mainForm.checkBoxObjLockLabels.Checked;
-
             // Processing sort order
             IEnumerable<ObjectDataModel> sortedObjects;
             switch (SortMethod)
