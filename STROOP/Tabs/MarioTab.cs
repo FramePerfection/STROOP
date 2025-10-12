@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STROOP.Core;
+using System;
 using System.Collections.Generic;
 using STROOP.Structs;
 using System.Windows.Forms;
@@ -15,6 +16,12 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
+            WatchVariableUtilities.baseAddressGetters[BaseAddressType.Mario] = () => new List<uint> { MarioConfig.StructAddress };
+            WatchVariableUtilities.baseAddressGetters[BaseAddressType.MarioObj] = () => new List<uint>
+            {
+                ProcessStream.Instance.GetUInt32(MarioObjectConfig.PointerAddress)
+            };
+
             WatchVariableUtilities.baseAddressGetters["Floor"] = () =>
             {
                 uint floorAddress = Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.FloorTriangleOffset);

@@ -106,31 +106,12 @@ namespace STROOP.Variables
     {
         public static SortedDictionary<string, Func<IEnumerable<uint>>> baseAddressGetters = new SortedDictionary<string, Func<IEnumerable<uint>>>();
 
-        //TODO: Move some of these where they belong
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
             baseAddressGetters[BaseAddressType.None] = GetBaseAddressListZero;
             baseAddressGetters[BaseAddressType.Absolute] = GetBaseAddressListZero;
             baseAddressGetters[BaseAddressType.Relative] = GetBaseAddressListZero;
-
-            baseAddressGetters[BaseAddressType.Mario] = () => new List<uint> { MarioConfig.StructAddress };
-            baseAddressGetters[BaseAddressType.MarioObj] = () => new List<uint> { ProcessStream.Instance.GetUInt32(MarioObjectConfig.PointerAddress) };
-
-            baseAddressGetters[BaseAddressType.Camera] = () => new List<uint> { CameraConfig.StructAddress };
-            baseAddressGetters[BaseAddressType.CameraStruct] = () => new List<uint> { CameraConfig.CamStructAddress };
-            baseAddressGetters[BaseAddressType.LakituStruct] = () => new List<uint> { CameraConfig.LakituStructAddress };
-            baseAddressGetters[BaseAddressType.CameraModeInfo] = () => new List<uint> { CameraConfig.ModeInfoAddress };
-            baseAddressGetters[BaseAddressType.CameraModeTransition] = () => new List<uint> { CameraConfig.ModeTransitionAddress };
-            baseAddressGetters[BaseAddressType.CameraSettings] = () =>
-            {
-                uint a1 = 0x8033B910;
-                uint a2 = ProcessStream.Instance.GetUInt32(a1);
-                uint a3 = ProcessStream.Instance.GetUInt32(a2 + 0x10);
-                uint a4 = ProcessStream.Instance.GetUInt32(a3 + 0x08);
-                uint a5 = ProcessStream.Instance.GetUInt32(a4 + 0x10);
-                return new List<uint> { a5 };
-            };
         }
 
         public static Coordinate GetCoordinate(string stringValue)
