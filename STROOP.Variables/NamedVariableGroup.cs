@@ -38,61 +38,7 @@ public class NamedVariableCollection
         DescribedMemoryState describedMemoryState { get; }
     }
 
-    public class CustomView : IVariableView
-    {
-        public Action ValueSet { get; set; }
-        public Action OnDelete { get; set; }
-        public string Name { get; set; }
-        public string Subclass { get; }
-        public Type ClrType { get; }
-
-        public string Color
-        {
-            set => SetValueByKey(CommonViewProperties.color, value);
-        }
-
-        public string Display
-        {
-            set => SetValueByKey(CommonViewProperties.display, value);
-        }
-
-        public int DislpayPriority { get; }
-
-        private Dictionary<string, string> keyedValues = new Dictionary<string, string>();
-
-        public CustomView(string subclass, Type clrType)
-        {
-            Subclass = subclass;
-            ClrType = clrType;
-        }
-
-        public virtual string GetValueByKey(string key)
-        {
-            if (keyedValues.TryGetValue(key, out string? result))
-                return result;
-            return null;
-        }
-
-        public virtual bool SetValueByKey(string key, object value)
-        {
-            keyedValues[key] = value.ToString();
-            return true;
-        }
-    }
-
-    public class CustomView<T> : CustomView, IVariableView<T>
-    {
-        public GetterFunction<T> _getterFunction { get; set; }
-        public SetterFunction<T> _setterFunction { get; set; }
-
-        public CustomView(string subclass) : base(subclass, typeof(T))
-        {
-            _getterFunction = SpecialVariableDefaults<T>.DEFAULT_GETTER;
-            _setterFunction = SpecialVariableDefaults<T>.DEFAULT_SETTER;
-        }
-    }
-
-    public class MemoryDescriptorView : CustomView, IMemoryDescriptorView
+    public class MemoryDescriptorView : CustomVariableView, IMemoryDescriptorView
     {
         public MemoryDescriptor memoryDescriptor { get; }
         public DescribedMemoryState describedMemoryState { get; }

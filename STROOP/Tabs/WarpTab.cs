@@ -7,6 +7,7 @@ using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Tabs
 {
@@ -68,50 +69,50 @@ namespace STROOP.Tabs
             base.Update(updateView);
         }
 
-        private List<NamedVariableCollection.CustomView> GetWarpNodeVariables(List<uint> addresses)
+        private List<CustomVariableView> GetWarpNodeVariables(List<uint> addresses)
         {
-            var controls = new List<NamedVariableCollection.CustomView>();
+            var controls = new List<CustomVariableView>();
             int i = 0;
             foreach (var address in addresses)
                 controls.AddRange(GetWarpNodeVariables(address, i++));
             return controls;
         }
 
-        private IEnumerable<NamedVariableCollection.CustomView> GetWarpNodeVariables(uint address, int index)
+        private IEnumerable<CustomVariableView> GetWarpNodeVariables(uint address, int index)
         {
-            return new NamedVariableCollection.CustomView[]
+            return new CustomVariableView[]
             {
-                new NamedVariableCollection.CustomView<byte>(WatchVariableSubclass.Number)
+                new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} ID",
                     _getterFunction = () => Config.Stream.GetByte(address).Yield(),
                     _setterFunction = (val) => Config.Stream.SetValue(val, address).Yield()
                 },
-                new NamedVariableCollection.CustomView<byte>(WatchVariableSubclass.Number)
+                new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Dest Level",
                     _getterFunction = () => Config.Stream.GetByte(address + 0x1).Yield(),
                     _setterFunction = val => Config.Stream.SetValue(val, address + 0x1).Yield()
                 },
-                new NamedVariableCollection.CustomView<byte>(WatchVariableSubclass.Number)
+                new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Dest Area",
                     _getterFunction = () => Config.Stream.GetByte(address + 0x2).Yield(),
                     _setterFunction = val => Config.Stream.SetValue(val, address + 0x2).Yield()
                 },
-                new NamedVariableCollection.CustomView<byte>(WatchVariableSubclass.Number)
+                new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Dest Node",
                     _getterFunction = () => Config.Stream.GetByte(address + 0x3).Yield(),
                     _setterFunction = val => Config.Stream.SetValue(val, address + 0x3).Yield()
                 },
-                new NamedVariableCollection.CustomView<uint>(WatchVariableSubclass.Number)
+                new CustomVariableView<uint>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Object",
                     _getterFunction = () => Config.Stream.GetUInt32(address + 0x4).Yield(),
                     _setterFunction = val => Config.Stream.SetValue(val, address + 0x4).Yield()
                 },
-                new NamedVariableCollection.CustomView<uint>(WatchVariableSubclass.Number)
+                new CustomVariableView<uint>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Next",
                     _getterFunction = () => Config.Stream.GetUInt32(address + 0x8).Yield(),

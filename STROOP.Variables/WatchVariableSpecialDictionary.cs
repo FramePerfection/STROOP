@@ -1,5 +1,4 @@
 ﻿using STROOP.Core.Utilities;
-using STROOP.Utilities;
 using STROOP.Variables.Views;
 
 namespace STROOP.Variables;
@@ -15,7 +14,7 @@ public class WatchVariableSpecialDictionary
 
     public void Add<T>(string key, GetterFunction<T> getter, SetterFunction<T> setter, string? subclass = null)
     {
-        _dictionary[key] = new NamedVariableCollection.CustomView<T>(subclass.DefaultIfNull<T>())
+        _dictionary[key] = new CustomVariableView<T>(subclass.DefaultIfNull<T>())
         {
             Name = key,
             _getterFunction = getter,
@@ -35,7 +34,7 @@ public class WatchVariableSpecialDictionary
 
     public void Add<T>(string key, Func<T> getter, SetterFunction<T> setter, string? subclass = null)
     {
-        _dictionary[key] = new NamedVariableCollection.CustomView<T>(subclass.DefaultIfNull<T>())
+        _dictionary[key] = new CustomVariableView<T>(subclass.DefaultIfNull<T>())
         {
             Name = key,
             _getterFunction = () => getter().Yield(),

@@ -460,12 +460,12 @@ namespace STROOP.Controls.VariablePanel
 
         private static int numDummies = 0;
 
-        private static NamedVariableCollection.CustomView<T> CreateDummyVariable<T>() where T : struct, IConvertible
+        private static CustomVariableView CreateDummyVariable<T>() where T : struct, IConvertible
         {
             throw new NotImplementedException();
             // T capturedValue = default(T);
             //
-            // return new NamedVariableCollection.CustomView<T>(WatchVariableUtilities.GetWrapperType(typeof(T)))
+            // return new CustomVariableView<T>(WatchVariableUtilities.GetWrapperType(typeof(T)))
             // {
             //     Name = $"Dummy {++numDummies} {StringUtilities.Capitalize(typeof(T).Name)}",
             //     _getterFunction = () => capturedValue.Yield(),
@@ -513,7 +513,7 @@ namespace STROOP.Controls.VariablePanel
                     for (int i = 0; i < numEntries; i++)
                     {
                         Type type = TypeUtilities.StringToType[typeString];
-                        var view = (NamedVariableCollection.CustomView)typeof(WatchVariablePanel)
+                        var view = (CustomVariableView)typeof(WatchVariablePanel)
                             .GetMethod(nameof(CreateDummyVariable), BindingFlags.NonPublic | BindingFlags.Static)
                             .MakeGenericMethod(type)
                             .Invoke(null, Array.Empty<object>());

@@ -98,7 +98,7 @@ namespace STROOP.Tabs
             var controls = new List<IVariableView>();
             for (int i = 0; i < 3; i++)
             {
-                var view = new NamedVariableCollection.CustomView<int>(WatchVariableSubclass.Number)
+                var view = new CustomVariableView<int>(WatchVariableSubclass.Number)
                 {
                     Name = names[i],
                     _getterFunction = () => Config.Stream.GetInt32(Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield(),

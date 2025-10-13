@@ -46,7 +46,7 @@ namespace STROOP.Tabs
                 (PositionAngle.HybridPositionAngle pa) =>
                 {
                     var vars = new List<IVariableView>();
-                    vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Normal Dist Away",
@@ -84,7 +84,7 @@ namespace STROOP.Tabs
                             })
                     });
 
-                    vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Vertical Dist Away",
@@ -107,7 +107,7 @@ namespace STROOP.Tabs
                     });
 
 
-                    vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Height On Triangle",
@@ -121,7 +121,7 @@ namespace STROOP.Tabs
                         _setterFunction = SpecialVariableDefaults<double>.DEFAULT_SETTER
                     });
 
-                    vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Distance To Line 12",
@@ -160,7 +160,7 @@ namespace STROOP.Tabs
                             })
                     });
 
-                    vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Distance To Line 23",
@@ -199,7 +199,7 @@ namespace STROOP.Tabs
                             })
                     });
 
-                    vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Distance To Line 31",
@@ -250,7 +250,7 @@ namespace STROOP.Tabs
                         {
                             var getter = distFunc.getter;
                             var setter = distFunc.setter;
-                            vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
+                            vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
                             {
                                 Color = "LightBlue",
                                 Name = $"{distFunc.type}Dist {pa.name} To {vertex.name}",
@@ -259,7 +259,7 @@ namespace STROOP.Tabs
                             });
                         }
 
-                        vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Angle)
+                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
@@ -268,7 +268,7 @@ namespace STROOP.Tabs
                             _setterFunction = (double angle) => OperateOnTriangles(triAddress => PositionAngle.SetAngleTo(pa, vertex.func(triAddress), angle))
                         });
 
-                        vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Angle)
+                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
@@ -277,7 +277,7 @@ namespace STROOP.Tabs
                             _setterFunction = (double angleDiff) => OperateOnTriangles(triAddress => PositionAngle.SetDAngleTo(pa, vertex.func(triAddress), angleDiff))
                         });
 
-                        vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Angle)
+                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",

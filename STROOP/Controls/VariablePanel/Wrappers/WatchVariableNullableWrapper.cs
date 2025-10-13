@@ -21,7 +21,7 @@ namespace STROOP.Controls.VariablePanel
                     .GetConstructor(new Type[] { interfaceType, typeof(WatchVariableControl) })
                     .Invoke(new object[]
                     {
-                        new NamedVariableCollection.CustomView<TBackingType>(var.Subclass)
+                        new CustomVariableView<TBackingType>(var.Subclass)
                         {
                             Name = view.Name,
                             _getterFunction = () => view._getterFunction().Select(x => x.HasValue ? x.Value : default(TBackingType)).ToArray(),
