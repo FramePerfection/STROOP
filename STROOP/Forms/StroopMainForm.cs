@@ -1,5 +1,4 @@
 ﻿using STROOP.Core;
-using STROOP.Core.Emulators;
 using STROOP.Core.GameMemoryAccess;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using static STROOP.Core.Kernal32NativeMethods;
 
-namespace STROOP.Core.Emulators;
+namespace STROOP.Core.GameMemoryAccess;
 
 public class DolphinProcessIO : WindowsProcessRamIO
 {

@@ -1,9 +1,8 @@
-﻿using STROOP.Core.GameMemoryAccess;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using static STROOP.Core.Kernal32NativeMethods;
 
-namespace STROOP.Core.Emulators;
+namespace STROOP.Core.GameMemoryAccess;
 
 public class WindowsProcessRamIO : BaseProcessIO, IDisposable
 {

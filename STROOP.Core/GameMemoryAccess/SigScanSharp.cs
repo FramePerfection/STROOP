@@ -27,7 +27,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace STROOP.Core.Emulators;
+namespace STROOP.Core.GameMemoryAccess;
 
 public class SigScanSharp
 {

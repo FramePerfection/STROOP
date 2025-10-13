@@ -1,4 +1,4 @@
-﻿namespace STROOP.Core.Emulators;
+﻿namespace STROOP.Core.GameMemoryAccess;
 
 public class DolphinNotRunningGameException : Exception
 {
