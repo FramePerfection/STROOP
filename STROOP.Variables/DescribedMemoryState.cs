@@ -10,7 +10,7 @@ public class DescribedMemoryState
     public DescribedMemoryState(MemoryDescriptor memoryDescriptor) => descriptor = memoryDescriptor;
 
     public IEnumerable<uint> GetAddressList()
-        => _fixedAddressGetter?.Invoke() ?? descriptor.GetBaseAddressList().Select(x => x + descriptor.Offset);
+        => _fixedAddressGetter?.Invoke() ?? descriptor.GetAddressList();
 
     public void ToggleFixedAddress(bool? fix)
     {

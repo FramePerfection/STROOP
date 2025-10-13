@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using STROOP.Forms;
 using STROOP.Variables;
+using STROOP.Variables.Formatting;
 
 namespace STROOP.Controls.VariablePanel
 {

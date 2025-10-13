@@ -1,6 +1,4 @@
-﻿using STROOP.Core;
-using STROOP.Utilities;
-using STROOP.Variables.SM64MemoryLayout;
+﻿using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Variables;
@@ -50,26 +48,10 @@ public class MemoryDescriptor
         }
     }
 
-    public List<uint> GetBaseAddressList() => WatchVariableUtilities.GetBaseAddresses(BaseAddressType).ToList();
-
-    public List<uint> GetAddressList(List<uint> addresses = null)
-    {
-        List<uint>? baseAddresses = addresses ?? GetBaseAddressList();
-        uint offset = Offset;
-        return baseAddresses.ConvertAll(baseAddress => baseAddress + offset).ToList();
-    }
-
     public MemoryDescriptor(Type clrTypeName, string baseAddress, uint offset, uint? mask = null, int? shift = null)
         : this(clrTypeName, baseAddress, null, null, null, null, offset, mask, shift, false)
     {
     }
-
-    public NamedVariableCollection.MemoryDescriptorView CreateView(string wrapper = "Number")
-        => (NamedVariableCollection.MemoryDescriptorView)
-            typeof(NamedVariableCollection.MemoryDescriptorView<>)
-                .MakeGenericType(ClrType)
-                .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(string) })
-                .Invoke(new object[] { this, wrapper });
 
     public MemoryDescriptor(Type clrType, string baseAddressType,
         uint? offsetUS, uint? offsetJP, uint? offsetSH, uint? offsetEU, uint? offsetDefault, uint? mask, int? shift, bool handleMapping)
@@ -96,72 +78,13 @@ public class MemoryDescriptor
         HandleMapping = handleMapping;
     }
 
-    public string GetTypeDescription()
-    {
-        string maskString = "";
-        if (Mask != null)
-        {
-            maskString = " with mask " + HexUtilities.FormatValue(Mask.Value, NibbleCount.Value);
-        }
+    public NamedVariableCollection.MemoryDescriptorView CreateView(string wrapper = "Number")
+        => (NamedVariableCollection.MemoryDescriptorView)
+            typeof(NamedVariableCollection.MemoryDescriptorView<>)
+                .MakeGenericType(ClrType)
+                .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(string) })
+                .Invoke(new object[] { this, wrapper });
 
-        string shiftString = "";
-        if (Shift != null)
-        {
-            shiftString = " right shifted by " + Shift.Value;
-        }
-
-        string byteCountString = "";
-        if (ByteCount.HasValue)
-        {
-            string pluralSuffix = ByteCount.Value == 1 ? "" : "s";
-            byteCountString = string.Format(" ({0} byte{1})", ByteCount.Value, pluralSuffix);
-        }
-
-        return TypeUtilities.TypeToString[ClrType] + maskString + shiftString + byteCountString;
-    }
-
-    public string GetBaseTypeOffsetDescription() => $"{BaseAddressType} + {HexUtilities.FormatValue(Offset)}";
-
-    public string GetProcessAddressListString(List<uint> addresses = null)
-    {
-        List<uint> addressList = GetAddressList(addresses);
-        if (addressList.Count == 0) return "(none)";
-        List<ulong> processAddressList = GetProcessAddressList(addresses).ConvertAll(address => address.ToUInt64());
-        List<string> stringList = processAddressList.ConvertAll(address => HexUtilities.FormatValue(address, address > 0xFFFFFFFFU ? 16 : 8));
-        return string.Join(", ", stringList);
-    }
-
-    private List<UIntPtr> GetProcessAddressList(List<uint> addresses = null)
-    {
-        List<uint> ramAddressList = GetRamAddressList(false, addresses);
-        return ramAddressList.ConvertAll(address => ProcessStream.Instance.GetAbsoluteAddress(address, ByteCount.Value));
-    }
-
-    public string GetRamAddressListString(bool addressArea = true, List<uint> addresses = null)
-    {
-        List<uint> addressList = GetAddressList(addresses);
-        if (addressList.Count == 0) return "(none)";
-        List<uint> ramAddressList = GetRamAddressList(addressArea, addresses);
-        List<string> stringList = ramAddressList.ConvertAll(address => HexUtilities.FormatValue(address, 8));
-        return string.Join(", ", stringList);
-    }
-
-    private List<uint> GetRamAddressList(bool addressArea = true, List<uint> addresses = null)
-    {
-        List<uint> addressList = GetAddressList(addresses);
-        return addressList.ConvertAll(address => GetRamAddress(address, addressArea));
-    }
-
-    private uint GetRamAddress(uint addr, bool addressArea = true)
-    {
-        return addressArea ? addr | 0x80000000 : addr & 0x0FFFFFFF;
-    }
-
-    public string GetBaseAddressListString(List<uint> addresses = null)
-    {
-        List<uint>? baseAddresses = addresses ?? GetBaseAddressList();
-        if (baseAddresses.Count == 0) return "(none)";
-        List<string> baseAddressesString = baseAddresses.ConvertAll(address => HexUtilities.FormatValue(address, 8));
-        return string.Join(",", baseAddressesString);
-    }
+    public List<uint> GetAddressList()
+        => WatchVariableUtilities.GetBaseAddresses(BaseAddressType).Select(baseAddress => baseAddress + Offset).ToList();
 }
