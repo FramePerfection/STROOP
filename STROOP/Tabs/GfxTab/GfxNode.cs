@@ -126,7 +126,7 @@ namespace STROOP.Tabs.GfxTab
             var descriptor = new MemoryDescriptor(typeof(T), BaseAddressType.GfxNode, offset, mask);
             var view = descriptor.CreateView(subclass.ToString());
             view.Name = name;
-            return (NamedVariableCollection.MemoryDescriptorView<T>)view;
+            return (MemoryBasedVariableView<T>)view;
         }
 
         // If there are type specific variables, this should be overridden

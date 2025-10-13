@@ -104,7 +104,7 @@ namespace STROOP.Controls.VariablePanel
             return null;
         }
 
-        public static (MemoryDescriptor descriptor, NamedVariableCollection.XmlMemoryView view) FromXml(XElement element)
+        public static (MemoryDescriptor descriptor, IMemoryBasedVariableView view) FromXml(XElement element)
         {
             string typeName = (element.Attribute(XName.Get("type"))?.Value);
             string baseAddressType = element.Attribute(XName.Get("base")).Value;
@@ -119,8 +119,8 @@ namespace STROOP.Controls.VariablePanel
                                  && (bool.TryParse(element.Attribute(XName.Get("handleMapping")).Value, out var v) ? v : false);
 
             var memoryDescriptor = new MemoryDescriptor(TypeUtilities.StringToType[typeName], baseAddressType, offsetUS, offsetJP, offsetSH, offsetEU, offsetDefault, mask, shift, handleMapping);
-            var view = (NamedVariableCollection.XmlMemoryView)
-                typeof(NamedVariableCollection.XmlMemoryView<>)
+            var view = (IMemoryBasedVariableView)
+                typeof(XmlMemoryBasedVariableView<>)
                     .MakeGenericType(TypeUtilities.StringToType[typeName])
                     .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(XElement) })
                     .Invoke(new object[] { memoryDescriptor, element });

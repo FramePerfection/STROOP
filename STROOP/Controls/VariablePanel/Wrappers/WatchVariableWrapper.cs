@@ -35,7 +35,7 @@ namespace STROOP.Controls.VariablePanel
 
         public void ShowVarInfo()
         {
-            var memoryDescriptor = (_view as NamedVariableCollection.IMemoryDescriptorView)?.memoryDescriptor;
+            var memoryDescriptor = (_view as IMemoryBasedVariableView)?.memoryDescriptor;
             VariableViewerForm varInfo =
                 new VariableViewerForm(
                     name: _watchVarControl.VarName,
@@ -51,7 +51,7 @@ namespace STROOP.Controls.VariablePanel
 
         public List<string> GetVarInfo()
         {
-            var memoryDescriptor = (_view as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor;
+            var memoryDescriptor = (_view as IMemoryBasedVariableView)?.memoryDescriptor;
             return new List<string>()
             {
                 _watchVarControl.VarName,
@@ -82,7 +82,7 @@ namespace STROOP.Controls.VariablePanel
 
         public void ShowBitForm()
         {
-            if (_view is NamedVariableCollection.IMemoryDescriptorView compatible)
+            if (_view is IMemoryBasedVariableView compatible)
                 new VariableBitForm(compatible.Name, compatible.memoryDescriptor, true).Show();
         }
 

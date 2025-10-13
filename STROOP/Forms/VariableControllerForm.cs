@@ -8,6 +8,7 @@ using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Forms
 {
@@ -32,7 +33,7 @@ namespace STROOP.Forms
             _watchVarWrappers = watchVarWrappers;
 
             // TODO: Create and correctly use own DescribedMemoryState?
-            _variableMemoryStates = _watchVarWrappers.ConvertAndRemoveNull(x => (x._view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState);
+            _variableMemoryStates = _watchVarWrappers.ConvertAndRemoveNull(x => (x._view as IMemoryBasedVariableView)?.describedMemoryState);
 
             InitializeComponent();
             FormManager.AddForm(this);

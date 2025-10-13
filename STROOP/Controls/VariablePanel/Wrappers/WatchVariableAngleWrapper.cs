@@ -107,7 +107,7 @@ namespace STROOP.Controls.VariablePanel
         public WatchVariableAngleWrapper(IVariableView<TNumber> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
-            var displayType = (view as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor.ClrType ?? typeof(double);
+            var displayType = (view as IMemoryBasedVariableView)?.memoryDescriptor.ClrType ?? typeof(double);
             if (TypeUtilities.StringToType.TryGetValue(watchVarControl.view.GetValueByKey(CommonViewProperties.display) ?? "", out var dType))
                 displayType = dType;
 

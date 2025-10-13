@@ -365,8 +365,7 @@ namespace STROOP.Controls.VariablePanel
             //}
             else if (isNKeyHeld)
             {
-                var memoryDescriptorView = watchVars.FirstOrDefault()?.view as NamedVariableCollection.IMemoryDescriptorView;
-                if (memoryDescriptorView != null)
+                if (watchVars.FirstOrDefault()?.view is IMemoryBasedVariableView memoryDescriptorView)
                 {
                     UnselectAllVariables();
                     ViewInMemoryTab(memoryDescriptorView.describedMemoryState);
@@ -808,7 +807,7 @@ namespace STROOP.Controls.VariablePanel
         }
 
         public IEnumerable<MemoryDescriptor> GetCurrentVariablePrecursors()
-            => GetCurrentVariableControls().ConvertAndRemoveNull(control => (control.view as NamedVariableCollection.IMemoryDescriptorView)?.memoryDescriptor);
+            => GetCurrentVariableControls().ConvertAndRemoveNull(control => (control.view as IMemoryBasedVariableView)?.memoryDescriptor);
 
         public List<string> GetCurrentVariableValues() =>
             GetCurrentVariableControls().ConvertAll(control => control.WatchVarWrapper.GetValueText());

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -122,7 +123,7 @@ namespace STROOP.Controls.VariablePanel
                 "Fix Address",
                 (ctrl, obj) =>
                 {
-                    if (ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView)
+                    if (ctrl.view is IMemoryBasedVariableView memoryDescriptorView)
                     {
                         if (obj is bool newFixAddress)
                             memoryDescriptorView.describedMemoryState.ToggleFixedAddress(newFixAddress);
@@ -133,9 +134,9 @@ namespace STROOP.Controls.VariablePanel
 
                     return false;
                 },
-                ("Default", () => null, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? false)),
-                ("Fix Address", () => true, ctrl => (ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? false),
-                ("Don't Fix Address", () => false, ctrl => !((ctrl.view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.fixedAddresses ?? true))
+                ("Default", () => null, ctrl => !((ctrl.view as IMemoryBasedVariableView)?.describedMemoryState.fixedAddresses ?? false)),
+                ("Fix Address", () => true, ctrl => (ctrl.view as IMemoryBasedVariableView)?.describedMemoryState.fixedAddresses ?? false),
+                ("Don't Fix Address", () => false, ctrl => !((ctrl.view as IMemoryBasedVariableView)?.describedMemoryState.fixedAddresses ?? true))
             );
 
             private static readonly object RevertToDefaultColor = new object();

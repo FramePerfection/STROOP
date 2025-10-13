@@ -7,6 +7,7 @@ using STROOP.Core.Utilities;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -179,7 +180,7 @@ namespace STROOP.Controls.VariablePanel
                 {
                     var xCoord = baseX + 2;
                     var iconHeight = elementHeight - elementMarginTopBottom * 2;
-                    if (ctrl.view is NamedVariableCollection.IMemoryDescriptorView memoryDescriptorView && memoryDescriptorView.describedMemoryState.fixedAddresses)
+                    if (ctrl.view is IMemoryBasedVariableView memoryDescriptorView && memoryDescriptorView.describedMemoryState.fixedAddresses)
                         g.DrawImage(_pinnedImage,
                             new Rectangle(
                                 xCoord,

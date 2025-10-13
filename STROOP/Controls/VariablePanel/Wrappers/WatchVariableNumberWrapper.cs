@@ -109,7 +109,7 @@ namespace STROOP.Controls.VariablePanel
         public override bool TryParseValue(string value, out TNumber result)
             => ParsingUtilities.TryParseNumber(value, out result);
 
-        protected virtual int? GetHexDigitCount() => (_view as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor.NibbleCount;
+        protected virtual int? GetHexDigitCount() => (_view as IMemoryBasedVariableView)?.memoryDescriptor.NibbleCount;
 
         protected string HandleRounding(TNumber unknownValue)
         {

@@ -106,7 +106,7 @@ namespace STROOP.Controls.VariablePanel
             AddSetting(DefaultSettings.HighlightColorSetting);
             AddSetting(DefaultSettings.HighlightSetting);
 
-            if (view is NamedVariableCollection.IMemoryDescriptorView)
+            if (view is IMemoryBasedVariableView)
             {
                 AddSetting(DefaultSettings.FixAddressSetting);
             }
@@ -227,7 +227,7 @@ namespace STROOP.Controls.VariablePanel
         }
 
         public void ToggleFixedAddress(bool? fix)
-            => (view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.ToggleFixedAddress(fix);
+            => (view as IMemoryBasedVariableView)?.describedMemoryState.ToggleFixedAddress(fix);
 
         public void ToggleHighlighted(Color? color = null)
         {
@@ -243,8 +243,8 @@ namespace STROOP.Controls.VariablePanel
             {
                 if (viewType.IsGenericType)
                 {
-                    if (viewType.GetGenericTypeDefinition() == typeof(NamedVariableCollection.MemoryDescriptorView<>)
-                        || viewType.GetGenericTypeDefinition() == typeof(NamedVariableCollection.XmlMemoryView<>))
+                    if (viewType.GetGenericTypeDefinition() == typeof(MemoryBasedVariableView<>)
+                        || viewType.GetGenericTypeDefinition() == typeof(XmlMemoryBasedVariableView<>))
                         return viewType.GetGenericArguments()[0];
                 }
 
@@ -268,7 +268,7 @@ namespace STROOP.Controls.VariablePanel
         public XElement ToXml(bool useCurrentState = true)
         {
             Color? color = _baseColor == DEFAULT_COLOR ? (Color?)null : _baseColor;
-            if (view is NamedVariableCollection.XmlMemoryView xmlView)
+            if (view is IXmlMemoryBasedVariableView xmlView)
                 return xmlView.GetXml();
             return null;
         }

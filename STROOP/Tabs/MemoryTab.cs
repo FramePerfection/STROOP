@@ -61,7 +61,7 @@ namespace STROOP.Tabs
                 if (_behavior.HasValue)
                     _objectSpecificPrecursors.AddRange(
                         Config.ObjectAssociations.GetWatchVarControls(_behavior.Value)
-                            .ConvertAndRemoveNull(x => (x as NamedVariableCollection.IMemoryDescriptorView)?.memoryDescriptor)
+                            .ConvertAndRemoveNull(x => (x as IMemoryBasedVariableView)?.memoryDescriptor)
                     );
             }
         }
@@ -82,7 +82,7 @@ namespace STROOP.Tabs
 
             _currentValueTexts = new List<ValueText>();
             _objectPrecursors = XmlConfigParser.OpenWatchVariableControlPrecursors(watchVariablePanelMemory.DataPath)
-                .ConvertAndRemoveNull(x => (x as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor);
+                .ConvertAndRemoveNull(x => (x as IMemoryBasedVariableView)?.memoryDescriptor);
             _objectSpecificPrecursors = new List<MemoryDescriptor>();
         }
 
