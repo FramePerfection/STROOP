@@ -37,8 +37,8 @@ namespace STROOP.Utilities
                             {
                                 Name = $"{pa.name} Pos Type",
                                 Color = "Blue",
-                                _getterFunction = () => pa.first().ToString().Yield(),
-                                _setterFunction = newPAString =>
+                                getter = () => pa.first().ToString().Yield(),
+                                setter = newPAString =>
                                 {
                                     var newPA = PositionAngle.FromString((string)newPAString);
                                     if (newPA == null)
@@ -51,8 +51,8 @@ namespace STROOP.Utilities
                             {
                                 Name = $"{pa.name} Angle Type",
                                 Color = "Blue",
-                                _getterFunction = () => pa.second().ToString().Yield(),
-                                _setterFunction = newPAString =>
+                                getter = () => pa.second().ToString().Yield(),
+                                setter = newPAString =>
                                 {
                                     var newPA = PositionAngle.FromString((string)newPAString);
                                     if (newPA == null)
@@ -65,30 +65,30 @@ namespace STROOP.Utilities
                             {
                                 Name = $"{pa.name} X",
                                 Color = "Blue",
-                                _getterFunction = () => pa.first().X.Yield(),
-                                _setterFunction = val => pa.first().SetX(val).Yield()
+                                getter = () => pa.first().X.Yield(),
+                                setter = val => pa.first().SetX(val).Yield()
                             },
                             new CustomVariableView<double>(WatchVariableSubclass.Number)
                             {
                                 Name = $"{pa.name} Y",
                                 Color = "Blue",
-                                _getterFunction = () => pa.first().Y.Yield(),
-                                _setterFunction = val => pa.first().SetY(val).Yield()
+                                getter = () => pa.first().Y.Yield(),
+                                setter = val => pa.first().SetY(val).Yield()
                             },
                             new CustomVariableView<double>(WatchVariableSubclass.Number)
                             {
                                 Name = $"{pa.name} Z",
                                 Color = "Blue",
-                                _getterFunction = () => pa.first().Z.Yield(),
-                                _setterFunction = val => pa.first().SetZ(val).Yield()
+                                getter = () => pa.first().Z.Yield(),
+                                setter = val => pa.first().SetZ(val).Yield()
                             },
                             new CustomVariableView<double>(WatchVariableSubclass.Angle)
                             {
                                 Name = $"{pa.name} Angle",
                                 Color = "Blue",
                                 Display = "short",
-                                _getterFunction = () => pa.second().Angle.Yield(),
-                                _setterFunction = val => pa.second().SetAngle(val).Yield()
+                                getter = () => pa.second().Angle.Yield(),
+                                setter = val => pa.second().SetAngle(val).Yield()
                             },
                         };
                         pa.OnDelete += () =>
@@ -137,8 +137,8 @@ namespace STROOP.Utilities
                             {
                                 Color = "LightBlue",
                                 Name = $"{distType}Dist {relation.name} To {pa.name}",
-                                _getterFunction = () => getter(relation, pa).Yield(),
-                                _setterFunction = (double dist) => setter(relation, pa, dist).Yield()
+                                getter = () => getter(relation, pa).Yield(),
+                                setter = (double dist) => setter(relation, pa, dist).Yield()
                             });
                         }
 
@@ -147,8 +147,8 @@ namespace STROOP.Utilities
                             Color = "LightBlue",
                             Name = $"Angle {relation.name} To {pa.name}",
                             Display = "short",
-                            _getterFunction = () => GetAngleTo(relation, pa).Yield(),
-                            _setterFunction = (double angle) => SetAngleTo(relation, pa, angle).Yield()
+                            getter = () => GetAngleTo(relation, pa).Yield(),
+                            setter = (double angle) => SetAngleTo(relation, pa, angle).Yield()
                         });
 
                         vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
@@ -156,8 +156,8 @@ namespace STROOP.Utilities
                             Color = "LightBlue",
                             Name = $"DAngle {relation.name} To {pa.name}",
                             Display = "short",
-                            _getterFunction = () => GetDAngleTo(relation, pa).Yield(),
-                            _setterFunction = (double angleDiff) => SetDAngleTo(relation, pa, Convert.ToDouble(angleDiff)).Yield()
+                            getter = () => GetDAngleTo(relation, pa).Yield(),
+                            setter = (double angleDiff) => SetDAngleTo(relation, pa, Convert.ToDouble(angleDiff)).Yield()
                         });
 
                         vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
@@ -165,8 +165,8 @@ namespace STROOP.Utilities
                             Color = "LightBlue",
                             Name = $"AngleDiff {relation.name} To {pa.name}",
                             Display = "short",
-                            _getterFunction = () => GetAngleDifference(relation, pa).Yield(),
-                            _setterFunction = (double angleDiff) => SetAngleDifference(relation, pa, Convert.ToDouble(angleDiff)).Yield()
+                            getter = () => GetAngleDifference(relation, pa).Yield(),
+                            setter = (double angleDiff) => SetAngleDifference(relation, pa, Convert.ToDouble(angleDiff)).Yield()
                         });
 
                         Action remove = () =>

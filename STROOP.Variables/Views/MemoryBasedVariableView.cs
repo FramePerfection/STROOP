@@ -28,12 +28,12 @@ public class MemoryBasedVariableView<T> : MemoryDescriptorView, IVariableView<T>
     public MemoryBasedVariableView(string subclass, MemoryDescriptor memoryDescriptor)
         : base(subclass, memoryDescriptor)
     {
-        _getterFunction = () => GetValues(describedMemoryState);
-        _setterFunction = (T value) => SetAll(describedMemoryState, value);
+        getter = () => GetValues(describedMemoryState);
+        setter = (T value) => SetAll(describedMemoryState, value);
     }
 
-    public GetterFunction<T> _getterFunction { get; private set; }
-    public SetterFunction<T> _setterFunction { get; private set; }
+    public IVariableView<T>.ValueGetter getter { get; private set; }
+    public IVariableView<T>.ValueSetter setter { get; private set; }
 
     private static IEnumerable<T> GetValues(DescribedMemoryState memoryState)
         => memoryState.GetAddressList().ConvertAll(address => (T)ProcessStream.Instance.GetValue(

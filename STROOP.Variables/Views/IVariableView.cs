@@ -1,10 +1,5 @@
 ﻿namespace STROOP.Variables.Views;
 
-
-public delegate IEnumerable<T> GetterFunction<out T>();
-
-public delegate IEnumerable<bool> SetterFunction<T>(T value);
-
 public interface IVariableView
 {
     Action ValueSet { get; set; }
@@ -19,6 +14,9 @@ public interface IVariableView
 
 public interface IVariableView<T> : IVariableView
 {
-    GetterFunction<T> _getterFunction { get; }
-    SetterFunction<T> _setterFunction { get; }
+    public delegate IEnumerable<T> ValueGetter();
+    public delegate IEnumerable<bool> ValueSetter(T value);
+
+    ValueGetter getter { get; }
+    ValueSetter setter { get; }
 }

@@ -24,8 +24,8 @@ namespace STROOP.Controls.VariablePanel
                         new CustomVariableView<TBackingType>(var.Subclass)
                         {
                             Name = view.Name,
-                            _getterFunction = () => view._getterFunction().Select(x => x.HasValue ? x.Value : default(TBackingType)).ToArray(),
-                            _setterFunction = value => view._setterFunction(value),
+                            getter = () => view.getter().Select(x => x.HasValue ? x.Value : default(TBackingType)).ToArray(),
+                            setter = value => view.setter(value),
                         },
                         control
                     });

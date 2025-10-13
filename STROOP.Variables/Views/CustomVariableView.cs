@@ -44,12 +44,12 @@ public class CustomVariableView : IVariableView
 
 public class CustomVariableView<T> : CustomVariableView, IVariableView<T>
 {
-    public GetterFunction<T> _getterFunction { get; set; }
-    public SetterFunction<T> _setterFunction { get; set; }
+    public IVariableView<T>.ValueGetter getter { get; set; }
+    public IVariableView<T>.ValueSetter setter { get; set; }
 
     public CustomVariableView(string subclass) : base(subclass, typeof(T))
     {
-        _getterFunction = SpecialVariableDefaults<T>.DEFAULT_GETTER;
-        _setterFunction = SpecialVariableDefaults<T>.DEFAULT_SETTER;
+        getter = SpecialVariableDefaults<T>.DEFAULT_GETTER;
+        setter = SpecialVariableDefaults<T>.DEFAULT_SETTER;
     }
 }

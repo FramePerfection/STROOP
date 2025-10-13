@@ -163,7 +163,7 @@ namespace STROOP.Controls.VariablePanel
 
         public (CombinedValuesMeaning meaning, TBackingValue value) CombineValues()
         {
-            var values = view._getterFunction().ToArray();
+            var values = view.getter().ToArray();
             if (values.Length == 0) return (CombinedValuesMeaning.NoValue, default(TBackingValue));
             TBackingValue firstValue = values[0];
             for (int i = 1; i < values.Length; i++)
@@ -177,7 +177,7 @@ namespace STROOP.Controls.VariablePanel
             (lastValueMeaning, lastValue) = CombineValues();
             if (hasNextValue)
             {
-                if (view._setterFunction(nextValue).Aggregate(true, (a, b) => a && b))
+                if (view.setter(nextValue).Aggregate(true, (a, b) => a && b))
                     OnValueSet();
                 hasNextValue = false;
             }
@@ -249,7 +249,7 @@ namespace STROOP.Controls.VariablePanel
             var success = TryParseValue(value, out var result);
             if (success)
             {
-                view._setterFunction(result);
+                view.setter(result);
                 OnValueSet();
             }
 

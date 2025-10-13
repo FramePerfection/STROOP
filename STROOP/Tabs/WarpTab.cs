@@ -85,38 +85,38 @@ namespace STROOP.Tabs
                 new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} ID",
-                    _getterFunction = () => Config.Stream.GetByte(address).Yield(),
-                    _setterFunction = (val) => Config.Stream.SetValue(val, address).Yield()
+                    getter = () => Config.Stream.GetByte(address).Yield(),
+                    setter = (val) => Config.Stream.SetValue(val, address).Yield()
                 },
                 new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Dest Level",
-                    _getterFunction = () => Config.Stream.GetByte(address + 0x1).Yield(),
-                    _setterFunction = val => Config.Stream.SetValue(val, address + 0x1).Yield()
+                    getter = () => Config.Stream.GetByte(address + 0x1).Yield(),
+                    setter = val => Config.Stream.SetValue(val, address + 0x1).Yield()
                 },
                 new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Dest Area",
-                    _getterFunction = () => Config.Stream.GetByte(address + 0x2).Yield(),
-                    _setterFunction = val => Config.Stream.SetValue(val, address + 0x2).Yield()
+                    getter = () => Config.Stream.GetByte(address + 0x2).Yield(),
+                    setter = val => Config.Stream.SetValue(val, address + 0x2).Yield()
                 },
                 new CustomVariableView<byte>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Dest Node",
-                    _getterFunction = () => Config.Stream.GetByte(address + 0x3).Yield(),
-                    _setterFunction = val => Config.Stream.SetValue(val, address + 0x3).Yield()
+                    getter = () => Config.Stream.GetByte(address + 0x3).Yield(),
+                    setter = val => Config.Stream.SetValue(val, address + 0x3).Yield()
                 },
                 new CustomVariableView<uint>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Object",
-                    _getterFunction = () => Config.Stream.GetUInt32(address + 0x4).Yield(),
-                    _setterFunction = val => Config.Stream.SetValue(val, address + 0x4).Yield()
+                    getter = () => Config.Stream.GetUInt32(address + 0x4).Yield(),
+                    setter = val => Config.Stream.SetValue(val, address + 0x4).Yield()
                 },
                 new CustomVariableView<uint>(WatchVariableSubclass.Number)
                 {
                     Name = $"Warp {index} Next",
-                    _getterFunction = () => Config.Stream.GetUInt32(address + 0x8).Yield(),
-                    _setterFunction = val => Config.Stream.SetValue(val, address + 0x8).Yield()
+                    getter = () => Config.Stream.GetUInt32(address + 0x8).Yield(),
+                    setter = val => Config.Stream.SetValue(val, address + 0x8).Yield()
                 },
             };
         }

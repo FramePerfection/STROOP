@@ -257,7 +257,7 @@ namespace STROOP.Controls.VariablePanel
         public bool SetValue<T>(T value)
         {
             if (view is IVariableView<T> compatibleView
-                && compatibleView._setterFunction(value).Aggregate(true, (a, b) => a && b))
+                && compatibleView.setter(value).Aggregate(true, (a, b) => a && b))
                 return true;
             else if (value is IConvertible convertibleValue && view.TrySetValue(convertibleValue).Aggregate(true, (a, b) => a && b))
                 return true;

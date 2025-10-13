@@ -16,7 +16,7 @@ namespace STROOP.Controls.VariablePanel
             {
                 if (ctrl.WatchVarWrapper is WatchVariableAddressWrapper addressWrapper)
                 {
-                    uint uintValue = (uint)addressWrapper.view._getterFunction().FirstOrDefault();
+                    uint uintValue = (uint)addressWrapper.view.getter().FirstOrDefault();
                     if (uintValue == 0) return false;
                     if (ObjectUtilities.IsObjectAddress(uintValue))
                         AccessScope<StroopMainForm>.content.GetTab<Tabs.MemoryTab>().SetObjectAddress(uintValue);

@@ -37,7 +37,7 @@ public static class IVariableViewExtensions
             innerResult = null;
             if (view is IVariableView<Q> qView)
             {
-                innerResult = qView._getterFunction().Select(x => (T)Convert.ChangeType(x, typeof(T)));
+                innerResult = qView.getter().Select(x => (T)Convert.ChangeType(x, typeof(T)));
                 return true;
             }
 
@@ -72,7 +72,7 @@ public static class IVariableViewExtensions
             }
 
             if (view is IVariableView<Q> qView)
-                return qView._setterFunction(convertedValue);
+                return qView.setter(convertedValue);
             return null;
         }
 

@@ -35,17 +35,17 @@ namespace STROOP.Utilities
         {
             foreach (var ctrl in controls)
             {
-                if (ctrl.view is IVariableView<byte> byteView) yield return byteView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<sbyte> sbyteView) yield return sbyteView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<ushort> ushortView) yield return ushortView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<short> shortView) yield return shortView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<uint> uintView) yield return uintView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<int> intView) yield return intView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<ulong> ulongView) yield return ulongView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<long> longView) yield return longView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<float> floatView) yield return floatView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<double> doubleView) yield return doubleView._getterFunction().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<decimal> decmialView) yield return decmialView._getterFunction().Select(x => (double)x);
+                if (ctrl.view is IVariableView<byte> byteView) yield return byteView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<sbyte> sbyteView) yield return sbyteView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<ushort> ushortView) yield return ushortView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<short> shortView) yield return shortView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<uint> uintView) yield return uintView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<int> intView) yield return intView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<ulong> ulongView) yield return ulongView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<long> longView) yield return longView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<float> floatView) yield return floatView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<double> doubleView) yield return doubleView.getter().Select(x => (double)x);
+                else if (ctrl.view is IVariableView<decimal> decmialView) yield return decmialView.getter().Select(x => (double)x);
             }
         }
 
@@ -67,7 +67,7 @@ namespace STROOP.Utilities
             } while (index > 0);
         }
 
-        public static GetterFunction<double> AddAggregateMathOperationEntry(List<WatchVariableControl> controls, AggregateMathOperation operation)
+        public static IVariableView<double>.ValueGetter AddAggregateMathOperationEntry(List<WatchVariableControl> controls, AggregateMathOperation operation)
         {
             switch (operation)
             {

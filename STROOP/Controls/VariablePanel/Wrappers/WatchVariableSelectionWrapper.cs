@@ -65,7 +65,7 @@ namespace STROOP.Controls.VariablePanel
             if (IsCursorHovering(bounds, out var _))
             {
                 if (isSingleOption)
-                    view._setterFunction(options[0].func());
+                    view.setter(options[0].func());
                 else if (options.Count > 0)
                 {
                     var ctx = new ContextMenuStrip();
@@ -105,7 +105,7 @@ namespace STROOP.Controls.VariablePanel
 
         void SetOption((string name, Func<TBackingValue> func) option)
         {
-            view._setterFunction(option.func());
+            view.setter(option.func());
             selectedOption = option;
         }
 
@@ -115,7 +115,7 @@ namespace STROOP.Controls.VariablePanel
         {
             if (selectedOption.Equals(options[index]))
             {
-                view._setterFunction(selectedOption.getter());
+                view.setter(selectedOption.getter());
                 selectedOption = options[index];
             }
         }

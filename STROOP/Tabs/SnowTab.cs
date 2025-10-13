@@ -101,8 +101,8 @@ namespace STROOP.Tabs
                 var view = new CustomVariableView<int>(WatchVariableSubclass.Number)
                 {
                     Name = names[i],
-                    _getterFunction = () => Config.Stream.GetInt32(Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield(),
-                    _setterFunction = (val) => Config.Stream.SetValue(val, Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield()
+                    getter = () => Config.Stream.GetInt32(Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield(),
+                    setter = (val) => Config.Stream.SetValue(val, Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield()
                 };
                 controls.Add(view);
             }

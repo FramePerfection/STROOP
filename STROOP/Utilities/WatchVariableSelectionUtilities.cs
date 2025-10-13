@@ -139,8 +139,8 @@ namespace STROOP.Structs
                         var view = new CustomVariableView<double>(WatchVariableSubclass.Number)
                         {
                             Name = $"{control1.view.Name} {MathOperationUtilities.GetSymbol(operation)} {control2.view.Name}",
-                            _getterFunction = () => func(wrapper1._view.CombineValues<double>().value, wrapper2._view.CombineValues<double>().value).Yield(),
-                            _setterFunction = val =>
+                            getter = () => func(wrapper1._view.CombineValues<double>().value, wrapper2._view.CombineValues<double>().value).Yield(),
+                            setter = val =>
                             {
                                 if (val is double valueDouble)
                                     if (!GlobalKeyboard.IsCtrlDown())
@@ -172,8 +172,8 @@ namespace STROOP.Structs
                 var view = new CustomVariableView<double>(WatchVariableSubclass.Number)
                 {
                     Name = $"{operation}({vars.First().view.Name}-{vars.Last().view.Name})",
-                    _getterFunction = getter,
-                    _setterFunction = SpecialVariableDefaults<double>.DEFAULT_SETTER
+                    getter = getter,
+                    setter = SpecialVariableDefaults<double>.DEFAULT_SETTER
                 };
                 panel.AddVariable(view);
             }
@@ -202,7 +202,7 @@ namespace STROOP.Structs
 
                 var varValues = vars.Select(x => x.view.GetNumberValues<double>().ToArray()).ToArray();
 
-                GetterFunction<double> getter3D = () =>
+                IVariableView<double>.ValueGetter getter3D = () =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];
@@ -216,7 +216,7 @@ namespace STROOP.Structs
                         result.Add(new Vector3d(x2[i] - x1[i], y2[i] - y1[i], z2[i] - z1[i]).Length);
                     return result;
                 };
-                GetterFunction<double> getter2D = () =>
+                IVariableView<double>.ValueGetter getter2D = () =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];
@@ -228,7 +228,7 @@ namespace STROOP.Structs
                         result.Add(new Vector2d(x2[i] - x1[i], y2[i] - y1[i]).Length);
                     return result;
                 };
-                SetterFunction<double> setter3D = value =>
+                IVariableView<double>.ValueSetter setter3D = value =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];
@@ -257,7 +257,7 @@ namespace STROOP.Structs
 
                     return result;
                 };
-                SetterFunction<double> setter2D = value =>
+                IVariableView<double>.ValueSetter setter2D = value =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];
@@ -288,8 +288,8 @@ namespace STROOP.Structs
                 var view = new CustomVariableView<double>(WatchVariableSubclass.Number)
                 {
                     Name = name,
-                    _getterFunction = use3D ? getter3D : getter2D,
-                    _setterFunction = use3D ? setter3D : setter2D
+                    getter = use3D ? getter3D : getter2D,
+                    setter = use3D ? setter3D : setter2D
                 };
                 panel.AddVariable(view);
             }

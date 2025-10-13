@@ -12,13 +12,13 @@ public class WatchVariableSpecialDictionary
     public bool TryGetValue(string key, out IVariableView getterSetter)
         => _dictionary.TryGetValue(key, out getterSetter);
 
-    public void Add<T>(string key, GetterFunction<T> getter, SetterFunction<T> setter, string? subclass = null)
+    public void Add<T>(string key, IVariableView<T>.ValueGetter getter, IVariableView<T>.ValueSetter setter, string? subclass = null)
     {
         _dictionary[key] = new CustomVariableView<T>(subclass.DefaultIfNull<T>())
         {
             Name = key,
-            _getterFunction = getter,
-            _setterFunction = setter,
+            getter = getter,
+            setter = setter,
         };
     }
 
@@ -32,13 +32,13 @@ public class WatchVariableSpecialDictionary
             subclass
         );
 
-    public void Add<T>(string key, Func<T> getter, SetterFunction<T> setter, string? subclass = null)
+    public void Add<T>(string key, Func<T> getter, IVariableView<T>.ValueSetter setter, string? subclass = null)
     {
         _dictionary[key] = new CustomVariableView<T>(subclass.DefaultIfNull<T>())
         {
             Name = key,
-            _getterFunction = () => getter().Yield(),
-            _setterFunction = setter,
+            getter = () => getter().Yield(),
+            setter = setter,
         };
     }
 }
