@@ -1,10 +1,9 @@
-﻿namespace STROOP.Core
+﻿namespace STROOP.Core;
+
+public enum RomVersion
 {
-    public enum RomVersion
-    {
-        US,
-        JP,
-        SH,
-        EU,
-    };
-}
+    US,
+    JP,
+    SH,
+    EU,
+};

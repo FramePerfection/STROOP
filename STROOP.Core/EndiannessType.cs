@@ -3,5 +3,5 @@
 public enum EndiannessType
 {
     Big,
-    Little
+    Little,
 }

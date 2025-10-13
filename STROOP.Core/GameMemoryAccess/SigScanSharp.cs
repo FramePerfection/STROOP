@@ -72,7 +72,7 @@ public class SigScanSharp
             if (arrPattern[i] == 0x0)
                 continue;
 
-            if (arrPattern[i] != this.g_arrModuleBuffer[nOffset + i])
+            if (arrPattern[i] != g_arrModuleBuffer[nOffset + i])
                 return false;
         }
 
@@ -88,7 +88,7 @@ public class SigScanSharp
 
         for (int nModuleIndex = minOffset; nModuleIndex < g_arrModuleBuffer.Length; nModuleIndex++)
         {
-            if (this.g_arrModuleBuffer[nModuleIndex] != arrPattern[0])
+            if (g_arrModuleBuffer[nModuleIndex] != arrPattern[0])
                 continue;
 
             if (PatternCheck(nModuleIndex, arrPattern))
@@ -107,7 +107,7 @@ public class SigScanSharp
     {
         List<byte> patternbytes = new List<byte>();
 
-        foreach (var szByte in szPattern.Split(' '))
+        foreach (string? szByte in szPattern.Split(' '))
             patternbytes.Add(szByte == "?" ? (byte)0x0 : Convert.ToByte(szByte, 16));
 
         return patternbytes.ToArray();

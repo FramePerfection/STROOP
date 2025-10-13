@@ -1,16 +1,12 @@
-﻿namespace STROOP.Core.Utilities
+﻿namespace STROOP.Core.Utilities;
+
+public class Wrapper<T>
 {
-    public class Wrapper<T>
+    public T value;
+
+    public Wrapper()
     {
-        public T value;
-
-        public Wrapper()
-        {
-        }
-
-        public Wrapper(T value)
-        {
-            this.value = value;
-        }
     }
+
+    public Wrapper(T value) => this.value = value;
 }

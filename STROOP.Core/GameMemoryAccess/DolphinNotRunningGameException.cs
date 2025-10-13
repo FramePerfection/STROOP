@@ -1,10 +1,9 @@
-﻿namespace STROOP.Core.Emulators
+﻿namespace STROOP.Core.Emulators;
+
+public class DolphinNotRunningGameException : Exception
 {
-    public class DolphinNotRunningGameException : Exception
+    public DolphinNotRunningGameException()
+        : base("Dolphin running, but emulator hasn't started")
     {
-        public DolphinNotRunningGameException()
-            : base("Dolphin running, but emulator hasn't started")
-        {
-        }
     }
 }

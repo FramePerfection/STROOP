@@ -6,11 +6,11 @@ public class ProcessStream : IDisposable
 
     public static ProcessStream Instance;
 
-    IEmuRamIO _io;
+    private IEmuRamIO _io;
     public IEmuRamIO IO => _io;
 
-    byte[] _ram;
-    object _mStreamProcess = new object();
+    private byte[] _ram;
+    private object _mStreamProcess = new object();
 
     public event EventHandler OnDisconnect;
     public event EventHandler WarnReadonlyOff;
@@ -24,7 +24,7 @@ public class ProcessStream : IDisposable
 
     public ProcessStream(Action onUpdate)
     {
-        this.OnUpdate = onUpdate;
+        OnUpdate = onUpdate;
         _ram = new byte[0x800000];
     }
 
@@ -60,11 +60,11 @@ public class ProcessStream : IDisposable
         }
     }
 
-    int suspendCounter = 0;
+    private int suspendCounter = 0;
 
-    class SuspendScope : Scope
+    private class SuspendScope : Scope
     {
-        readonly ProcessStream stream;
+        private readonly ProcessStream stream;
 
         public SuspendScope(ProcessStream stream)
         {
@@ -89,15 +89,9 @@ public class ProcessStream : IDisposable
         OnDisconnect?.Invoke(this, new EventArgs());
     }
 
-    public UIntPtr GetAbsoluteAddress(uint relativeAddress, int size = 0)
-    {
-        return _io?.GetAbsoluteAddress(relativeAddress, size) ?? new UIntPtr(0);
-    }
+    public UIntPtr GetAbsoluteAddress(uint relativeAddress, int size = 0) => _io?.GetAbsoluteAddress(relativeAddress, size) ?? new UIntPtr(0);
 
-    public uint GetRelativeAddress(UIntPtr relativeAddress, int size)
-    {
-        return _io?.GetRelativeAddress(relativeAddress, size) ?? 0;
-    }
+    public uint GetRelativeAddress(UIntPtr relativeAddress, int size) => _io?.GetRelativeAddress(relativeAddress, size) ?? 0;
 
     public object GetValue(Type type, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
     {
@@ -161,20 +155,11 @@ public class ProcessStream : IDisposable
         return value;
     }
 
-    public float GetSingle(uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
-    {
-        return BitConverter.ToSingle(ReadRam((UIntPtr)address, 4, EndiannessType.Little, absoluteAddress), 0);
-    }
+    public float GetSingle(uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null) => BitConverter.ToSingle(ReadRam((UIntPtr)address, 4, EndiannessType.Little, absoluteAddress), 0);
 
-    public double GetDouble(uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
-    {
-        return BitConverter.ToDouble(ReadRam((UIntPtr)address, 8, EndiannessType.Little, absoluteAddress), 0);
-    }
+    public double GetDouble(uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null) => BitConverter.ToDouble(ReadRam((UIntPtr)address, 8, EndiannessType.Little, absoluteAddress), 0);
 
-    public byte[] ReadRam(uint address, int length, EndiannessType endianness, bool absoluteAddress = false)
-    {
-        return ReadRam((UIntPtr)address, length, endianness, absoluteAddress);
-    }
+    public byte[] ReadRam(uint address, int length, EndiannessType endianness, bool absoluteAddress = false) => ReadRam((UIntPtr)address, length, endianness, absoluteAddress);
 
     public byte[] ReadRam(UIntPtr address, int length, EndiannessType endianness, bool absoluteAddress = false)
     {
@@ -210,7 +195,7 @@ public class ProcessStream : IDisposable
                 uint alignedAddress = EndiannessUtilities.AlignedAddressFloor(localAddress);
 
 
-                int alignedReadByteCount = (readBytes.Length / 4) * 4 + 8;
+                int alignedReadByteCount = readBytes.Length / 4 * 4 + 8;
                 if (alignedAddress + alignedReadByteCount > _ram.Length)
                     break;
                 swapBytes = new byte[alignedReadByteCount];
@@ -229,15 +214,9 @@ public class ProcessStream : IDisposable
         return readBytes;
     }
 
-    public bool ReadProcessMemory(UIntPtr address, byte[] buffer, EndiannessType endianness)
-    {
-        return _io?.ReadAbsolute(address, buffer, endianness) ?? false;
-    }
+    public bool ReadProcessMemory(UIntPtr address, byte[] buffer, EndiannessType endianness) => _io?.ReadAbsolute(address, buffer, endianness) ?? false;
 
-    public byte[] ReadAllMemory()
-    {
-        return _io?.ReadAllMemory();
-    }
+    public byte[] ReadAllMemory() => _io?.ReadAllMemory();
 
     public bool CheckReadonlyOff()
     {
@@ -257,7 +236,7 @@ public class ProcessStream : IDisposable
         if (mask.HasValue)
         {
             byte oldValue = GetByte(address, absoluteAddress);
-            value = (byte)((oldValue & ~mask.Value) | (value & mask.Value));
+            value = (byte)(oldValue & ~mask.Value | value & mask.Value);
         }
 
         bool returnValue = WriteRam(new byte[] { value }, (UIntPtr)address, EndiannessType.Little, absoluteAddress);
@@ -274,14 +253,14 @@ public class ProcessStream : IDisposable
         if (mask.HasValue)
         {
             sbyte oldValue = GetSByte(address, absoluteAddress);
-            value = (sbyte)((oldValue & ~mask.Value) | (value & mask.Value));
+            value = (sbyte)(oldValue & ~mask.Value | value & mask.Value);
         }
 
         bool returnValue = WriteRam(new byte[] { (byte)value }, (UIntPtr)address, EndiannessType.Little, absoluteAddress);
         return returnValue;
     }
 
-    public bool SetValue(Int16 value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
+    public bool SetValue(short value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
     {
         if (shift.HasValue)
         {
@@ -291,14 +270,14 @@ public class ProcessStream : IDisposable
         if (mask.HasValue)
         {
             short oldValue = GetInt16(address, absoluteAddress);
-            value = (short)((oldValue & ~mask.Value) | (value & mask.Value));
+            value = (short)(oldValue & ~mask.Value | value & mask.Value);
         }
 
         bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
         return returnValue;
     }
 
-    public bool SetValue(UInt16 value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
+    public bool SetValue(ushort value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
     {
         if (shift.HasValue)
         {
@@ -308,14 +287,14 @@ public class ProcessStream : IDisposable
         if (mask.HasValue)
         {
             ushort oldValue = GetUInt16(address, absoluteAddress);
-            value = (ushort)((oldValue & ~mask.Value) | (value & mask.Value));
+            value = (ushort)(oldValue & ~mask.Value | value & mask.Value);
         }
 
         bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
         return returnValue;
     }
 
-    public bool SetValue(Int32 value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
+    public bool SetValue(int value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
     {
         if (shift.HasValue)
         {
@@ -325,14 +304,14 @@ public class ProcessStream : IDisposable
         if (mask.HasValue)
         {
             int oldValue = GetInt32(address, absoluteAddress);
-            value = (int)((oldValue & ~mask.Value) | (value & mask.Value));
+            value = (int)(oldValue & ~mask.Value | value & mask.Value);
         }
 
         bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
         return returnValue;
     }
 
-    public bool SetValue(UInt32 value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
+    public bool SetValue(uint value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
     {
         if (shift.HasValue)
         {
@@ -342,7 +321,7 @@ public class ProcessStream : IDisposable
         if (mask.HasValue)
         {
             uint oldValue = GetUInt32(address, absoluteAddress);
-            value = (uint)((oldValue & ~mask.Value) | (value & mask.Value));
+            value = (uint)(oldValue & ~mask.Value | value & mask.Value);
         }
 
         bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
@@ -367,10 +346,7 @@ public class ProcessStream : IDisposable
     }
 
     public bool WriteRam(byte[] buffer, uint address, EndiannessType endianness,
-        int bufferStart = 0, int? length = null, bool safeWrite = true)
-    {
-        return WriteRam(buffer, (UIntPtr)address, endianness, false, bufferStart, length, safeWrite);
-    }
+        int bufferStart = 0, int? length = null, bool safeWrite = true) => WriteRam(buffer, (UIntPtr)address, endianness, false, bufferStart, length, safeWrite);
 
     private object ram_write_lock = new object();
 

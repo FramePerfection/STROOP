@@ -1,14 +1,10 @@
-﻿namespace STROOP.Core.Utilities
+﻿namespace STROOP.Core.Utilities;
+
+public class OrderComparer<T> : IComparer<T>
 {
-    public class OrderComparer<T> : IComparer<T>
-    {
-        Func<T, T, int> func;
+    private Func<T, T, int> func;
 
-        public OrderComparer(Func<T, T, int> func)
-        {
-            this.func = func;
-        }
+    public OrderComparer(Func<T, T, int> func) => this.func = func;
 
-        int IComparer<T>.Compare(T x, T y) => func(x, y);
-    }
+    int IComparer<T>.Compare(T x, T y) => func(x, y);
 }

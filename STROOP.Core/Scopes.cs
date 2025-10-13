@@ -16,8 +16,8 @@ public sealed class AccessScope<T> : Scope
 {
     public static T content => scopes.Count == 0 ? default(T) : scopes.Peek().obj;
 
-    static Stack<AccessScope<T>> scopes = new Stack<AccessScope<T>>();
-    T obj;
+    private static Stack<AccessScope<T>> scopes = new Stack<AccessScope<T>>();
+    private T obj;
 
     public AccessScope(T obj)
     {
@@ -34,22 +34,19 @@ public sealed class AccessScope<T> : Scope
 
 public class IgnoreScope : Scope
 {
-    Stack<IgnoreScope> scopeStack = new Stack<IgnoreScope>();
+    private Stack<IgnoreScope> scopeStack = new Stack<IgnoreScope>();
 
-    IgnoreScope parent;
+    private IgnoreScope parent;
 
     public IgnoreScope()
     {
     }
 
-    private IgnoreScope(IgnoreScope parent)
-    {
-        this.parent = parent;
-    }
+    private IgnoreScope(IgnoreScope parent) => this.parent = parent;
 
     public IgnoreScope New()
     {
-        var newScope = new IgnoreScope(this);
+        IgnoreScope? newScope = new IgnoreScope(this);
         scopeStack.Push(newScope);
         return newScope;
     }
