@@ -18,7 +18,7 @@ public class DescribedMemoryState
         _fixedAddressGetter = null;
         if (doFix)
         {
-            IEnumerable<uint> capture = GetAddressList();
+            IEnumerable<uint> capture = GetAddressList().ToList();
             _fixedAddressGetter = () => capture;
         }
     }

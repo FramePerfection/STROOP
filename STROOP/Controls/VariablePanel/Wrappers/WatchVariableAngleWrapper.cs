@@ -4,6 +4,7 @@ using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -107,7 +108,7 @@ namespace STROOP.Controls.VariablePanel
             : base(watchVar, watchVarControl)
         {
             var displayType = (view as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor.ClrType ?? typeof(double);
-            if (TypeUtilities.StringToType.TryGetValue(watchVarControl.view.GetValueByKey(NamedVariableCollection.ViewProperties.display) ?? "", out var dType))
+            if (TypeUtilities.StringToType.TryGetValue(watchVarControl.view.GetValueByKey(CommonViewProperties.display) ?? "", out var dType))
                 displayType = dType;
 
             _baseType = displayType;

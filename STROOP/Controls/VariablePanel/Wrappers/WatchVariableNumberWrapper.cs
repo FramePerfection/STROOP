@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -87,7 +88,7 @@ namespace STROOP.Controls.VariablePanel
         public WatchVariableNumberWrapper(NamedVariableCollection.IView<TNumber> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
-            if (int.TryParse(watchVarControl.view.GetValueByKey(NamedVariableCollection.ViewProperties.roundingLimit), out var roundingLimit))
+            if (int.TryParse(watchVarControl.view.GetValueByKey(CommonViewProperties.roundingLimit), out var roundingLimit))
                 _defaultRoundingLimit = roundingLimit;
             else
                 _defaultRoundingLimit = DEFAULT_ROUNDING_LIMIT;
@@ -97,7 +98,7 @@ namespace STROOP.Controls.VariablePanel
                 throw new ArgumentOutOfRangeException();
 
             _defaultDisplayAsHex =
-                bool.TryParse(watchVarControl.view.GetValueByKey(NamedVariableCollection.ViewProperties.useHex), out var viewSetting)
+                bool.TryParse(watchVarControl.view.GetValueByKey(CommonViewProperties.useHex), out var viewSetting)
                     ? viewSetting
                     : DEFAULT_DISPLAY_AS_HEX;
             displayAsHex = _displayAsHex = _defaultDisplayAsHex;

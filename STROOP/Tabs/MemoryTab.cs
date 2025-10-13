@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Tabs
 {
@@ -348,7 +349,7 @@ namespace STROOP.Tabs
                 uint nameOffset = useRelativeName ? (uint)ByteIndex : MemoryAddress;
 
                 var view = new MemoryDescriptor(effectiveType, baseAddressType, offset).CreateView();
-                view.SetValueByKey(NamedVariableCollection.ViewProperties.useHex, true);
+                view.SetValueByKey(CommonViewProperties.useHex, true);
                 return view;
             }
         }

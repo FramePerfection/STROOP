@@ -1,5 +1,6 @@
 ﻿using STROOP.Core;
 using STROOP.Core.Utilities;
+using STROOP.Variables.Views;
 using System.Reflection;
 using System.Xml.Linq;
 
@@ -35,20 +36,6 @@ public class NamedVariableCollection
 
     public delegate IEnumerable<bool> SetterFunction<T>(T value);
 
-    public static class ViewProperties
-    {
-        static ViewProperties() => StringSymbolAttribute.InitializeDeclaredStrings(typeof(ViewProperties));
-
-        [StringSymbol]
-        public static readonly string
-            useHex,
-            invertBool,
-            specialType,
-            roundingLimit,
-            display,
-            color;
-    }
-
     public interface IView
     {
         Action ValueSet { get; set; }
@@ -83,12 +70,12 @@ public class NamedVariableCollection
 
         public string Color
         {
-            set => SetValueByKey(ViewProperties.color, value);
+            set => SetValueByKey(CommonViewProperties.color, value);
         }
 
         public string Display
         {
-            set => SetValueByKey(ViewProperties.display, value);
+            set => SetValueByKey(CommonViewProperties.display, value);
         }
 
         public int DislpayPriority { get; }

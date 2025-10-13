@@ -5,6 +5,7 @@ using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Utilities
 {
@@ -26,7 +27,7 @@ namespace STROOP.Utilities
                     {
                         T MakePATypeView<T>(T view) where T : NamedVariableCollection.IView
                         {
-                            view.SetValueByKey(NamedVariableCollection.ViewProperties.specialType, "PositionAngle");
+                            view.SetValueByKey(CommonViewProperties.specialType, "PositionAngle");
                             return view;
                         }
 

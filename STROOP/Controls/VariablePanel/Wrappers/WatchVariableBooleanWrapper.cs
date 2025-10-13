@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -46,7 +47,7 @@ namespace STROOP.Controls.VariablePanel
             : base(watchVar, watchVarControl)
         {
             _displayAsCheckbox = true;
-            if (bool.TryParse(watchVarControl.view.GetValueByKey(NamedVariableCollection.ViewProperties.invertBool), out var invertBool))
+            if (bool.TryParse(watchVarControl.view.GetValueByKey(CommonViewProperties.invertBool), out var invertBool))
                 _displayAsInverted = invertBool;
             else
                 _displayAsInverted = false;

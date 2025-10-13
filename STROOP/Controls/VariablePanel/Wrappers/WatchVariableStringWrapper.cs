@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using STROOP.Forms;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -23,7 +24,7 @@ namespace STROOP.Controls.VariablePanel
         public WatchVariableStringWrapper(NamedVariableCollection.IView<string> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
-            AddStringContextMenuStripItems(watchVarControl.view.GetValueByKey(NamedVariableCollection.ViewProperties.specialType));
+            AddStringContextMenuStripItems(watchVarControl.view.GetValueByKey(CommonViewProperties.specialType));
         }
 
         private void AddStringContextMenuStripItems(string specialType)

@@ -4,6 +4,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Structs;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -28,7 +29,7 @@ namespace STROOP.Controls.VariablePanel
             });
 
         public WatchVariableAddressWrapper(NamedVariableCollection.IView<uint> watchVar, WatchVariableControl watchVarControl)
-            : base(watchVar.WithKeyedValue(NamedVariableCollection.ViewProperties.useHex, true), watchVarControl)
+            : base(watchVar.WithKeyedValue(CommonViewProperties.useHex, true), watchVarControl)
         {
             AddAddressContextMenuStripItems();
         }
