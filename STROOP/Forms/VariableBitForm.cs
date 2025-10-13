@@ -82,7 +82,7 @@ namespace STROOP.Forms
             List<object> values = _addressGetter().Select(address => Config.Stream.GetValue(
                     _memoryDescriptor.ClrType,
                     address,
-                    _memoryDescriptor.UseAbsoluteAddressing,
+                    false,
                     _memoryDescriptor.Mask,
                     _memoryDescriptor.Shift
                 )
@@ -120,7 +120,7 @@ namespace STROOP.Forms
             byte[] bytes = _reversedBytes.ConvertAll(b => b.GetByteValue()).ToArray();
             if (TypeUtilities.ConvertBytes(_memoryDescriptor.ClrType, bytes) is IConvertible validValue)
                 foreach (var address in _addressGetter())
-                    Config.Stream.SetValue(_memoryDescriptor.ClrType, validValue, address, _memoryDescriptor.UseAbsoluteAddressing, _memoryDescriptor.Mask, _memoryDescriptor.Shift);
+                    Config.Stream.SetValue(_memoryDescriptor.ClrType, validValue, address, false, _memoryDescriptor.Mask, _memoryDescriptor.Shift);
         }
 
         private void DoColoring()

@@ -25,8 +25,6 @@ public class MemoryDescriptor
 
     public int? NibbleCount => ByteCount.HasValue ? (int?)(ByteCount.Value * 2) : null;
 
-    public bool UseAbsoluteAddressing => BaseAddressType == SM64MemoryLayout.BaseAddressType.Absolute;
-
     public uint Offset
     {
         get
@@ -156,16 +154,7 @@ public class MemoryDescriptor
 
     private uint GetRamAddress(uint addr, bool addressArea = true)
     {
-        UIntPtr addressPtr = new UIntPtr(addr);
-        uint address;
-
-        if (UseAbsoluteAddressing)
-            address = EndiannessUtilities.SwapAddressEndianness(
-                ProcessStream.Instance.GetRelativeAddress(addressPtr, ByteCount.Value), ByteCount.Value);
-        else
-            address = addressPtr.ToUInt32();
-
-        return addressArea ? address | 0x80000000 : address & 0x0FFFFFFF;
+        return addressArea ? addr | 0x80000000 : addr & 0x0FFFFFFF;
     }
 
     public string GetBaseAddressListString(List<uint> addresses = null)

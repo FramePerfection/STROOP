@@ -8,7 +8,7 @@ namespace STROOP.Variables;
 public class NamedVariableCollection
 {
     // HACK: delegate the variable rounding to the view for now with this
-    public delegate bool SetVariableValueFunc(ProcessStream processStream, Type type, object value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null);
+    public delegate bool SetVariableValueFunc(ProcessStream processStream, Type type, object value, uint address, uint? mask = null, int? shift = null);
 
     public static SetVariableValueFunc SetVariableValue = null!;
 
@@ -16,7 +16,7 @@ public class NamedVariableCollection
         => memoryState.GetAddressList().ConvertAll(address => (T)ProcessStream.Instance.GetValue(
             typeof(T),
             address,
-            memoryState.descriptor.UseAbsoluteAddressing,
+            false,
             memoryState.descriptor.Mask,
             memoryState.descriptor.Shift
         ));
@@ -27,7 +27,6 @@ public class NamedVariableCollection
             typeof(T),
             value,
             address,
-            memoryState.descriptor.UseAbsoluteAddressing,
             memoryState.descriptor.Mask,
             memoryState.descriptor.Shift
         )).ToArray();

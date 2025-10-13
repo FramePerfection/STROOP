@@ -346,7 +346,6 @@ namespace STROOP.Tabs
                 string baseAddressType = useObjAddress ? BaseAddressType.Object : BaseAddressType.Relative;
                 uint offset = useObjAddress ? (uint)ByteIndex : MemoryAddress;
                 uint nameOffset = useRelativeName ? (uint)ByteIndex : MemoryAddress;
-                bool isAbsolute = baseAddressType == BaseAddressType.Absolute;
 
                 var view = new MemoryDescriptor(effectiveType, baseAddressType, offset).CreateView();
                 view.SetValueByKey(NamedVariableCollection.ViewProperties.useHex, true);

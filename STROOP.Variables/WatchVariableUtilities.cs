@@ -1,5 +1,4 @@
-﻿using STROOP.Core;
-using STROOP.Variables.SM64MemoryLayout;
+﻿using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Variables;
@@ -109,8 +108,7 @@ public static class WatchVariableUtilities
     [InitializeBaseAddress]
     private static void InitBaseAddresses()
     {
-        baseAddressGetters[BaseAddressType.None] = GetBaseAddressListZero;
-        baseAddressGetters[BaseAddressType.Absolute] = GetBaseAddressListZero;
+        baseAddressGetters[BaseAddressType.None] = GetBaseAddressListEmpty;
         baseAddressGetters[BaseAddressType.Relative] = GetBaseAddressListZero;
     }
 

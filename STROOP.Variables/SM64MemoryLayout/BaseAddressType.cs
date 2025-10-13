@@ -9,7 +9,6 @@ public static class BaseAddressType
     [StringSymbol]
     public static string
         None,
-        Absolute,
         Relative,
         Mario,
         MarioObj,

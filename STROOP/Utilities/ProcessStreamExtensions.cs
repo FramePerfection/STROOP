@@ -5,17 +5,17 @@ namespace STROOP.Utilities;
 
 public static class ProcessStreamExtensions
 {
-    public static bool SetValueRoundingWrapping(this ProcessStream processStream, Type type, object value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)
+    public static bool SetValueRoundingWrapping(this ProcessStream processStream, Type type, object value, uint address, uint? mask = null, int? shift = null)
     {
         // Allow short circuiting if object is already of type
-        if (type == typeof(byte) && value is byte byteValue) return processStream.SetValue(byteValue, address, absoluteAddress, mask, shift);
-        if (type == typeof(sbyte) && value is sbyte sbyteValue) return processStream.SetValue(sbyteValue, address, absoluteAddress, mask, shift);
-        if (type == typeof(short) && value is short shortValue) return processStream.SetValue(shortValue, address, absoluteAddress, mask, shift);
-        if (type == typeof(ushort) && value is ushort ushortValue) return processStream.SetValue(ushortValue, address, absoluteAddress, mask, shift);
-        if (type == typeof(int) && value is int intValue) return processStream.SetValue(intValue, address, absoluteAddress, mask, shift);
-        if (type == typeof(uint) && value is uint uintValue) return processStream.SetValue(uintValue, address, absoluteAddress, mask, shift);
-        if (type == typeof(float) && value is float floatValue) return processStream.SetValue(floatValue, address, absoluteAddress, mask, shift);
-        if (type == typeof(double) && value is double doubleValue) return processStream.SetValue(doubleValue, address, absoluteAddress, mask, shift);
+        if (type == typeof(byte) && value is byte byteValue) return processStream.SetValue(byteValue, address, false, mask, shift);
+        if (type == typeof(sbyte) && value is sbyte sbyteValue) return processStream.SetValue(sbyteValue, address, false, mask, shift);
+        if (type == typeof(short) && value is short shortValue) return processStream.SetValue(shortValue, address, false, mask, shift);
+        if (type == typeof(ushort) && value is ushort ushortValue) return processStream.SetValue(ushortValue, address, false, mask, shift);
+        if (type == typeof(int) && value is int intValue) return processStream.SetValue(intValue, address, false, mask, shift);
+        if (type == typeof(uint) && value is uint uintValue) return processStream.SetValue(uintValue, address, false, mask, shift);
+        if (type == typeof(float) && value is float floatValue) return processStream.SetValue(floatValue, address, false, mask, shift);
+        if (type == typeof(double) && value is double doubleValue) return processStream.SetValue(doubleValue, address, false, mask, shift);
 
         value = ParsingUtilities.ParseDoubleNullable(value);
         if (value == null) return false;
@@ -27,7 +27,7 @@ public static class ProcessStreamExtensions
         if (type == typeof(int)) value = ParsingUtilities.ParseIntRoundingWrapping(value);
         if (type == typeof(uint)) value = ParsingUtilities.ParseUIntRoundingWrapping(value);
 
-        return processStream.SetValue(type, value.ToString(), address, absoluteAddress, mask, shift);
+        return processStream.SetValue(type, value.ToString(), address, false, mask, shift);
     }
 
     public static bool SetValue(this ProcessStream processStream, Type type, object value, uint address, bool absoluteAddress = false, uint? mask = null, int? shift = null)

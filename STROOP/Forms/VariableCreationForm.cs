@@ -50,10 +50,6 @@ namespace STROOP.Forms
             string baseAddressType = (string)comboBoxBaseValue.SelectedItem;
             uint offset = ParsingUtilities.ParseHexNullable(textBoxOffsetValue.Text) ?? 0;
 
-            var memoryType = TypeUtilities.StringToType[memoryTypeString];
-
-            var isAbsolute = baseAddressType == BaseAddressType.Absolute;
-
             var result = new MemoryDescriptor(TypeUtilities.StringToType[memoryTypeString], baseAddressType, offset).CreateView();
             result.Name = textBoxNameValue.Text;
             return result;
