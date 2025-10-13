@@ -29,9 +29,6 @@ namespace STROOP
         [STAThread]
         static void Main()
         {
-            // TODO: avoid using this static delegate hack
-            NamedVariableCollection.SetVariableValue = ProcessStreamExtensions.SetValueRoundingWrapping;
-
             // This is necessary to keep the scale of controls in check after migrating from .NET Framework WinForms to .NET8 WinForms LOL
             Application.SetDefaultFont(new Font(new FontFamily("Microsoft Sans Serif"), 8.25F));
 
