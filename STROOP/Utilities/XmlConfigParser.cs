@@ -17,6 +17,7 @@ using STROOP.Tabs.MapTab;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Utilities
 {
@@ -120,12 +121,12 @@ namespace STROOP.Utilities
             return doc;
         }
 
-        public static List<NamedVariableCollection.IView> OpenWatchVariables(string path) => OpenWatchVariableControlPrecursors(path);
+        public static List<IVariableView> OpenWatchVariables(string path) => OpenWatchVariableControlPrecursors(path);
 
-        public static List<NamedVariableCollection.IView> OpenWatchVariableControlPrecursors(string path)
+        public static List<IVariableView> OpenWatchVariableControlPrecursors(string path)
         {
             string schemaFile = "MiscDataSchema.xsd";
-            var objectData = new List<NamedVariableCollection.IView>();
+            var objectData = new List<IVariableView>();
             var assembly = Assembly.GetExecutingAssembly();
 
             // Create schema set
@@ -270,7 +271,7 @@ namespace STROOP.Utilities
                                 rotates = bool.Parse(element.Element(XName.Get("MapImage")).Attribute(XName.Get("rotates")).Value);
                             }
 
-                            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
+                            List<IVariableView> precursors = new List<IVariableView>();
                             foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
                             {
                                 var variableView = WatchVariableWrapperFactory.ParseXml(subElement);

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -23,9 +24,9 @@ namespace STROOP.Controls.VariablePanel
 
         (string name, Func<TBackingValue> getter) selectedOption;
 
-        public WatchVariableSelectionWrapper(NamedVariableCollection.IView<TBackingValue> var, WatchVariableControl control) : base(var, control)
+        public WatchVariableSelectionWrapper(IVariableView<TBackingValue> var, WatchVariableControl control) : base(var, control)
         {
-            var interfaceType = view.GetType().GetInterfaces().First(x => x.Name == $"{nameof(NamedVariableCollection.IView)}`1");
+            var interfaceType = view.GetType().GetInterfaces().First(x => x.Name == $"{nameof(IVariableView)}`1");
             baseWrapper = (TBaseWrapper)
                 typeof(TBaseWrapper)
                     .GetConstructor(new Type[] { interfaceType, typeof(WatchVariableControl) })

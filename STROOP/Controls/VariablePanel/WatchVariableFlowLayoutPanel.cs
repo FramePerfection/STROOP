@@ -15,6 +15,7 @@ using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -87,7 +88,7 @@ namespace STROOP.Controls.VariablePanel
         public readonly Func<List<WatchVariableControl>> GetSelectedVars;
         public List<ToolStripItem> customContextMenuItems = new List<ToolStripItem>();
 
-        public delegate IEnumerable<NamedVariableCollection.IView> SpecialFuncWatchVariables(PositionAngle.HybridPositionAngle input);
+        public delegate IEnumerable<IVariableView> SpecialFuncWatchVariables(PositionAngle.HybridPositionAngle input);
 
         public Func<IEnumerable<(string name, SpecialFuncWatchVariables generateVariables)>> getSpecialFuncWatchVariables = null;
 
@@ -187,8 +188,8 @@ namespace STROOP.Controls.VariablePanel
             {
                 SuspendLayout();
 
-                List<NamedVariableCollection.IView> precursors = _varFilePath == null
-                    ? new List<NamedVariableCollection.IView>()
+                List<IVariableView> precursors = _varFilePath == null
+                    ? new List<IVariableView>()
                     : XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath);
 
                 foreach (var watchVarControl in precursors.ConvertAll(precursor => new WatchVariableControl(this, precursor)))
@@ -677,10 +678,10 @@ namespace STROOP.Controls.VariablePanel
             _filteringDropDownItems.ForEach(item => filterVariablesItem.DropDownItems.Add(item));
         }
 
-        public WatchVariableControl AddVariable(NamedVariableCollection.IView view) =>
+        public WatchVariableControl AddVariable(IVariableView view) =>
             AddVariables(new[] { view }).First();
 
-        public IEnumerable<WatchVariableControl> AddVariables(IEnumerable<NamedVariableCollection.IView> watchVars)
+        public IEnumerable<WatchVariableControl> AddVariables(IEnumerable<IVariableView> watchVars)
         {
             if (!initialized)
                 DeferredInitialize();
@@ -751,8 +752,8 @@ namespace STROOP.Controls.VariablePanel
             _visibleGroups.AddRange(_initialVisibleGroups);
             UpdateFilterItemCheckedStatuses();
 
-            List<NamedVariableCollection.IView> views = _varFilePath == null
-                ? new List<NamedVariableCollection.IView>()
+            List<IVariableView> views = _varFilePath == null
+                ? new List<IVariableView>()
                 : XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath);
             AddVariables(views);
         }
@@ -821,7 +822,7 @@ namespace STROOP.Controls.VariablePanel
             return control.SetValue(value);
         }
 
-        public NamedVariableCollection.IView[] GetWatchVariablesByName(params string[] names) =>
+        public IVariableView[] GetWatchVariablesByName(params string[] names) =>
             GetWatchVariableControlsByName(names).Select(x => x?.view ?? null).ToArray();
 
         public WatchVariableControl[] GetWatchVariableControlsByName(params string[] names)

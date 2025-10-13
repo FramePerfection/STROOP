@@ -85,7 +85,7 @@ namespace STROOP.Controls.VariablePanel
         protected bool _displayAsHex;
         protected Action<bool> _setDisplayAsHex;
 
-        public WatchVariableNumberWrapper(NamedVariableCollection.IView<TNumber> watchVar, WatchVariableControl watchVarControl)
+        public WatchVariableNumberWrapper(IVariableView<TNumber> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
             if (int.TryParse(watchVarControl.view.GetValueByKey(CommonViewProperties.roundingLimit), out var roundingLimit))

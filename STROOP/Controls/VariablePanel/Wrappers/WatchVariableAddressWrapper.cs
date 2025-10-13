@@ -28,7 +28,7 @@ namespace STROOP.Controls.VariablePanel
                 return false;
             });
 
-        public WatchVariableAddressWrapper(NamedVariableCollection.IView<uint> watchVar, WatchVariableControl watchVarControl)
+        public WatchVariableAddressWrapper(IVariableView<uint> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar.WithKeyedValue(CommonViewProperties.useHex, true), watchVarControl)
         {
             AddAddressContextMenuStripItems();

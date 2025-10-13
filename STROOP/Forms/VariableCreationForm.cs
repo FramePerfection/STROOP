@@ -7,6 +7,7 @@ using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Forms
 {
@@ -44,7 +45,7 @@ namespace STROOP.Forms
             buttonAddVariable.Click += (sender, e) => varPanel.AddVariable(CreateWatchVariableControl());
         }
 
-        private NamedVariableCollection.IView CreateWatchVariableControl()
+        private IVariableView CreateWatchVariableControl()
         {
             string memoryTypeString = comboBoxTypeValue.SelectedItem.ToString();
             string baseAddressType = (string)comboBoxBaseValue.SelectedItem;

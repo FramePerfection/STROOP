@@ -13,6 +13,7 @@ using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Tabs
 {
@@ -44,7 +45,7 @@ namespace STROOP.Tabs
             ("Triangle projections",
                 (PositionAngle.HybridPositionAngle pa) =>
                 {
-                    var vars = new List<NamedVariableCollection.IView>();
+                    var vars = new List<IVariableView>();
                     vars.Add(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
                     {
                         Color = "LightBlue",

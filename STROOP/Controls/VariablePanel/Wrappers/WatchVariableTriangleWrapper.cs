@@ -1,6 +1,7 @@
 ﻿using STROOP.Core;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -18,7 +19,7 @@ namespace STROOP.Controls.VariablePanel
             return false;
         });
 
-        public WatchVariableTriangleWrapper(NamedVariableCollection.IView<uint> watchVar, WatchVariableControl watchVarControl)
+        public WatchVariableTriangleWrapper(IVariableView<uint> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
             AddTriangleContextMenuStripItems();

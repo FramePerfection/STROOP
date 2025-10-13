@@ -1,17 +1,18 @@
 ﻿using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Variables;
 
 public static class IVariableViewExtensions
 {
-    public static NamedVariableCollection.IView<T> WithKeyedValue<T, TValue>(this NamedVariableCollection.IView<T> view, string key, TValue value)
+    public static IVariableView<T> WithKeyedValue<T, TValue>(this IVariableView<T> view, string key, TValue value)
     {
         view.SetValueByKey(key, value);
         return view;
     }
 
-    public static string GetJsonName(this NamedVariableCollection.IView view)
+    public static string GetJsonName(this IVariableView view)
     {
         string? explicitJsonName = view.GetValueByKey("jsonName");
         if (explicitJsonName == "")
@@ -21,20 +22,20 @@ public static class IVariableViewExtensions
         return $"{view.Name}".Replace(' ', '_').ToLower();
     }
 
-    public static IEnumerable<T> GetNumberValues<T>(this NamedVariableCollection.IView view) where T : struct, IConvertible
+    public static IEnumerable<T> GetNumberValues<T>(this IVariableView view) where T : struct, IConvertible
     {
         if (view.TryGetNumberValues<T>(out IEnumerable<T>? result))
             return result;
         throw new InvalidOperationException($"'{view.GetType().FullName}' is not a vaild number type.");
     }
 
-    public static bool TryGetNumberValues<T>(this NamedVariableCollection.IView view, out IEnumerable<T> result)
+    public static bool TryGetNumberValues<T>(this IVariableView view, out IEnumerable<T> result)
         where T : struct, IConvertible
     {
         bool Get<Q>(out IEnumerable<T> innerResult)
         {
             innerResult = null;
-            if (view is NamedVariableCollection.IView<Q> qView)
+            if (view is IVariableView<Q> qView)
             {
                 innerResult = qView._getterFunction().Select(x => (T)Convert.ChangeType(x, typeof(T)));
                 return true;
@@ -56,7 +57,7 @@ public static class IVariableViewExtensions
             ;
     }
 
-    public static IEnumerable<bool> TrySetValue<T>(this NamedVariableCollection.IView view, T value) where T : IConvertible
+    public static IEnumerable<bool> TrySetValue<T>(this IVariableView view, T value) where T : IConvertible
     {
         IEnumerable<bool> Set<Q>()
         {
@@ -70,7 +71,7 @@ public static class IVariableViewExtensions
                 return null;
             }
 
-            if (view is NamedVariableCollection.IView<Q> qView)
+            if (view is IVariableView<Q> qView)
                 return qView._setterFunction(convertedValue);
             return null;
         }
@@ -89,7 +90,7 @@ public static class IVariableViewExtensions
             ;
     }
 
-    public static (CombinedValuesMeaning meaning, T value) CombineValues<T>(this NamedVariableCollection.IView view) where T : struct, IConvertible
+    public static (CombinedValuesMeaning meaning, T value) CombineValues<T>(this IVariableView view) where T : struct, IConvertible
     {
         T[]? values = view.GetNumberValues<T>().ToArray();
         if (values.Length == 0) return (CombinedValuesMeaning.NoValue, default(T));

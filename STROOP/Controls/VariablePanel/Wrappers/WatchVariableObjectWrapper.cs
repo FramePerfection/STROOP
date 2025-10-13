@@ -3,6 +3,7 @@ using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -39,7 +40,7 @@ namespace STROOP.Controls.VariablePanel
 
         private bool _displayAsObject;
 
-        public WatchVariableObjectWrapper(NamedVariableCollection.IView<uint> watchVar, WatchVariableControl watchVarControl)
+        public WatchVariableObjectWrapper(IVariableView<uint> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
             _displayAsObject = true;

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Forms
 {
@@ -40,7 +41,7 @@ namespace STROOP.Forms
             };
         }
 
-        public void Initialize(List<NamedVariableCollection.IView> vars)
+        public void Initialize(List<IVariableView> vars)
         {
             // initialize panel
             _watchVariablePanel.Initialize();

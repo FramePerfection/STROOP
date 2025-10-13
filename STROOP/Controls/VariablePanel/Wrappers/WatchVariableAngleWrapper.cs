@@ -104,7 +104,7 @@ namespace STROOP.Controls.VariablePanel
         private readonly bool _isYaw;
         private bool effectiveSigned => _signed && (!_isYaw || Structs.Configurations.SavedSettingsConfig.DisplayYawAnglesAsUnsigned);
 
-        public WatchVariableAngleWrapper(NamedVariableCollection.IView<TNumber> watchVar, WatchVariableControl watchVarControl)
+        public WatchVariableAngleWrapper(IVariableView<TNumber> watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
             var displayType = (view as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor.ClrType ?? typeof(double);

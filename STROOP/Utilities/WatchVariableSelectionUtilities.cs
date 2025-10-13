@@ -12,6 +12,7 @@ using STROOP.Forms;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Structs
 {
@@ -201,7 +202,7 @@ namespace STROOP.Structs
 
                 var varValues = vars.Select(x => x.view.GetNumberValues<double>().ToArray()).ToArray();
 
-                NamedVariableCollection.GetterFunction<double> getter3D = () =>
+                GetterFunction<double> getter3D = () =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];
@@ -215,7 +216,7 @@ namespace STROOP.Structs
                         result.Add(new Vector3d(x2[i] - x1[i], y2[i] - y1[i], z2[i] - z1[i]).Length);
                     return result;
                 };
-                NamedVariableCollection.GetterFunction<double> getter2D = () =>
+                GetterFunction<double> getter2D = () =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];
@@ -227,7 +228,7 @@ namespace STROOP.Structs
                         result.Add(new Vector2d(x2[i] - x1[i], y2[i] - y1[i]).Length);
                     return result;
                 };
-                NamedVariableCollection.SetterFunction<double> setter3D = value =>
+                SetterFunction<double> setter3D = value =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];
@@ -256,7 +257,7 @@ namespace STROOP.Structs
 
                     return result;
                 };
-                NamedVariableCollection.SetterFunction<double> setter2D = value =>
+                SetterFunction<double> setter2D = value =>
                 {
                     var x1 = varValues[0];
                     var y1 = varValues[1];

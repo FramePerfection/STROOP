@@ -32,35 +32,13 @@ public class NamedVariableCollection
             memoryState.descriptor.Shift
         )).ToArray();
 
-    public delegate IEnumerable<T> GetterFunction<out T>();
-
-    public delegate IEnumerable<bool> SetterFunction<T>(T value);
-
-    public interface IView
-    {
-        Action ValueSet { get; set; }
-        Action OnDelete { get; set; }
-        string Name { get; }
-        bool SetValueByKey(string key, object value);
-        string GetValueByKey(string key);
-        int DislpayPriority { get; }
-        string Subclass { get; }
-        public Type ClrType { get; }
-    }
-
-    public interface IView<T> : IView
-    {
-        GetterFunction<T> _getterFunction { get; }
-        SetterFunction<T> _setterFunction { get; }
-    }
-
-    public interface IMemoryDescriptorView : IView
+    public interface IMemoryDescriptorView : IVariableView
     {
         MemoryDescriptor memoryDescriptor { get; }
         DescribedMemoryState describedMemoryState { get; }
     }
 
-    public class CustomView : IView
+    public class CustomView : IVariableView
     {
         public Action ValueSet { get; set; }
         public Action OnDelete { get; set; }
@@ -102,7 +80,7 @@ public class NamedVariableCollection
         }
     }
 
-    public class CustomView<T> : CustomView, IView<T>
+    public class CustomView<T> : CustomView, IVariableView<T>
     {
         public GetterFunction<T> _getterFunction { get; set; }
         public SetterFunction<T> _setterFunction { get; set; }
@@ -127,7 +105,7 @@ public class NamedVariableCollection
         }
     }
 
-    public class MemoryDescriptorView<T> : MemoryDescriptorView, IView<T> where T : struct, IConvertible
+    public class MemoryDescriptorView<T> : MemoryDescriptorView, IVariableView<T> where T : struct, IConvertible
     {
         public MemoryDescriptorView(string subclass, MemoryDescriptor memoryDescriptor)
             : base(subclass, memoryDescriptor)
@@ -146,7 +124,7 @@ public class NamedVariableCollection
         public Action OnDelete { get; set; }
         public string Name { get; private set; }
         public string Subclass { get; }
-        int IView.DislpayPriority => 0;
+        int IVariableView.DislpayPriority => 0;
         public Type ClrType => describedMemoryState.descriptor.ClrType;
 
         private readonly XElement xElement;
@@ -177,7 +155,7 @@ public class NamedVariableCollection
         public XElement GetXml() => xElement;
     }
 
-    public class XmlMemoryView<T> : XmlMemoryView, IView<T> where T : struct, IConvertible
+    public class XmlMemoryView<T> : XmlMemoryView, IVariableView<T> where T : struct, IConvertible
     {
         public XmlMemoryView(MemoryDescriptor memoryDescriptor, XElement xElement)
             : base(memoryDescriptor, xElement)

@@ -330,7 +330,7 @@ namespace STROOP.Tabs
                 }));
             }
 
-            public NamedVariableCollection.IView CreatePrecursor(bool useObjAddress, bool useHex, bool useObj, bool useRelativeName)
+            public IVariableView CreatePrecursor(bool useObjAddress, bool useHex, bool useObj, bool useRelativeName)
             {
                 string subclass = useObj ? WatchVariableSubclass.Object : WatchVariableSubclass.Number;
                 if (GlobalKeyboard.IsDown(Keys.A)) subclass = WatchVariableSubclass.Angle;

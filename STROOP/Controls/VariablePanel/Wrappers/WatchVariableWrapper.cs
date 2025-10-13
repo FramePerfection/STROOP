@@ -6,12 +6,13 @@ using System.Windows.Forms;
 using STROOP.Forms;
 using STROOP.Variables;
 using STROOP.Variables.Formatting;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
     public abstract class WatchVariableWrapper
     {
-        public readonly NamedVariableCollection.IView _view;
+        public readonly IVariableView _view;
 
         public event Action ValueSet = () => { };
 
@@ -21,7 +22,7 @@ namespace STROOP.Controls.VariablePanel
 
         public virtual WatchVariablePanel.CustomDraw CustomDrawOperation => null;
 
-        protected WatchVariableWrapper(NamedVariableCollection.IView watchVar, WatchVariableControl watchVarControl)
+        protected WatchVariableWrapper(IVariableView watchVar, WatchVariableControl watchVarControl)
         {
             _view = watchVar;
             _watchVarControl = watchVarControl;
@@ -137,7 +138,7 @@ namespace STROOP.Controls.VariablePanel
                 return false;
             };
 
-        public NamedVariableCollection.IView<TBackingValue> view => (NamedVariableCollection.IView<TBackingValue>)_view;
+        public IVariableView<TBackingValue> view => (IVariableView<TBackingValue>)_view;
 
         protected TBackingValue lastValue { get; private set; }
         protected CombinedValuesMeaning lastValueMeaning { get; private set; }
@@ -155,7 +156,7 @@ namespace STROOP.Controls.VariablePanel
             }
         }
 
-        protected WatchVariableWrapper(NamedVariableCollection.IView watchVar, WatchVariableControl watchVarControl)
+        protected WatchVariableWrapper(IVariableView watchVar, WatchVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
         {
         }

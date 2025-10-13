@@ -7,6 +7,7 @@ using STROOP.Extensions;
 using STROOP.Structs.Configurations;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Views;
 
 namespace STROOP.Structs
 {
@@ -211,12 +212,12 @@ namespace STROOP.Structs
             return assoc.Name;
         }
 
-        public IEnumerable<NamedVariableCollection.IView> GetWatchVarControls(BehaviorCriteria behaviorCriteria)
+        public IEnumerable<IVariableView> GetWatchVarControls(BehaviorCriteria behaviorCriteria)
         {
             var assoc = FindObjectAssociation(behaviorCriteria);
 
             if (assoc == null)
-                return Array.Empty<NamedVariableCollection.IView>();
+                return Array.Empty<IVariableView>();
 
             else return assoc.Precursors;
         }

@@ -1,18 +1,19 @@
 ﻿using STROOP.Core.Utilities;
 using STROOP.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Variables;
 
 public class WatchVariableSpecialDictionary
 {
-    private readonly Dictionary<string, NamedVariableCollection.IView> _dictionary;
+    private readonly Dictionary<string, IVariableView> _dictionary;
 
-    public WatchVariableSpecialDictionary() => _dictionary = new Dictionary<string, NamedVariableCollection.IView>();
+    public WatchVariableSpecialDictionary() => _dictionary = new Dictionary<string, IVariableView>();
 
-    public bool TryGetValue(string key, out NamedVariableCollection.IView getterSetter)
+    public bool TryGetValue(string key, out IVariableView getterSetter)
         => _dictionary.TryGetValue(key, out getterSetter);
 
-    public void Add<T>(string key, NamedVariableCollection.GetterFunction<T> getter, NamedVariableCollection.SetterFunction<T> setter, string? subclass = null)
+    public void Add<T>(string key, GetterFunction<T> getter, SetterFunction<T> setter, string? subclass = null)
     {
         _dictionary[key] = new NamedVariableCollection.CustomView<T>(subclass.DefaultIfNull<T>())
         {
@@ -32,7 +33,7 @@ public class WatchVariableSpecialDictionary
             subclass
         );
 
-    public void Add<T>(string key, Func<T> getter, NamedVariableCollection.SetterFunction<T> setter, string? subclass = null)
+    public void Add<T>(string key, Func<T> getter, SetterFunction<T> setter, string? subclass = null)
     {
         _dictionary[key] = new NamedVariableCollection.CustomView<T>(subclass.DefaultIfNull<T>())
         {

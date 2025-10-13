@@ -6,6 +6,7 @@ using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Tabs
 {
@@ -78,7 +79,7 @@ namespace STROOP.Tabs
                 });
         }
 
-        private List<NamedVariableCollection.IView> GetSnowParticleControls(int index)
+        private List<IVariableView> GetSnowParticleControls(int index)
         {
             uint structOffset = (uint)index * SnowConfig.ParticleStructSize;
             List<uint> offsets = new List<uint>()
@@ -94,7 +95,7 @@ namespace STROOP.Tabs
                 String.Format("Particle {0} Z", index),
             };
 
-            var controls = new List<NamedVariableCollection.IView>();
+            var controls = new List<IVariableView>();
             for (int i = 0; i < 3; i++)
             {
                 var view = new NamedVariableCollection.CustomView<int>(WatchVariableSubclass.Number)

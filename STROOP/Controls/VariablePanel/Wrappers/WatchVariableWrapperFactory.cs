@@ -2,6 +2,7 @@
 using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace STROOP.Controls.VariablePanel
     {
         private class WatchVariableWrapperFallback : WatchVariableWrapper
         {
-            public WatchVariableWrapperFallback(NamedVariableCollection.IView watchVar, WatchVariableControl watchVarControl)
+            public WatchVariableWrapperFallback(IVariableView watchVar, WatchVariableControl watchVarControl)
                 : base(watchVar, watchVarControl)
             {
             }
@@ -53,10 +54,10 @@ namespace STROOP.Controls.VariablePanel
             }
         }
 
-        public static bool TryCreateWrapper(NamedVariableCollection.IView view, WatchVariableControl control, out WatchVariableWrapper result)
+        public static bool TryCreateWrapper(IVariableView view, WatchVariableControl control, out WatchVariableWrapper result)
         {
             result = null;
-            var interfaceType = view.GetType().GetInterfaces().FirstOrDefault(x => x.Name == $"{nameof(NamedVariableCollection.IView)}`1");
+            var interfaceType = view.GetType().GetInterfaces().FirstOrDefault(x => x.Name == $"{nameof(IVariableView)}`1");
             if (interfaceType == null)
             {
                 result = new WatchVariableWrapperFallback(view, control);
@@ -84,7 +85,7 @@ namespace STROOP.Controls.VariablePanel
             return true;
         }
 
-        public static NamedVariableCollection.IView ParseXml(XElement element)
+        public static IVariableView ParseXml(XElement element)
         {
             switch (element.Name.LocalName)
             {

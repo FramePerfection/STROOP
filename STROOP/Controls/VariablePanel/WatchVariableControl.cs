@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -26,7 +27,7 @@ namespace STROOP.Controls.VariablePanel
         public static readonly Color SELECTED_COLOR = Color.FromArgb(51, 153, 255);
         private static readonly int FLASH_DURATION_MS = 1000;
 
-        public readonly NamedVariableCollection.IView view;
+        public readonly IVariableView view;
         public readonly WatchVariableWrapper WatchVarWrapper;
 
         public readonly List<string> GroupList;
@@ -70,7 +71,7 @@ namespace STROOP.Controls.VariablePanel
             set { _isSelected = value; }
         }
 
-        public WatchVariableControl(WatchVariablePanel panel, NamedVariableCollection.IView view)
+        public WatchVariableControl(WatchVariablePanel panel, IVariableView view)
         {
             this.view = view;
             this.containingPanel = panel;
@@ -255,7 +256,7 @@ namespace STROOP.Controls.VariablePanel
 
         public bool SetValue<T>(T value)
         {
-            if (view is NamedVariableCollection.IView<T> compatibleView
+            if (view is IVariableView<T> compatibleView
                 && compatibleView._setterFunction(value).Aggregate(true, (a, b) => a && b))
                 return true;
             else if (value is IConvertible convertibleValue && view.TrySetValue(convertibleValue).Aggregate(true, (a, b) => a && b))

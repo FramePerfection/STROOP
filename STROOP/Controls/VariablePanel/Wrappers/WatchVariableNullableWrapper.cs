@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using STROOP.Variables;
+using STROOP.Variables.Views;
 
 namespace STROOP.Controls.VariablePanel
 {
@@ -10,10 +11,10 @@ namespace STROOP.Controls.VariablePanel
     {
         private TBaseWrapper baseWrapper;
 
-        public WatchVariableNullableWrapper(NamedVariableCollection.IView<TBackingType?> var, WatchVariableControl control)
+        public WatchVariableNullableWrapper(IVariableView<TBackingType?> var, WatchVariableControl control)
             : base(var, control)
         {
-            var interfaceType = view.GetType().GetInterfaces().First(x => x.Name == $"{nameof(NamedVariableCollection.IView)}`1");
+            var interfaceType = view.GetType().GetInterfaces().First(x => x.Name == $"{nameof(IVariableView)}`1");
             interfaceType = interfaceType.GetGenericTypeDefinition().MakeGenericType(interfaceType.GenericTypeArguments[0].GenericTypeArguments[0]);
             baseWrapper = (TBaseWrapper)
                 typeof(TBaseWrapper)

@@ -11,6 +11,7 @@ using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.Views;
 
 namespace STROOP.Tabs
 {
@@ -249,7 +250,7 @@ namespace STROOP.Tabs
             _numPans = numPans;
         }
 
-        private NamedVariableCollection.IView CreatePanVar(
+        private IVariableView CreatePanVar(
             string name,
             string specialType,
             string color,
@@ -269,10 +270,10 @@ namespace STROOP.Tabs
             return WatchVariableWrapperFactory.ParseXml(xElement);
         }
 
-        private List<NamedVariableCollection.IView> CreatePanVars(int index)
+        private List<IVariableView> CreatePanVars(int index)
         {
             WatchVariableSpecialUtilities.AddPanEntriesToDictionary(index);
-            return new List<NamedVariableCollection.IView>
+            return new List<IVariableView>
             {
                 CreatePanVar("Global Timer", String.Format("Pan{0}GlobalTimer", index), "Orange"),
                 CreatePanVar(String.Format("Pan{0} Start Time", index), String.Format("Pan{0}StartTime", index), "Orange"),
