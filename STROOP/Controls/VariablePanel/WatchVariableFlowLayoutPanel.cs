@@ -325,27 +325,18 @@ namespace STROOP.Controls.VariablePanel
             if (watchVars.Count == 0)
                 return;
 
-            bool isCtrlKeyHeld = GlobalKeyboard.IsCtrlDown();
             bool isShiftKeyHeld = GlobalKeyboard.IsShiftDown();
-            bool isAltKeyHeld = GlobalKeyboard.IsAltDown();
             bool isFKeyHeld = GlobalKeyboard.IsDown(Keys.F);
             bool isHKeyHeld = GlobalKeyboard.IsDown(Keys.H);
-            bool isDKeyHeld = GlobalKeyboard.IsDown(Keys.D);
-            bool isRKeyHeld = GlobalKeyboard.IsDown(Keys.R);
             bool isCKeyHeld = GlobalKeyboard.IsDown(Keys.C);
             bool isBKeyHeld = GlobalKeyboard.IsDown(Keys.B);
             bool isQKeyHeld = GlobalKeyboard.IsDown(Keys.Q);
             bool isOKeyHeld = GlobalKeyboard.IsDown(Keys.O);
-            bool isMKeyHeld = GlobalKeyboard.IsDown(Keys.M);
             bool isNKeyHeld = GlobalKeyboard.IsDown(Keys.N);
-            bool isPKeyHeld = GlobalKeyboard.IsDown(Keys.P);
             bool isXKeyHeld = GlobalKeyboard.IsDown(Keys.X);
-            bool isSKeyHeld = GlobalKeyboard.IsDown(Keys.S);
             bool isDeletishKeyHeld = GlobalKeyboard.IsDeletishKeyDown();
             bool isBacktickHeld = GlobalKeyboard.IsDown(Keys.Oemtilde);
             bool isZHeld = GlobalKeyboard.IsDown(Keys.Z);
-            bool isMinusHeld = GlobalKeyboard.IsDown(Keys.OemMinus);
-            bool isPlusHeld = GlobalKeyboard.IsDown(Keys.Oemplus);
             bool isNumberHeld = GlobalKeyboard.IsNumberDown();
 
             if (isShiftKeyHeld && isNumberHeld)
@@ -386,11 +377,6 @@ namespace STROOP.Controls.VariablePanel
                 UnselectAllVariables();
                 Color? color = ColorUtilities.GetColorForHighlight();
                 watchVars.ForEach(watchVar => watchVar.ToggleHighlighted(color));
-            }
-            else if (isDKeyHeld)
-            {
-                UnselectAllVariables();
-                watchVars.ForEach(watchVar => watchVar.WatchVarWrapper.ToggleDisplay());
             }
             else if (isCKeyHeld)
             {
