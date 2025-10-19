@@ -348,7 +348,7 @@ namespace STROOP.Tabs
                 uint nameOffset = useRelativeName ? (uint)ByteIndex : MemoryAddress;
 
                 var view = new MemoryDescriptor(effectiveType, baseAddressType, offset).CreateView();
-                view.SetValueByKey(CommonVariableProperties.useHex, true);
+                view.SetValueByKey(CommonVariableProperties.useHex, true.ToString());
                 return view;
             }
         }

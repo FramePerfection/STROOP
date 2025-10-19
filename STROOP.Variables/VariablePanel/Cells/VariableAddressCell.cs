@@ -18,7 +18,7 @@ namespace STROOP.Variables.VariablePanel.Cells
         protected abstract void ShowMemory(uint address);
 
         public VariableAddressCell(IVariable<uint> watchVar, VariableCellControl<TUiContext> varCellControl)
-            : base(watchVar.WithKeyedValue(CommonVariableProperties.useHex, true), varCellControl)
+            : base(watchVar.WithKeyedValue(CommonVariableProperties.useHex, true.ToString()), varCellControl)
         {
             varCellControl.AddSetting(_viewAddressCellSetting);
         }

@@ -5,7 +5,7 @@ namespace STROOP.Variables.Utilities;
 
 public static class IVariableViewExtensions
 {
-    public static IVariable<T> WithKeyedValue<T, TValue>(this IVariable<T> view, string key, TValue value)
+    public static IVariable<T> WithKeyedValue<T>(this IVariable<T> view, string key, string value)
     {
         view.SetValueByKey(key, value);
         return view;

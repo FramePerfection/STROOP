@@ -30,11 +30,11 @@ public class XmlMemoryVariable<T>
         Name = xElement.Value;
     }
 
-    public override string GetValueByKey(string key) => xElement.Attribute(key)?.Value ?? null;
+    public override string GetValueByKey(string key) => xElement.Attribute(key)?.Value;
 
-    public override bool SetValueByKey(string key, object value)
+    public override bool SetValueByKey(string key, string value)
     {
-        xElement.SetAttributeValue(XName.Get(key), value.ToString());
+        xElement.SetAttributeValue(XName.Get(key), value);
         return true;
     }
 

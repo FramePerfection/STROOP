@@ -29,15 +29,11 @@ public class CustomVariable : IVariable
     }
 
     public virtual string GetValueByKey(string key)
-    {
-        if (keyedValues.TryGetValue(key, out string? result))
-            return result;
-        return null;
-    }
+        => keyedValues.GetValueOrDefault(key);
 
-    public virtual bool SetValueByKey(string key, object value)
+    public virtual bool SetValueByKey(string key, string value)
     {
-        keyedValues[key] = value.ToString();
+        keyedValues[key] = value;
         return true;
     }
 }
