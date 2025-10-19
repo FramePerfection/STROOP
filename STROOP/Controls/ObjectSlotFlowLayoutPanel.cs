@@ -1,6 +1,7 @@
 ﻿using STROOP.Models;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;

@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainerInput = new STROOP.BetterSplitContainer();
             this.inputDisplayPanel = new STROOP.InputDisplayPanel();
-            this.watchVariablePanelInput = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelInput = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerInput)).BeginInit();
             this.splitContainerInput.Panel1.SuspendLayout();
             this.splitContainerInput.Panel2.SuspendLayout();
@@ -57,7 +57,7 @@
             // 
             // splitContainerInput.Panel2
             // 
-            this.splitContainerInput.Panel2.Controls.Add(this.watchVariablePanelInput);
+            this.splitContainerInput.Panel2.Controls.Add(this._variablePanelInput);
             this.splitContainerInput.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerInput.Panel2MinSize = 0;
             this.splitContainerInput.Size = new System.Drawing.Size(915, 463);
@@ -77,13 +77,13 @@
             // 
             // watchVariablePanelInput
             // 
-            this.watchVariablePanelInput.DataPath = "Config/InputData.xml";
-            this.watchVariablePanelInput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelInput.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelInput.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelInput.Name = "watchVariablePanelInput";
-            this.watchVariablePanelInput.Size = new System.Drawing.Size(480, 457);
-            this.watchVariablePanelInput.TabIndex = 2;
+            this._variablePanelInput.DataPath = "Config/InputData.xml";
+            this._variablePanelInput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelInput.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelInput.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelInput.Name = "_variablePanelInput";
+            this._variablePanelInput.Size = new System.Drawing.Size(480, 457);
+            this._variablePanelInput.TabIndex = 2;
             // 
             // InputTab
             // 
@@ -105,6 +105,6 @@
 
         private BetterSplitContainer splitContainerInput;
         private InputDisplayPanel inputDisplayPanel;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelInput;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelInput;
     }
 }

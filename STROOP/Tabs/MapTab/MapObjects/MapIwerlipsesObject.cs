@@ -60,8 +60,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
-                var color = ColorUtilities.ColorToVec4(Color, OpacityByte);
-                var outlineColor = ColorUtilities.ColorToVec4(OutlineColor);
+                var color = OpenTKUtilities.ColorToVec4(Color, OpacityByte);
+                var outlineColor = OpenTKUtilities.ColorToVec4(OutlineColor);
                 foreach (var transform in _ellipseTransforms)
                     graphics.circleRenderer.AddInstance(
                         graphics.view.mode != MapView.ViewMode.TopDown,

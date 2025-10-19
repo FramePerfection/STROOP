@@ -17,7 +17,7 @@ using STROOP.Tabs.MapTab;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
-using STROOP.Variables.Views;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Utilities
 {
@@ -121,12 +121,12 @@ namespace STROOP.Utilities
             return doc;
         }
 
-        public static List<IVariableView> OpenWatchVariables(string path) => OpenWatchVariableControlPrecursors(path);
+        public static List<IVariable> OpenWatchVariables(string path) => OpenWatchVariableControlPrecursors(path);
 
-        public static List<IVariableView> OpenWatchVariableControlPrecursors(string path)
+        public static List<IVariable> OpenWatchVariableControlPrecursors(string path)
         {
             string schemaFile = "MiscDataSchema.xsd";
-            var objectData = new List<IVariableView>();
+            var objectData = new List<IVariable>();
             var assembly = Assembly.GetExecutingAssembly();
 
             // Create schema set
@@ -143,7 +143,7 @@ namespace STROOP.Utilities
             {
                 if (element.Name.ToString() != "Data")
                     continue;
-                var view = WatchVariableWrapperFactory.ParseXml(element);
+                var view = VariableCellFactory<VariablePanelUiContext>.ParseXml(element, WatchVariableSpecialUtilities.dictionary);
                 if (view != null)
                     objectData.Add(view);
             }
@@ -271,10 +271,10 @@ namespace STROOP.Utilities
                                 rotates = bool.Parse(element.Element(XName.Get("MapImage")).Attribute(XName.Get("rotates")).Value);
                             }
 
-                            List<IVariableView> precursors = new List<IVariableView>();
+                            List<IVariable> precursors = new List<IVariable>();
                             foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
                             {
-                                var variableView = WatchVariableWrapperFactory.ParseXml(subElement);
+                                var variableView = VariableCellFactory<VariablePanelUiContext>.ParseXml(subElement, WatchVariableSpecialUtilities.dictionary);
                                 if (variableView != null)
                                     precursors.Add(variableView);
                             }

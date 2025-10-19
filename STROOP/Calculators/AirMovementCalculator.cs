@@ -167,7 +167,7 @@ namespace STROOP.Structs
             int maxSpeed = longJump ? 48 : 32;
 
             ushort marioAngle = initialState.MarioAngle;
-            ushort yawIntended = MoreMath.CalculateAngleFromInputs(input.X, input.Y, initialState.CameraAngle);
+            ushort yawIntended = STROOPMath.CalculateAngleFromInputs(input.X, input.Y, initialState.CameraAngle);
             int deltaAngleIntendedFacing = yawIntended - marioAngle;
             float inputScaledMagnitude = input.GetScaledMagnitude();
 

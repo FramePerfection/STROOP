@@ -4,6 +4,7 @@ using System.Linq;
 using STROOP.Structs;
 using System.ComponentModel;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 using System.Windows.Forms;
 using System.Drawing;
 

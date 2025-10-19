@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
-using STROOP.Variables.Views;
 
 namespace STROOP.Tabs
 {
@@ -22,7 +21,7 @@ namespace STROOP.Tabs
         private readonly List<ValueText> _currentValueTexts;
         private readonly List<MemoryDescriptor> _objectPrecursors;
         private readonly List<MemoryDescriptor> _objectSpecificPrecursors;
-        private List<MemoryDescriptor> _memTabPrecursors => watchVariablePanelMemory.GetCurrentVariablePrecursors().ToList();
+        private List<MemoryDescriptor> _memTabPrecursors => _variablePanelMemory.GetCurrentVariablePrecursors().ToList();
 
         private uint? _address;
 
@@ -61,7 +60,7 @@ namespace STROOP.Tabs
                 if (_behavior.HasValue)
                     _objectSpecificPrecursors.AddRange(
                         Config.ObjectAssociations.GetWatchVarControls(_behavior.Value)
-                            .ConvertAndRemoveNull(x => (x as IMemoryBasedVariableView)?.memoryDescriptor)
+                            .ConvertAndRemoveNull(x => (x as IMemoryVariable)?.memoryDescriptor)
                     );
             }
         }
@@ -81,8 +80,8 @@ namespace STROOP.Tabs
             _objectSnapshot = null;
 
             _currentValueTexts = new List<ValueText>();
-            _objectPrecursors = XmlConfigParser.OpenWatchVariableControlPrecursors(watchVariablePanelMemory.DataPath)
-                .ConvertAndRemoveNull(x => (x as IMemoryBasedVariableView)?.memoryDescriptor);
+            _objectPrecursors = XmlConfigParser.OpenWatchVariableControlPrecursors(_variablePanelMemory.DataPath)
+                .ConvertAndRemoveNull(x => (x as IMemoryVariable)?.memoryDescriptor);
             _objectSpecificPrecursors = new List<MemoryDescriptor>();
         }
 
@@ -253,8 +252,8 @@ namespace STROOP.Tabs
                     {
                         precursorLists.ForEach(precursors =>
                         {
-                            foreach (var ctrl in watchVariablePanelMemory.AddVariables(valueText.GetOverlapped(precursors).Select(x => x.CreateView())))
-                                ctrl.GroupList.Add("Custom");
+                            foreach (var ctrl in _variablePanelMemory.AddVariables(valueText.GetOverlapped(precursors).Select(x => x.CreateView())))
+                                ctrl.control.GroupList.Add("Custom");
                         });
                     }
                 });
@@ -264,7 +263,7 @@ namespace STROOP.Tabs
                 _currentValueTexts.ForEach(valueText =>
                 {
                     if (index >= valueText.StringIndex && index <= valueText.StringIndex + valueText.StringSize)
-                        watchVariablePanelMemory.AddVariable(valueText.CreatePrecursor(useObjAddress, useHex, useObj, useRelativeName));
+                        _variablePanelMemory.AddVariable(valueText.CreatePrecursor(useObjAddress, useHex, useObj, useRelativeName));
                 });
             }
 
@@ -330,15 +329,15 @@ namespace STROOP.Tabs
                 }));
             }
 
-            public IVariableView CreatePrecursor(bool useObjAddress, bool useHex, bool useObj, bool useRelativeName)
+            public IVariable CreatePrecursor(bool useObjAddress, bool useHex, bool useObj, bool useRelativeName)
             {
-                string subclass = useObj ? WatchVariableSubclass.Object : WatchVariableSubclass.Number;
-                if (GlobalKeyboard.IsDown(Keys.A)) subclass = WatchVariableSubclass.Angle;
-                if (GlobalKeyboard.IsDown(Keys.B)) subclass = WatchVariableSubclass.Boolean;
-                if (GlobalKeyboard.IsDown(Keys.Q)) subclass = WatchVariableSubclass.Object;
-                if (GlobalKeyboard.IsDown(Keys.T)) subclass = WatchVariableSubclass.Triangle;
+                string subclass = useObj ? VariableSubclass.Object : VariableSubclass.Number;
+                if (GlobalKeyboard.IsDown(Keys.A)) subclass = VariableSubclass.Angle;
+                if (GlobalKeyboard.IsDown(Keys.B)) subclass = VariableSubclass.Boolean;
+                if (GlobalKeyboard.IsDown(Keys.Q)) subclass = VariableSubclass.Object;
+                if (GlobalKeyboard.IsDown(Keys.T)) subclass = VariableSubclass.Triangle;
 
-                bool isObjectOrTriangle = subclass == WatchVariableSubclass.Object || subclass == WatchVariableSubclass.Triangle;
+                bool isObjectOrTriangle = subclass == VariableSubclass.Object || subclass == VariableSubclass.Triangle;
 
                 Type effectiveType = isObjectOrTriangle
                     ? typeof(uint)
@@ -349,7 +348,7 @@ namespace STROOP.Tabs
                 uint nameOffset = useRelativeName ? (uint)ByteIndex : MemoryAddress;
 
                 var view = new MemoryDescriptor(effectiveType, baseAddressType, offset).CreateView();
-                view.SetValueByKey(CommonViewProperties.useHex, true);
+                view.SetValueByKey(CommonVariableProperties.useHex, true);
                 return view;
             }
         }

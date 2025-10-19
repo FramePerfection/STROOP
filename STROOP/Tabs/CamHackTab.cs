@@ -11,7 +11,7 @@ using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
-using STROOP.Variables.Views;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Tabs
 {
@@ -20,13 +20,13 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["CamHack"] = () => new List<uint> { CamHackConfig.StructAddress };
+            VariableUtilities.baseAddressGetters["CamHack"] = () => new List<uint> { CamHackConfig.StructAddress };
         }
 
         public CamHackMode CurrentCamHackMode { get; private set; }
 
         private int _numPans = 0;
-        private List<IEnumerable<WatchVariableControl>> _panVars = new List<IEnumerable<WatchVariableControl>>();
+        private List<IEnumerable<IWinFormsVariableCell>> _panVars = new List<IEnumerable<IWinFormsVariableCell>>();
 
         public CamHackTab()
         {
@@ -232,7 +232,7 @@ namespace STROOP.Tabs
                 for (int i = _numPans; i < numPans; i++)
                 {
                     SpecialConfig.PanModels.Add(new PanModel());
-                    _panVars.Add(watchVariablePanelCamHack.AddVariables(CreatePanVars(i)));
+                    _panVars.Add(_variablePanelCamHack.AddVariables(CreatePanVars(i)));
                 }
             }
 
@@ -243,14 +243,14 @@ namespace STROOP.Tabs
                     SpecialConfig.PanModels.RemoveAt(i);
                     var panVars = _panVars[i];
                     _panVars.Remove(panVars);
-                    watchVariablePanelCamHack.RemoveVariables(panVars);
+                    _variablePanelCamHack.RemoveVariables(panVars);
                 }
             }
 
             _numPans = numPans;
         }
 
-        private IVariableView CreatePanVar(
+        private IVariable CreatePanVar(
             string name,
             string specialType,
             string color,
@@ -267,13 +267,13 @@ namespace STROOP.Tabs
             if (coord != null) xElement.Add(new XAttribute("coord", coord));
             if (display != null) xElement.Add(new XAttribute("display", display));
             if (yaw != null) xElement.Add(new XAttribute("yaw", yaw));
-            return WatchVariableWrapperFactory.ParseXml(xElement);
+            return VariableCellFactory<VariablePanelUiContext>.ParseXml(xElement, WatchVariableSpecialUtilities.dictionary);
         }
 
-        private List<IVariableView> CreatePanVars(int index)
+        private List<IVariable> CreatePanVars(int index)
         {
             WatchVariableSpecialUtilities.AddPanEntriesToDictionary(index);
-            return new List<IVariableView>
+            return new List<IVariable>
             {
                 CreatePanVar("Global Timer", String.Format("Pan{0}GlobalTimer", index), "Orange"),
                 CreatePanVar(String.Format("Pan{0} Start Time", index), String.Format("Pan{0}StartTime", index), "Orange"),

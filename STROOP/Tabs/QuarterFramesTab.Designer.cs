@@ -29,26 +29,26 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.watchVariablePanelQuarterFrame = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelQuarterFrame = new STROOP.Controls.VariablePanel.VariablePanel();
             this.SuspendLayout();
             // 
             // watchVariablePanelQuarterFrame
             // 
-            this.watchVariablePanelQuarterFrame.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._variablePanelQuarterFrame.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.watchVariablePanelQuarterFrame.DataPath = "Config/QuarterFrameData.xml";
-            this.watchVariablePanelQuarterFrame.Location = new System.Drawing.Point(0, 0);
-            this.watchVariablePanelQuarterFrame.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelQuarterFrame.Name = "watchVariablePanelQuarterFrame";
-            this.watchVariablePanelQuarterFrame.Size = new System.Drawing.Size(915, 463);
-            this.watchVariablePanelQuarterFrame.TabIndex = 3;
+            this._variablePanelQuarterFrame.DataPath = "Config/QuarterFrameData.xml";
+            this._variablePanelQuarterFrame.Location = new System.Drawing.Point(0, 0);
+            this._variablePanelQuarterFrame.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelQuarterFrame.Name = "_variablePanelQuarterFrame";
+            this._variablePanelQuarterFrame.Size = new System.Drawing.Size(915, 463);
+            this._variablePanelQuarterFrame.TabIndex = 3;
             // 
             // QuarterFramesTab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.watchVariablePanelQuarterFrame);
+            this.Controls.Add(this._variablePanelQuarterFrame);
             this.Name = "QuarterFramesTab";
             this.Size = new System.Drawing.Size(915, 463);
             this.ResumeLayout(false);
@@ -57,6 +57,6 @@
 
         #endregion
 
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelQuarterFrame;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelQuarterFrame;
     }
 }

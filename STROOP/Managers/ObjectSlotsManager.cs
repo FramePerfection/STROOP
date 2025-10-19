@@ -54,17 +54,17 @@ namespace STROOP.Managers
         [InitializeBaseAddress]
         static void InitializeBaseAddress()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.Object] = () => Config.ObjectSlotsManager.SelectedSlotsAddresses;
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.ProcessGroup] = () =>
+            VariableUtilities.baseAddressGetters[BaseAddressType.Object] = () => Config.ObjectSlotsManager.SelectedSlotsAddresses;
+            VariableUtilities.baseAddressGetters[BaseAddressType.ProcessGroup] = () =>
                 Config.ObjectSlotsManager.SelectedObjects.ConvertAll(obj => obj.CurrentProcessGroup ?? uint.MaxValue);
 
-            WatchVariableUtilities.baseAddressGetters["Graphics"] = () =>
+            VariableUtilities.baseAddressGetters["Graphics"] = () =>
                 Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.BehaviorGfxOffset));
 
-            WatchVariableUtilities.baseAddressGetters["Animation"] = () =>
+            VariableUtilities.baseAddressGetters["Animation"] = () =>
                 Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.AnimationOffset));
 
-            WatchVariableUtilities.baseAddressGetters["Waypoint"] = () =>
+            VariableUtilities.baseAddressGetters["Waypoint"] = () =>
                 Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.WaypointOffset));
         }
 

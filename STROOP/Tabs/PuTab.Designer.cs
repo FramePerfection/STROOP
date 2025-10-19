@@ -62,7 +62,7 @@
             this.buttonPuConZpPu = new System.Windows.Forms.Button();
             this.buttonPuConZpQpu = new System.Windows.Forms.Button();
             this.buttonPuConHome = new System.Windows.Forms.Button();
-            this.watchVariablePanelPu = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelPu = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerPu)).BeginInit();
             this.splitContainerPu.Panel1.SuspendLayout();
             this.splitContainerPu.Panel2.SuspendLayout();
@@ -91,7 +91,7 @@
             // 
             // splitContainerPu.Panel2
             // 
-            this.splitContainerPu.Panel2.Controls.Add(this.watchVariablePanelPu);
+            this.splitContainerPu.Panel2.Controls.Add(this._variablePanelPu);
             this.splitContainerPu.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerPu.Panel2MinSize = 0;
             this.splitContainerPu.Size = new System.Drawing.Size(915, 463);
@@ -472,13 +472,13 @@
             // 
             // watchVariablePanelPu
             // 
-            this.watchVariablePanelPu.DataPath = "Config/PuData.xml";
-            this.watchVariablePanelPu.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelPu.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelPu.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelPu.Name = "watchVariablePanelPu";
-            this.watchVariablePanelPu.Size = new System.Drawing.Size(615, 457);
-            this.watchVariablePanelPu.TabIndex = 5;
+            this._variablePanelPu.DataPath = "Config/PuData.xml";
+            this._variablePanelPu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelPu.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelPu.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelPu.Name = "_variablePanelPu";
+            this._variablePanelPu.Size = new System.Drawing.Size(615, 457);
+            this._variablePanelPu.TabIndex = 5;
             // 
             // PuTab
             // 
@@ -534,6 +534,6 @@
         private System.Windows.Forms.Button buttonPuConZpPu;
         private System.Windows.Forms.Button buttonPuConZpQpu;
         private System.Windows.Forms.Button buttonPuConHome;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelPu;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelPu;
     }
 }

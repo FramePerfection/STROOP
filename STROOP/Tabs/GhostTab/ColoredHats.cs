@@ -137,7 +137,7 @@ namespace STROOP.Tabs.GhostTab
                 buttonGhostColor.Enabled = false;
             else
             {
-                buttonGhostColor.BackColor = ColorUtilities.Vec4ToColor(ghost.hatColor);
+                buttonGhostColor.BackColor = OpenTKUtilities.Vec4ToColor(ghost.hatColor);
                 buttonGhostColor.Enabled = true;
             }
 
@@ -150,7 +150,7 @@ namespace STROOP.Tabs.GhostTab
             dlg.Color = System.Drawing.Color.Red;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                marioHatColor = ColorUtilities.ColorToVec4(dlg.Color);
+                marioHatColor = OpenTKUtilities.ColorToVec4(dlg.Color);
                 buttonMarioColor.BackColor = dlg.Color;
             }
         }
@@ -163,7 +163,7 @@ namespace STROOP.Tabs.GhostTab
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     foreach (var g in GetSelectedGhosts())
-                        g.hatColor = ColorUtilities.ColorToVec4(dlg.Color);
+                        g.hatColor = OpenTKUtilities.ColorToVec4(dlg.Color);
                     buttonGhostColor.BackColor = dlg.Color;
                 }
             }

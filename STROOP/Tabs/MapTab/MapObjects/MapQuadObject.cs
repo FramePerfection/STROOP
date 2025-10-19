@@ -15,8 +15,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
-                var color = Utilities.ColorUtilities.ColorToVec4(Color, OpacityByte);
-                var outlineColor = Utilities.ColorUtilities.ColorToVec4(OutlineColor);
+                var color = Utilities.OpenTKUtilities.ColorToVec4(Color, OpacityByte);
+                var outlineColor = Utilities.OpenTKUtilities.ColorToVec4(OutlineColor);
 
                 foreach (var quad in GetQuadList())
                 {

@@ -10,7 +10,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
 using STROOP.Variables;
-using STROOP.Variables.Views;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
@@ -138,7 +138,7 @@ namespace STROOP.Tabs
         public ObjectTab()
         {
             InitializeComponent();
-            watchVariablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
         }
 
         public override string GetDisplayName() => "Object";
@@ -146,7 +146,7 @@ namespace STROOP.Tabs
         public override void InitializeTab()
         {
             base.InitializeTab();
-            this.watchVariablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            this._variablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
             _objectSlots = Config.StroopMainForm.ObjectSlotsManager;
 
             labelObjAddValue.Click += ObjAddressLabel_Click;
@@ -412,11 +412,11 @@ namespace STROOP.Tabs
         // Having an empty action assigned to this adds the context menu entry to the ObjectSlot controls
         public override Action<IEnumerable<ObjectSlot>> objectSlotsClicked => objectSlots => { };
 
-        public void SetBehaviorWatchVariables(IEnumerable<IVariableView> watchVars, Color color)
+        public void SetBehaviorWatchVariables(IEnumerable<IVariable> watchVars, Color color)
         {
-            watchVariablePanelObject.RemoveVariableGroup(VariableGroup.ObjectSpecific);
-            foreach (var ctrl in watchVariablePanelObject.AddVariables(watchVars))
-                ctrl.BaseColor = color;
+            _variablePanelObject.RemoveVariableGroup(VariableGroup.ObjectSpecific);
+            foreach (var ctrl in _variablePanelObject.AddVariables(watchVars))
+                ctrl.control.BaseColor = color;
         }
 
         private void ObjAddressLabel_Click(object sender, EventArgs e)
@@ -466,7 +466,7 @@ namespace STROOP.Tabs
                 SlotPos = "";
                 labelObjAddValue.Text = "";
                 _lastGeneralizedBehavior = null;
-                SetBehaviorWatchVariables(Array.Empty<IVariableView>(), Color.White);
+                SetBehaviorWatchVariables(Array.Empty<IVariable>(), Color.White);
             }
             else if (_objects.Count() == 1)
             {
@@ -517,7 +517,7 @@ namespace STROOP.Tabs
                     else
                     {
                         Behavior = "";
-                        SetBehaviorWatchVariables(Array.Empty<IVariableView>(), Color.White);
+                        SetBehaviorWatchVariables(Array.Empty<IVariable>(), Color.White);
                     }
 
                     _lastGeneralizedBehavior = multiBehavior;

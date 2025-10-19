@@ -20,8 +20,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
                 List<(float centerX, float centerZ, float radius)> dimensionList = Get2DDimensions();
-                var color = ColorUtilities.ColorToVec4(Color, OpacityByte);
-                var outlineColor = ColorUtilities.ColorToVec4(OutlineColor);
+                var color = OpenTKUtilities.ColorToVec4(Color, OpacityByte);
+                var outlineColor = OpenTKUtilities.ColorToVec4(OutlineColor);
                 foreach (var dim in dimensionList)
                 {
                     var transform = graphics.BillboardMatrix * Matrix4.CreateScale(dim.radius) * Matrix4.CreateTranslation(dim.centerX, 0, dim.centerZ);

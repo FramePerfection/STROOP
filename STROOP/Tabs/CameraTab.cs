@@ -15,12 +15,12 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitializeBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.Camera] = () => new List<uint> { CameraConfig.StructAddress };
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.CameraStruct] = () => new List<uint> { CameraConfig.CamStructAddress };
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.LakituStruct] = () => new List<uint> { CameraConfig.LakituStructAddress };
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.CameraModeInfo] = () => new List<uint> { CameraConfig.ModeInfoAddress };
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.CameraModeTransition] = () => new List<uint> { CameraConfig.ModeTransitionAddress };
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.CameraSettings] = () =>
+            VariableUtilities.baseAddressGetters[BaseAddressType.Camera] = () => new List<uint> { CameraConfig.StructAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraStruct] = () => new List<uint> { CameraConfig.CamStructAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.LakituStruct] = () => new List<uint> { CameraConfig.LakituStructAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraModeInfo] = () => new List<uint> { CameraConfig.ModeInfoAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraModeTransition] = () => new List<uint> { CameraConfig.ModeTransitionAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraSettings] = () =>
             {
                 uint a1 = 0x8033B910;
                 uint a2 = ProcessStream.Instance.GetUInt32(a1);

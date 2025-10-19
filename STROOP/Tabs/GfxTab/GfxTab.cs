@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using STROOP.Controls.VariablePanel;
 using STROOP.Core;
 using STROOP.Core.Utilities;
 using STROOP.Structs;
@@ -28,12 +27,12 @@ namespace STROOP.Tabs.GfxTab
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.GfxNode] =
+            VariableUtilities.baseAddressGetters[BaseAddressType.GfxNode] =
                 () => AccessScope<GfxTab>.content?.SelectedNode?.Address.Yield() ?? Array.Empty<uint>();
         }
 
         public GfxNode SelectedNode;
-        IEnumerable<WatchVariableControl> SpecificVariables;
+        IEnumerable<IWinFormsVariableCell> SpecificVariables;
 
         public GfxTab()
         {
@@ -48,7 +47,7 @@ namespace STROOP.Tabs.GfxTab
             buttonGfxDumpDisplayList.Click += DumpButton_Click;
             buttonGfxHitboxHack.Click += (sender, e) => InjectHitboxViewCode();
 
-            SpecificVariables = new List<WatchVariableControl>();
+            SpecificVariables = new List<IWinFormsVariableCell>();
         }
 
         public override void InitializeTab()
@@ -56,7 +55,7 @@ namespace STROOP.Tabs.GfxTab
             base.InitializeTab();
             SuspendLayout();
             foreach (var precursor in GfxNode.GetCommonVariables())
-                watchVariablePanelGfx.AddVariable(precursor);
+                _variablePanelGfx.AddVariable(precursor);
             ResumeLayout();
         }
 
@@ -119,11 +118,11 @@ namespace STROOP.Tabs.GfxTab
         // The variables in the first 0x14 bytes in a GFX node are common, but after that there are type-specific variables
         void UpdateSpecificVariables(GfxNode node)
         {
-            watchVariablePanelGfx.RemoveVariables(SpecificVariables);
+            _variablePanelGfx.RemoveVariables(SpecificVariables);
             if (node != null)
-                SpecificVariables = watchVariablePanelGfx.AddVariables(node.GetTypeSpecificVariables());
+                SpecificVariables = _variablePanelGfx.AddVariables(node.GetTypeSpecificVariables());
             else
-                SpecificVariables = new WatchVariableControl[0];
+                SpecificVariables = Array.Empty<IWinFormsVariableCell>();
         }
 
         // Build a GFX tree for every object that is selected in the object slot view

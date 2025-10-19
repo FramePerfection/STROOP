@@ -88,7 +88,7 @@
             this.buttonCameraPosXnZp = new System.Windows.Forms.Button();
             this.buttonCameraPosXn = new System.Windows.Forms.Button();
             this.buttonCameraPosXnZn = new System.Windows.Forms.Button();
-            this.watchVariablePanelCamera = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelCamera = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCamera)).BeginInit();
             this.splitContainerCamera.Panel1.SuspendLayout();
             this.splitContainerCamera.Panel2.SuspendLayout();
@@ -125,7 +125,7 @@
             // 
             // splitContainerCamera.Panel2
             // 
-            this.splitContainerCamera.Panel2.Controls.Add(this.watchVariablePanelCamera);
+            this.splitContainerCamera.Panel2.Controls.Add(this._variablePanelCamera);
             this.splitContainerCamera.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerCamera.Panel2MinSize = 0;
             this.splitContainerCamera.Size = new System.Drawing.Size(915, 463);
@@ -769,13 +769,13 @@
             // 
             // watchVariablePanelCamera
             // 
-            this.watchVariablePanelCamera.DataPath = "Config/CameraData.xml";
-            this.watchVariablePanelCamera.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelCamera.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelCamera.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelCamera.Name = "watchVariablePanelCamera";
-            this.watchVariablePanelCamera.Size = new System.Drawing.Size(701, 457);
-            this.watchVariablePanelCamera.TabIndex = 3;
+            this._variablePanelCamera.DataPath = "Config/CameraData.xml";
+            this._variablePanelCamera.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelCamera.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelCamera.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelCamera.Name = "_variablePanelCamera";
+            this._variablePanelCamera.Size = new System.Drawing.Size(701, 457);
+            this._variablePanelCamera.TabIndex = 3;
             // 
             // CameraTab
             // 
@@ -863,6 +863,6 @@
         private System.Windows.Forms.Button buttonCameraPosXnZp;
         private System.Windows.Forms.Button buttonCameraPosXn;
         private System.Windows.Forms.Button buttonCameraPosXnZn;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelCamera;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelCamera;
     }
 }

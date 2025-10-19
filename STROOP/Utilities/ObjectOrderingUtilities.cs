@@ -4,6 +4,7 @@ using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {

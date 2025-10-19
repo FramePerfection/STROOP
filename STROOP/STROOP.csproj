@@ -68,7 +68,7 @@
         <Compile Update="Controls\PanelEx.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="Controls\VariablePanel\WatchVariablePanelRenderer.cs">
+        <Compile Update="Controls\VariablePanel\VariablePanelRenderer.cs">
             <SubType>UserControl</SubType>
         </Compile>
         <Compile Update="Controls\VarHackContainer.cs">
@@ -122,7 +122,7 @@
         <Compile Update="Controls\IntPictureBox.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="Controls\VariablePanel\WatchVariableFlowLayoutPanel.cs">
+        <Compile Update="Controls\VariablePanel\VariablePanel.cs">
             <SubType>UserControl</SubType>
         </Compile>
         <Compile Update="Controls\RichTextBoxEx.cs">

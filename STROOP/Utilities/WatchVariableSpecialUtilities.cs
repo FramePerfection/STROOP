@@ -1,8 +1,8 @@
-﻿using System;
+﻿using STROOP.Controls.VariablePanel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using STROOP.Controls.VariablePanel;
 using STROOP.Core;
 using STROOP.Core.Utilities;
 using STROOP.Models;
@@ -13,52 +13,39 @@ using STROOP.Tabs;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
-using STROOP.Variables.Views;
 
 namespace STROOP.Utilities
 {
     public static class WatchVariableSpecialUtilities
     {
-
-        public static WatchVariableSpecialDictionary dictionary { get; private set; }
+        public static VariableSpecialDictionary dictionary { get; private set; }
 
         static WatchVariableSpecialUtilities()
         {
-            dictionary = new WatchVariableSpecialDictionary();
+            dictionary = new VariableSpecialDictionary();
             AddLiteralEntriesToDictionary();
             AddGeneratedEntriesToDictionary();
             AddPanEntriesToDictionary();
             GeneralUtilities.ExecuteInitializers<InitializeSpecialAttribute>();
         }
 
-        static IEnumerable<IEnumerable<double>> FilterNumberVariables(List<WatchVariableControl> controls)
-        {
-            foreach (var ctrl in controls)
-            {
-                if (ctrl.view is IVariableView<byte> byteView) yield return byteView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<sbyte> sbyteView) yield return sbyteView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<ushort> ushortView) yield return ushortView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<short> shortView) yield return shortView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<uint> uintView) yield return uintView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<int> intView) yield return intView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<ulong> ulongView) yield return ulongView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<long> longView) yield return longView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<float> floatView) yield return floatView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<double> doubleView) yield return doubleView.getter().Select(x => (double)x);
-                else if (ctrl.view is IVariableView<decimal> decmialView) yield return decmialView.getter().Select(x => (double)x);
-            }
-        }
+        static IEnumerable<double> CrossOperationOnControls(List<IWinFormsVariableCell> controls, Func<IEnumerable<double>, double> op)
+            => CrossOperation(op, VariableUtilities.GetNumberValues(controls));
 
-        static IEnumerable<double> CrossOperationOnControls(List<WatchVariableControl> controls, Func<IEnumerable<double>, double> op)
-            => CrossOperation(op, FilterNumberVariables(controls).ToArray());
 
         static IEnumerable<TResult> CrossOperation<TInput, TResult>(Func<IEnumerable<TInput>, TResult> op, params IEnumerable<TInput>[] variableStreams)
+            => CrossOperation(op, (IEnumerable<IEnumerable<TInput>>)variableStreams);
+
+        static IEnumerable<TResult> CrossOperation<TInput, TResult>(
+            Func<IEnumerable<TInput>, TResult> op,
+            IEnumerable<IEnumerable<TInput>> variableStreams
+        )
         {
             int index;
             var streamEnumerators = variableStreams.Select(x => x.GetEnumerator());
             do
             {
-                var nextResult = new List<TInput>(variableStreams.Length);
+                var nextResult = new List<TInput>();
                 index = 0;
                 foreach (var enumerator in streamEnumerators)
                     if (enumerator.MoveNext())
@@ -67,7 +54,7 @@ namespace STROOP.Utilities
             } while (index > 0);
         }
 
-        public static IVariableView<double>.ValueGetter AddAggregateMathOperationEntry(List<WatchVariableControl> controls, AggregateMathOperation operation)
+        public static IVariable<double>.ValueGetter AddAggregateMathOperationEntry(List<IWinFormsVariableCell> controls, AggregateMathOperation operation)
         {
             switch (operation)
             {
@@ -143,11 +130,11 @@ namespace STROOP.Utilities
                     () => PositionAngle.Mario.Yield(),
                     () => PositionAngle.Holp.Yield(),
                     () => PositionAngle.Camera.Yield(),
-                    () => WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Object).Select(x => PositionAngle.Obj(x)),
-                    () => WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Object).Select(x => PositionAngle.ObjHome(x)),
-                    () => WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(x => PositionAngle.Tri(x, 1)),
-                    () => WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(x => PositionAngle.Tri(x, 2)),
-                    () => WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(x => PositionAngle.Tri(x, 3)),
+                    () => VariableUtilities.GetBaseAddresses(BaseAddressType.Object).Select(x => PositionAngle.Obj(x)),
+                    () => VariableUtilities.GetBaseAddresses(BaseAddressType.Object).Select(x => PositionAngle.ObjHome(x)),
+                    () => VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(x => PositionAngle.Tri(x, 1)),
+                    () => VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(x => PositionAngle.Tri(x, 2)),
+                    () => VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(x => PositionAngle.Tri(x, 3)),
                 };
 
             List<string> posAngleStrings =
@@ -2654,7 +2641,7 @@ namespace STROOP.Utilities
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                    double signedDistToLine12 = MoreMath.GetSignedDistanceFromPointToLine(
+                    double signedDistToLine12 = STROOPMath.GetSignedDistanceFromPointToLine(
                         marioPos.X, marioPos.Z,
                         triStruct.X1, triStruct.Z1,
                         triStruct.X2, triStruct.Z2,
@@ -2666,7 +2653,7 @@ namespace STROOP.Utilities
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                    double signedDistToLine12 = MoreMath.GetSignedDistanceFromPointToLine(
+                    double signedDistToLine12 = STROOPMath.GetSignedDistanceFromPointToLine(
                         marioPos.X, marioPos.Z,
                         triStruct.X1, triStruct.Z1,
                         triStruct.X2, triStruct.Z2,
@@ -2691,7 +2678,7 @@ namespace STROOP.Utilities
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                    double signedDistToLine23 = MoreMath.GetSignedDistanceFromPointToLine(
+                    double signedDistToLine23 = STROOPMath.GetSignedDistanceFromPointToLine(
                         marioPos.X, marioPos.Z,
                         triStruct.X1, triStruct.Z1,
                         triStruct.X2, triStruct.Z2,
@@ -2703,7 +2690,7 @@ namespace STROOP.Utilities
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                    double signedDistToLine23 = MoreMath.GetSignedDistanceFromPointToLine(
+                    double signedDistToLine23 = STROOPMath.GetSignedDistanceFromPointToLine(
                         marioPos.X, marioPos.Z,
                         triStruct.X1, triStruct.Z1,
                         triStruct.X2, triStruct.Z2,
@@ -2728,7 +2715,7 @@ namespace STROOP.Utilities
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                    double signedDistToLine31 = MoreMath.GetSignedDistanceFromPointToLine(
+                    double signedDistToLine31 = STROOPMath.GetSignedDistanceFromPointToLine(
                         marioPos.X, marioPos.Z,
                         triStruct.X1, triStruct.Z1,
                         triStruct.X2, triStruct.Z2,
@@ -2740,7 +2727,7 @@ namespace STROOP.Utilities
                 {
                     PositionAngle marioPos = PositionAngle.Mario;
                     TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                    double signedDistToLine31 = MoreMath.GetSignedDistanceFromPointToLine(
+                    double signedDistToLine31 = STROOPMath.GetSignedDistanceFromPointToLine(
                         marioPos.X, marioPos.Z,
                         triStruct.X1, triStruct.Z1,
                         triStruct.X2, triStruct.Z2,

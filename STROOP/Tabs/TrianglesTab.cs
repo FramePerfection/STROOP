@@ -13,7 +13,6 @@ using STROOP.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
-using STROOP.Variables.Views;
 
 namespace STROOP.Tabs
 {
@@ -23,15 +22,15 @@ namespace STROOP.Tabs
         {
             var trianglesTab = AccessScope<StroopMainForm>.content.GetTab<TrianglesTab>();
             List<uint> triangleAddresses = trianglesTab.TriangleAddresses;
-            if (triangleAddresses.Count == 1 && triangleAddresses[0] == 0) return WatchVariableUtilities.BaseAddressListEmpty;
+            if (triangleAddresses.Count == 1 && triangleAddresses[0] == 0) return VariableUtilities.BaseAddressListEmpty;
             return trianglesTab.TriangleAddresses;
         }
 
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.Triangle] = GetTriangleAddresses;
-            WatchVariableUtilities.baseAddressGetters["TriangleExertionForceTable"] = () =>
+            VariableUtilities.baseAddressGetters[BaseAddressType.Triangle] = GetTriangleAddresses;
+            VariableUtilities.baseAddressGetters["TriangleExertionForceTable"] = () =>
                 GetTriangleAddresses().ConvertAll(triangleAddress =>
                 {
                     uint exertionForceIndex = Config.Stream.GetByte(triangleAddress + TriangleOffsetsConfig.ExertionForceIndex);
@@ -39,19 +38,19 @@ namespace STROOP.Tabs
                 });
         }
 
-        static IEnumerable<T> OperateOnTriangles<T>(Func<uint, T> operate) => WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress => operate(triAddress));
+        static IEnumerable<T> OperateOnTriangles<T>(Func<uint, T> operate) => VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress => operate(triAddress));
 
-        static (string, WatchVariablePanel.SpecialFuncWatchVariables) GenerateTriangleRelations =
+        static (string, VariablePanel.SpecialFuncWatchVariables) GenerateTriangleRelations =
             ("Triangle projections",
                 (PositionAngle.HybridPositionAngle pa) =>
                 {
-                    var vars = new List<IVariableView>();
-                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                    var vars = new List<IVariable>();
+                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Normal Dist Away",
                         getter = () =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(AccessScope<TrianglesTab>.content.selection.First());
                                 double normalDistAway =
@@ -62,7 +61,7 @@ namespace STROOP.Tabs
                                 return normalDistAway;
                             }),
                         setter = (double distAway) =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
 
@@ -84,12 +83,12 @@ namespace STROOP.Tabs
                             })
                     });
 
-                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Vertical Dist Away",
                         getter = () =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
                                 double verticalDistAway =
@@ -97,7 +96,7 @@ namespace STROOP.Tabs
                                 return verticalDistAway;
                             }),
                         setter = (double distAbove) =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
                                 double newSelfY = distAbove - (pa.X * triStruct.NormX + pa.Z * triStruct.NormZ + triStruct.NormOffset) / triStruct.NormY;
@@ -107,12 +106,12 @@ namespace STROOP.Tabs
                     });
 
 
-                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Height On Triangle",
                         getter = () =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
                                 double heightOnTriangle = triStruct.GetHeightOnTriangle(pa.X, pa.Z);
@@ -121,15 +120,15 @@ namespace STROOP.Tabs
                         setter = SpecialVariableDefaults<double>.DEFAULT_SETTER
                     });
 
-                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Distance To Line 12",
                         getter = () =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                                double signedDistToLine12 = MoreMath.GetSignedDistanceFromPointToLine(
+                                double signedDistToLine12 = STROOPMath.GetSignedDistanceFromPointToLine(
                                     pa.X, pa.Z,
                                     triStruct.X1, triStruct.Z1,
                                     triStruct.X2, triStruct.Z2,
@@ -138,10 +137,10 @@ namespace STROOP.Tabs
                                 return signedDistToLine12;
                             }),
                         setter = (double dist) =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                                double signedDistToLine12 = MoreMath.GetSignedDistanceFromPointToLine(
+                                double signedDistToLine12 = STROOPMath.GetSignedDistanceFromPointToLine(
                                     pa.X, pa.Z,
                                     triStruct.X1, triStruct.Z1,
                                     triStruct.X2, triStruct.Z2,
@@ -160,15 +159,15 @@ namespace STROOP.Tabs
                             })
                     });
 
-                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Distance To Line 23",
                         getter = () =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                                double signedDistToLine23 = MoreMath.GetSignedDistanceFromPointToLine(
+                                double signedDistToLine23 = STROOPMath.GetSignedDistanceFromPointToLine(
                                     pa.X, pa.Z,
                                     triStruct.X1, triStruct.Z1,
                                     triStruct.X2, triStruct.Z2,
@@ -177,10 +176,10 @@ namespace STROOP.Tabs
                                 return signedDistToLine23;
                             }),
                         setter = (double dist) =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                                double signedDistToLine23 = MoreMath.GetSignedDistanceFromPointToLine(
+                                double signedDistToLine23 = STROOPMath.GetSignedDistanceFromPointToLine(
                                     pa.X, pa.Z,
                                     triStruct.X1, triStruct.Z1,
                                     triStruct.X2, triStruct.Z2,
@@ -199,15 +198,15 @@ namespace STROOP.Tabs
                             })
                     });
 
-                    vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
                         Name = $"{pa.name} Distance To Line 31",
                         getter = () =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                                double signedDistToLine31 = MoreMath.GetSignedDistanceFromPointToLine(
+                                double signedDistToLine31 = STROOPMath.GetSignedDistanceFromPointToLine(
                                     pa.X, pa.Z,
                                     triStruct.X1, triStruct.Z1,
                                     triStruct.X2, triStruct.Z2,
@@ -216,10 +215,10 @@ namespace STROOP.Tabs
                                 return signedDistToLine31;
                             }),
                         setter = (double dist) =>
-                            WatchVariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
+                            VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
-                                double signedDistToLine31 = MoreMath.GetSignedDistanceFromPointToLine(
+                                double signedDistToLine31 = STROOPMath.GetSignedDistanceFromPointToLine(
                                     pa.X, pa.Z,
                                     triStruct.X1, triStruct.Z1,
                                     triStruct.X2, triStruct.Z2,
@@ -250,7 +249,7 @@ namespace STROOP.Tabs
                         {
                             var getter = distFunc.getter;
                             var setter = distFunc.setter;
-                            vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                            vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                             {
                                 Color = "LightBlue",
                                 Name = $"{distFunc.type}Dist {pa.name} To {vertex.name}",
@@ -259,7 +258,7 @@ namespace STROOP.Tabs
                             });
                         }
 
-                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Angle)
+                        vars.Add(new CustomVariable<double>(VariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
@@ -268,7 +267,7 @@ namespace STROOP.Tabs
                             setter = (double angle) => OperateOnTriangles(triAddress => PositionAngle.SetAngleTo(pa, vertex.func(triAddress), angle))
                         });
 
-                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Angle)
+                        vars.Add(new CustomVariable<double>(VariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
@@ -277,7 +276,7 @@ namespace STROOP.Tabs
                             setter = (double angleDiff) => OperateOnTriangles(triAddress => PositionAngle.SetDAngleTo(pa, vertex.func(triAddress), angleDiff))
                         });
 
-                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Angle)
+                        vars.Add(new CustomVariable<double>(VariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
@@ -312,8 +311,8 @@ namespace STROOP.Tabs
         public TrianglesTab()
         {
             InitializeComponent();
-            watchVariablePanelTriangles.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
-            watchVariablePanelTriangles.getSpecialFuncWatchVariables = () => new[] { GenerateTriangleRelations };
+            _variablePanelTriangles.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelTriangles.getSpecialFuncWatchVariables = () => new[] { GenerateTriangleRelations };
         }
 
         public override string GetDisplayName() => "Triangles";

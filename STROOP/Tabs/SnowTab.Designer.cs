@@ -46,7 +46,7 @@
             this.buttonSnowPositionXnZp = new System.Windows.Forms.Button();
             this.buttonSnowPositionXn = new System.Windows.Forms.Button();
             this.buttonSnowPositionXnZn = new System.Windows.Forms.Button();
-            this.watchVariablePanelSnow = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelSnow = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerSnow)).BeginInit();
             this.splitContainerSnow.Panel1.SuspendLayout();
             this.splitContainerSnow.Panel2.SuspendLayout();
@@ -75,7 +75,7 @@
             // 
             // splitContainerSnow.Panel2
             // 
-            this.splitContainerSnow.Panel2.Controls.Add(this.watchVariablePanelSnow);
+            this.splitContainerSnow.Panel2.Controls.Add(this._variablePanelSnow);
             this.splitContainerSnow.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerSnow.Panel2MinSize = 0;
             this.splitContainerSnow.Size = new System.Drawing.Size(915, 463);
@@ -258,13 +258,13 @@
             // 
             // watchVariablePanelSnow
             // 
-            this.watchVariablePanelSnow.DataPath = "Config/SnowData.xml";
-            this.watchVariablePanelSnow.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelSnow.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelSnow.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelSnow.Name = "watchVariablePanelSnow";
-            this.watchVariablePanelSnow.Size = new System.Drawing.Size(698, 457);
-            this.watchVariablePanelSnow.TabIndex = 3;
+            this._variablePanelSnow.DataPath = "Config/SnowData.xml";
+            this._variablePanelSnow.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelSnow.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelSnow.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelSnow.Name = "_variablePanelSnow";
+            this._variablePanelSnow.Size = new System.Drawing.Size(698, 457);
+            this._variablePanelSnow.TabIndex = 3;
             // 
             // SnowTab
             // 
@@ -303,6 +303,6 @@
         private System.Windows.Forms.Button buttonSnowPositionXnZp;
         private System.Windows.Forms.Button buttonSnowPositionXn;
         private System.Windows.Forms.Button buttonSnowPositionXnZn;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelSnow;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelSnow;
     }
 }

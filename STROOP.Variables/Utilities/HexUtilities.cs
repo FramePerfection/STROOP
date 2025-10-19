@@ -1,6 +1,4 @@
-﻿using STROOP.Variables.Utilities;
-
-namespace STROOP.Utilities;
+﻿namespace STROOP.Variables.Utilities;
 
 public static class HexUtilities
 {

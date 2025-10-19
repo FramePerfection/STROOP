@@ -87,7 +87,7 @@
             this.buttonMarioHOLPGoto = new System.Windows.Forms.Button();
             this.buttonMarioToggleHandsfree = new System.Windows.Forms.Button();
             this.buttonMarioHOLPRetrieve = new System.Windows.Forms.Button();
-            this.watchVariablePanelMario = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelMario = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMario)).BeginInit();
             this.splitContainerMario.Panel1.SuspendLayout();
             this.splitContainerMario.Panel2.SuspendLayout();
@@ -127,7 +127,7 @@
             // 
             // splitContainerMario.Panel2
             // 
-            this.splitContainerMario.Panel2.Controls.Add(this.watchVariablePanelMario);
+            this.splitContainerMario.Panel2.Controls.Add(this._variablePanelMario);
             this.splitContainerMario.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerMario.Panel2MinSize = 0;
             this.splitContainerMario.Size = new System.Drawing.Size(915, 463);
@@ -766,15 +766,15 @@
             // 
             // watchVariablePanelMario
             // 
-            this.watchVariablePanelMario.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._variablePanelMario.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.watchVariablePanelMario.DataPath = "Config/MarioData.xml";
-            this.watchVariablePanelMario.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelMario.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelMario.Name = "watchVariablePanelMario";
-            this.watchVariablePanelMario.Size = new System.Drawing.Size(703, 457);
-            this.watchVariablePanelMario.TabIndex = 1;
+            this._variablePanelMario.DataPath = "Config/MarioData.xml";
+            this._variablePanelMario.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelMario.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelMario.Name = "_variablePanelMario";
+            this._variablePanelMario.Size = new System.Drawing.Size(703, 457);
+            this._variablePanelMario.TabIndex = 1;
             // 
             // MarioTab
             // 
@@ -861,6 +861,6 @@
         private System.Windows.Forms.Button buttonMarioHOLPGoto;
         private System.Windows.Forms.Button buttonMarioToggleHandsfree;
         private System.Windows.Forms.Button buttonMarioHOLPRetrieve;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelMario;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelMario;
     }
 }

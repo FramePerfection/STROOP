@@ -35,7 +35,7 @@
             this.checkBoxUseRomHack = new System.Windows.Forms.CheckBox();
             this.buttonOptionsResetSavedSettings = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.watchVariablePanelOptions = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelOptions = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerOptions)).BeginInit();
             this.splitContainerOptions.Panel1.SuspendLayout();
             this.splitContainerOptions.Panel2.SuspendLayout();
@@ -65,7 +65,7 @@
             // 
             // splitContainerOptions.Panel2
             // 
-            this.splitContainerOptions.Panel2.Controls.Add(this.watchVariablePanelOptions);
+            this.splitContainerOptions.Panel2.Controls.Add(this._variablePanelOptions);
             this.splitContainerOptions.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerOptions.Panel2MinSize = 0;
             this.splitContainerOptions.Size = new System.Drawing.Size(915, 463);
@@ -126,13 +126,13 @@
             // 
             // watchVariablePanelOptions
             // 
-            this.watchVariablePanelOptions.DataPath = "Config/OptionsData.xml";
-            this.watchVariablePanelOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelOptions.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelOptions.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelOptions.Name = "watchVariablePanelOptions";
-            this.watchVariablePanelOptions.Size = new System.Drawing.Size(440, 457);
-            this.watchVariablePanelOptions.TabIndex = 5;
+            this._variablePanelOptions.DataPath = "Config/OptionsData.xml";
+            this._variablePanelOptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelOptions.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelOptions.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelOptions.Name = "_variablePanelOptions";
+            this._variablePanelOptions.Size = new System.Drawing.Size(440, 457);
+            this._variablePanelOptions.TabIndex = 5;
             // 
             // OptionsTab
             // 
@@ -158,6 +158,6 @@
         internal System.Windows.Forms.CheckBox checkBoxUseRomHack;
         private System.Windows.Forms.Button buttonOptionsResetSavedSettings;
         private System.Windows.Forms.Label label3;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelOptions;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelOptions;
     }
 }

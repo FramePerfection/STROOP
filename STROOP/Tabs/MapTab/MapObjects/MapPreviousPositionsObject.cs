@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using OpenTK.Mathematics;
 using STROOP.Core;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -81,7 +82,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
                 if (OutlineWidth != 0)
                 {
-                    var color = ColorUtilities.ColorToVec4(OutlineColor, OpacityByte);
+                    var color = OpenTKUtilities.ColorToVec4(OutlineColor, OpacityByte);
                     for (int i = 0; i < data.Count - 1; i++)
                         graphics.lineRenderer.Add(
                             new Vector3(data[i].x, data[i].y, data[i].z),

@@ -47,7 +47,7 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitializeBaseAddress()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.File] = () => new List<uint> { CurrentFileAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.File] = () => new List<uint> { CurrentFileAddress };
         }
 
         FileImageGui gui;
@@ -91,7 +91,7 @@ namespace STROOP.Tabs
         public FileTab()
         {
             InitializeComponent();
-            watchVariablePanelFile.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelFile.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
         }
 
         public override string GetDisplayName() => "File";

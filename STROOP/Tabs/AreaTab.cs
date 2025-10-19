@@ -14,7 +14,7 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitializeBaseAddress()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.Area] = () => [SelectedAreaAddress];
+            VariableUtilities.baseAddressGetters[BaseAddressType.Area] = () => [SelectedAreaAddress];
         }
 
         public static uint SelectedAreaAddress

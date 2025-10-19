@@ -6,34 +6,60 @@ using OpenTK;
 using OpenTK.Mathematics;
 using STROOP.Controls;
 using STROOP.Controls.VariablePanel;
+using STROOP.Controls.VariablePanel.Cells;
 using STROOP.Core.Utilities;
 using STROOP.Extensions;
 using STROOP.Forms;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using STROOP.Variables;
-using STROOP.Variables.Views;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
+using System.Globalization;
 
 namespace STROOP.Structs
 {
+    using BinaryScalarOperation = Func<double, double, double>;
+
     public static class WatchVariableSelectionUtilities
     {
+        static IEnumerable<INumberVariableCell> FilterNumberVariables(IEnumerable<IWinFormsVariableCell> cells)
+            => cells.OfType<INumberVariableCell>().Where(x => x is not IVariableCellData<string>);
+
+        static double GetNumberValue(this INumberVariableCell cell)
+            => (double)(Convert.ChangeType(cell.CombineValues().value, TypeCode.Double) ?? double.NaN);
+
+        static bool SetValue(this INumberVariableCell cell, double value)
+            => cell.TrySetValue(value.ToString(CultureInfo.InvariantCulture));
+
+        static readonly List<string> VarInfoLabels =
+        [
+            "Name",
+            "Class",
+            "Type",
+            "BaseType + Offset",
+            "N64 Base Address",
+            "Emulator Base Address",
+            "N64 Address",
+            "Emulator Address",
+        ];
+
         public static List<ToolStripItem> CreateSelectionToolStripItems(
-            List<WatchVariableControl> vars,
-            WatchVariablePanel panel)
+            List<IWinFormsVariableCell> vars,
+            VariablePanel panel)
         {
             var itemList = new List<ToolStripItem>();
 
             ToolStripMenuItem itemShowAlways = new ToolStripMenuItem("Always visible");
             itemShowAlways.CheckState = GeneralUtilities.GetMeaningfulValue(
-                () => vars.ConvertAll(v => (CheckState?)(v.alwaysVisible ? CheckState.Checked : CheckState.Unchecked)),
+                () => vars.ConvertAll(v => (CheckState?)(v.control.alwaysVisible ? CheckState.Checked : CheckState.Unchecked)),
                 CheckState.Indeterminate,
                 null) ?? CheckState.Indeterminate;
             itemShowAlways.MouseDown += (_, __) =>
             {
                 itemShowAlways.Checked = !itemShowAlways.Checked;
                 foreach (var v in vars)
-                    v.alwaysVisible = itemShowAlways.Checked;
+                    v.control.alwaysVisible = itemShowAlways.Checked;
                 itemShowAlways.PreventClosingMenuStrip();
             };
             itemList.Add(itemShowAlways);
@@ -54,7 +80,7 @@ namespace STROOP.Structs
                 {
                     for (int i = 0; i < vars.Count; i++)
                     {
-                        vars[i].SetValue(stringList[i % stringList.Count]);
+                        vars[i].control.SetValue(stringList[i % stringList.Count]);
                     }
                 }
             };
@@ -68,7 +94,7 @@ namespace STROOP.Structs
                 infoForm.SetText(
                     "Variable Info",
                     "Variable XML",
-                    String.Join("\r\n", vars.ConvertAll(control => control.ToXml())));
+                    String.Join("\r\n", vars.ConvertAll(cell => cell.control.ToXml())));
                 infoForm.Show();
             };
             itemList.Add(itemShowVariableXml);
@@ -81,84 +107,77 @@ namespace STROOP.Structs
                     "Variable Info",
                     "Variable Info",
                     String.Join("\t",
-                        WatchVariableWrapper.GetVarInfoLabels()) +
+                        VarInfoLabels) +
                     "\r\n" +
                     String.Join(
                         "\r\n",
-                        vars.ConvertAll(control => control.GetVarInfo())
+                        vars.ConvertAll(cell => cell.control.GetVarInfo())
                             .ConvertAll(infoList => String.Join("\t", infoList))));
                 infoForm.Show();
             };
             itemList.Add(itemShowVariableInfo);
             itemList.Add(new ToolStripSeparator());
 
-            Dictionary<BinaryMathOperation, Func<double, double, double>> binaryMathOperations = new Dictionary<BinaryMathOperation, Func<double, double, double>>()
+            Dictionary<BinaryOperationName, BinaryScalarOperation> binaryMathOperations = new Dictionary<BinaryOperationName, BinaryScalarOperation>()
             {
-                [BinaryMathOperation.Add] = (a, b) => a + b,
-                [BinaryMathOperation.Subtract] = (a, b) => a - b,
-                [BinaryMathOperation.Multiply] = (a, b) => a * b,
-                [BinaryMathOperation.Divide] = (a, b) => a / b,
-                [BinaryMathOperation.Exponent] = (a, b) => Math.Pow(a, b),
-                [BinaryMathOperation.Modulo] = (a, b) => a % b,
-                [BinaryMathOperation.NonNegativeModulo] = (a, b) => MoreMath.NonNegativeModulus(a, b),
+                [BinaryOperationName.Add] = (a, b) => a + b,
+                [BinaryOperationName.Subtract] = (a, b) => a - b,
+                [BinaryOperationName.Multiply] = (a, b) => a * b,
+                [BinaryOperationName.Divide] = (a, b) => a / b,
+                [BinaryOperationName.Exponent] = (a, b) => Math.Pow(a, b),
+                [BinaryOperationName.Modulo] = (a, b) => a % b,
+                [BinaryOperationName.NonNegativeModulo] = (a, b) => MoreMath.NonNegativeModulus(a, b),
             };
 
-            Dictionary<BinaryMathOperation, Func<double, double, double>> binaryMathOperationsInverse1 = new Dictionary<BinaryMathOperation, Func<double, double, double>>()
+            Dictionary<BinaryOperationName, BinaryScalarOperation> binaryMathOperationsInverse1 = new Dictionary<BinaryOperationName, BinaryScalarOperation>()
             {
-                [BinaryMathOperation.Add] = (sum, b) => sum - b,
-                [BinaryMathOperation.Subtract] = (diff, b) => b + diff,
-                [BinaryMathOperation.Multiply] = (product, b) => product / b,
-                [BinaryMathOperation.Divide] = (quotient, b) => b * quotient,
+                [BinaryOperationName.Add] = (sum, b) => sum - b,
+                [BinaryOperationName.Subtract] = (diff, b) => b + diff,
+                [BinaryOperationName.Multiply] = (product, b) => product / b,
+                [BinaryOperationName.Divide] = (quotient, b) => b * quotient,
             };
 
-            Dictionary<BinaryMathOperation, Func<double, double, double>> binaryMathOperationsInverse2 = new Dictionary<BinaryMathOperation, Func<double, double, double>>()
+            Dictionary<BinaryOperationName, BinaryScalarOperation> binaryMathOperationsInverse2 = new Dictionary<BinaryOperationName, BinaryScalarOperation>()
             {
-                [BinaryMathOperation.Add] = (sum, b) => sum - b,
-                [BinaryMathOperation.Subtract] = (diff, b) => b - diff,
-                [BinaryMathOperation.Multiply] = (product, a) => product / a,
-                [BinaryMathOperation.Divide] = (quotient, a) => a / quotient,
+                [BinaryOperationName.Add] = (sum, b) => sum - b,
+                [BinaryOperationName.Subtract] = (diff, b) => b - diff,
+                [BinaryOperationName.Multiply] = (product, a) => product / a,
+                [BinaryOperationName.Divide] = (quotient, a) => a / quotient,
             };
 
-            void createBinaryMathOperationVariable(BinaryMathOperation operation)
+            void createBinaryMathOperationVariable(BinaryOperationName operation)
             {
-                List<WatchVariableControl> controls = new List<WatchVariableControl>(vars);
-                if (controls.Count % 2 == 1) controls.RemoveAt(controls.Count - 1);
+                var cells = FilterNumberVariables(vars).ToArray();
 
                 if (binaryMathOperations.TryGetValue(operation, out var func))
-                    for (int i = 0; i < controls.Count / 2; i++)
+                    for (int i = 0; i < cells.Length / 2; i++)
                     {
-                        var control1 = controls[i];
-                        var control2 = controls[i + controls.Count / 2];
-                        var wrapper1 = control1.WatchVarWrapper;
-                        var wrapper2 = control2.WatchVarWrapper;
+                        var cell1 = cells[i];
+                        var cell2 = cells[i + cells.Length / 2];
 
-                        Func<double, double, double> inverseSetter1, inverseSetter2;
-                        binaryMathOperationsInverse1.TryGetValue(operation, out inverseSetter1);
-                        binaryMathOperationsInverse2.TryGetValue(operation, out inverseSetter2);
+                        binaryMathOperationsInverse1.TryGetValue(operation, out BinaryScalarOperation inverseSetter1);
+                        binaryMathOperationsInverse2.TryGetValue(operation, out BinaryScalarOperation inverseSetter2);
 
-                        var view = new CustomVariableView<double>(WatchVariableSubclass.Number)
+                        var view = new CustomVariable<double>(VariableSubclass.Number)
                         {
-                            Name = $"{control1.view.Name} {MathOperationUtilities.GetSymbol(operation)} {control2.view.Name}",
-                            getter = () => func(wrapper1._view.CombineValues<double>().value, wrapper2._view.CombineValues<double>().value).Yield(),
+                            Name = $"{cell1.control.VarName} {MathOperationUtilities.GetSymbol(operation)} {cell2.control.VarName}",
+                            getter = () => func(cell1.GetNumberValue(), cell2.GetNumberValue()).Yield(),
                             setter = val =>
                             {
-                                if (val is double valueDouble)
-                                    if (!GlobalKeyboard.IsCtrlDown())
-                                    {
-                                        var wrapper1Value = wrapper1._view.CombineValues<double>().value;
-                                        return inverseSetter2 == null
-                                            ? Array.Empty<bool>()
-                                            : control1.view.TrySetValue(inverseSetter2(valueDouble, wrapper1Value));
-                                    }
-                                    else
-                                    {
-                                        var wrapper2Value = wrapper2._view.CombineValues<double>().value;
-                                        return inverseSetter1 == null
-                                            ? Array.Empty<bool>()
-                                            : control2.view.TrySetValue(inverseSetter1(valueDouble, wrapper2Value));
-                                    }
+                                if (!GlobalKeyboard.IsCtrlDown())
+                                {
+                                    var wrapper1Value = (double)Convert.ChangeType(cell1.CombineValues().value, TypeCode.Double)!;
+                                    return inverseSetter2 == null
+                                        ? Array.Empty<bool>()
+                                        : cell1.SetValue(inverseSetter2(val, wrapper1Value)).Yield();
+                                }
                                 else
-                                    return Array.Empty<bool>();
+                                {
+                                    var wrapper2Value = (double)Convert.ChangeType(cell2.CombineValues().value, TypeCode.Double)!;
+                                    return inverseSetter1 == null
+                                        ? Array.Empty<bool>()
+                                        : cell2.SetValue(inverseSetter1(val, wrapper2Value)).Yield();
+                                }
                             }
                         };
                         panel.AddVariable(view);
@@ -169,9 +188,9 @@ namespace STROOP.Structs
             {
                 if (vars.Count == 0) return;
                 var getter = WatchVariableSpecialUtilities.AddAggregateMathOperationEntry(vars, operation);
-                var view = new CustomVariableView<double>(WatchVariableSubclass.Number)
+                var view = new CustomVariable<double>(VariableSubclass.Number)
                 {
-                    Name = $"{operation}({vars.First().view.Name}-{vars.Last().view.Name})",
+                    Name = $"{operation}({vars.First().control.VarName}-{vars.Last().control.VarName})",
                     getter = getter,
                     setter = SpecialVariableDefaults<double>.DEFAULT_SETTER
                 };
@@ -180,6 +199,7 @@ namespace STROOP.Structs
 
             void createDistanceMathOperationVariable(bool use3D)
             {
+                var cells = FilterNumberVariables(vars).ToArray();
                 bool satisfies2D = !use3D && vars.Count >= 4;
                 bool satisfies3D = use3D && vars.Count >= 6;
                 if (!satisfies2D && !satisfies3D) return;
@@ -187,58 +207,58 @@ namespace STROOP.Structs
                 string name = use3D
                     ? string.Format(
                         "({0},{1},{2}) to ({3},{4},{5})",
-                        vars[0].VarName,
-                        vars[1].VarName,
-                        vars[2].VarName,
-                        vars[3].VarName,
-                        vars[4].VarName,
-                        vars[5].VarName)
+                        cells[0].control.VarName,
+                        cells[1].control.VarName,
+                        cells[2].control.VarName,
+                        cells[3].control.VarName,
+                        cells[4].control.VarName,
+                        cells[5].control.VarName)
                     : string.Format(
                         "({0},{1}) to ({2},{3})",
-                        vars[0].VarName,
-                        vars[1].VarName,
-                        vars[2].VarName,
-                        vars[3].VarName);
+                        cells[0].control.VarName,
+                        cells[1].control.VarName,
+                        cells[2].control.VarName,
+                        cells[3].control.VarName);
 
-                var varValues = vars.Select(x => x.view.GetNumberValues<double>().ToArray()).ToArray();
+                var values = VariableUtilities.GetNumberValues(vars).Select(Enumerable.ToArray).ToArray();
 
-                IVariableView<double>.ValueGetter getter3D = () =>
+                IVariable<double>.ValueGetter getter3D = () =>
                 {
-                    var x1 = varValues[0];
-                    var y1 = varValues[1];
-                    var z1 = varValues[2];
-                    var x2 = varValues[3];
-                    var y2 = varValues[4];
-                    var z2 = varValues[5];
-                    var min = varValues.Min(x => x.Length);
+                    var x1 = values[0];
+                    var y1 = values[1];
+                    var z1 = values[2];
+                    var x2 = values[3];
+                    var y2 = values[4];
+                    var z2 = values[5];
+                    var min = values.Min(x => x.Length);
                     var result = new List<double>(min);
                     for (int i = 0; i < min; i++)
                         result.Add(new Vector3d(x2[i] - x1[i], y2[i] - y1[i], z2[i] - z1[i]).Length);
                     return result;
                 };
-                IVariableView<double>.ValueGetter getter2D = () =>
+                IVariable<double>.ValueGetter getter2D = () =>
                 {
-                    var x1 = varValues[0];
-                    var y1 = varValues[1];
-                    var x2 = varValues[3];
-                    var y2 = varValues[4];
-                    var min = varValues.Min(x => x.Length);
+                    var x1 = values[0];
+                    var y1 = values[1];
+                    var x2 = values[3];
+                    var y2 = values[4];
+                    var min = values.Min(x => x.Length);
                     var result = new List<double>(min);
                     for (int i = 0; i < min; i++)
                         result.Add(new Vector2d(x2[i] - x1[i], y2[i] - y1[i]).Length);
                     return result;
                 };
-                IVariableView<double>.ValueSetter setter3D = value =>
+                IVariable<double>.ValueSetter setter3D = value =>
                 {
-                    var x1 = varValues[0];
-                    var y1 = varValues[1];
-                    var z1 = varValues[2];
-                    var x2 = varValues[3];
-                    var y2 = varValues[4];
-                    var z2 = varValues[5];
+                    var x1 = values[0];
+                    var y1 = values[1];
+                    var z1 = values[2];
+                    var x2 = values[3];
+                    var y2 = values[4];
+                    var z2 = values[5];
                     bool toggle = GlobalKeyboard.IsCtrlDown();
                     int off = toggle ? 0 : 3;
-                    var min = varValues.Min(x => x.Length);
+                    var min = values.Min(x => x.Length);
                     var result = new List<bool>(min);
                     for (int i = 0; i < min; i++)
                     {
@@ -252,20 +272,20 @@ namespace STROOP.Structs
                         }
 
                         b = a + Vector3d.Normalize(b - a) * value;
-                        result.Add(vars[off].SetValue(b.X) && vars[off].SetValue(b.Y) && vars[off].SetValue(b.Z));
+                        result.Add(cells[off].SetValue(b.X) && cells[off].SetValue(b.Y) && cells[off].SetValue(b.Z));
                     }
 
                     return result;
                 };
-                IVariableView<double>.ValueSetter setter2D = value =>
+                IVariable<double>.ValueSetter setter2D = value =>
                 {
-                    var x1 = varValues[0];
-                    var y1 = varValues[1];
-                    var x2 = varValues[2];
-                    var y2 = varValues[3];
+                    var x1 = values[0];
+                    var y1 = values[1];
+                    var x2 = values[2];
+                    var y2 = values[3];
                     bool toggle = GlobalKeyboard.IsCtrlDown();
                     int off = toggle ? 0 : 2;
-                    var min = varValues.Min(x => x.Length);
+                    var min = values.Min(x => x.Length);
                     var result = new List<bool>(min);
                     for (int i = 0; i < min; i++)
                     {
@@ -279,13 +299,13 @@ namespace STROOP.Structs
                         }
 
                         b = a + Vector2d.Normalize(b - a) * (double)value;
-                        result.Add(vars[off].SetValue(b.X) && vars[off].SetValue(b.Y));
+                        result.Add(cells[off].SetValue(b.X) && cells[off].SetValue(b.Y));
                     }
 
                     return result;
                 };
 
-                var view = new CustomVariableView<double>(WatchVariableSubclass.Number)
+                var view = new CustomVariable<double>(VariableSubclass.Number)
                 {
                     Name = name,
                     getter = use3D ? getter3D : getter2D,
@@ -318,13 +338,13 @@ namespace STROOP.Structs
                 },
                 new List<Action>()
                 {
-                    () => createBinaryMathOperationVariable(BinaryMathOperation.Add),
-                    () => createBinaryMathOperationVariable(BinaryMathOperation.Subtract),
-                    () => createBinaryMathOperationVariable(BinaryMathOperation.Multiply),
-                    () => createBinaryMathOperationVariable(BinaryMathOperation.Divide),
-                    () => createBinaryMathOperationVariable(BinaryMathOperation.Modulo),
-                    () => createBinaryMathOperationVariable(BinaryMathOperation.NonNegativeModulo),
-                    () => createBinaryMathOperationVariable(BinaryMathOperation.Exponent),
+                    () => createBinaryMathOperationVariable(BinaryOperationName.Add),
+                    () => createBinaryMathOperationVariable(BinaryOperationName.Subtract),
+                    () => createBinaryMathOperationVariable(BinaryOperationName.Multiply),
+                    () => createBinaryMathOperationVariable(BinaryOperationName.Divide),
+                    () => createBinaryMathOperationVariable(BinaryOperationName.Modulo),
+                    () => createBinaryMathOperationVariable(BinaryOperationName.NonNegativeModulo),
+                    () => createBinaryMathOperationVariable(BinaryOperationName.Exponent),
                     () => { },
                     () => createAggregateMathOperationVariable(AggregateMathOperation.Mean),
                     () => createAggregateMathOperationVariable(AggregateMathOperation.Median),
@@ -351,7 +371,7 @@ namespace STROOP.Structs
             {
                 string template = DialogUtilities.GetStringFromDialog("$");
                 if (template == null) return;
-                foreach (WatchVariableControl control in vars)
+                foreach (WinFormsVariableControl control in vars)
                 {
                     control.VarName = template.Replace("$", control.VarName);
                 }
@@ -362,8 +382,8 @@ namespace STROOP.Structs
             ToolStripMenuItem itemOpenController = new ToolStripMenuItem("Open Controller");
             itemOpenController.Click += (sender, e) =>
                 new VariableControllerForm(
-                    vars.ConvertAll(control => control.VarName),
-                    vars.ConvertAll(control => control.WatchVarWrapper)
+                    vars.ConvertAll(cell => cell.control.VarName),
+                    vars
                 ).Show();
             itemList.Add(itemOpenController);
 
@@ -371,7 +391,7 @@ namespace STROOP.Structs
             itemOpenPopOut.Click += (sender, e) =>
             {
                 VariablePopOutForm form = new VariablePopOutForm();
-                form.Initialize(vars.ConvertAll(control => control.view));
+                form.Initialize(vars);
                 form.ShowForm();
             };
             itemList.Add(itemOpenPopOut);

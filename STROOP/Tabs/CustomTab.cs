@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
 using STROOP.Forms;
+using STROOP.Variables;
 
 namespace STROOP.Tabs
 {
@@ -30,11 +31,11 @@ namespace STROOP.Tabs
         {
             base.InitializeTab();
 
-            buttonOpenVars.Click += (sender, e) => watchVariablePanelCustom.OpenVariables();
+            buttonOpenVars.Click += (sender, e) => VariablePanelCustom.OpenVariables();
 
-            buttonSaveVars.Click += (sender, e) => watchVariablePanelCustom.SaveVariables();
+            buttonSaveVars.Click += (sender, e) => VariablePanelCustom.SaveVariables();
 
-            buttonCopyVars.Click += (sender, e) => CopyUtilities.Copy(watchVariablePanelCustom.GetCurrentVariableControls(), _copyType);
+            buttonCopyVars.Click += (sender, e) => CopyUtilities.Copy(VariablePanelCustom.GetCurrentlyVisibleCells(), _copyType);
             buttonCopyVars.ContextMenuStrip = new ContextMenuStrip();
             ToolStripMenuItem itemSetDefaultCopyType = new ToolStripMenuItem("Set Default Copy Type");
             buttonCopyVars.ContextMenuStrip.Items.Add(itemSetDefaultCopyType);
@@ -45,16 +46,16 @@ namespace STROOP.Tabs
                 EnumUtilities.GetEnumValues<CopyTypeEnum>(typeof(CopyTypeEnum)),
                 copyType => _copyType = copyType,
                 _copyType);
-            CopyUtilities.AddContextMenuStripFunctions(buttonCopyVars, watchVariablePanelCustom.GetCurrentVariableControls);
+            CopyUtilities.AddContextMenuStripFunctions(buttonCopyVars, VariablePanelCustom.GetCurrentlyVisibleCells);
 
-            buttonClearVars.Click += (sender, e) => watchVariablePanelCustom.ClearVariables();
+            buttonClearVars.Click += (sender, e) => VariablePanelCustom.ClearVariables();
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonClearVars,
                 new List<string>() { "Clear All Vars", "Clear Default Vars" },
                 new List<Action>()
                 {
-                    () => watchVariablePanelCustom.ClearVariables(),
-                    () => watchVariablePanelCustom.RemoveVariableGroup(VariableGroup.NoGroup),
+                    () => VariablePanelCustom.ClearVariables(),
+                    () => VariablePanelCustom.RemoveVariableGroup(VariableGroup.NoGroup),
                 });
 
             checkBoxCustomRecordValues.Click += (sender, e) => ToggleRecording();
@@ -73,7 +74,7 @@ namespace STROOP.Tabs
         {
             InfoForm infoForm = new InfoForm();
 
-            List<string> variableNames = watchVariablePanelCustom.GetCurrentVariableNames();
+            List<string> variableNames = VariablePanelCustom.GetCurrentVariableNames();
             List<string> variableValueRowStrings = _recordedValues.ToList()
                 .ConvertAll(pair => (pair.Key + 1) + "\t" + String.Join("\t", pair.Value));
             string variableValueText =
@@ -124,7 +125,7 @@ namespace STROOP.Tabs
 
                 if (!alreadyContainsKey || recordEvenIfAlreadyHave)
                 {
-                    List<string> currentValues = watchVariablePanelCustom.GetCurrentVariableValues();
+                    List<string> currentValues = VariablePanelCustom.GetCurrentVariableValues();
                     _recordedValues[currentTimer] = currentValues;
                 }
             }

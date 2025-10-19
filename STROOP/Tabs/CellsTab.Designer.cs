@@ -33,7 +33,7 @@
             this.splitContainerCellsControls = new STROOP.BetterSplitContainer();
             this.buttonCellsBuildTree = new System.Windows.Forms.Button();
             this.treeViewCells = new System.Windows.Forms.TreeView();
-            this.watchVariablePanelCells = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelCells = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCells)).BeginInit();
             this.splitContainerCells.Panel1.SuspendLayout();
             this.splitContainerCells.Panel2.SuspendLayout();
@@ -63,7 +63,7 @@
             // 
             // splitContainerCells.Panel2
             // 
-            this.splitContainerCells.Panel2.Controls.Add(this.watchVariablePanelCells);
+            this.splitContainerCells.Panel2.Controls.Add(this._variablePanelCells);
             this.splitContainerCells.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerCells.Panel2MinSize = 0;
             this.splitContainerCells.Size = new System.Drawing.Size(915, 463);
@@ -119,13 +119,13 @@
             // 
             // watchVariablePanelCells
             // 
-            this.watchVariablePanelCells.DataPath = "Config/CellsData.xml";
-            this.watchVariablePanelCells.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelCells.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelCells.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelCells.Name = "watchVariablePanelCells";
-            this.watchVariablePanelCells.Size = new System.Drawing.Size(605, 457);
-            this.watchVariablePanelCells.TabIndex = 3;
+            this._variablePanelCells.DataPath = "Config/CellsData.xml";
+            this._variablePanelCells.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelCells.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelCells.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelCells.Name = "_variablePanelCells";
+            this._variablePanelCells.Size = new System.Drawing.Size(605, 457);
+            this._variablePanelCells.TabIndex = 3;
             // 
             // CellsTab
             // 
@@ -152,6 +152,6 @@
         private BetterSplitContainer splitContainerCellsControls;
         private System.Windows.Forms.Button buttonCellsBuildTree;
         private System.Windows.Forms.TreeView treeViewCells;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelCells;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelCells;
     }
 }

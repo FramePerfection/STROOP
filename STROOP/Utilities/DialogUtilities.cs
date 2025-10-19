@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using STROOP.Structs;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {
@@ -206,7 +207,7 @@ namespace STROOP.Utilities
             string buttonText = "OK")
         {
             string text = GetStringFromDialog(textBoxText, labelText, buttonText);
-            float? relativeHeightNullable = Utilities.ParsingUtilities.ParseFloatNullable(text);
+            float? relativeHeightNullable = ParsingUtilities.ParseFloatNullable(text);
             if (relativeHeightNullable.HasValue)
                 return relativeHeightNullable.Value;
             return defaultValue;

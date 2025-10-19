@@ -16,26 +16,26 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.Mario] = () => new List<uint> { MarioConfig.StructAddress };
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.MarioObj] = () => new List<uint>
+            VariableUtilities.baseAddressGetters[BaseAddressType.Mario] = () => new List<uint> { MarioConfig.StructAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.MarioObj] = () => new List<uint>
             {
                 ProcessStream.Instance.GetUInt32(MarioObjectConfig.PointerAddress)
             };
 
-            WatchVariableUtilities.baseAddressGetters["Floor"] = () =>
+            VariableUtilities.baseAddressGetters["Floor"] = () =>
             {
                 uint floorAddress = Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.FloorTriangleOffset);
-                return floorAddress != 0 ? new List<uint>() { floorAddress } : WatchVariableUtilities.BaseAddressListEmpty;
+                return floorAddress != 0 ? new List<uint>() { floorAddress } : VariableUtilities.BaseAddressListEmpty;
             };
-            WatchVariableUtilities.baseAddressGetters["Wall"] = () =>
+            VariableUtilities.baseAddressGetters["Wall"] = () =>
             {
                 uint wallAddress = Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.WallTriangleOffset);
-                return wallAddress != 0 ? new List<uint>() { wallAddress } : WatchVariableUtilities.BaseAddressListEmpty;
+                return wallAddress != 0 ? new List<uint>() { wallAddress } : VariableUtilities.BaseAddressListEmpty;
             };
-            WatchVariableUtilities.baseAddressGetters["Ceiling"] = () =>
+            VariableUtilities.baseAddressGetters["Ceiling"] = () =>
             {
                 uint ceilingAddress = Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.CeilingTriangleOffset);
-                return ceilingAddress != 0 ? new List<uint>() { ceilingAddress } : WatchVariableUtilities.BaseAddressListEmpty;
+                return ceilingAddress != 0 ? new List<uint>() { ceilingAddress } : VariableUtilities.BaseAddressListEmpty;
             };
         }
 
@@ -63,7 +63,7 @@ namespace STROOP.Tabs
         public MarioTab()
         {
             InitializeComponent();
-            watchVariablePanelMario.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelMario.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
         }
 
         public override string GetDisplayName() => "Mario";
@@ -76,7 +76,7 @@ namespace STROOP.Tabs
             panelMarioBorder.BackColor = Config.ObjectAssociations.MarioColor;
             pictureBoxMario.BackColor = Config.ObjectAssociations.MarioColor.Lighten(0.5);
 
-            watchVariablePanelMario.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelMario.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
 
             buttonMarioToggleHandsfree.Click += (sender, e) => ButtonUtilities.ToggleHandsfree();
 

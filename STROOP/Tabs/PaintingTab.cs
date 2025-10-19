@@ -12,10 +12,10 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["Painting"] = () =>
+            VariableUtilities.baseAddressGetters["Painting"] = () =>
             {
                 uint? paintingAddress = AccessScope<StroopMainForm>.content.GetTab<PaintingTab>().GetPaintingAddress();
-                return paintingAddress != null ? new List<uint>() { paintingAddress.Value } : WatchVariableUtilities.BaseAddressListEmpty;
+                return paintingAddress != null ? new List<uint>() { paintingAddress.Value } : VariableUtilities.BaseAddressListEmpty;
             };
         }
 

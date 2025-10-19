@@ -5,19 +5,20 @@ using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Utilities
 {
     public static class CopyUtilities
     {
-        public static void Copy(List<WatchVariableControl> vars, CopyTypeEnum copyType)
+        public static void Copy(List<IVariableCellUi<VariablePanelUiContext>> vars, CopyTypeEnum copyType)
         {
             int index = EnumUtilities.GetEnumValues<CopyTypeEnum>(typeof(CopyTypeEnum)).IndexOf(copyType);
             GetCopyActions(() => vars)[index]();
         }
 
         public static void AddContextMenuStripFunctions(
-            Control control, Func<List<WatchVariableControl>> getVars)
+            Control control, Func<List<IVariableCellUi<VariablePanelUiContext>>> getVars)
         {
             ControlUtilities.AddContextMenuStripFunctions(
                 control,
@@ -26,7 +27,7 @@ namespace STROOP.Utilities
         }
 
         public static void AddDropDownItems(
-            ToolStripMenuItem control, Func<List<WatchVariableControl>> getVars)
+            ToolStripMenuItem control, Func<List<IVariableCellUi<VariablePanelUiContext>>> getVars)
         {
             ControlUtilities.AddDropDownItems(
                 control,
@@ -49,7 +50,7 @@ namespace STROOP.Utilities
             };
         }
 
-        private static List<Action> GetCopyActions(Func<List<WatchVariableControl>> getVars)
+        private static List<Action> GetCopyActions(Func<List<IVariableCellUi<VariablePanelUiContext>>> getVars)
         {
             return new List<Action>()
             {
@@ -65,20 +66,20 @@ namespace STROOP.Utilities
         }
 
         private static void CopyWithSeparator(
-            List<WatchVariableControl> controls, string separator)
+            List<IVariableCellUi<VariablePanelUiContext>> controls, string separator)
         {
             if (controls.Count == 0) return;
-            Clipboard.SetText(string.Join(separator, controls.ConvertAll(control => control.WatchVarWrapper.GetValueText())));
+            Clipboard.SetText(string.Join(separator, controls.ConvertAll(cell => cell.GetValueText())));
         }
 
-        private static void CopyWithNames(List<WatchVariableControl> controls)
+        private static void CopyWithNames(List<IVariableCellUi<VariablePanelUiContext>> controls)
         {
             if (controls.Count == 0) return;
-            List<string> lines = controls.ConvertAll(watchVar => watchVar.VarName + "\t" + watchVar.WatchVarWrapper.GetValueText());
+            List<string> lines = controls.ConvertAll(cell => cell.control.VarName + "\t" + cell.GetValueText());
             Clipboard.SetText(string.Join("\r\n", lines));
         }
 
-        private static void CopyAsTable(List<WatchVariableControl> controls)
+        private static void CopyAsTable(List<IVariableCellUi<VariablePanelUiContext>> controls)
         {
             // TODO: reconsider CopyAsTable
             //if (controls.Count == 0) return;
@@ -98,7 +99,7 @@ namespace STROOP.Utilities
             //Clipboard.SetText(output);
         }
 
-        private static void CopyForCode(List<WatchVariableControl> controls)
+        private static void CopyForCode(List<IVariableCellUi<VariablePanelUiContext>> controls)
         {
             if (controls.Count == 0) return;
             Func<string, string> varNameFunc;
@@ -114,7 +115,7 @@ namespace STROOP.Utilities
             }
 
             List<string> lines = new List<string>();
-            foreach (WatchVariableControl watchVar in controls)
+            foreach (VariableCellControl<VariablePanelUiContext> watchVar in controls)
             {
                 Type type = watchVar.GetMemoryType();
                 string line = string.Format(
@@ -122,7 +123,7 @@ namespace STROOP.Utilities
                     type != null ? TypeUtilities.TypeToString[type] : "double",
                     varNameFunc(watchVar.VarName.Replace(" ", "")),
                     // TODO: indicate that the watchVarWrapper should produce code conforming output (whatever that means)
-                    watchVar.WatchVarWrapper.GetValueText(),
+                    watchVar.varCell.GetValueText(),
                     type == typeof(float) ? "f" : "");
                 lines.Add(line);
             }
@@ -145,7 +146,7 @@ namespace STROOP.Utilities
             v = default(Vector3);
             bool hasData = false;
             var clipboardObj = Clipboard.GetDataObject();
-            if (!(hasData |= ParsingUtilities.TryParseVector3(clipboardObj.GetData(DataFormats.Text) as string, out v)))
+            if (!(hasData |= OpenTKUtilities.TryParseVector3(clipboardObj.GetData(DataFormats.Text) as string, out v)))
             {
                 if (Clipboard.GetData("Position") is Vector3 dataVector)
                 {

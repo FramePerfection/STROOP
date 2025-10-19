@@ -21,7 +21,7 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitializeBaseAddress()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.MainSave] = () => [CurrentMainSaveAddress];
+            VariableUtilities.baseAddressGetters[BaseAddressType.MainSave] = () => [CurrentMainSaveAddress];
         }
 
         public MainSaveMode CurrentMainSaveMode { get; private set; }

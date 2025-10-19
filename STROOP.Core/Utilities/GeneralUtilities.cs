@@ -12,10 +12,14 @@ public static class GeneralUtilities
     public static EqualityComparer<T> GetEqualityComparer<T>(Func<T, T, bool> equalsFunc, Func<T, int> getHashCodeFunc = null)
         => new EqualityComparer<T>(equalsFunc, getHashCodeFunc);
 
+    public static IEnumerable<Type> GetStroopTypes()
+        => AppDomain.CurrentDomain.GetAssemblies()
+            .Where(x => x.FullName?.StartsWith("STROOP") ?? false)
+            .SelectMany(x => x.GetTypes());
+
     public static void ExecuteInitializers<T>(params object[] args) where T : InitializerAttribute
     {
-        foreach (Assembly? assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName?.StartsWith("STROOP") ?? false))
-            foreach (Type? type in assembly.GetTypes())
+            foreach (Type? type in GetStroopTypes())
                 foreach (MethodInfo? m in type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
                     if (m.GetParameters().Length == 0 && m.GetCustomAttribute<T>() != null)
                         m.Invoke(null, args);

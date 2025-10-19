@@ -18,7 +18,6 @@ using STROOP.Forms;
 using STROOP.Models;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
-using STROOP.Variables.Views;
 using System.Reflection;
 using System.Threading;
 
@@ -273,7 +272,7 @@ namespace STROOP
                     () =>
                     {
                         string varFilePath = @"Config/MhsData.xml";
-                        List<IVariableView> precursors = XmlConfigParser.OpenWatchVariableControlPrecursors(varFilePath);
+                        List<IVariable> precursors = XmlConfigParser.OpenWatchVariableControlPrecursors(varFilePath);
                         VariablePopOutForm form = new VariablePopOutForm();
                         form.Initialize(precursors);
                         form.ShowForm();

@@ -104,9 +104,9 @@ namespace STROOP.Forms
 
             if (_showFloatComponents && value is float floatValue)
             {
-                _textBoxDecValue.Text = MoreMath.GetFloatSign(floatValue).ToString();
-                _textBoxHexValue.Text = MoreMath.GetFloatExponent(floatValue).ToString();
-                _textBoxBinaryValue.Text = MoreMath.GetFloatMantissa(floatValue).ToString();
+                _textBoxDecValue.Text = STROOPMath.GetFloatSign(floatValue).ToString();
+                _textBoxHexValue.Text = STROOPMath.GetFloatExponent(floatValue).ToString();
+                _textBoxBinaryValue.Text = STROOPMath.GetFloatMantissa(floatValue).ToString();
             }
             else
             {

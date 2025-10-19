@@ -8,6 +8,7 @@ using STROOP.Structs;
 using OpenTK;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -80,7 +81,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     int counter = 0;
                     foreach (var vertex in vertices)
                     {
-                        Vector4 color = ColorUtilities.ColorToVec4(useBlending ? ColorUtilities.InterpolateColor(OutlineColor, Color, (double)counter / (vertices.Count - 1)) : Color, OpacityByte);
+                        Vector4 color = OpenTKUtilities.ColorToVec4(useBlending ? ColorUtilities.InterpolateColor(OutlineColor, Color, (double)counter / (vertices.Count - 1)) : Color, OpacityByte);
                         if (counter > 0)
                             graphics.lineRenderer.Add(vertex, lastVertex, color, OutlineWidth);
                         counter++;

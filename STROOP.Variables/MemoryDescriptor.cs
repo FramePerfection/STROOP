@@ -1,6 +1,5 @@
 ﻿using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
-using STROOP.Variables.Views;
 
 namespace STROOP.Variables;
 
@@ -79,13 +78,13 @@ public class MemoryDescriptor
         HandleMapping = handleMapping;
     }
 
-    public IMemoryBasedVariableView CreateView(string wrapper = "Number")
-        => (IMemoryBasedVariableView)
-            typeof(MemoryBasedVariableView<>)
+    public IMemoryVariable CreateView(string wrapper = "Number")
+        => (IMemoryVariable)
+            typeof(MemoryVariable<>)
                 .MakeGenericType(ClrType)
                 .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(string) })
                 .Invoke(new object[] { this, wrapper });
 
     public List<uint> GetAddressList()
-        => WatchVariableUtilities.GetBaseAddresses(BaseAddressType).Select(baseAddress => baseAddress + Offset).ToList();
+        => VariableUtilities.GetBaseAddresses(BaseAddressType).Select(baseAddress => baseAddress + Offset).ToList();
 }

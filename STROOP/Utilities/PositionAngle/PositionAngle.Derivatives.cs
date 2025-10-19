@@ -5,7 +5,6 @@ using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Utilities;
 using STROOP.Variables;
-using STROOP.Variables.Views;
 
 namespace STROOP.Utilities
 {
@@ -21,19 +20,19 @@ namespace STROOP.Utilities
                 new HybridPositionAngle(() => pointCustom, () => pointCustom, "Point")
             };
 
-            public static readonly (string, WatchVariablePanel.SpecialFuncWatchVariables) GenerateBaseVariables =
+            public static readonly (string, VariablePanel.SpecialFuncWatchVariables) GenerateBaseVariables =
                 ("Base Info",
                     pa =>
                     {
-                        T MakePATypeView<T>(T view) where T : IVariableView
+                        T MakePATypeView<T>(T view) where T : IVariable
                         {
-                            view.SetValueByKey(CommonViewProperties.specialType, "PositionAngle");
+                            view.SetValueByKey(CommonVariableProperties.specialType, "PositionAngle");
                             return view;
                         }
 
-                        var vars = new CustomVariableView[]
+                        var vars = new CustomVariable[]
                         {
-                            MakePATypeView(new CustomVariableView<string>(WatchVariableSubclass.String)
+                            MakePATypeView(new CustomVariable<string>(VariableSubclass.String)
                             {
                                 Name = $"{pa.name} Pos Type",
                                 Color = "Blue",
@@ -47,7 +46,7 @@ namespace STROOP.Utilities
                                     return true.Yield();
                                 }
                             }),
-                            MakePATypeView(new CustomVariableView<string>(WatchVariableSubclass.String)
+                            MakePATypeView(new CustomVariable<string>(VariableSubclass.String)
                             {
                                 Name = $"{pa.name} Angle Type",
                                 Color = "Blue",
@@ -61,28 +60,28 @@ namespace STROOP.Utilities
                                     return true.Yield();
                                 }
                             }),
-                            new CustomVariableView<double>(WatchVariableSubclass.Number)
+                            new CustomVariable<double>(VariableSubclass.Number)
                             {
                                 Name = $"{pa.name} X",
                                 Color = "Blue",
                                 getter = () => pa.first().X.Yield(),
                                 setter = val => pa.first().SetX(val).Yield()
                             },
-                            new CustomVariableView<double>(WatchVariableSubclass.Number)
+                            new CustomVariable<double>(VariableSubclass.Number)
                             {
                                 Name = $"{pa.name} Y",
                                 Color = "Blue",
                                 getter = () => pa.first().Y.Yield(),
                                 setter = val => pa.first().SetY(val).Yield()
                             },
-                            new CustomVariableView<double>(WatchVariableSubclass.Number)
+                            new CustomVariable<double>(VariableSubclass.Number)
                             {
                                 Name = $"{pa.name} Z",
                                 Color = "Blue",
                                 getter = () => pa.first().Z.Yield(),
                                 setter = val => pa.first().SetZ(val).Yield()
                             },
-                            new CustomVariableView<double>(WatchVariableSubclass.Angle)
+                            new CustomVariable<double>(VariableSubclass.Angle)
                             {
                                 Name = $"{pa.name} Angle",
                                 Color = "Blue",
@@ -100,11 +99,11 @@ namespace STROOP.Utilities
                     }
             );
 
-            public static (string, WatchVariablePanel.SpecialFuncWatchVariables) GenerateRelations(HybridPositionAngle relation) =>
+            public static (string, VariablePanel.SpecialFuncWatchVariables) GenerateRelations(HybridPositionAngle relation) =>
                 ($"Relations to {relation.name}",
                     (HybridPositionAngle pa) =>
                     {
-                        List<IVariableView> vars = new List<IVariableView>();
+                        List<IVariable> vars = new List<IVariable>();
                         var distTypes = new[] { "X", "Y", "Z", "H", "", "F", "S" };
                         var distGetters = new Func<PositionAngle, PositionAngle, double>[]
                         {
@@ -133,7 +132,7 @@ namespace STROOP.Utilities
                             Func<PositionAngle, PositionAngle, double> getter = distGetters[k];
                             Func<PositionAngle, PositionAngle, double, bool> setter = distSetters[k];
 
-                            vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                            vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                             {
                                 Color = "LightBlue",
                                 Name = $"{distType}Dist {relation.name} To {pa.name}",
@@ -142,7 +141,7 @@ namespace STROOP.Utilities
                             });
                         }
 
-                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                        vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                         {
                             Color = "LightBlue",
                             Name = $"Angle {relation.name} To {pa.name}",
@@ -151,7 +150,7 @@ namespace STROOP.Utilities
                             setter = (double angle) => SetAngleTo(relation, pa, angle).Yield()
                         });
 
-                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                        vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                         {
                             Color = "LightBlue",
                             Name = $"DAngle {relation.name} To {pa.name}",
@@ -160,7 +159,7 @@ namespace STROOP.Utilities
                             setter = (double angleDiff) => SetDAngleTo(relation, pa, Convert.ToDouble(angleDiff)).Yield()
                         });
 
-                        vars.Add(new CustomVariableView<double>(WatchVariableSubclass.Number)
+                        vars.Add(new CustomVariable<double>(VariableSubclass.Number)
                         {
                             Color = "LightBlue",
                             Name = $"AngleDiff {relation.name} To {pa.name}",

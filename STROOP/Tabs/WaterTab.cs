@@ -12,10 +12,10 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["Water"] = () =>
+            VariableUtilities.baseAddressGetters["Water"] = () =>
             {
                 uint waterAddress = Config.Stream.GetUInt32(MiscConfig.WaterPointerAddress);
-                return waterAddress != 0 ? new List<uint>() { waterAddress } : WatchVariableUtilities.BaseAddressListEmpty;
+                return waterAddress != 0 ? new List<uint>() { waterAddress } : VariableUtilities.BaseAddressListEmpty;
             };
         }
 

@@ -6,6 +6,7 @@ using STROOP.Core;
 using STROOP.Utilities;
 using STROOP.Structs;
 using STROOP.Models;
+using STROOP.Variables.Utilities;
 using System.Windows.Forms;
 
 namespace STROOP.Tabs.MapTab

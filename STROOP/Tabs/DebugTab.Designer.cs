@@ -49,7 +49,7 @@
             this.radioButtonAdvancedModeCheckInfo = new System.Windows.Forms.RadioButton();
             this.radioButtonAdvancedModeStageInfo = new System.Windows.Forms.RadioButton();
             this.radioButtonAdvancedModeMapInfo = new System.Windows.Forms.RadioButton();
-            this.watchVariablePanelDebug = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelDebug = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerDebug)).BeginInit();
             this.splitContainerDebug.Panel1.SuspendLayout();
             this.splitContainerDebug.Panel2.SuspendLayout();
@@ -83,7 +83,7 @@
             // 
             // splitContainerDebug.Panel2
             // 
-            this.splitContainerDebug.Panel2.Controls.Add(this.watchVariablePanelDebug);
+            this.splitContainerDebug.Panel2.Controls.Add(this._variablePanelDebug);
             this.splitContainerDebug.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerDebug.Panel2MinSize = 0;
             this.splitContainerDebug.Size = new System.Drawing.Size(915, 463);
@@ -302,13 +302,13 @@
             // 
             // watchVariablePanelDebug
             // 
-            this.watchVariablePanelDebug.DataPath = "Config/DebugData.xml";
-            this.watchVariablePanelDebug.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelDebug.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelDebug.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelDebug.Name = "watchVariablePanelDebug";
-            this.watchVariablePanelDebug.Size = new System.Drawing.Size(520, 457);
-            this.watchVariablePanelDebug.TabIndex = 26;
+            this._variablePanelDebug.DataPath = "Config/DebugData.xml";
+            this._variablePanelDebug.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelDebug.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelDebug.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelDebug.Name = "_variablePanelDebug";
+            this._variablePanelDebug.Size = new System.Drawing.Size(520, 457);
+            this._variablePanelDebug.TabIndex = 26;
             // 
             // DebugTab
             // 
@@ -355,6 +355,6 @@
         private System.Windows.Forms.RadioButton radioButtonAdvancedModeCheckInfo;
         private System.Windows.Forms.RadioButton radioButtonAdvancedModeStageInfo;
         private System.Windows.Forms.RadioButton radioButtonAdvancedModeMapInfo;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelDebug;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelDebug;
     }
 }

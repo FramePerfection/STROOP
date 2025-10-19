@@ -44,7 +44,7 @@ namespace STROOP.Structs
             SlidingSpeedZ = slidingSpeedZ;
             SlidingAngle = slidingAngle;
             MarioAngle = marioAngle;
-            IntendedAngle = MoreMath.CalculateAngleFromInputs(input.X, input.Y, cameraAngle);
+            IntendedAngle = STROOPMath.CalculateAngleFromInputs(input.X, input.Y, cameraAngle);
             IntendedMagnitude = input.GetScaledMagnitude();
         }
 

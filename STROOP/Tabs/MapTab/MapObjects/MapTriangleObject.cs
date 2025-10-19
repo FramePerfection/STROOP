@@ -8,6 +8,7 @@ using STROOP.Models;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
 using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -74,7 +75,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 {
                     var dlg = new ColorDialog();
                     if (dlg.ShowDialog() == DialogResult.OK)
-                        parent.individualTriangleColors[triangle.Address] = ColorUtilities.ColorToVec4(dlg.Color);
+                        parent.individualTriangleColors[triangle.Address] = OpenTKUtilities.ColorToVec4(dlg.Color);
                 };
                 myItem.DropDownItems.Add(itemAssignColor);
 
@@ -258,7 +259,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     Vector4 baseColor;
                     if (!individualTriangleColors.TryGetValue(tri.Address, out baseColor))
                         if (useRandomColors)
-                            baseColor = ColorUtilities.GetRandomColor((int)tri.Address);
+                            baseColor = OpenTKUtilities.GetRandomColor((int)tri.Address);
                         else
                             baseColor = regularBaseColor;
                     baseColor.W = OpacityByte / 255f;

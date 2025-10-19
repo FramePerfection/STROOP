@@ -42,7 +42,7 @@
             this.buttonCopyVars = new System.Windows.Forms.Button();
             this.buttonSaveVars = new System.Windows.Forms.Button();
             this.buttonOpenVars = new System.Windows.Forms.Button();
-            this.watchVariablePanelCustom = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this.VariablePanelCustom = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCustom)).BeginInit();
             this.splitContainerCustom.Panel1.SuspendLayout();
             this.splitContainerCustom.Panel2.SuspendLayout();
@@ -78,7 +78,7 @@
             // 
             // splitContainerCustom.Panel2
             // 
-            this.splitContainerCustom.Panel2.Controls.Add(this.watchVariablePanelCustom);
+            this.splitContainerCustom.Panel2.Controls.Add(this.VariablePanelCustom);
             this.splitContainerCustom.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerCustom.Panel2MinSize = 0;
             this.splitContainerCustom.Size = new System.Drawing.Size(915, 463);
@@ -220,14 +220,14 @@
             // 
             // watchVariablePanelCustom
             // 
-            this.watchVariablePanelCustom.AutoScroll = true;
-            this.watchVariablePanelCustom.DataPath = "Config/CustomData.xml";
-            this.watchVariablePanelCustom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelCustom.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelCustom.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelCustom.Name = "watchVariablePanelCustom";
-            this.watchVariablePanelCustom.Size = new System.Drawing.Size(690, 457);
-            this.watchVariablePanelCustom.TabIndex = 3;
+            this.VariablePanelCustom.AutoScroll = true;
+            this.VariablePanelCustom.DataPath = "Config/CustomData.xml";
+            this.VariablePanelCustom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.VariablePanelCustom.Location = new System.Drawing.Point(2, 2);
+            this.VariablePanelCustom.Margin = new System.Windows.Forms.Padding(0);
+            this.VariablePanelCustom.Name = "VariablePanelCustom";
+            this.VariablePanelCustom.Size = new System.Drawing.Size(690, 457);
+            this.VariablePanelCustom.TabIndex = 3;
             // 
             // CustomTab
             // 
@@ -260,6 +260,6 @@
         private System.Windows.Forms.Button buttonCopyVars;
         private System.Windows.Forms.Button buttonSaveVars;
         private System.Windows.Forms.Button buttonOpenVars;
-        internal STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelCustom;
+        internal STROOP.Controls.VariablePanel.VariablePanel VariablePanelCustom;
     }
 }

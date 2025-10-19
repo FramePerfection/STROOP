@@ -3,6 +3,7 @@ using STROOP.Tabs.MapTab;
 using STROOP.Models;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

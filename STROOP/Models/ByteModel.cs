@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Forms;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Models
 {

@@ -51,7 +51,7 @@ public static class MemoryDescriptorExtensions
 
     public static string GetBaseAddressListString(this MemoryDescriptor memoryDescriptor)
     {
-        List<uint> baseAddresses = WatchVariableUtilities.GetBaseAddresses(memoryDescriptor.BaseAddressType).ToList();
+        List<uint> baseAddresses = VariableUtilities.GetBaseAddresses(memoryDescriptor.BaseAddressType).ToList();
         if (baseAddresses.Count == 0)
             return "(none)";
         List<string> baseAddressesString = baseAddresses.ConvertAll(address => HexUtilities.FormatValue(address, 8));
