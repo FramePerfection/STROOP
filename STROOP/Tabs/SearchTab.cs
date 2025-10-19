@@ -75,11 +75,12 @@ namespace STROOP.Tabs
             foreach (DataGridViewRow row in rows)
             {
                 uint? addressNullable = ParsingUtilities.ParseHexNullable(row.Cells[0].Value);
-                if (!addressNullable.HasValue) continue;
-                uint address = addressNullable.Value;
+                if (!addressNullable.HasValue)
+                    continue;
 
+                uint address = addressNullable.Value;
                 MemoryDescriptor watchVar = new MemoryDescriptor(_memoryType, BaseAddressType.Relative, address);
-                _variablePanelSearch.AddVariable(watchVar.CreateView());
+                _variablePanelSearch.AddVariable(($"{_memoryType.Name}@0x{address : X8}", watchVar.CreateVariable()));
             }
         }
 

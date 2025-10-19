@@ -19,7 +19,6 @@
                     ?.Invoke([
                         new CustomVariable<TBackingType>(var.Subclass)
                         {
-                            Name = view.Name,
                             getter = () => view.getter().Select(x => x.HasValue ? x.Value : default(TBackingType)).ToArray(),
                             setter = value => view.setter(value),
                         },

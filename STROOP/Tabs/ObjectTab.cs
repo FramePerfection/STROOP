@@ -412,10 +412,10 @@ namespace STROOP.Tabs
         // Having an empty action assigned to this adds the context menu entry to the ObjectSlot controls
         public override Action<IEnumerable<ObjectSlot>> objectSlotsClicked => objectSlots => { };
 
-        public void SetBehaviorWatchVariables(IEnumerable<IVariable> watchVars, Color color)
+        public void SetBehaviorVariables(IEnumerable<VariablePrecursor> precursors, Color color)
         {
             _variablePanelObject.RemoveVariableGroup(VariableGroup.ObjectSpecific);
-            foreach (var ctrl in _variablePanelObject.AddVariables(watchVars))
+            foreach (var ctrl in _variablePanelObject.AddVariables(precursors))
                 ctrl.control.BaseColor = color;
         }
 
@@ -466,7 +466,7 @@ namespace STROOP.Tabs
                 SlotPos = "";
                 labelObjAddValue.Text = "";
                 _lastGeneralizedBehavior = null;
-                SetBehaviorWatchVariables(Array.Empty<IVariable>(), Color.White);
+                SetBehaviorVariables([], Color.White);
             }
             else if (_objects.Count() == 1)
             {
@@ -475,8 +475,8 @@ namespace STROOP.Tabs
                 if (!BehaviorCriteria.HasSameAssociation(_lastGeneralizedBehavior, newBehavior))
                 {
                     Behavior = $"0x{obj.SegmentedBehavior & 0x00FFFFFF:X4}";
-                    SetBehaviorWatchVariables(
-                        Config.ObjectAssociations.GetWatchVarControls(newBehavior),
+                    SetBehaviorVariables(
+                        Config.ObjectAssociations.GetVariablePrecursors(newBehavior),
                         ObjectSlotsConfig.GetProcessingGroupColor(obj.BehaviorProcessGroup)
                             .Lighten(0.8));
                     _lastGeneralizedBehavior = newBehavior;
@@ -510,14 +510,14 @@ namespace STROOP.Tabs
                     if (multiBehavior.HasValue)
                     {
                         Behavior = $"0x{multiBehavior.Value.BehaviorAddress:X4}";
-                        SetBehaviorWatchVariables(
-                            Config.ObjectAssociations.GetWatchVarControls(multiBehavior.Value),
+                        SetBehaviorVariables(
+                            Config.ObjectAssociations.GetVariablePrecursors(multiBehavior.Value),
                             ObjectSlotsConfig.GetProcessingGroupColor(processGroup).Lighten(0.8));
                     }
                     else
                     {
                         Behavior = "";
-                        SetBehaviorWatchVariables(Array.Empty<IVariable>(), Color.White);
+                        SetBehaviorVariables([], Color.White);
                     }
 
                     _lastGeneralizedBehavior = multiBehavior;

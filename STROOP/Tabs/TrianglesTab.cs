@@ -41,14 +41,12 @@ namespace STROOP.Tabs
         static IEnumerable<T> OperateOnTriangles<T>(Func<uint, T> operate) => VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress => operate(triAddress));
 
         static (string, VariablePanel.SpecialFuncWatchVariables) GenerateTriangleRelations =
-            ("Triangle projections",
-                (PositionAngle.HybridPositionAngle pa) =>
+            ("Triangle projections", pa =>
                 {
-                    var vars = new List<IVariable>();
-                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                    var vars = new List<VariablePrecursor>();
+                    vars.Add(($"{pa.name} Normal Dist Away", new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
-                        Name = $"{pa.name} Normal Dist Away",
                         getter = () =>
                             VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
@@ -60,7 +58,7 @@ namespace STROOP.Tabs
                                     triStruct.NormOffset;
                                 return normalDistAway;
                             }),
-                        setter = (double distAway) =>
+                        setter =  distAway =>
                             VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
                                 TriangleDataModel triStruct = TriangleDataModel.Create(triAddress);
@@ -81,12 +79,11 @@ namespace STROOP.Tabs
 
                                 return pa.SetValues(x: newSelfX, y: newSelfY, z: newSelfZ);
                             })
-                    });
+                    }));
 
-                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                    vars.Add(($"{pa.name} Vertical Dist Away", new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
-                        Name = $"{pa.name} Vertical Dist Away",
                         getter = () =>
                             VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
@@ -103,13 +100,12 @@ namespace STROOP.Tabs
                                 pa.SetY(newSelfY);
                                 return true;
                             })
-                    });
+                    }));
 
 
-                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                    vars.Add(($"{pa.name} Height On Triangle", new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
-                        Name = $"{pa.name} Height On Triangle",
                         getter = () =>
                             VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
@@ -118,12 +114,11 @@ namespace STROOP.Tabs
                                 return heightOnTriangle;
                             }),
                         setter = SpecialVariableDefaults<double>.DEFAULT_SETTER
-                    });
+                    }));
 
-                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                    vars.Add(($"{pa.name} Distance To Line 12", new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
-                        Name = $"{pa.name} Distance To Line 12",
                         getter = () =>
                             VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
@@ -157,12 +152,11 @@ namespace STROOP.Tabs
                                 double newSelfZ = pa.Z + zDiff;
                                 return pa.SetValues(x: newSelfX, z: newSelfZ);
                             })
-                    });
+                    }));
 
-                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                    vars.Add(($"{pa.name} Distance To Line 23", new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
-                        Name = $"{pa.name} Distance To Line 23",
                         getter = () =>
                             VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
@@ -196,12 +190,11 @@ namespace STROOP.Tabs
                                 double newSelfZ = pa.Z + zDiff;
                                 return pa.SetValues(x: newSelfX, z: newSelfZ);
                             })
-                    });
+                    }));
 
-                    vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                    vars.Add(($"{pa.name} Distance To Line 31", new CustomVariable<double>(VariableSubclass.Number)
                     {
                         Color = "LightBlue",
-                        Name = $"{pa.name} Distance To Line 31",
                         getter = () =>
                             VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress =>
                             {
@@ -235,7 +228,7 @@ namespace STROOP.Tabs
                                 double newSelfZ = pa.Z + zDiff;
                                 return pa.SetValues(x: newSelfX, z: newSelfZ);
                             })
-                    });
+                    }));
 
                     foreach ((string name, Func<uint, PositionAngle> func) vertex_it in new (string, Func<uint, PositionAngle>)[]
                              {
@@ -249,41 +242,37 @@ namespace STROOP.Tabs
                         {
                             var getter = distFunc.getter;
                             var setter = distFunc.setter;
-                            vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                            vars.Add(($"{distFunc.type}Dist {pa.name} To {vertex.name}", new CustomVariable<double>(VariableSubclass.Number)
                             {
                                 Color = "LightBlue",
-                                Name = $"{distFunc.type}Dist {pa.name} To {vertex.name}",
                                 getter = () => OperateOnTriangles(triAddress => getter(new[] { pa, vertex.func(triAddress) })),
                                 setter = (double dist) => OperateOnTriangles(triAddress => setter(new[] { pa, vertex.func(triAddress) }, dist))
-                            });
+                            }));
                         }
 
-                        vars.Add(new CustomVariable<double>(VariableSubclass.Angle)
+                        vars.Add(($"Angle {pa.name} To {vertex.name}", new CustomVariable<double>(VariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
-                            Name = $"Angle {pa.name} To {vertex.name}",
                             getter = () => OperateOnTriangles(triAddress => PositionAngle.GetAngleTo(pa, vertex.func(triAddress))),
                             setter = (double angle) => OperateOnTriangles(triAddress => PositionAngle.SetAngleTo(pa, vertex.func(triAddress), angle))
-                        });
+                        }));
 
-                        vars.Add(new CustomVariable<double>(VariableSubclass.Angle)
+                        vars.Add(($"DAngle {pa.name} To {vertex.name}", new CustomVariable<double>(VariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
-                            Name = $"DAngle {pa.name} To {vertex.name}",
                             getter = () => OperateOnTriangles(triAddress => PositionAngle.GetDAngleTo(pa, vertex.func(triAddress))),
                             setter = (double angleDiff) => OperateOnTriangles(triAddress => PositionAngle.SetDAngleTo(pa, vertex.func(triAddress), angleDiff))
-                        });
+                        }));
 
-                        vars.Add(new CustomVariable<double>(VariableSubclass.Angle)
+                        vars.Add(($"AngleDiff {pa.name} To {vertex.name}", new CustomVariable<double>(VariableSubclass.Angle)
                         {
                             Color = "LightBlue",
                             Display = "short",
-                            Name = $"AngleDiff {pa.name} To {vertex.name}",
                             getter = () => OperateOnTriangles(triAddress => PositionAngle.GetAngleDifference(pa, vertex.func(triAddress))),
                             setter = (double angleDiff) => OperateOnTriangles(triAddress => PositionAngle.SetAngleDifference(pa, vertex.func(triAddress), angleDiff))
-                        });
+                        }));
                     }
 
                     return vars;

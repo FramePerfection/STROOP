@@ -41,7 +41,7 @@ namespace STROOP.Forms
             };
         }
 
-        public void Initialize(List<IVariable> views)
+        public void Initialize(IEnumerable<VariablePrecursor> views)
         {
             // initialize panel
             _variablePanel.Initialize();
@@ -51,7 +51,7 @@ namespace STROOP.Forms
             InitInternal();
         }
 
-        public void Initialize(List<IWinFormsVariableCell> vars)
+        public void Initialize(IEnumerable<IWinFormsVariableCell> vars)
         {
             // initialize panel
             _variablePanel.Initialize();

@@ -121,13 +121,10 @@ namespace STROOP.Utilities
             return doc;
         }
 
-        public static List<IVariable> OpenWatchVariables(string path) => OpenWatchVariableControlPrecursors(path);
-
-        public static List<IVariable> OpenWatchVariableControlPrecursors(string path)
+        public static List<VariablePrecursor> OpenWatchVariableControlPrecursors(string path)
         {
             string schemaFile = "MiscDataSchema.xsd";
-            var objectData = new List<IVariable>();
-            var assembly = Assembly.GetExecutingAssembly();
+            var objectData = new List<VariablePrecursor>();
 
             // Create schema set
             var schemaSet = new XmlSchemaSet() { XmlResolver = new ResourceXmlResolver() };
@@ -143,9 +140,9 @@ namespace STROOP.Utilities
             {
                 if (element.Name.ToString() != "Data")
                     continue;
-                var view = VariableCellFactory<VariablePanelUiContext>.ParseXml(element, WatchVariableSpecialUtilities.dictionary);
-                if (view != null)
-                    objectData.Add(view);
+                var parsed = VariableCellFactory<VariablePanelUiContext>.ParseXml(element, WatchVariableSpecialUtilities.dictionary);
+                if (parsed.var != null)
+                    objectData.Add(parsed);
             }
 
             return objectData;
@@ -271,12 +268,12 @@ namespace STROOP.Utilities
                                 rotates = bool.Parse(element.Element(XName.Get("MapImage")).Attribute(XName.Get("rotates")).Value);
                             }
 
-                            List<IVariable> precursors = new List<IVariable>();
+                            var precursors = new List<VariablePrecursor>();
                             foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
                             {
-                                var variableView = VariableCellFactory<VariablePanelUiContext>.ParseXml(subElement, WatchVariableSpecialUtilities.dictionary);
-                                if (variableView != null)
-                                    precursors.Add(variableView);
+                                var parsed = VariableCellFactory<VariablePanelUiContext>.ParseXml(subElement, WatchVariableSpecialUtilities.dictionary);
+                                if (parsed.var != null)
+                                    precursors.Add(parsed);
                             }
 
                             var newBehavior = new ObjectBehaviorAssociation()

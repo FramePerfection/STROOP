@@ -16,7 +16,6 @@ public class VariableSpecialDictionary
     {
         _dictionary[key] = new CustomVariable<T>(subclass.DefaultIfNull<T>())
         {
-            Name = key,
             getter = getter,
             setter = setter,
         };
@@ -36,7 +35,6 @@ public class VariableSpecialDictionary
     {
         _dictionary[key] = new CustomVariable<T>(subclass.DefaultIfNull<T>())
         {
-            Name = key,
             getter = () => getter().Yield(),
             setter = setter,
         };

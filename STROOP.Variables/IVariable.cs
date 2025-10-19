@@ -18,12 +18,6 @@ public interface IVariable
     Action OnDelete { get; set; }
 
     /// <summary>
-    /// The name by which this <see cref="IVariable"/> should be displayed to the user.
-    /// <para> This should be moved to the UI layer eventually, specifically by facilitating <see cref="GetValueByKey"/>. </para>
-    /// </summary>
-    string Name { get; }
-
-    /// <summary>
     /// Associates an arbitrary key with an arbitrary value on this <see cref="IVariable"/>.
     /// </summary>
     /// <param name="key"> The key to associate the value with. </param>

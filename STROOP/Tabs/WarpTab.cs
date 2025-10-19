@@ -68,55 +68,49 @@ namespace STROOP.Tabs
             base.Update(updateView);
         }
 
-        private List<CustomVariable> GetWarpNodeVariables(List<uint> addresses)
+        private List<VariablePrecursor> GetWarpNodeVariables(List<uint> addresses)
         {
-            var controls = new List<CustomVariable>();
+            var precursors = new List<VariablePrecursor>();
             int i = 0;
             foreach (var address in addresses)
-                controls.AddRange(GetWarpNodeVariables(address, i++));
-            return controls;
+                precursors.AddRange(GetWarpNodeVariables(address, i++));
+            return precursors;
         }
 
-        private IEnumerable<CustomVariable> GetWarpNodeVariables(uint address, int index)
+        private IEnumerable<VariablePrecursor> GetWarpNodeVariables(uint address, int index)
         {
-            return new CustomVariable[]
+            return new VariablePrecursor[]
             {
-                new CustomVariable<byte>(VariableSubclass.Number)
+                ($"Warp {index} ID", new CustomVariable<byte>(VariableSubclass.Number)
                 {
-                    Name = $"Warp {index} ID",
                     getter = () => Config.Stream.GetByte(address).Yield(),
                     setter = (val) => Config.Stream.SetValue(val, address).Yield()
-                },
-                new CustomVariable<byte>(VariableSubclass.Number)
+                }),
+                ($"Warp {index} Dest Level", new CustomVariable<byte>(VariableSubclass.Number)
                 {
-                    Name = $"Warp {index} Dest Level",
                     getter = () => Config.Stream.GetByte(address + 0x1).Yield(),
                     setter = val => Config.Stream.SetValue(val, address + 0x1).Yield()
-                },
-                new CustomVariable<byte>(VariableSubclass.Number)
+                }),
+                ($"Warp {index} Dest Area", new CustomVariable<byte>(VariableSubclass.Number)
                 {
-                    Name = $"Warp {index} Dest Area",
                     getter = () => Config.Stream.GetByte(address + 0x2).Yield(),
                     setter = val => Config.Stream.SetValue(val, address + 0x2).Yield()
-                },
-                new CustomVariable<byte>(VariableSubclass.Number)
+                }),
+                ($"Warp {index} Dest Node", new CustomVariable<byte>(VariableSubclass.Number)
                 {
-                    Name = $"Warp {index} Dest Node",
                     getter = () => Config.Stream.GetByte(address + 0x3).Yield(),
                     setter = val => Config.Stream.SetValue(val, address + 0x3).Yield()
-                },
-                new CustomVariable<uint>(VariableSubclass.Number)
+                }),
+                ($"Warp {index} Object", new CustomVariable<uint>(VariableSubclass.Number)
                 {
-                    Name = $"Warp {index} Object",
                     getter = () => Config.Stream.GetUInt32(address + 0x4).Yield(),
                     setter = val => Config.Stream.SetValue(val, address + 0x4).Yield()
-                },
-                new CustomVariable<uint>(VariableSubclass.Number)
+                }),
+                ($"Warp {index} Next", new CustomVariable<uint>(VariableSubclass.Number)
                 {
-                    Name = $"Warp {index} Next",
                     getter = () => Config.Stream.GetUInt32(address + 0x8).Yield(),
                     setter = val => Config.Stream.SetValue(val, address + 0x8).Yield()
-                },
+                }),
             };
         }
 

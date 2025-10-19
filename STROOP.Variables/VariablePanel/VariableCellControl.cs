@@ -74,7 +74,6 @@ namespace STROOP.Variables.VariablePanel
             view.OnDelete += RemoveFromPanel;
 
             // Initialize main fields
-            VarName = view.Name;
             GroupList = VariableUtilities.ParseVariableGroupList(view.GetValueByKey("groupList") ?? "Custom");
             RenameMode = false;
             IsSelected = false;

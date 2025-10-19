@@ -78,7 +78,7 @@ public class MemoryDescriptor
         HandleMapping = handleMapping;
     }
 
-    public IMemoryVariable CreateView(string wrapper = "Number")
+    public IMemoryVariable CreateVariable(string wrapper = "Number")
         => (IMemoryVariable)
             typeof(MemoryVariable<>)
                 .MakeGenericType(ClrType)

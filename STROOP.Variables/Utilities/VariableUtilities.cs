@@ -11,16 +11,6 @@ public static class IVariableViewExtensions
         return view;
     }
 
-    public static string GetJsonName(this IVariable view)
-    {
-        string? explicitJsonName = view.GetValueByKey("jsonName");
-        if (explicitJsonName == "")
-            return null;
-        if (explicitJsonName != null)
-            return explicitJsonName;
-        return $"{view.Name}".Replace(' ', '_').ToLower();
-    }
-
     public static IEnumerable<T> GetNumberValues<T>(this IVariable view) where T : struct, IConvertible
     {
         if (view.TryGetNumberValues<T>(out IEnumerable<T>? result))

@@ -30,82 +30,75 @@ namespace STROOP.Utilities
                             return view;
                         }
 
-                        var vars = new CustomVariable[]
+                        var vars = new VariablePrecursor[]
                         {
-                            MakePATypeView(new CustomVariable<string>(VariableSubclass.String)
+                            ($"{pa.name} Pos Type", MakePATypeView(new CustomVariable<string>(VariableSubclass.String)
                             {
-                                Name = $"{pa.name} Pos Type",
                                 Color = "Blue",
                                 getter = () => pa.first().ToString().Yield(),
                                 setter = newPAString =>
                                 {
-                                    var newPA = PositionAngle.FromString((string)newPAString);
+                                    var newPA = FromString(newPAString);
                                     if (newPA == null)
                                         return false.Yield();
                                     pa.first = () => newPA;
                                     return true.Yield();
                                 }
-                            }),
-                            MakePATypeView(new CustomVariable<string>(VariableSubclass.String)
+                            })),
+                            ($"{pa.name} Angle Type", MakePATypeView(new CustomVariable<string>(VariableSubclass.String)
                             {
-                                Name = $"{pa.name} Angle Type",
                                 Color = "Blue",
                                 getter = () => pa.second().ToString().Yield(),
                                 setter = newPAString =>
                                 {
-                                    var newPA = PositionAngle.FromString((string)newPAString);
+                                    var newPA = FromString(newPAString);
                                     if (newPA == null)
                                         return false.Yield();
                                     pa.second = () => newPA;
                                     return true.Yield();
                                 }
-                            }),
-                            new CustomVariable<double>(VariableSubclass.Number)
+                            })),
+                            ($"{pa.name} X", new CustomVariable<double>(VariableSubclass.Number)
                             {
-                                Name = $"{pa.name} X",
                                 Color = "Blue",
                                 getter = () => pa.first().X.Yield(),
                                 setter = val => pa.first().SetX(val).Yield()
-                            },
-                            new CustomVariable<double>(VariableSubclass.Number)
+                            }),
+                            ($"{pa.name} Y", new CustomVariable<double>(VariableSubclass.Number)
                             {
-                                Name = $"{pa.name} Y",
                                 Color = "Blue",
                                 getter = () => pa.first().Y.Yield(),
                                 setter = val => pa.first().SetY(val).Yield()
-                            },
-                            new CustomVariable<double>(VariableSubclass.Number)
+                            }),
+                            ($"{pa.name} Z", new CustomVariable<double>(VariableSubclass.Number)
                             {
-                                Name = $"{pa.name} Z",
                                 Color = "Blue",
                                 getter = () => pa.first().Z.Yield(),
                                 setter = val => pa.first().SetZ(val).Yield()
-                            },
-                            new CustomVariable<double>(VariableSubclass.Angle)
+                            }),
+                            ($"{pa.name} Angle", new CustomVariable<double>(VariableSubclass.Angle)
                             {
-                                Name = $"{pa.name} Angle",
                                 Color = "Blue",
                                 Display = "short",
                                 getter = () => pa.second().Angle.Yield(),
                                 setter = val => pa.second().SetAngle(val).Yield()
-                            },
+                            }),
                         };
                         pa.OnDelete += () =>
                         {
                             foreach (var v in vars)
-                                v.OnDelete();
+                                v.var.OnDelete();
                         };
                         return vars;
                     }
             );
 
             public static (string, VariablePanel.SpecialFuncWatchVariables) GenerateRelations(HybridPositionAngle relation) =>
-                ($"Relations to {relation.name}",
-                    (HybridPositionAngle pa) =>
+                ($"Relations to {relation.name}", pa =>
                     {
-                        List<IVariable> vars = new List<IVariable>();
+                        List<VariablePrecursor> vars = new List<VariablePrecursor>();
                         var distTypes = new[] { "X", "Y", "Z", "H", "", "F", "S" };
-                        var distGetters = new Func<PositionAngle, PositionAngle, double>[]
+                        var distGetters = new []
                         {
                             GetXDistance,
                             GetYDistance,
@@ -115,7 +108,7 @@ namespace STROOP.Utilities
                             GetFDistance,
                             GetSDistance,
                         };
-                        var distSetters = new Func<PositionAngle, PositionAngle, double, bool>[]
+                        var distSetters = new []
                         {
                             SetXDistance,
                             SetYDistance,
@@ -132,46 +125,42 @@ namespace STROOP.Utilities
                             Func<PositionAngle, PositionAngle, double> getter = distGetters[k];
                             Func<PositionAngle, PositionAngle, double, bool> setter = distSetters[k];
 
-                            vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                            vars.Add(($"{distType}Dist {relation.name} To {pa.name}", new CustomVariable<double>(VariableSubclass.Number)
                             {
                                 Color = "LightBlue",
-                                Name = $"{distType}Dist {relation.name} To {pa.name}",
                                 getter = () => getter(relation, pa).Yield(),
                                 setter = (double dist) => setter(relation, pa, dist).Yield()
-                            });
+                            }));
                         }
 
-                        vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                        vars.Add(($"Angle {relation.name} To {pa.name}", new CustomVariable<double>(VariableSubclass.Number)
                         {
                             Color = "LightBlue",
-                            Name = $"Angle {relation.name} To {pa.name}",
                             Display = "short",
                             getter = () => GetAngleTo(relation, pa).Yield(),
                             setter = (double angle) => SetAngleTo(relation, pa, angle).Yield()
-                        });
+                        }));
 
-                        vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                        vars.Add(($"DAngle {relation.name} To {pa.name}", new CustomVariable<double>(VariableSubclass.Number)
                         {
                             Color = "LightBlue",
-                            Name = $"DAngle {relation.name} To {pa.name}",
                             Display = "short",
                             getter = () => GetDAngleTo(relation, pa).Yield(),
-                            setter = (double angleDiff) => SetDAngleTo(relation, pa, Convert.ToDouble(angleDiff)).Yield()
-                        });
+                            setter = angleDiff => SetDAngleTo(relation, pa, Convert.ToDouble(angleDiff)).Yield()
+                        }));
 
-                        vars.Add(new CustomVariable<double>(VariableSubclass.Number)
+                        vars.Add(($"AngleDiff {relation.name} To {pa.name}", new CustomVariable<double>(VariableSubclass.Number)
                         {
                             Color = "LightBlue",
-                            Name = $"AngleDiff {relation.name} To {pa.name}",
                             Display = "short",
                             getter = () => GetAngleDifference(relation, pa).Yield(),
                             setter = (double angleDiff) => SetAngleDifference(relation, pa, Convert.ToDouble(angleDiff)).Yield()
-                        });
+                        }));
 
                         Action remove = () =>
                         {
                             foreach (var v in vars)
-                                v.OnDelete();
+                                v.var.OnDelete();
                         };
                         pa.OnDelete += remove;
                         relation.OnDelete += remove;

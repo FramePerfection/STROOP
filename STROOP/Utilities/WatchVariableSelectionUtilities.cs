@@ -158,9 +158,8 @@ namespace STROOP.Structs
                         binaryMathOperationsInverse1.TryGetValue(operation, out BinaryScalarOperation inverseSetter1);
                         binaryMathOperationsInverse2.TryGetValue(operation, out BinaryScalarOperation inverseSetter2);
 
-                        var view = new CustomVariable<double>(VariableSubclass.Number)
+                        var result = new CustomVariable<double>(VariableSubclass.Number)
                         {
-                            Name = $"{cell1.control.VarName} {MathOperationUtilities.GetSymbol(operation)} {cell2.control.VarName}",
                             getter = () => func(cell1.GetNumberValue(), cell2.GetNumberValue()).Yield(),
                             setter = val =>
                             {
@@ -180,7 +179,7 @@ namespace STROOP.Structs
                                 }
                             }
                         };
-                        panel.AddVariable(view);
+                        panel.AddVariable(($"{cell1.control.VarName} {MathOperationUtilities.GetSymbol(operation)} {cell2.control.VarName}", result));
                     }
             }
 
@@ -188,13 +187,12 @@ namespace STROOP.Structs
             {
                 if (vars.Count == 0) return;
                 var getter = WatchVariableSpecialUtilities.AddAggregateMathOperationEntry(vars, operation);
-                var view = new CustomVariable<double>(VariableSubclass.Number)
+                var result = new CustomVariable<double>(VariableSubclass.Number)
                 {
-                    Name = $"{operation}({vars.First().control.VarName}-{vars.Last().control.VarName})",
                     getter = getter,
                     setter = SpecialVariableDefaults<double>.DEFAULT_SETTER
                 };
-                panel.AddVariable(view);
+                panel.AddVariable(($"{operation}({vars.First().control.VarName}-{vars.Last().control.VarName})", result));
             }
 
             void createDistanceMathOperationVariable(bool use3D)
@@ -305,13 +303,12 @@ namespace STROOP.Structs
                     return result;
                 };
 
-                var view = new CustomVariable<double>(VariableSubclass.Number)
+                var result = new CustomVariable<double>(VariableSubclass.Number)
                 {
-                    Name = name,
                     getter = use3D ? getter3D : getter2D,
                     setter = use3D ? setter3D : setter2D
                 };
-                panel.AddVariable(view);
+                panel.AddVariable((name, result));
             }
 
             ToolStripMenuItem itemAddVariables = new ToolStripMenuItem("Add Variable(s)...");

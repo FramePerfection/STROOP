@@ -41,18 +41,16 @@ namespace STROOP.Forms
 
         public void Initialize(VariablePanel varPanel)
         {
-            buttonAddVariable.Click += (sender, e) => varPanel.AddVariable(CreateWatchVariableControl());
+            buttonAddVariable.Click += (sender, e) => varPanel.AddVariable(CreateVariable());
         }
 
-        private IVariable CreateWatchVariableControl()
+        private VariablePrecursor CreateVariable()
         {
             string memoryTypeString = comboBoxTypeValue.SelectedItem.ToString();
             string baseAddressType = (string)comboBoxBaseValue.SelectedItem;
             uint offset = ParsingUtilities.ParseHexNullable(textBoxOffsetValue.Text) ?? 0;
 
-            var result = new MemoryDescriptor(TypeUtilities.StringToType[memoryTypeString], baseAddressType, offset).CreateView();
-            result.Name = textBoxNameValue.Text;
-            return result;
+            return (textBoxNameValue.Text, new MemoryDescriptor(TypeUtilities.StringToType[memoryTypeString], baseAddressType, offset).CreateVariable());
         }
     }
 }

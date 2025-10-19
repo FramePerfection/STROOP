@@ -104,7 +104,7 @@ namespace STROOP.Controls.VariablePanel
 
         public readonly Func<List<IWinFormsVariableCell>> GetSelectedVars;
 
-        public delegate IEnumerable<IVariable> SpecialFuncWatchVariables(PositionAngle.HybridPositionAngle input);
+        public delegate IEnumerable<VariablePrecursor> SpecialFuncWatchVariables(PositionAngle.HybridPositionAngle input);
 
         public Func<IEnumerable<(string name, SpecialFuncWatchVariables generateVariables)>> getSpecialFuncWatchVariables = null;
         public bool IsSelected => Focused;
@@ -187,11 +187,9 @@ namespace STROOP.Controls.VariablePanel
             {
                 SuspendLayout();
 
-                List<IVariable> precursors = _varFilePath == null
-                    ? new List<IVariable>()
-                    : XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath);
-
-                foreach (var watchVarControl in precursors.ConvertAll(precursor => new WinFormsVariableControl(this, precursor)))
+                var controls = (_varFilePath != null ? XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath) : [])
+                    .Select(precursor => new WinFormsVariableControl(this, precursor.var) { VarName = precursor.name });
+                foreach (var watchVarControl in controls)
                     _allWatchVarControls.Add(watchVarControl.varCell);
 
                 MouseDown += (_, __) =>
@@ -531,8 +529,8 @@ namespace STROOP.Controls.VariablePanel
                         var view = (CustomVariable)typeof(VariablePanel)
                             .GetMethod(nameof(CreateDummyVariable), BindingFlags.NonPublic | BindingFlags.Static)
                             .MakeGenericMethod(type)
-                            .Invoke(null, Array.Empty<object>());
-                        AddVariable(view);
+                            .Invoke(null, []);
+                        AddVariable(($"Dummy {i + 1}", view));
                     }
                 };
             }
@@ -693,11 +691,13 @@ namespace STROOP.Controls.VariablePanel
             _filteringDropDownItems.ForEach(item => filterVariablesItem.DropDownItems.Add(item));
         }
 
-        public IWinFormsVariableCell AddVariable(IVariable view) =>
-            AddVariables([ view ]).First();
+        public IWinFormsVariableCell AddVariable((string name, IVariable variable) var) =>
+            AddVariables([ var ]).First();
 
-        public IEnumerable<IWinFormsVariableCell> AddVariables(IEnumerable<IVariable> views)
-            => AddVariablesInternal(views.Select(view =>  new WinFormsVariableControl(this, view).varCell));
+        public IEnumerable<IWinFormsVariableCell> AddVariables(IEnumerable<(string name, IVariable variable)> vars)
+            => AddVariablesInternal(vars.Select(
+                var => new WinFormsVariableControl(this, var.variable) { VarName = var.name }.varCell
+            ));
 
         public IEnumerable<IWinFormsVariableCell> AddVariables(IEnumerable<IWinFormsVariableCell> cells)
             => AddVariablesInternal(cells.Select(cell => cell.control.CreateCopy(this).varCell));
@@ -772,10 +772,7 @@ namespace STROOP.Controls.VariablePanel
             _visibleGroups.AddRange(_initialVisibleGroups);
             UpdateFilterItemCheckedStatuses();
 
-            List<IVariable> views = _varFilePath == null
-                ? new List<IVariable>()
-                : XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath);
-            AddVariables(views);
+            AddVariables(_varFilePath != null ? XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath) : []);
         }
 
         public void UnselectAllVariables()
@@ -799,7 +796,10 @@ namespace STROOP.Controls.VariablePanel
             List<XElement> elements = DialogUtilities.OpenXmlElements(FileType.StroopVariables);
             if (elements.Count == 0) return;
             VariablePopOutForm form = new VariablePopOutForm();
-            form.Initialize(elements.ConvertAndRemoveNull(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, WatchVariableSpecialUtilities.dictionary)));
+            form.Initialize(elements
+                .Select(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, WatchVariableSpecialUtilities.dictionary))
+                .Where(x => x.var != null)
+            );
             form.ShowForm();
         }
 

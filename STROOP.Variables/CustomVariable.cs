@@ -4,7 +4,6 @@ public class CustomVariable : IVariable
 {
     public Action ValueSet { get; set; }
     public Action OnDelete { get; set; }
-    public string Name { get; set; }
     public string Subclass { get; }
     public Type ClrType { get; }
 

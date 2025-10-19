@@ -5,7 +5,6 @@ namespace STROOP.Variables;
 
 public interface IMemoryVariable : IVariable
 {
-    string Name { get; set; }
     MemoryDescriptor memoryDescriptor { get; }
     DescribedMemoryState describedMemoryState { get; }
 }

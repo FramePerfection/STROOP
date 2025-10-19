@@ -78,20 +78,21 @@ namespace STROOP.Variables.VariablePanel
             return true;
         }
 
-        public static IVariable ParseXml(XElement element, VariableSpecialDictionary sepcialVariables)
+        public static (string name, IVariable var) ParseXml(XElement element, VariableSpecialDictionary sepcialVariables)
         {
             switch (element.Name.LocalName)
             {
                 case "Data":
                     var specialType = element.Attribute(XName.Get("specialType"))?.Value;
-                    return specialType != null
-                        ? sepcialVariables.TryGetValue(specialType, out var special)
-                            ? special
-                            : null
-                        : FromXml(element).view;
+                    return (element.Value,
+                        specialType != null
+                            ? sepcialVariables.TryGetValue(specialType, out var special)
+                                ? special
+                                : null
+                            : FromXml(element).view);
             }
 
-            return null;
+            return (null, null);
         }
 
         public static (MemoryDescriptor descriptor, IMemoryVariable view) FromXml(XElement element)

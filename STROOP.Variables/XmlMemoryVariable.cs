@@ -8,12 +8,11 @@ public interface IXmlMemoryVariable
     XElement GetXml();
 }
 
-public class XmlMemoryVariable<T>
-    : MemoryVariable<T>, IXmlMemoryVariable
+public class XmlMemoryVariable<T>(MemoryDescriptor memoryDescriptor, XElement xElement)
+    : MemoryVariable<T>(SubclassFromXml(xElement), memoryDescriptor)
+        , IXmlMemoryVariable
     where T : struct, IConvertible
 {
-    private readonly XElement xElement;
-
     static string SubclassFromXml(XElement xElement)
     {
         var subclassName = xElement.Attribute("subclass")?.Value;
@@ -23,14 +22,8 @@ public class XmlMemoryVariable<T>
             : VariableSubclass.Number;
     }
 
-    public XmlMemoryVariable(MemoryDescriptor memoryDescriptor, XElement xElement)
-        : base(SubclassFromXml(xElement), memoryDescriptor)
-    {
-        this.xElement = xElement;
-        Name = xElement.Value;
-    }
-
-    public override string GetValueByKey(string key) => xElement.Attribute(key)?.Value;
+    public override string GetValueByKey(string key)
+        => xElement.Attribute(key)?.Value;
 
     public override bool SetValueByKey(string key, string value)
     {

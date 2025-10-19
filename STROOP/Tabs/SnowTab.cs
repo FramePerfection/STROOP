@@ -78,7 +78,7 @@ namespace STROOP.Tabs
                 });
         }
 
-        private List<IVariable> GetSnowParticleControls(int index)
+        private List<VariablePrecursor> GetSnowParticleControls(int index)
         {
             uint structOffset = (uint)index * SnowConfig.ParticleStructSize;
             List<uint> offsets = new List<uint>()
@@ -94,19 +94,15 @@ namespace STROOP.Tabs
                 String.Format("Particle {0} Z", index),
             };
 
-            var controls = new List<IVariable>();
+            var precursors = new List<VariablePrecursor>();
             for (int i = 0; i < 3; i++)
-            {
-                var view = new CustomVariable<int>(VariableSubclass.Number)
+                precursors.Add((names[i], new CustomVariable<int>(VariableSubclass.Number)
                 {
-                    Name = names[i],
                     getter = () => Config.Stream.GetInt32(Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield(),
                     setter = (val) => Config.Stream.SetValue(val, Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield()
-                };
-                controls.Add(view);
-            }
+                }));
 
-            return controls;
+            return precursors;
         }
 
         public override void Update(bool updateView)

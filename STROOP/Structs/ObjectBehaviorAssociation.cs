@@ -17,7 +17,7 @@ namespace STROOP.Structs
         public Lazy<Image> TransparentImage;
         public Lazy<Image> MapImage;
         public PushHitbox PushHitbox;
-        public List<IVariable> Precursors = new List<IVariable>();
+        public List<VariablePrecursor> Precursors = new List<VariablePrecursor>();
 
         public bool MeetsCriteria(BehaviorCriteria behaviorCriteria)
         {
