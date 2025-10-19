@@ -32,7 +32,6 @@ public interface IVariable
     /// <returns> The associated value, or null if no value is associated for the provided key. </returns>
     string GetValueByKey(string key);
 
-    int DisplayPriority { get; }
     string Subclass { get; }
 
     /// <summary>

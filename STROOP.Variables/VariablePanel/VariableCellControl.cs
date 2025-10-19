@@ -10,7 +10,11 @@ namespace STROOP.Variables.VariablePanel
         public delegate int SortVariables(IVariableCellUi<TUiContext> a, IVariableCellUi<TUiContext> b);
 
         public static SortVariables SortNone = (a, b) => 0;
-        public static SortVariables SortByPriority = (a, b) => a.control.view.DisplayPriority.CompareTo(a.control.view.DisplayPriority);
+
+        public static SortVariables SortByPriority = (a, b) =>
+            int.Parse(a.control.view.GetValueByKey(CommonVariableProperties.displayPriority) ?? "0")
+                .CompareTo(int.Parse(b.control.view.GetValueByKey(CommonVariableProperties.displayPriority) ?? "0"));
+
         public static SortVariables SortByName = (a, b) => a.control.VarName.CompareTo(b.control.VarName);
 
         public static readonly Color DEFAULT_COLOR = SystemColors.Control;

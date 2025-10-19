@@ -17,8 +17,6 @@ public class CustomVariable : IVariable
         set => SetValueByKey(CommonVariableProperties.display, value);
     }
 
-    public int DisplayPriority { get; }
-
     private Dictionary<string, string> keyedValues = new Dictionary<string, string>();
 
     public CustomVariable(string subclass, Type clrType)

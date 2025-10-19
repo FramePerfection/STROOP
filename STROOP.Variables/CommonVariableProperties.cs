@@ -13,5 +13,6 @@ public class CommonVariableProperties
         specialType,
         roundingLimit,
         display,
-        color;
+        color,
+        displayPriority;
 }
