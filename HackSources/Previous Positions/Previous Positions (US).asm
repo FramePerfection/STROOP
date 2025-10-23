@@ -28,6 +28,9 @@ MarioPosLoY equ 0xb1b0
 MarioPosLoZ equ 0xb1b4
 MarioAngleLo equ 0xb19e
 
+gWaterSurfacePseudoFloorHi equ 0x8033
+gWaterSurfacePseudoFloorLo equ 0xdaf8
+
 ; hack functions and variables
 
 overwrite_mario_position_and_forward_angle          equ 0x372e00

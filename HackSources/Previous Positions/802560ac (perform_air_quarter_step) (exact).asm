@@ -72,8 +72,8 @@ bc1f	0x140
 nop
 lwc1	$f4, 0x24($sp)
 swc1	$f4, 0x28($sp)
-lui	$t8, 0x8033
-addiu	$t8, $t8, -0x2508
+lui	$t8, gWaterSurfacePseudoFloorHi
+addiu	$t8, $t8, gWaterSurfacePseudoFloorLo
 sw	$t8, 0x30($sp)
 lwc1	$f6, 0x28($sp)
 lw	$t9, 0x30($sp)
