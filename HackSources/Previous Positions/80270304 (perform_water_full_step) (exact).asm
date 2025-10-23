@@ -11,12 +11,12 @@ lw	$t6, 0x34($sp)
 addiu	$a3, $sp, 0x24
 lwc1	$f12, ($t6)
 lwc1	$f14, 4($t6)
-jal	0x381900
+jal	find_floor
 lw	$a2, 8($t6)
 swc1	$f0, 0x1c($sp)
 lw	$a0, 0x34($sp)
 lw	$a1, 0x1c($sp)
-jal	0x251afc
+jal	vec3f_find_ceil
 addiu	$a2, $sp, 0x28
 swc1	$f0, 0x20($sp)
 lw	$t7, 0x24($sp)

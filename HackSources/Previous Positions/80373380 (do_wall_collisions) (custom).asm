@@ -12,7 +12,7 @@ nop
 
 .org 0x40 ; do_wall_collisions_for_geometry_inputs
 move	$gp, $ra
-jal	0x380de8
+jal	f32_find_wall_collision
 nop
 jal	set_next_mario_position_and_forward_angle
 nop

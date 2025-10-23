@@ -17,17 +17,17 @@ lw	$t6, 0x44($sp)
 addiu	$a3, $sp, 0x30
 lwc1	$f12, ($t6)
 lwc1	$f14, 4($t6)
-jal	0x381900
+jal	find_floor
 lw	$a2, 8($t6)
 swc1	$f0, 0x28($sp)
 lw	$a0, 0x44($sp)
 lw	$a1, 0x28($sp)
-jal	0x251afc
+jal	vec3f_find_ceil
 addiu	$a2, $sp, 0x34
 swc1	$f0, 0x2c($sp)
 lw	$t7, 0x44($sp)
 lwc1	$f12, ($t7)
-jal	0x381ba0
+jal	find_water_level
 lwc1	$f14, 8($t7)
 swc1	$f0, 0x24($sp)
 lw	$t8, 0x38($sp)
@@ -121,7 +121,7 @@ beqz	$t5, 0x260
 nop
 lw	$t6, 0x38($sp)
 lwc1	$f12, 0x24($t6)
-jal	0x37a9a8
+jal	atan2s
 lwc1	$f14, 0x1c($t6)
 lw	$t8, 0x40($sp)
 sll	$s0, $v0, 0x10

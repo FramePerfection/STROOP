@@ -14,7 +14,7 @@ andi	$t0, $t9, 0x2000
 beqz	$t0, 0x48
 nop
 lw	$a0, 0x40($sp)
-jal	0x270500
+jal	apply_water_current
 addiu	$a1, $sp, 0x20
 lw	$t2, 0x40($sp)
 addiu	$t1, $sp, 0x20
@@ -61,7 +61,7 @@ mtc1	$zero, $f8
 lw	$t8, 0x40($sp)
 swc1	$f8, 0x4c($t8)
 lw	$a0, 0x40($sp)
-jal	0x270304
+jal	perform_water_full_step
 addiu	$a1, $sp, 0x2c
 sw	$v0, 0x38($sp)
 lw	$a0, 0x1c($sp)
@@ -75,7 +75,7 @@ lh	$a1, 0x2c($t9)
 lh	$a2, 0x2e($t9)
 lh	$a3, 0x30($t9)
 addiu	$a0, $a0, 0x1a
-jal	0x37897c
+jal	vec3s_set
 negu	$a1, $a1
 nop
 lw	$v0, 0x38($sp)

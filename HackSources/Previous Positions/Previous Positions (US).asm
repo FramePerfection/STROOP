@@ -5,8 +5,22 @@
 
 vec3f_copy equ 0x378800
 vec3f_set equ 0x378840
+vec3s_set equ 0x37897c
+atan2s equ 0x37a9a8
 
 resolve_and_return_wall_collisions equ 0x251a48
+find_floor equ 0x381900
+vec3f_find_ceil equ 0x251afc
+find_water_level equ 0x381ba0
+perform_ground_quarter_step equ 0x255b04
+mario_get_terrain_sound_addend equ 0x2518a8
+perform_air_quarter_step equ 0x2560ac
+apply_gravity equ 0x25661c
+apply_vertical_wind equ 0x2569f8
+check_ledge_grab equ 0x255ec4
+apply_water_current equ 0x270500
+perform_water_full_step equ 0x270304
+f32_find_wall_collision equ 0x380de8
 
 MarioPosHi equ 0x8034
 MarioPosLoX equ 0xb1ac

@@ -31,7 +31,7 @@ lwc1	$f8, 0x40($t6)
 jal	set_next_argument_position_and_mario_forward_angle
 swc1	$f8, 0x20($sp)
 lw	$a0, 0x30($sp)
-jal	0x255b04
+jal	perform_ground_quarter_step
 addiu	$a1, $sp, 0x1c
 sw	$v0, 0x28($sp)
 nop
@@ -47,7 +47,7 @@ addiu	$t7, $t5, 1
 slti	$at, $t7, 4
 bnez	$at, 0x10
 sw	$t7, 0x2c($sp)
-jal	0x2518a8
+jal	mario_get_terrain_sound_addend
 lw	$a0, 0x30($sp)
 lw	$t6, 0x30($sp)
 sw	$v0, 0x14($t6)
@@ -61,7 +61,7 @@ move	$a1, $zero
 move	$a3, $zero
 lw	$a0, 0x88($t0)
 lh	$a2, 0x2e($t0)
-jal	0x37897c
+jal	vec3s_set
 addiu	$a0, $a0, 0x1a
 lw	$t9, 0x28($sp)
 addiu	$at, $zero, 3
