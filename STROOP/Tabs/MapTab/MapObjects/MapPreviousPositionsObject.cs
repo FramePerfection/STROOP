@@ -4,7 +4,6 @@ using System.Drawing;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
-using OpenTK;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
 
@@ -13,25 +12,38 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("Previous Positions", "Movement")]
     public class MapPreviousPositionsObject : MapObject
     {
-        public struct DataPoint
+        public struct DataPoint((float x, float y, float z, ushort angle, ushort _) srcData, Lazy<Image> tex)
         {
-            public float x, y, z, angle;
-            public Lazy<Image> tex;
+            public float x = srcData.x, y = srcData.y, z = srcData.z, angle = srcData.angle;
+            public Lazy<Image> tex = tex;
 
-            public DataPoint(float x, float y, float z, float angle, Lazy<Image> tex)
-            {
-                this.x = x;
-                this.y = y;
-                this.z = z;
-                this.angle = angle;
-                this.tex = tex;
-            }
+            public bool ExactMatch(DataPoint other)
+                => x == other.x && y == other.y && z == other.z && angle == other.angle;
         }
 
         const uint BUFFER_DATA_BASE_OFFSET = 0x807F4800; // this goes to the very end of RDRAM for now
 
+        static readonly Lazy<Image>[] MARIO_IMAGES =
+        [
+            Config.ObjectAssociations.PinkMarioMapImage,
+            Config.ObjectAssociations.YellowMarioMapImage,
+            Config.ObjectAssociations.PurpleMarioMapImage,
+            Config.ObjectAssociations.GreyMarioMapImage,
+            Config.ObjectAssociations.TurquoiseMarioMapImage,
+            Config.ObjectAssociations.GreenMarioMapImage,
+            Config.ObjectAssociations.BrownMarioMapImage,
+
+            Config.ObjectAssociations.OrangeMarioMapImage,
+            Config.ObjectAssociations.TurquoiseMarioMapImage,
+            Config.ObjectAssociations.GreenMarioMapImage,
+            Config.ObjectAssociations.BlueMarioMapImage,
+        ];
+
         private DateTime _showEachPointStartTime = DateTime.MinValue;
-        uint numFramesToShow = 128;
+        uint numFramesToShow = 16;
+
+        ToolStripMenuItem itemSkipIdenticalPoints = new ToolStripMenuItem("Skip identical points");
+        bool skipIdenticalPoints {get => itemSkipIdenticalPoints.Checked; set => itemSkipIdenticalPoints.Checked = value; }
 
         public MapPreviousPositionsObject()
             : base()
@@ -81,21 +93,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public List<DataPoint> GetData()
         {
-            Lazy<Image>[] marioImages = new[]
-            {
-                Config.ObjectAssociations.PinkMarioMapImage,
-                Config.ObjectAssociations.YellowMarioMapImage,
-                Config.ObjectAssociations.PurpleMarioMapImage,
-                Config.ObjectAssociations.GreyMarioMapImage,
-                Config.ObjectAssociations.TurquoiseMarioMapImage,
-                Config.ObjectAssociations.GreenMarioMapImage,
-                Config.ObjectAssociations.BrownMarioMapImage,
-
-                Config.ObjectAssociations.OrangeMarioMapImage,
-                Config.ObjectAssociations.TurquoiseMarioMapImage,
-                Config.ObjectAssociations.GreenMarioMapImage,
-                Config.ObjectAssociations.BlueMarioMapImage,
-            };
+            double secondsPerPoint = 0.5;
+            double elapsedSeconds = DateTime.Now.Subtract(_showEachPointStartTime).TotalSeconds;
+            int pointToShow = (int)(elapsedSeconds / secondsPerPoint);
+            bool showSinglePoint = _showEachPointStartTime != DateTime.MinValue;
 
             uint globalTimer = Config.Stream.GetUInt32(MiscConfig.GlobalTimerAddress);
 
@@ -120,12 +121,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     continue;
 
                 for (int i = 0; i < numBaseFrames; i++)
-                {
-                    var data = qsData[i].gtLo == expectedGt
-                        ? new DataPoint(qsData[i].qsX, qsData[i].qsY, qsData[i].qsZ, qsData[i].qsA, marioImages[i])
-                        : allResults[^1];
-                    allResults.Add(data);
-                }
+                    if (qsData[i].gtLo == expectedGt)
+                        if (AddOrYieldIfNew(new DataPoint(qsData[i], MARIO_IMAGES[i])))
+                            return [allResults[^1]];
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -134,14 +132,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         break;
 
                     for (int k = 0; k < 4; k++)
-                        allResults.Add(new DataPoint(qsData[baseIndex + k].qsX, qsData[baseIndex + k].qsY, qsData[baseIndex + k].qsZ, qsData[baseIndex + k].qsA, marioImages[k + 7]));
+                    {
+                        if (AddOrYieldIfNew(new DataPoint(qsData[baseIndex + k], MARIO_IMAGES[k + 7])))
+                            return [allResults[^1]];
+                    }
                 }
             }
-
-            double secondsPerPoint = 0.5;
-            double elapsedSeconds = DateTime.Now.Subtract(_showEachPointStartTime).TotalSeconds;
-            int pointToShow = (int)(elapsedSeconds / secondsPerPoint);
-            bool showSinglePoint = _showEachPointStartTime != DateTime.MinValue;
 
             if (showSinglePoint)
             {
@@ -153,6 +149,17 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             _showEachPointStartTime = DateTime.MinValue;
             return allResults;
+
+            bool AddOrYieldIfNew(DataPoint dataPoint)
+            {
+                if (allResults.Count == 0 || (showSinglePoint && !skipIdenticalPoints) || !allResults[^1].ExactMatch(dataPoint))
+                {
+                    allResults.Add(dataPoint);
+                    return showSinglePoint && allResults.Count == pointToShow;
+                }
+
+                return false;
+            }
         }
 
         public override bool ParticipatesInGlobalIconSize() => true;
@@ -166,14 +173,18 @@ namespace STROOP.Tabs.MapTab.MapObjects
             ToolStripMenuItem itemSetNumFrames = new ToolStripMenuItem("Set Number of Frames");
             itemSetNumFrames.Click += (sender, e) =>
             {
-                string text = DialogUtilities.GetStringFromDialog(labelText: "Enter num frames.");
+                string text = DialogUtilities.GetStringFromDialog(labelText: "Enter num frames (1 - 128):");
                 uint? numFramesNullable = ParsingUtilities.ParseUIntNullable(text);
                 if (!numFramesNullable.HasValue) return;
                 numFramesToShow = numFramesNullable.Value;
             };
 
+            skipIdenticalPoints = true;
+            itemSkipIdenticalPoints.Click += (sender, e) => skipIdenticalPoints = !skipIdenticalPoints;
+
             _contextMenuStrip = new ContextMenuStrip();
             _contextMenuStrip.Items.Add(itemShowEachPoint);
+            _contextMenuStrip.Items.Add(itemSkipIdenticalPoints);
             _contextMenuStrip.Items.Add(itemSetNumFrames);
 
             return _contextMenuStrip;
