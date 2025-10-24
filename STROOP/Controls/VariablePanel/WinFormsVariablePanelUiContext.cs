@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace STROOP.Controls.VariablePanel;
 
-public class VariablePanelUiContext(Control parent, Graphics graphics, Rectangle drawRegion) : IUiContext
+public class WinFormsVariablePanelUiContext(Control parent, Graphics graphics, Rectangle drawRegion) : IUiContext
 {
     public readonly Control parent = parent;
     public readonly Graphics graphics = graphics;

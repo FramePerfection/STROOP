@@ -9,11 +9,11 @@ using System.Windows.Forms;
 namespace STROOP.Controls.VariablePanel.Cells;
 
 public class VariableSelectionCell<TBaseWrapper, TBackingValue>(IVariable<TBackingValue> var, WinFormsVariableControl control)
-    : VariableSelectionCell<VariablePanelUiContext, TBaseWrapper, TBackingValue>(var, control)
-    where TBaseWrapper : VariableCell<VariablePanelUiContext, TBackingValue>
+    : VariableSelectionCell<WinFormsVariablePanelUiContext, TBaseWrapper, TBackingValue>(var, control)
+    where TBaseWrapper : VariableCell<WinFormsVariablePanelUiContext, TBackingValue>
 {
         static StringFormat rightAlignFormat = new StringFormat() { Alignment = StringAlignment.Far };
-        bool IsCursorHovering(VariablePanelUiContext uiContext, out Rectangle drawRectangle)
+        bool IsCursorHovering(WinFormsVariablePanelUiContext uiContext, out Rectangle drawRectangle)
         {
             int marginX = (int)SavedSettingsConfig.WatchVarPanelHorizontalMargin.value;
             int marginY = (int)SavedSettingsConfig.WatchVarPanelVerticalMargin.value;
@@ -34,7 +34,7 @@ public class VariableSelectionCell<TBaseWrapper, TBackingValue>(IVariable<TBacki
             return Cursor.Position.IsInsideRect(screenRect);
         }
 
-        public override void SingleClick(VariablePanelUiContext uiContext)
+        public override void SingleClick(WinFormsVariablePanelUiContext uiContext)
         {
             base.SingleClick(uiContext);
             if (IsCursorHovering(uiContext, out _))
@@ -57,7 +57,7 @@ public class VariableSelectionCell<TBaseWrapper, TBackingValue>(IVariable<TBacki
                 baseWrapper.SingleClick(uiContext);
         }
 
-        public override IVariableCellUi<VariablePanelUiContext>.CustomDraw CustomDrawOperation => uiContext =>
+        public override IVariableCellUi<WinFormsVariablePanelUiContext>.CustomDraw CustomDrawOperation => uiContext =>
         {
             var g = uiContext.graphics;
             baseWrapper.CustomDrawOperation?.Invoke(uiContext);

@@ -8,10 +8,10 @@ using System.Windows.Forms;
 namespace STROOP.Controls.VariablePanel.Cells;
 
 public class VariableBooleanCell<TNumber>(IVariable<TNumber> watchVar, WinFormsVariableControl watchVarControl)
-    : VariableBooleanCell<VariablePanelUiContext, TNumber>(watchVar, watchVarControl)
+    : VariableBooleanCell<WinFormsVariablePanelUiContext, TNumber>(watchVar, watchVarControl)
     where TNumber : struct, IConvertible
 {
-    protected override void DrawCheckbox(VariablePanelUiContext uiContext)
+    protected override void DrawCheckbox(WinFormsVariablePanelUiContext uiContext)
     {
         var combinedValues = this.CombineValues();
         CheckState state;

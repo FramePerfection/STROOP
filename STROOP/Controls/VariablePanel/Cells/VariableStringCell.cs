@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace STROOP.Controls.VariablePanel.Cells
 {
-    public class VariableStringCell : VariableCell<VariablePanelUiContext, string>
+    public class VariableStringCell : VariableCell<WinFormsVariablePanelUiContext, string>
     {
         public static Dictionary<string, Action> specialTypeContextMenuHandlers = new Dictionary<string, Action>()
         {

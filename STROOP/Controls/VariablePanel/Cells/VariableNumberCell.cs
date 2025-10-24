@@ -8,10 +8,10 @@ using System;
 
 namespace STROOP.Controls.VariablePanel.Cells;
 
-public interface INumberVariableCell : IVariableCellData<IConvertible>, IVariableCellUi<VariablePanelUiContext>;
+public interface INumberVariableCell : IVariableCellData<IConvertible>, IVariableCellUi<WinFormsVariablePanelUiContext>;
 
 public class VariableNumberCell<TNumber>(IVariable<TNumber> view, WinFormsVariableControl control)
-    : VariableNumberCell<VariablePanelUiContext, TNumber>(view, control)
+    : VariableNumberCell<WinFormsVariablePanelUiContext, TNumber>(view, control)
     , INumberVariableCell
     where TNumber : struct, IConvertible
 {

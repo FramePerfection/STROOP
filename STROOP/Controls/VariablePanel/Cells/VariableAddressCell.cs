@@ -9,7 +9,7 @@ namespace STROOP.Controls.VariablePanel.Cells;
 // TODO: refactor this such that it takes a NumberWrapper as a base wrapper, similar to selection wrappers,
 //       in order to avoid code duplication with RoundToZero
 public class VariableAddressCell(IVariable<uint> watchVar, WinFormsVariableControl watchVarControl)
-    : VariableAddressCell<VariablePanelUiContext>(watchVar, watchVarControl)
+    : VariableAddressCell<WinFormsVariablePanelUiContext>(watchVar, watchVarControl)
 {
     protected override void ShowMemory(uint address)
     {

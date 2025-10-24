@@ -304,7 +304,7 @@ namespace STROOP.Controls.VariablePanel
 
                         if (cell.CustomDrawOperation != null)
                             cell.CustomDrawOperation(
-                                new VariablePanelUiContext(this, g,
+                                new WinFormsVariablePanelUiContext(this, g,
                                     new Rectangle(
                                         x * elementWidth + elementNameWidth,
                                         y * elementHeight,

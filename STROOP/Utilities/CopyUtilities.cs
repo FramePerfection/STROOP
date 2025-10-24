@@ -11,14 +11,14 @@ namespace STROOP.Utilities
 {
     public static class CopyUtilities
     {
-        public static void Copy(List<IVariableCellUi<VariablePanelUiContext>> vars, CopyTypeEnum copyType)
+        public static void Copy(List<IVariableCellUi<WinFormsVariablePanelUiContext>> vars, CopyTypeEnum copyType)
         {
             int index = EnumUtilities.GetEnumValues<CopyTypeEnum>(typeof(CopyTypeEnum)).IndexOf(copyType);
             GetCopyActions(() => vars)[index]();
         }
 
         public static void AddContextMenuStripFunctions(
-            Control control, Func<List<IVariableCellUi<VariablePanelUiContext>>> getVars)
+            Control control, Func<List<IVariableCellUi<WinFormsVariablePanelUiContext>>> getVars)
         {
             ControlUtilities.AddContextMenuStripFunctions(
                 control,
@@ -27,7 +27,7 @@ namespace STROOP.Utilities
         }
 
         public static void AddDropDownItems(
-            ToolStripMenuItem control, Func<List<IVariableCellUi<VariablePanelUiContext>>> getVars)
+            ToolStripMenuItem control, Func<List<IVariableCellUi<WinFormsVariablePanelUiContext>>> getVars)
         {
             ControlUtilities.AddDropDownItems(
                 control,
@@ -50,7 +50,7 @@ namespace STROOP.Utilities
             };
         }
 
-        private static List<Action> GetCopyActions(Func<List<IVariableCellUi<VariablePanelUiContext>>> getVars)
+        private static List<Action> GetCopyActions(Func<List<IVariableCellUi<WinFormsVariablePanelUiContext>>> getVars)
         {
             return new List<Action>()
             {
@@ -66,20 +66,20 @@ namespace STROOP.Utilities
         }
 
         private static void CopyWithSeparator(
-            List<IVariableCellUi<VariablePanelUiContext>> controls, string separator)
+            List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls, string separator)
         {
             if (controls.Count == 0) return;
             Clipboard.SetText(string.Join(separator, controls.ConvertAll(cell => cell.GetValueText())));
         }
 
-        private static void CopyWithNames(List<IVariableCellUi<VariablePanelUiContext>> controls)
+        private static void CopyWithNames(List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls)
         {
             if (controls.Count == 0) return;
             List<string> lines = controls.ConvertAll(cell => cell.control.VarName + "\t" + cell.GetValueText());
             Clipboard.SetText(string.Join("\r\n", lines));
         }
 
-        private static void CopyAsTable(List<IVariableCellUi<VariablePanelUiContext>> controls)
+        private static void CopyAsTable(List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls)
         {
             // TODO: reconsider CopyAsTable
             //if (controls.Count == 0) return;
@@ -99,7 +99,7 @@ namespace STROOP.Utilities
             //Clipboard.SetText(output);
         }
 
-        private static void CopyForCode(List<IVariableCellUi<VariablePanelUiContext>> controls)
+        private static void CopyForCode(List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls)
         {
             if (controls.Count == 0) return;
             Func<string, string> varNameFunc;
@@ -115,7 +115,7 @@ namespace STROOP.Utilities
             }
 
             List<string> lines = new List<string>();
-            foreach (VariableCellControl<VariablePanelUiContext> watchVar in controls)
+            foreach (VariableCellControl<WinFormsVariablePanelUiContext> watchVar in controls)
             {
                 Type type = watchVar.GetMemoryType();
                 string line = string.Format(

@@ -20,7 +20,7 @@ using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Controls.VariablePanel
 {
-    public partial class VariablePanel : UserControl, IVariablePanel<VariablePanelUiContext>
+    public partial class VariablePanel : UserControl, IVariablePanel<WinFormsVariablePanelUiContext>
     {
         static void ViewInMemoryTab(DescribedMemoryState memoryDescriptor)
         {
@@ -208,7 +208,7 @@ namespace STROOP.Controls.VariablePanel
                         if (clickedName)
                             ShowVarInfo(selected);
                         else if (lastClicked != -1)
-                            selected.DoubleClick(new VariablePanelUiContext(
+                            selected.DoubleClick(new WinFormsVariablePanelUiContext(
                                 renderer,
                                 null,
                                 renderer.GetVariableControlBounds(lastClicked))
@@ -220,7 +220,7 @@ namespace STROOP.Controls.VariablePanel
                 {
                     if (lastClicked != -1)
                         foreach (var selected in _selectedWatchVarControls)
-                            selected.SingleClick(new VariablePanelUiContext(
+                            selected.SingleClick(new WinFormsVariablePanelUiContext(
                                 renderer,
                                 null,
                                 renderer.GetVariableControlBounds(lastClicked))
@@ -786,14 +786,14 @@ namespace STROOP.Controls.VariablePanel
             if (elements.Count == 0) return;
             VariablePopOutForm form = new VariablePopOutForm();
             form.Initialize(elements
-                .Select(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance))
+                .Select(x => VariableCellFactory<WinFormsVariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance))
                 .Where(x => x.var != null)
             );
             form.ShowForm();
         }
 
         public void OpenVariables(List<XElement> elements)
-            => this.AddVariables(elements.ConvertAll(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance)));
+            => this.AddVariables(elements.ConvertAll(x => VariableCellFactory<WinFormsVariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance)));
 
         public void SaveVariablesInPlace()
         {

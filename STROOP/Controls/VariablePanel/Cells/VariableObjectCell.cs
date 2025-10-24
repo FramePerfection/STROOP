@@ -10,7 +10,7 @@ namespace STROOP.Controls.VariablePanel.Cells;
 // TODO: refactor this such that it takes a NumberWrapper as a base wrapper, similar to selection wrappers,
 //       in order to avoid code duplication with RoundToZero
 public class VariableObjectCell(IVariable<uint> watchVar, WinFormsVariableControl watchVarControl)
-    : VariableObjectCell<VariablePanelUiContext>(watchVar, watchVarControl)
+    : VariableObjectCell<WinFormsVariablePanelUiContext>(watchVar, watchVarControl)
 {
     protected override uint GetUnusedSlotAddress()
         => ObjectSlotsConfig.UnusedSlotAddress;
