@@ -97,7 +97,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 Config.ObjectAssociations.BlueMarioMapImage,
             };
 
-            uint READ_INITIAL_OFFSET = RomVersionConfig.Version == RomVersion.US ? 0x80372F00 : 0x80400010;
+            const uint READ_INITIAL_OFFSET = 0x80372F00;
 
             var dsjaoisd = Config.Stream.GetUInt32(0x803733c0);
 
@@ -113,7 +113,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             int numBaseFrames = 7;
 
-            var val = Config.Stream.GetInt32(RomVersionConfig.Version == RomVersion.US ? 0x80372E3C : 0x80400000);
+            var val = Config.Stream.GetInt32(0x80372E3C);
             int numQFrames = (val - 0x10 * numBaseFrames) / 0x40;
 
             List<DataPoint> allResults = new List<DataPoint>();
