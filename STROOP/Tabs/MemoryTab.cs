@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Tabs
 {

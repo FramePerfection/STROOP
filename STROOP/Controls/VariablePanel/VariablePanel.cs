@@ -530,7 +530,7 @@ namespace STROOP.Controls.VariablePanel
                             .GetMethod(nameof(CreateDummyVariable), BindingFlags.NonPublic | BindingFlags.Static)
                             .MakeGenericMethod(type)
                             .Invoke(null, []);
-                        AddVariable(($"Dummy {i + 1}", view));
+                        this.AddVariable(($"Dummy {i + 1}", view));
                     }
                 };
             }
@@ -543,7 +543,7 @@ namespace STROOP.Controls.VariablePanel
                 if (getSpecialFuncVars != null && specificsCount > 0)
                 {
                     void BindHandler(ToolStripMenuItem menuItem, PositionAngle.HybridPositionAngle targetPA, SpecialFuncVariables generator) =>
-                        menuItem.Click += (_, __) => AddVariables(generator(targetPA));
+                        menuItem.Click += (_, __) => this.AddVariables(generator(targetPA));
 
                     addRelativeVariablesItem = new ToolStripMenuItem("Add relative variables for...");
                     if (specificsCount == 1)
@@ -691,18 +691,7 @@ namespace STROOP.Controls.VariablePanel
             _filteringDropDownItems.ForEach(item => filterVariablesItem.DropDownItems.Add(item));
         }
 
-        public IWinFormsVariableCell AddVariable((string name, IVariable variable) var) =>
-            AddVariables([ var ]).First();
-
-        public IEnumerable<IWinFormsVariableCell> AddVariables(IEnumerable<(string name, IVariable variable)> vars)
-            => AddVariablesInternal(vars.Select(
-                var => new WinFormsVariableControl(this, var.variable) { VarName = var.name }.varCell
-            ));
-
         public IEnumerable<IWinFormsVariableCell> AddVariables(IEnumerable<IWinFormsVariableCell> cells)
-            => AddVariablesInternal(cells.Select(cell => cell.control.CreateCopy(this).varCell));
-
-        IEnumerable<IWinFormsVariableCell> AddVariablesInternal(IEnumerable<IWinFormsVariableCell> cells)
         {
             if (!initialized)
                 DeferredInitialize();
@@ -772,7 +761,7 @@ namespace STROOP.Controls.VariablePanel
             _visibleGroups.AddRange(_initialVisibleGroups);
             UpdateFilterItemCheckedStatuses();
 
-            AddVariables(_varFilePath != null ? XmlConfigParser.OpenVariableControlPrecursors(_varFilePath) : []);
+            this.AddVariables(_varFilePath != null ? XmlConfigParser.OpenVariableControlPrecursors(_varFilePath) : []);
         }
 
         public void UnselectAllVariables()
@@ -804,9 +793,7 @@ namespace STROOP.Controls.VariablePanel
         }
 
         public void OpenVariables(List<XElement> elements)
-        {
-            AddVariables(elements.ConvertAll(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance)));
-        }
+            => this.AddVariables(elements.ConvertAll(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance)));
 
         public void SaveVariablesInPlace()
         {

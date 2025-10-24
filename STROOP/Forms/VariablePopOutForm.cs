@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
 using STROOP.Variables;
+using STROOP.Variables.VariablePanel;
 using System.Linq;
 
 namespace STROOP.Forms
