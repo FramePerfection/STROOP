@@ -25,9 +25,7 @@ perform_water_full_step equ 0x270304
 f32_find_wall_collision equ 0x380de8
 
 MarioPosHi equ 0x8034
-MarioPosLoX equ 0xb1ac
-MarioPosLoY equ 0xb1b0
-MarioPosLoZ equ 0xb1b4
+MarioPosLo equ 0xb1ac
 MarioAngleLo equ 0xb19e
 
 gWaterSurfacePseudoFloorHi equ 0x8033

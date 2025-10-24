@@ -1,6 +1,6 @@
 lui	$a0, MarioPosHi
 jal	set_next_argument_position_and_mario_forward_angle
-addiu	$a0, $a0, MarioPosLoX
+addiu	$a0, $a0, MarioPosLo
 lw	$s0, 0x18($sp)
 lw	$ra, 0x1c($sp)
 jr	$ra

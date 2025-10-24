@@ -40,7 +40,7 @@ lw	$a2, 0x34($sp)
 sw	$v0, 0x1c($sp)
 lui	$a0, MarioPosHi
 jal	set_next_argument_position_and_mario_forward_angle
-addiu	$a0, $a0, MarioPosLoX
+addiu	$a0, $a0, MarioPosLo
 lw	$t5, 0x1c($sp)
 beq	$zero, $t5, 0xbc
 addiu	$at, $zero, 1
