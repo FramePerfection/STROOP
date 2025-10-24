@@ -22,7 +22,7 @@ namespace STROOP.Tabs
         private readonly List<ValueText> _currentValueTexts;
         private readonly List<MemoryDescriptor> _objectPrecursors;
         private readonly List<MemoryDescriptor> _objectSpecificPrecursors;
-        private List<MemoryDescriptor> _memTabPrecursors => _variablePanelMemory.GetCurrentVariablePrecursors().ToList();
+        private List<MemoryDescriptor> _memTabPrecursors => _variablePanelMemory.GetCurrentVariableMemoryDescriptors().ToList();
 
         private uint? _address;
 

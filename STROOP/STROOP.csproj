@@ -68,7 +68,7 @@
         <Compile Update="Controls\PanelEx.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="Controls\VariablePanel\VariablePanelRenderer.cs">
+        <Compile Update="Controls\VariablePanel\VariablePanel.Renderer.cs">
             <SubType>UserControl</SubType>
         </Compile>
         <Compile Update="Controls\VarHackContainer.cs">

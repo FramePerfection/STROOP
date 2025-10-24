@@ -1,9 +1,7 @@
-﻿using STROOP.Controls.VariablePanel.Cells;
-using STROOP.Core;
+﻿using STROOP.Core;
 using STROOP.Core.Utilities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -20,8 +18,10 @@ using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Controls.VariablePanel
 {
-    public partial class VariablePanel : UserControl, IVariablePanel<WinFormsVariablePanelUiContext>
+    public partial class VariablePanel : UserControl
     {
+        public delegate IEnumerable<VariablePrecursor> SpecialFuncVariables(PositionAngle.HybridPositionAngle input);
+
         static void ViewInMemoryTab(DescribedMemoryState memoryDescriptor)
         {
             List<uint> addressList = memoryDescriptor.GetAddressList().ToList();
@@ -34,98 +34,29 @@ namespace STROOP.Controls.VariablePanel
             tab.UpdateHexDisplay();
         }
 
-        [InitializeSpecial]
-        static void InitializeSpecial()
-        {
-            var target = VariableSpecialDictionary.Instance;
-            target.Add("WatchVarPanelNameWidth", () => SavedSettingsConfig.WatchVarPanelNameWidth.value, (uint value) =>
-            {
-                SavedSettingsConfig.WatchVarPanelNameWidth.value = Math.Max(1, value);
-                return true;
-            });
-            target.Add("WatchVarPanelValueWidth", () => SavedSettingsConfig.WatchVarPanelValueWidth.value, (uint value) =>
-            {
-                SavedSettingsConfig.WatchVarPanelValueWidth.value = Math.Max(1, value);
-                return true;
-            });
-            target.Add("WatchVarPanelXMargin", () => SavedSettingsConfig.WatchVarPanelHorizontalMargin.value, (uint value) =>
-            {
-                SavedSettingsConfig.WatchVarPanelHorizontalMargin.value = (uint)Math.Max(1, value);
-                return true;
-            });
-            target.Add("WatchVarPanelYMargin", () => SavedSettingsConfig.WatchVarPanelVerticalMargin.value, (uint value) =>
-            {
-                SavedSettingsConfig.WatchVarPanelVerticalMargin.value = (uint)Math.Max(1, value);
-                return true;
-            });
-            target.Add("WatchVarPanelBoldNames", () => SavedSettingsConfig.WatchVarPanelBoldNames.value, (bool value) =>
-            {
-                SavedSettingsConfig.WatchVarPanelBoldNames.value = value;
-                return true;
-            });
-            target.Add("WatchVarPanelFont", () => SavedSettingsConfig.WatchVarPanelFontOverride.value?.Name ?? "(default)", (string value) => false);
-            VariableStringCell.specialTypeContextMenuHandlers.Add("WatchVarPanelFont", () =>
-            {
-                var dlg = new FontDialog();
-                if (SavedSettingsConfig.WatchVarPanelFontOverride.value != null)
-                    dlg.Font = SavedSettingsConfig.WatchVarPanelFontOverride;
-                try
-                {
-                    if (dlg.ShowDialog() == DialogResult.OK)
-                        SavedSettingsConfig.WatchVarPanelFontOverride.value = dlg.Font;
-                }
-                catch (ArgumentException ex)
-                {
-                    // Apparently ACCEPTING a FontDialog can throw if the selected Font is not a TrueType-Font.
-                    MessageBox.Show($"This font is not supported.\nHere's a scary error report:\n\n{ex.Message}");
-                }
-            });
-        }
-
-        public override bool Focused => renderer.Focused;
-        public List<ToolStripItem> customContextMenuItems = new List<ToolStripItem>();
-
-        public bool initialized = false;
-
-        List<Action> deferredActions = new List<Action>();
-
-        private string _varFilePath;
-        string _dataPath;
-
-        [Category("Data"), Browsable(true)]
-        public string DataPath
-        {
-            get { return _dataPath; }
-            set { Initialize(_dataPath = value); }
-        }
-
-        [Category("Layout"), Browsable(true)] public int? elementNameWidth { get; set; } = null;
-        [Category("Layout"), Browsable(true)] public int? elementValueWidth { get; set; } = null;
+        private static int numDummies = 0;
 
         public readonly Func<List<IWinFormsVariableCell>> GetSelectedVars;
 
-        public delegate IEnumerable<VariablePrecursor> SpecialFuncVariables(PositionAngle.HybridPositionAngle input);
-
         public Func<IEnumerable<(string name, SpecialFuncVariables generateVariables)>> getSpecialFuncVariables = null;
-        public bool IsSelected => Focused;
+
+        bool initialized = false;
+        List<Action> deferredActions = new List<Action>();
 
         private List<IWinFormsVariableCell> _allWatchVarControls;
-        private SortedList<IWinFormsVariableCell> _shownWatchVarControls;
         private List<IWinFormsVariableCell> _hiddenSearchResults = [];
-        private HashSet<IWinFormsVariableCell> _selectedWatchVarControls;
         private List<IWinFormsVariableCell> _reorderingWatchVarControls;
+        private HashSet<IWinFormsVariableCell> _selectedWatchVarControls;
+        private SortedList<IWinFormsVariableCell> _shownWatchVarControls;
 
         private List<string> _allGroups;
         private List<string> _initialVisibleGroups;
         private List<string> _visibleGroups;
         private List<ToolStripMenuItem> _filteringDropDownItems;
 
-        ToolStripMenuItem filterVariablesItem = new ToolStripMenuItem("Filter Variables...");
-
-        VariablePanelRenderer renderer;
-
-        public IWinFormsVariableCell HoveringWinFormsVariableCellControl =>
-            renderer.GetVariableAt(renderer.PointToClient(Cursor.Position)).cell;
+        private ToolStripMenuItem filterVariablesItem = new ToolStripMenuItem("Filter Variables...");
+        private Renderer renderer;
+        private bool hasGroupsSet = false;
 
         public VariablePanel()
         {
@@ -139,40 +70,14 @@ namespace STROOP.Controls.VariablePanel
             _selectedWatchVarControls = new HashSet<IWinFormsVariableCell>();
             _reorderingWatchVarControls = new List<IWinFormsVariableCell>();
 
-            renderer = new VariablePanelRenderer(this);
+            renderer = new Renderer(this);
             renderer.KeyDown += (_, args) =>
             {
                 if (GlobalKeyboard.IsCtrlDown() && args.KeyCode == Keys.F)
                     (FindForm() as StroopMainForm)?.ShowSearchDialog();
             };
-            getSpecialFuncVariables = () => new[] { PositionAngle.HybridPositionAngle.GenerateBaseVariables };
+            getSpecialFuncVariables = () => [ PositionAngle.HybridPositionAngle.GenerateBaseVariables ];
             UpdateSortOption(WinFormsVariableControl.SortByPriority);
-        }
-
-        protected override void OnScroll(ScrollEventArgs se)
-        {
-            base.OnScroll(se);
-            renderer.Draw();
-        }
-
-        bool hasGroupsSet = false;
-
-        public void SetGroups(
-            List<string> allVariableGroupsNullable,
-            List<string> visibleVariableGroupsNullable)
-        {
-            if (Program.IsVisualStudioHostProcess()) return;
-
-            hasGroupsSet = true;
-            DeferActionToUpdate(nameof(SetGroups), () =>
-            {
-                _allGroups = allVariableGroupsNullable != null ? new List<string>(allVariableGroupsNullable) : new List<string>();
-
-                _visibleGroups = visibleVariableGroupsNullable != null ? new List<string>(visibleVariableGroupsNullable) : new List<string>();
-
-                _initialVisibleGroups.AddRange(_visibleGroups);
-                UpdateControlsBasedOnFilters();
-            });
         }
 
         public void Initialize(string varFilePath = null)
@@ -183,7 +88,7 @@ namespace STROOP.Controls.VariablePanel
             _varFilePath = varFilePath;
             if (varFilePath != null && !System.IO.File.Exists(varFilePath))
                 return;
-            DeferActionToUpdate(nameof(Initialize), () =>
+            deferredActions.Add(() =>
             {
                 SuspendLayout();
 
@@ -318,21 +223,60 @@ namespace STROOP.Controls.VariablePanel
             });
         }
 
-        void ShowVarContextMenu()
+        public void DeferredInitialize()
         {
-            ContextMenuStrip ctx = new ContextMenuStrip();
+            foreach (var action in deferredActions)
+                action.Invoke();
+            deferredActions.Clear();
+        }
 
-            var uniqueSettings = GetSelectedVars().SelectMany(x => x.control.AvailableSettings()).ToHashSet();
-            var sortedOptions = uniqueSettings.ToList();
-            sortedOptions.Sort((a, b) => string.Compare(a.Name, b.Name));
-            foreach (var setting in sortedOptions)
-                setting.CreateContextMenuEntry(ctx.Items, GetSelectedVars);
+        public void UpdatePanel()
+        {
+            if (SavedSettingsConfig.WatchVarPanelFontOverride.value != null)
+                Font = SavedSettingsConfig.WatchVarPanelFontOverride;
+            else if (Font != SystemFonts.DefaultFont)
+                Font = SystemFonts.DefaultFont;
 
-            ctx.Items.Add(new ToolStripSeparator());
-            foreach (var item in VariableSelectionUtilities.CreateSelectionToolStripItems(GetSelectedVars(), this))
-                ctx.Items.Add(item);
+            var searchForm = (FindForm() as StroopMainForm)?.searchVariableDialog ?? null;
+            _hiddenSearchResults.Clear();
+            var shownVars = new HashSet<IWinFormsVariableCell>(_shownWatchVarControls);
+            var removeLater = new HashSet<IWinFormsVariableCell>();
+            foreach (var v in _allWatchVarControls)
+            {
+                if (!shownVars.Contains(v))
+                {
+                    if (ShouldShow(v))
+                        _shownWatchVarControls.Add(v);
+                    else if (searchForm != null && searchForm.searchHidden && searchForm.IsMatch(v.control.VarName))
+                        _hiddenSearchResults.Add(v);
+                }
+                else if (!ShouldShow(v))
+                    removeLater.Add(v);
+            }
 
-            ctx.Show(Cursor.Position);
+            foreach (var toBeRemoved in removeLater)
+                _shownWatchVarControls.Remove(toBeRemoved);
+            GetCurrentlyVisibleCells().ForEach(cell => cell.Update());
+            renderer.Draw();
+        }
+
+        public void SetGroups(
+            List<string> allVariableGroupsNullable,
+            List<string> visibleVariableGroupsNullable
+        )
+        {
+            if (Program.IsVisualStudioHostProcess()) return;
+
+            hasGroupsSet = true;
+            deferredActions.Add(() =>
+            {
+                _allGroups = allVariableGroupsNullable != null ? new List<string>(allVariableGroupsNullable) : new List<string>();
+
+                _visibleGroups = visibleVariableGroupsNullable != null ? new List<string>(visibleVariableGroupsNullable) : new List<string>();
+
+                _initialVisibleGroups.AddRange(_visibleGroups);
+                UpdateControlsBasedOnFilters();
+            });
         }
 
         public void UpdateSortOption(WinFormsVariableControl.SortVariables newSortOption)
@@ -340,6 +284,12 @@ namespace STROOP.Controls.VariablePanel
             _shownWatchVarControls = new SortedList<IWinFormsVariableCell>((a, b) => newSortOption(a, b));
             foreach (var shownVar in _allWatchVarControls.Where(ShouldShow))
                 _shownWatchVarControls.Add(shownVar);
+        }
+
+        public void BeginMoveSelected()
+        {
+            _reorderingWatchVarControls.Clear();
+            _reorderingWatchVarControls.AddRange(_selectedWatchVarControls.Where(v => !_hiddenSearchResults.Contains(v)));
         }
 
         private void OnVariableClick(List<IWinFormsVariableCell> cells)
@@ -452,26 +402,12 @@ namespace STROOP.Controls.VariablePanel
             }
         }
 
-        void AddToVarHackTab(List<IWinFormsVariableCell> cells)
+        private void AddToVarHackTab(List<IWinFormsVariableCell> cells)
         {
             foreach (var cell in cells)
                 cell.control.FlashColor(WinFormsVariableControl.ADD_TO_VAR_HACK_TAB_COLOR);
             MessageBox.Show("This feature is currently not implemented :(");
         }
-
-        public void DeferredInitialize()
-        {
-            foreach (var action in deferredActions)
-                action.Invoke();
-            deferredActions.Clear();
-        }
-
-        private void DeferActionToUpdate(string name, Action action)
-        {
-            deferredActions.Add(action);
-        }
-
-        private static int numDummies = 0;
 
         private static CustomVariable CreateDummyVariable<T>() where T : struct, IConvertible
         {
@@ -490,173 +426,11 @@ namespace STROOP.Controls.VariablePanel
             // };
         }
 
-        private void ShowContextMenu()
-        {
-            ToolStripMenuItem resetVariablesItem = new ToolStripMenuItem("Reset Variables");
-            resetVariablesItem.Click += (sender, e) => ResetVariables();
-
-            ToolStripMenuItem clearAllButHighlightedItem = new ToolStripMenuItem("Clear All But Highlighted");
-            clearAllButHighlightedItem.Click += (sender, e) => ClearAllButHighlightedVariables();
-
-            ToolStripMenuItem addCustomVariablesItem = new ToolStripMenuItem("Add Custom Variables");
-            addCustomVariablesItem.Click += (sender, e) =>
-            {
-                VariableCreationForm form = new VariableCreationForm();
-                form.Initialize(this);
-                form.Show();
-            };
-
-            ToolStripMenuItem addDummyVariableItem = new ToolStripMenuItem("Add Dummy Variable...");
-            foreach (string typeString in TypeUtilities.InGameTypeList)
-            {
-                ToolStripMenuItem typeItem = new ToolStripMenuItem(typeString);
-                addDummyVariableItem.DropDownItems.Add(typeItem);
-                typeItem.Click += (sender, e) =>
-                {
-                    int numEntries = 1;
-                    if (GlobalKeyboard.IsCtrlDown())
-                    {
-                        string numEntriesString = DialogUtilities.GetStringFromDialog(labelText: "Enter Num Vars:");
-                        if (numEntriesString == null) return;
-                        int parsed = ParsingUtilities.ParseInt(numEntriesString);
-                        parsed = Math.Max(parsed, 0);
-                        numEntries = parsed;
-                    }
-
-                    for (int i = 0; i < numEntries; i++)
-                    {
-                        Type type = TypeUtilities.StringToType[typeString];
-                        var view = (CustomVariable)typeof(VariablePanel)
-                            .GetMethod(nameof(CreateDummyVariable), BindingFlags.NonPublic | BindingFlags.Static)
-                            .MakeGenericMethod(type)
-                            .Invoke(null, []);
-                        this.AddVariable(($"Dummy {i + 1}", view));
-                    }
-                };
-            }
-
-            ToolStripMenuItem addRelativeVariablesItem = null, removePointVariableItem = null;
-            var getSpecialFuncVars = getSpecialFuncVariables?.Invoke() ?? null;
-            var specificsCount = getSpecialFuncVars?.Count() ?? 0;
-            if (PositionAngle.HybridPositionAngle.pointPAs.Count > 0)
-            {
-                if (getSpecialFuncVars != null && specificsCount > 0)
-                {
-                    void BindHandler(ToolStripMenuItem menuItem, PositionAngle.HybridPositionAngle targetPA, SpecialFuncVariables generator) =>
-                        menuItem.Click += (_, __) => this.AddVariables(generator(targetPA));
-
-                    addRelativeVariablesItem = new ToolStripMenuItem("Add relative variables for...");
-                    if (specificsCount == 1)
-                        addRelativeVariablesItem.Text = $"Add {getSpecialFuncVars.First().name} for...";
-                    foreach (var pa in PositionAngle.HybridPositionAngle.pointPAs)
-                    {
-                        var paItem = new ToolStripMenuItem(pa.name);
-                        if (specificsCount == 1)
-                            BindHandler(paItem, pa, getSpecialFuncVars.First().generateVariables);
-                        else
-                            foreach (var specialFunc in getSpecialFuncVars)
-                            {
-                                var specificsItem = new ToolStripMenuItem(specialFunc.name);
-                                BindHandler(specificsItem, pa, specialFunc.generateVariables);
-                                paItem.DropDownItems.Add(specificsItem);
-                            }
-
-                        addRelativeVariablesItem.DropDownItems.Add(paItem);
-                    }
-                }
-
-                removePointVariableItem = new ToolStripMenuItem("Remove custom point ...");
-                foreach (var customPA in PositionAngle.HybridPositionAngle.pointPAs)
-                {
-                    var capture = customPA;
-                    var subElement = new ToolStripMenuItem(customPA.name);
-                    subElement.Click += (_, __) =>
-                    {
-                        capture.first = () => PositionAngle.NaN;
-                        capture.second = () => PositionAngle.NaN;
-                        capture.OnDelete();
-                        PositionAngle.HybridPositionAngle.pointPAs.Remove(capture);
-                    };
-                    removePointVariableItem.DropDownItems.Add(subElement);
-                }
-            }
-
-            var addPointVariableItem = new ToolStripMenuItem("Add custom point...");
-            addPointVariableItem.Click += (_, __) =>
-            {
-                var ptCount = 1;
-                while (PositionAngle.HybridPositionAngle.pointPAs.Any(pa => pa.name.ToLower() == $"point{ptCount}"))
-                    ptCount++;
-                var newName = DialogUtilities.GetStringFromDialog($"Point{ptCount}", "Enter name of new custom point", "Add custom point");
-                if (newName?.Trim() != null)
-                    PositionAngle.HybridPositionAngle.pointPAs.Add(
-                        new PositionAngle.HybridPositionAngle(() => PositionAngle.Mario, () => PositionAngle.Mario, newName));
-            };
-
-            ToolStripMenuItem openSaveClearItem = new ToolStripMenuItem("Open / Save / Clear ...");
-            ControlUtilities.AddDropDownItems(
-                openSaveClearItem,
-                new List<string>() { "Restore", "Open", "Open as Pop Out", "Save in Place", "Save As", "Clear" },
-                new List<Action>()
-                {
-                    () => OpenVariables(DialogUtilities.OpenXmlElements(FileType.StroopVariables, _dataPath)),
-                    () => OpenVariables(),
-                    () => OpenVariablesAsPopOut(),
-                    () => SaveVariablesInPlace(),
-                    () => SaveVariables(),
-                    () => ClearVariables(),
-                });
-
-            ToolStripMenuItem doToAllVariablesItem = new ToolStripMenuItem("Do to all variables...");
-            VariableSelectionUtilities.CreateSelectionToolStripItems(GetCurrentlyVisibleCells(), this)
-                .ForEach(item => doToAllVariablesItem.DropDownItems.Add(item));
-
-            filterVariablesItem.DropDown.MouseEnter += (sender, e) => { filterVariablesItem.DropDown.AutoClose = false; };
-            filterVariablesItem.DropDown.MouseLeave += (sender, e) =>
-            {
-                filterVariablesItem.DropDown.AutoClose = true;
-                filterVariablesItem.DropDown.Close();
-            };
-
-            ToolStripItem searchVariablesItem = new ToolStripMenuItem("Search variables...");
-            searchVariablesItem.Click += (_, __) => (FindForm() as StroopMainForm)?.ShowSearchDialog();
-
-            var strip = new ContextMenuStrip();
-            strip.Items.Add(resetVariablesItem);
-            strip.Items.Add(clearAllButHighlightedItem);
-            strip.Items.Add(new ToolStripSeparator());
-            if (addRelativeVariablesItem != null)
-                strip.Items.Add(addRelativeVariablesItem);
-            strip.Items.Add(addPointVariableItem);
-            strip.Items.Add(removePointVariableItem);
-            strip.Items.Add(addCustomVariablesItem);
-            strip.Items.Add(addDummyVariableItem);
-            strip.Items.Add(new ToolStripSeparator());
-            strip.Items.Add(openSaveClearItem);
-            strip.Items.Add(doToAllVariablesItem);
-            strip.Items.Add(filterVariablesItem);
-            strip.Items.Add(searchVariablesItem);
-            if (customContextMenuItems.Count > 0)
-            {
-                strip.Items.Add(new ToolStripSeparator());
-                foreach (var item in customContextMenuItems)
-                    strip.Items.Add(item);
-            }
-
-            strip.Show(System.Windows.Forms.Cursor.Position);
-        }
-
         private ToolStripMenuItem CreateFilterItem(string varGroup)
         {
-            ToolStripMenuItem item = new ToolStripMenuItem(varGroup.ToString());
+            ToolStripMenuItem item = new ToolStripMenuItem(varGroup);
             item.Click += (sender, e) => ToggleVarGroupVisibility(varGroup);
             return item;
-        }
-
-        public void BeginMoveSelected()
-        {
-            _reorderingWatchVarControls.Clear();
-            _reorderingWatchVarControls.AddRange(_selectedWatchVarControls.Where(v => !_hiddenSearchResults.Contains(v)));
         }
 
         private void ToggleVarGroupVisibility(string varGroup, bool? newVisibilityNullable = null)
@@ -691,35 +465,8 @@ namespace STROOP.Controls.VariablePanel
             _filteringDropDownItems.ForEach(item => filterVariablesItem.DropDownItems.Add(item));
         }
 
-        public IEnumerable<IWinFormsVariableCell> AddVariables(IEnumerable<IWinFormsVariableCell> cells)
-        {
-            if (!initialized)
-                DeferredInitialize();
-
-            var lst = new List<IWinFormsVariableCell>();
-            foreach (var cell in cells)
-            {
-                lst.Add(cell);
-                _allWatchVarControls.Add(cell);
-                if (ShouldShow(cell))
-                    _shownWatchVarControls.Add(cell);
-            }
-
-            return lst;
-        }
-
         public void RemoveVariable(IWinFormsVariableCell varCellControl) =>
             RemoveVariables([varCellControl]);
-
-        public void RemoveVariables(IEnumerable<IWinFormsVariableCell> watchVarControls)
-        {
-            foreach (IWinFormsVariableCell watchVarControl in watchVarControls)
-            {
-                _reorderingWatchVarControls.Remove(watchVarControl);
-                _allWatchVarControls.Remove(watchVarControl);
-                _shownWatchVarControls.Remove(watchVarControl);
-            }
-        }
 
         public void RemoveVariableGroup(string varGroup)
         {
@@ -728,8 +475,6 @@ namespace STROOP.Controls.VariablePanel
                     watchVarControl => watchVarControl.control.BelongsToGroup(varGroup));
             RemoveVariables(watchVarControls);
         }
-
-        public void ShowOnlyVariableGroup(string visibleVarGroup) => ShowOnlyVariableGroups(new List<string>() { visibleVarGroup });
 
         public void ShowOnlyVariableGroups(List<string> visibleVarGroups)
         {
@@ -771,9 +516,6 @@ namespace STROOP.Controls.VariablePanel
             _selectedWatchVarControls.Clear();
         }
 
-        private List<XElement> GetCurrentVarXmlElements(bool useCurrentState = true) =>
-            GetCurrentlyVisibleCells().ConvertAll(cell => cell.control.ToXml(useCurrentState));
-
         public void OpenVariables()
         {
             List<XElement> elements = DialogUtilities.OpenXmlElements(FileType.StroopVariables);
@@ -803,83 +545,30 @@ namespace STROOP.Controls.VariablePanel
         }
 
         public void SaveVariables(string fileName = null)
-        {
-            DialogUtilities.SaveXmlElements(FileType.StroopVariables, "VarData", GetCurrentVarXmlElements(), fileName);
-        }
+            => DialogUtilities.SaveXmlElements(
+                FileType.StroopVariables,
+                "VarData",
+                GetCurrentlyVisibleCells().ConvertAll(cell => cell.control.ToXml()),
+                fileName
+            );
 
         public List<IWinFormsVariableCell> GetCurrentlyVisibleCells()
             => [.._shownWatchVarControls, .._hiddenSearchResults];
 
-        public IEnumerable<MemoryDescriptor> GetCurrentVariablePrecursors()
+        public IEnumerable<MemoryDescriptor> GetCurrentVariableMemoryDescriptors()
             => GetCurrentlyVisibleCells().ConvertAndRemoveNull(control => control.memory?.descriptor);
 
-        public List<string> GetCurrentVariableValues() =>
-            GetCurrentlyVisibleCells().ConvertAll(cell => cell.GetValueText());
+        public List<string> GetCurrentVariableValues()
+            => GetCurrentlyVisibleCells().ConvertAll(cell => cell.GetValueText());
 
-        public List<string> GetCurrentVariableNames() => GetCurrentlyVisibleCells().ConvertAll(cell => cell.control.VarName);
-
-        public bool SetVariableValueByName<T>(string name, T value) where T : IConvertible
-        {
-            var cellControl = GetCurrentlyVisibleCells().FirstOrDefault(c => c.control.VarName == name);
-            if (cellControl == null)
-                return false;
-            return cellControl.control.SetValue(value);
-        }
-
-        public IWinFormsVariableCell[] GetWinFormsVariableControlsByName(params string[] names)
-        {
-            var result = new IWinFormsVariableCell[names.Length];
-            foreach (var var in _allWatchVarControls)
-            {
-                var index = Array.IndexOf(names, var.control.VarName);
-                if (index != -1)
-                    result[index] = var;
-            }
-
-            return result;
-        }
-
-        public void UpdatePanel()
-        {
-            if (SavedSettingsConfig.WatchVarPanelFontOverride.value != null)
-                Font = SavedSettingsConfig.WatchVarPanelFontOverride;
-            else if (Font != SystemFonts.DefaultFont)
-                Font = SystemFonts.DefaultFont;
-
-            var searchForm = (FindForm() as StroopMainForm)?.searchVariableDialog ?? null;
-            _hiddenSearchResults.Clear();
-            var shownVars = new HashSet<IWinFormsVariableCell>(_shownWatchVarControls);
-            var removeLater = new HashSet<IWinFormsVariableCell>();
-            foreach (var v in _allWatchVarControls)
-            {
-                if (!shownVars.Contains(v))
-                {
-                    if (ShouldShow(v))
-                        _shownWatchVarControls.Add(v);
-                    else if (searchForm != null && searchForm.searchHidden && searchForm.IsMatch(v.control.VarName))
-                        _hiddenSearchResults.Add(v);
-                }
-                else if (!ShouldShow(v))
-                    removeLater.Add(v);
-            }
-
-            foreach (var toBeRemoved in removeLater)
-                _shownWatchVarControls.Remove(toBeRemoved);
-            GetCurrentlyVisibleCells().ForEach(cell => cell.Update());
-            renderer.Draw();
-        }
+        public List<string> GetCurrentVariableNames()
+            => GetCurrentlyVisibleCells().ConvertAll(cell => cell.control.VarName);
 
         private bool ShouldShow(IWinFormsVariableCell cell)
         {
             if (!hasGroupsSet || cell.control.alwaysVisible)
                 return true;
             return cell.control.BelongsToAnyGroupOrHasNoGroup(_visibleGroups);
-        }
-
-        public override string ToString()
-        {
-            List<string> varNames = _allWatchVarControls.ConvertAll(cell => cell.control.VarName);
-            return String.Join(",", varNames);
         }
 
         private void ShowVarInfo(IWinFormsVariableCell cell)
@@ -898,14 +587,10 @@ namespace STROOP.Controls.VariablePanel
             varInfo.Show();
         }
 
-
-        public void ColorVarsUsingFunction(Func<WinFormsVariableControl, Color> getColor)
+        public override string ToString()
         {
-            foreach (WinFormsVariableControl control in _allWatchVarControls)
-                control.BaseColor = getColor(control);
+            List<string> varNames = _allWatchVarControls.ConvertAll(cell => cell.control.VarName);
+            return String.Join(",", varNames);
         }
-
-        public int GetAutoHeight(int numColumns = 1) =>
-            (_shownWatchVarControls.Count + numColumns - 1) / numColumns * renderer.elementHeight + renderer.borderMargin * 2;
     }
 }
