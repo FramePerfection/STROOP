@@ -28,10 +28,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
             }
         }
 
+        const uint BUFFER_DATA_BASE_OFFSET = 0x807F4800; // this goes to the very end of RDRAM for now
+
         private DateTime _showEachPointStartTime = DateTime.MinValue;
-        uint numFramesToShow = 1;
-        uint firstRecord;
-        Dictionary<uint, List<DataPoint>> dataByFrame = new Dictionary<uint, List<DataPoint>>();
+        uint numFramesToShow = 128;
 
         public MapPreviousPositionsObject()
             : base()
@@ -97,64 +97,62 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 Config.ObjectAssociations.BlueMarioMapImage,
             };
 
-            const uint READ_INITIAL_OFFSET = 0x80372F00;
-
-            var dsjaoisd = Config.Stream.GetUInt32(0x803733c0);
-
             uint globalTimer = Config.Stream.GetUInt32(MiscConfig.GlobalTimerAddress);
 
-            var qsData = new (float qsX, float qsY, float qsZ, ushort qsA)[7 + 4 * 4];
-            for (int i = 0; i < qsData.Length; i++)
-                qsData[i] = (
-                    Config.Stream.GetSingle((uint)(READ_INITIAL_OFFSET + 0x10 * i)),
-                    Config.Stream.GetSingle((uint)(READ_INITIAL_OFFSET + 4 + 0x10 * i)),
-                    Config.Stream.GetSingle((uint)(READ_INITIAL_OFFSET + 8 + 0x10 * i)),
-                    Config.Stream.GetUInt16((uint)(READ_INITIAL_OFFSET + 0xE + 0x10 * i)));
-
-            int numBaseFrames = 7;
-
-            var val = Config.Stream.GetInt32(0x80372E3C);
-            int numQFrames = (val - 0x10 * numBaseFrames) / 0x40;
+            const int numBaseFrames = 7;
 
             List<DataPoint> allResults = new List<DataPoint>();
-            for (int i = 0; i < numBaseFrames; i++)
-                allResults.Add(new DataPoint(qsData[i].qsX, qsData[i].qsY, qsData[i].qsZ, qsData[i].qsA, marioImages[i]));
-            numQFrames = Math.Min(numQFrames, 4);
-            for (int i = 0; i < numQFrames; i++)
+
+            for (int frame = (int)(numFramesToShow); frame > 0; frame--)
             {
-                int baseIndex = numBaseFrames + i * 4;
-                for (int k = 0; k < 4; k++)
-                    allResults.Add(new DataPoint(qsData[baseIndex + k].qsX, qsData[baseIndex + k].qsY, qsData[baseIndex + k].qsZ, qsData[baseIndex + k].qsA, marioImages[k + 7]));
+                var expectedGt = globalTimer - frame;
+                var qsData = new (float qsX, float qsY, float qsZ, ushort qsA, ushort gtLo)[numBaseFrames + 4 * 4];
+                var baseOffset = BUFFER_DATA_BASE_OFFSET + (expectedGt & 0x7F) * qsData.Length * 0x10;
+                for (int i = 0; i < qsData.Length; i++)
+                    qsData[i] = (
+                        Config.Stream.GetSingle((uint)(baseOffset + 0x10 * i)),
+                        Config.Stream.GetSingle((uint)(baseOffset + 4 + 0x10 * i)),
+                        Config.Stream.GetSingle((uint)(baseOffset + 8 + 0x10 * i)),
+                        Config.Stream.GetUInt16((uint)(baseOffset + 0xE + 0x10 * i)),
+                        Config.Stream.GetUInt16((uint)(baseOffset + 0xC + 0x10 * i)));
+
+                if (qsData[0].gtLo != (ushort)expectedGt)
+                    continue;
+
+                for (int i = 0; i < numBaseFrames; i++)
+                {
+                    var data = qsData[i].gtLo == expectedGt
+                        ? new DataPoint(qsData[i].qsX, qsData[i].qsY, qsData[i].qsZ, qsData[i].qsA, marioImages[i])
+                        : allResults[^1];
+                    allResults.Add(data);
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    int baseIndex = numBaseFrames + i * 4;
+                    if (qsData[baseIndex].gtLo != (ushort)expectedGt)
+                        break;
+
+                    for (int k = 0; k < 4; k++)
+                        allResults.Add(new DataPoint(qsData[baseIndex + k].qsX, qsData[baseIndex + k].qsY, qsData[baseIndex + k].qsZ, qsData[baseIndex + k].qsA, marioImages[k + 7]));
+                }
             }
 
-            var funny = globalTimer - numFramesToShow;
-            int maxDelettions = 0;
-            for (uint record = firstRecord; record <= funny && maxDelettions++ < 100; record++)
-                dataByFrame.Remove(record);
-
-            dataByFrame[globalTimer] = allResults;
-            firstRecord = funny;
             double secondsPerPoint = 0.5;
             double elapsedSeconds = DateTime.Now.Subtract(_showEachPointStartTime).TotalSeconds;
             int pointToShow = (int)(elapsedSeconds / secondsPerPoint);
             bool showSinglePoint = _showEachPointStartTime != DateTime.MinValue;
 
-            List<DataPoint> combinedResults = new List<DataPoint>();
-            int count = 0;
-            for (long frame = globalTimer - numFramesToShow + 1; frame <= globalTimer; frame++)
+            if (showSinglePoint)
             {
-                if (dataByFrame.TryGetValue((uint)frame, out var datas))
-                    foreach (var dataPoint in datas)
-                    {
-                        if (showSinglePoint && count == pointToShow)
-                            return new List<DataPoint>(new[] { dataPoint });
-                        count++;
-                        combinedResults.Insert(0, dataPoint);
-                    }
+                int count = 0;
+                foreach (var point in allResults)
+                    if (count++ == pointToShow)
+                        return [point];
             }
 
             _showEachPointStartTime = DateTime.MinValue;
-            return combinedResults;
+            return allResults;
         }
 
         public override bool ParticipatesInGlobalIconSize() => true;

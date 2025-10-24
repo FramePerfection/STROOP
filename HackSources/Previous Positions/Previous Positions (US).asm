@@ -28,6 +28,9 @@ MarioPosHi equ 0x8034
 MarioPosLo equ 0xb1ac
 MarioAngleLo equ 0xb19e
 
+gGlobalTimerHi equ 0x8033
+gGlobalTimerLo equ 0xd5d4
+
 gWaterSurfacePseudoFloorHi equ 0x8033
 gWaterSurfacePseudoFloorLo equ 0xdaf8
 
