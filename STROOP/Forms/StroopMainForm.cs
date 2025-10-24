@@ -272,7 +272,7 @@ namespace STROOP
                     () =>
                     {
                         string varFilePath = @"Config/MhsData.xml";
-                        List<VariablePrecursor> precursors = XmlConfigParser.OpenWatchVariableControlPrecursors(varFilePath);
+                        List<VariablePrecursor> precursors = XmlConfigParser.OpenVariableControlPrecursors(varFilePath);
                         VariablePopOutForm form = new VariablePopOutForm();
                         form.Initialize(precursors);
                         form.ShowForm();
@@ -640,9 +640,9 @@ namespace STROOP
                 }
             });
 
-            WatchVariablePanelObjects.SuspendLayout();
+            VariablePanelObjects.SuspendLayout();
             ObjectSlotsManager.ChangeSlotSize(size);
-            WatchVariablePanelObjects.ResumeLayout();
+            VariablePanelObjects.ResumeLayout();
             _objSlotResizing = false;
         }
 

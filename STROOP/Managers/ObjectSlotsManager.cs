@@ -108,7 +108,7 @@ namespace STROOP.Managers
                 var objectSlot = new ObjectSlot(this, i, new Size(DefaultSlotSize, DefaultSlotSize));
                 objectSlot.Click += (sender, e) => OnSlotClick(sender, e);
                 ObjectSlots.Add(objectSlot);
-                mainForm.WatchVariablePanelObjects.Controls.Add(objectSlot);
+                mainForm.VariablePanelObjects.Controls.Add(objectSlot);
             }
 
             ;

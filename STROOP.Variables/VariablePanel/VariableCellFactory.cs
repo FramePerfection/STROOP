@@ -9,7 +9,7 @@ namespace STROOP.Variables.VariablePanel
 {
     public static class VariableCellFactory<TUiContext> where TUiContext : IUiContext
     {
-        private class WatchVariableCellFallback(IVariable view, VariableCellControl<TUiContext> cellControl)
+        private class VariableCellFallback(IVariable view, VariableCellControl<TUiContext> cellControl)
             : IVariableCell
                 , IVariableCellUi<TUiContext>
         {
@@ -32,14 +32,14 @@ namespace STROOP.Variables.VariablePanel
 
         static readonly Dictionary<string, Type> wrapperTypes = new Dictionary<string, Type>();
 
-        static readonly Regex WatchVariableTypeNameRegex = new Regex("(?<=(^Variable))[a-zA-Z0-9]+(?=(Cell))", RegexOptions.Compiled);
+        static readonly Regex VariableTypeNameRegex = new Regex("(?<=(^Variable))[a-zA-Z0-9]+(?=(Cell))", RegexOptions.Compiled);
 
         static VariableCellFactory()
         {
             GeneralUtilities.ExecuteInitializers<InitializeBaseAddressAttribute>();
             foreach (var t in GeneralUtilities.GetStroopTypes())
             {
-                var match = WatchVariableTypeNameRegex.Match(t.Name);
+                var match = VariableTypeNameRegex.Match(t.Name);
                 if (match.Success)
                     if (!t.IsAbstract && t.IsPublic && TypeUtilities.MatchesGenericType(typeof(VariableCell<,>), t))
                         wrapperTypes[match.Value] = t;
@@ -52,7 +52,7 @@ namespace STROOP.Variables.VariablePanel
             var interfaceType = view.GetType().GetInterfaces().FirstOrDefault(x => x.Name == $"{nameof(IVariable)}`1");
             if (interfaceType == null)
             {
-                result = new WatchVariableCellFallback(view, cellControl);
+                result = new VariableCellFallback(view, cellControl);
                 return false;
             }
 
@@ -70,7 +70,7 @@ namespace STROOP.Variables.VariablePanel
             var constructor = wrapperType.GetConstructor([ interfaceType, typeof(VariableCellControl<TUiContext>) ]);
             if (constructor == null)
             {
-                result = new WatchVariableCellFallback(view, cellControl);
+                result = new VariableCellFallback(view, cellControl);
                 return false;
             }
 

@@ -10,9 +10,9 @@ namespace STROOP.Variables.VariablePanel
         public readonly Func<VariableCellControl<TUiContext>, object, bool> SetterFunction;
         public readonly (string name, Func<object> valueGetter, Func<VariableCellControl<TUiContext>, bool> isSelected)[] DropDownValues;
 
-        /// <summary>Constructs a new WatchVariableSetting</summary>
+        /// <summary>Constructs a new VariableSetting</summary>
         /// <param name="name">The name of the setting as displayed in the DropdownBox</param>
-        /// <param name="setterFunction">The function that applies a selected value to a WatchVariableControl. If no <see cref="DropDownValues"/> are provided, this will be called with <see langword="null"/></param>
+        /// <param name="setterFunction">The function that applies a selected value to a VariableControl. If no <see cref="DropDownValues"/> are provided, this will be called with <see langword="null"/></param>
         /// <param name="dropDownValues">
         /// A list of tuples representing selectable values, where 'name' is a readable representation of the selection, 'valueGetter' is a function returning the value associated with the setter, and 'isSelected' yields whether this option can be seen as selected
         /// </param>

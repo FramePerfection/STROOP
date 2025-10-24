@@ -104,9 +104,9 @@ namespace STROOP.Controls.VariablePanel
 
         public readonly Func<List<IWinFormsVariableCell>> GetSelectedVars;
 
-        public delegate IEnumerable<VariablePrecursor> SpecialFuncWatchVariables(PositionAngle.HybridPositionAngle input);
+        public delegate IEnumerable<VariablePrecursor> SpecialFuncVariables(PositionAngle.HybridPositionAngle input);
 
-        public Func<IEnumerable<(string name, SpecialFuncWatchVariables generateVariables)>> getSpecialFuncWatchVariables = null;
+        public Func<IEnumerable<(string name, SpecialFuncVariables generateVariables)>> getSpecialFuncVariables = null;
         public bool IsSelected => Focused;
 
         private List<IWinFormsVariableCell> _allWatchVarControls;
@@ -122,7 +122,7 @@ namespace STROOP.Controls.VariablePanel
 
         ToolStripMenuItem filterVariablesItem = new ToolStripMenuItem("Filter Variables...");
 
-        WatchVariablePanelRenderer renderer;
+        VariablePanelRenderer renderer;
 
         public IWinFormsVariableCell HoveringWinFormsVariableCellControl =>
             renderer.GetVariableAt(renderer.PointToClient(Cursor.Position)).cell;
@@ -139,13 +139,13 @@ namespace STROOP.Controls.VariablePanel
             _selectedWatchVarControls = new HashSet<IWinFormsVariableCell>();
             _reorderingWatchVarControls = new List<IWinFormsVariableCell>();
 
-            renderer = new WatchVariablePanelRenderer(this);
+            renderer = new VariablePanelRenderer(this);
             renderer.KeyDown += (_, args) =>
             {
                 if (GlobalKeyboard.IsCtrlDown() && args.KeyCode == Keys.F)
                     (FindForm() as StroopMainForm)?.ShowSearchDialog();
             };
-            getSpecialFuncWatchVariables = () => new[] { PositionAngle.HybridPositionAngle.GenerateBaseVariables };
+            getSpecialFuncVariables = () => new[] { PositionAngle.HybridPositionAngle.GenerateBaseVariables };
             UpdateSortOption(WinFormsVariableControl.SortByPriority);
         }
 
@@ -187,7 +187,7 @@ namespace STROOP.Controls.VariablePanel
             {
                 SuspendLayout();
 
-                var controls = (_varFilePath != null ? XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath) : [])
+                var controls = (_varFilePath != null ? XmlConfigParser.OpenVariableControlPrecursors(_varFilePath) : [])
                     .Select(precursor => new WinFormsVariableControl(this, precursor.var) { VarName = precursor.name });
                 foreach (var watchVarControl in controls)
                     _allWatchVarControls.Add(watchVarControl.varCell);
@@ -329,7 +329,7 @@ namespace STROOP.Controls.VariablePanel
                 setting.CreateContextMenuEntry(ctx.Items, GetSelectedVars);
 
             ctx.Items.Add(new ToolStripSeparator());
-            foreach (var item in WatchVariableSelectionUtilities.CreateSelectionToolStripItems(GetSelectedVars(), this))
+            foreach (var item in VariableSelectionUtilities.CreateSelectionToolStripItems(GetSelectedVars(), this))
                 ctx.Items.Add(item);
 
             ctx.Show(Cursor.Position);
@@ -478,7 +478,7 @@ namespace STROOP.Controls.VariablePanel
             throw new NotImplementedException();
             // T capturedValue = default(T);
             //
-            // return new CustomVariableView<T>(WatchVariableUtilities.GetWrapperType(typeof(T)))
+            // return new CustomVariableView<T>(VariableUtilities.GetWrapperType(typeof(T)))
             // {
             //     Name = $"Dummy {++numDummies} {StringUtilities.Capitalize(typeof(T).Name)}",
             //     _getterFunction = () => capturedValue.Yield(),
@@ -536,13 +536,13 @@ namespace STROOP.Controls.VariablePanel
             }
 
             ToolStripMenuItem addRelativeVariablesItem = null, removePointVariableItem = null;
-            var getSpecialFuncVars = getSpecialFuncWatchVariables?.Invoke() ?? null;
+            var getSpecialFuncVars = getSpecialFuncVariables?.Invoke() ?? null;
             var specificsCount = getSpecialFuncVars?.Count() ?? 0;
             if (PositionAngle.HybridPositionAngle.pointPAs.Count > 0)
             {
                 if (getSpecialFuncVars != null && specificsCount > 0)
                 {
-                    void BindHandler(ToolStripMenuItem menuItem, PositionAngle.HybridPositionAngle targetPA, SpecialFuncWatchVariables generator) =>
+                    void BindHandler(ToolStripMenuItem menuItem, PositionAngle.HybridPositionAngle targetPA, SpecialFuncVariables generator) =>
                         menuItem.Click += (_, __) => AddVariables(generator(targetPA));
 
                     addRelativeVariablesItem = new ToolStripMenuItem("Add relative variables for...");
@@ -608,7 +608,7 @@ namespace STROOP.Controls.VariablePanel
                 });
 
             ToolStripMenuItem doToAllVariablesItem = new ToolStripMenuItem("Do to all variables...");
-            WatchVariableSelectionUtilities.CreateSelectionToolStripItems(GetCurrentlyVisibleCells(), this)
+            VariableSelectionUtilities.CreateSelectionToolStripItems(GetCurrentlyVisibleCells(), this)
                 .ForEach(item => doToAllVariablesItem.DropDownItems.Add(item));
 
             filterVariablesItem.DropDown.MouseEnter += (sender, e) => { filterVariablesItem.DropDown.AutoClose = false; };
@@ -772,7 +772,7 @@ namespace STROOP.Controls.VariablePanel
             _visibleGroups.AddRange(_initialVisibleGroups);
             UpdateFilterItemCheckedStatuses();
 
-            AddVariables(_varFilePath != null ? XmlConfigParser.OpenWatchVariableControlPrecursors(_varFilePath) : []);
+            AddVariables(_varFilePath != null ? XmlConfigParser.OpenVariableControlPrecursors(_varFilePath) : []);
         }
 
         public void UnselectAllVariables()

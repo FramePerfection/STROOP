@@ -57,7 +57,7 @@ namespace STROOP.Tabs
         {
             if (!updateView) return;
 
-            List<uint> warpNodeAddresses = WatchVariableSpecialUtilities.GetWarpNodeAddresses();
+            List<uint> warpNodeAddresses = VariableSpecialUtilities.GetWarpNodeAddresses();
             if (!Enumerable.SequenceEqual(warpNodeAddresses, _warpNodeAddresses))
             {
                 _variablePanelWarp.RemoveVariableGroup(VariableGroup.WarpNode);
@@ -119,7 +119,7 @@ namespace STROOP.Tabs
             uint mainSegmentEnd = 0x80367460;
             //uint engineSegmentStart = 0x80378800;
 
-            uint lastWarpNodeAddress = WatchVariableSpecialUtilities.GetWarpNodeAddresses().LastOrDefault();
+            uint lastWarpNodeAddress = VariableSpecialUtilities.GetWarpNodeAddresses().LastOrDefault();
             if (lastWarpNodeAddress == 0) return;
 
             List<uint> objAddresses = Config.ObjectSlotsManager.SelectedObjects.ConvertAll(obj => obj.Address);

@@ -20,7 +20,7 @@ namespace STROOP.Utilities
                 new HybridPositionAngle(() => pointCustom, () => pointCustom, "Point")
             };
 
-            public static readonly (string, VariablePanel.SpecialFuncWatchVariables) GenerateBaseVariables =
+            public static readonly (string, VariablePanel.SpecialFuncVariables) GenerateBaseVariables =
                 ("Base Info",
                     pa =>
                     {
@@ -93,7 +93,7 @@ namespace STROOP.Utilities
                     }
             );
 
-            public static (string, VariablePanel.SpecialFuncWatchVariables) GenerateRelations(HybridPositionAngle relation) =>
+            public static (string, VariablePanel.SpecialFuncVariables) GenerateRelations(HybridPositionAngle relation) =>
                 ($"Relations to {relation.name}", pa =>
                     {
                         List<VariablePrecursor> vars = new List<VariablePrecursor>();

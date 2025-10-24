@@ -40,7 +40,7 @@ namespace STROOP.Tabs.MapTab
         public static (float x1, float z1, float x2, float z2, bool xProjection, double pushAngle)? Get2DWallDataFromTri(
             TriangleDataModel tri, float? heightNullable = null)
         {
-            double uphillAngle = WatchVariableSpecialUtilities.GetTriangleUphillAngle(tri);
+            double uphillAngle = VariableSpecialUtilities.GetTriangleUphillAngle(tri);
             double pushAngle = MoreMath.ReverseAngle(uphillAngle);
 
             if (!heightNullable.HasValue)

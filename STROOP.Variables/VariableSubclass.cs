@@ -17,7 +17,7 @@ public static class VariableSubclass
         Boolean;
 }
 
-public static class WatchVariableSubclassExtensions
+public static class VariableSubclassExtensions
 {
     public static string DefaultIfNull<T>(this string? subclass)
         => subclass ?? typeof(T) switch

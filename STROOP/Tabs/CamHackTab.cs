@@ -272,7 +272,7 @@ namespace STROOP.Tabs
 
         private List<VariablePrecursor> CreatePanVars(int index)
         {
-            WatchVariableSpecialUtilities.AddPanEntriesToDictionary(index);
+            VariableSpecialUtilities.AddPanEntriesToDictionary(index);
             return new List<VariablePrecursor>
             {
                 CreatePanVar("Global Timer", String.Format("Pan{0}GlobalTimer", index), "Orange"),

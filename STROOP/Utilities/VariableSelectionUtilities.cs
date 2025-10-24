@@ -21,7 +21,7 @@ namespace STROOP.Structs
 {
     using BinaryScalarOperation = Func<double, double, double>;
 
-    public static class WatchVariableSelectionUtilities
+    public static class VariableSelectionUtilities
     {
         static IEnumerable<INumberVariableCell> FilterNumberVariables(IEnumerable<IWinFormsVariableCell> cells)
             => cells.OfType<INumberVariableCell>().Where(x => x is not IVariableCellData<string>);
@@ -186,7 +186,7 @@ namespace STROOP.Structs
             void createAggregateMathOperationVariable(AggregateMathOperation operation)
             {
                 if (vars.Count == 0) return;
-                var getter = WatchVariableSpecialUtilities.AddAggregateMathOperationEntry(vars, operation);
+                var getter = VariableSpecialUtilities.AddAggregateMathOperationEntry(vars, operation);
                 var result = new CustomVariable<double>(VariableSubclass.Number)
                 {
                     getter = getter,

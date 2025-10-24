@@ -40,7 +40,7 @@ namespace STROOP.Tabs
 
         static IEnumerable<T> OperateOnTriangles<T>(Func<uint, T> operate) => VariableUtilities.GetBaseAddresses(BaseAddressType.Triangle).Select(triAddress => operate(triAddress));
 
-        static (string, VariablePanel.SpecialFuncWatchVariables) GenerateTriangleRelations =
+        static (string, VariablePanel.SpecialFuncVariables) GenerateTriangleRelations =
             ("Triangle projections", pa =>
                 {
                     var vars = new List<VariablePrecursor>();
@@ -238,7 +238,7 @@ namespace STROOP.Tabs
                              })
                     {
                         var vertex = vertex_it;
-                        foreach (var distFunc in WatchVariableSpecialUtilities.distFuncs)
+                        foreach (var distFunc in VariableSpecialUtilities.distFuncs)
                         {
                             var getter = distFunc.getter;
                             var setter = distFunc.setter;
@@ -301,7 +301,7 @@ namespace STROOP.Tabs
         {
             InitializeComponent();
             _variablePanelTriangles.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
-            _variablePanelTriangles.getSpecialFuncWatchVariables = () => new[] { GenerateTriangleRelations };
+            _variablePanelTriangles.getSpecialFuncVariables = () => new[] { GenerateTriangleRelations };
         }
 
         public override string GetDisplayName() => "Triangles";

@@ -80,7 +80,7 @@ namespace STROOP.Tabs
             _objectSnapshot = null;
 
             _currentValueTexts = new List<ValueText>();
-            _objectPrecursors = XmlConfigParser.OpenWatchVariableControlPrecursors(_variablePanelMemory.DataPath)
+            _objectPrecursors = XmlConfigParser.OpenVariableControlPrecursors(_variablePanelMemory.DataPath)
                 .ConvertAndRemoveNull(x => (x as IMemoryVariable)?.memoryDescriptor);
             _objectSpecificPrecursors = new List<MemoryDescriptor>();
         }

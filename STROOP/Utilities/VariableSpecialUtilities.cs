@@ -16,11 +16,11 @@ using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {
-    public static class WatchVariableSpecialUtilities
+    public static class VariableSpecialUtilities
     {
         private static VariableSpecialDictionary dictionary => VariableSpecialDictionary.Instance;
 
-        static WatchVariableSpecialUtilities()
+        static VariableSpecialUtilities()
         {
             AddLiteralEntriesToDictionary();
             AddGeneratedEntriesToDictionary();
@@ -3600,7 +3600,7 @@ namespace STROOP.Utilities
                 }
             );
 
-            // TODO: Add WatchVariablePositionAngleWrapper I guess?
+            // TODO: Add VariablePositionAngleWrapper I guess?
             //dictionary.Add("PositionControllerRelativity",
             //    () => PositionControllerRelativityConfig.RelativityPA,
             //    (PositionAngle value) =>

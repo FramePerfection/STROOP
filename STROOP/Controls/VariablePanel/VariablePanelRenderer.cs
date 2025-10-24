@@ -12,7 +12,7 @@ namespace STROOP.Controls.VariablePanel
 {
     partial class VariablePanel
     {
-        class WatchVariablePanelRenderer : Control
+        class VariablePanelRenderer : Control
         {
             class OnDemand<T> where T : IDisposable
             {
@@ -63,7 +63,7 @@ namespace STROOP.Controls.VariablePanel
                 public static implicit operator T(OnDemand<T> obj) => obj.Value;
             }
 
-            class WatchVariableControlRenderData
+            class VariableControlRenderData
             {
                 public Vector2 positionInGrid;
                 public Vector2 positionWhileMoving;
@@ -75,13 +75,13 @@ namespace STROOP.Controls.VariablePanel
 
             private static readonly Image _pinnedImage = Properties.Resources.img_pin;
 
-            Dictionary<WinFormsVariableControl, WatchVariableControlRenderData> renderDatas = new Dictionary<WinFormsVariableControl, WatchVariableControlRenderData>();
+            Dictionary<WinFormsVariableControl, VariableControlRenderData> renderDatas = new Dictionary<WinFormsVariableControl, VariableControlRenderData>();
 
-            WatchVariableControlRenderData GetRenderData(WinFormsVariableControl ctrl)
+            VariableControlRenderData GetRenderData(WinFormsVariableControl ctrl)
             {
-                WatchVariableControlRenderData result;
+                VariableControlRenderData result;
                 if (!renderDatas.TryGetValue(ctrl, out result))
-                    renderDatas[ctrl] = result = new WatchVariableControlRenderData();
+                    renderDatas[ctrl] = result = new VariableControlRenderData();
                 return result;
             }
 
@@ -123,7 +123,7 @@ namespace STROOP.Controls.VariablePanel
                 return Math.Max(1, effectiveHeight / elementHeight);
             }
 
-            public WatchVariablePanelRenderer(VariablePanel target)
+            public VariablePanelRenderer(VariablePanel target)
             {
                 this.target = target;
                 boldFont = new OnDemand<Font>(

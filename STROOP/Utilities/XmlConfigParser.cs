@@ -121,7 +121,7 @@ namespace STROOP.Utilities
             return doc;
         }
 
-        public static List<VariablePrecursor> OpenWatchVariableControlPrecursors(string path)
+        public static List<VariablePrecursor> OpenVariableControlPrecursors(string path)
         {
             string schemaFile = "MiscDataSchema.xsd";
             var objectData = new List<VariablePrecursor>();

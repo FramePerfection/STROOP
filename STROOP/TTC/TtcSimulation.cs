@@ -212,7 +212,7 @@ namespace STROOP.Ttc
             int objectIndex = objectIndexNullable.Value;
 
             TtcPendulum pendulum = _rngObjects[objectIndex] as TtcPendulum;
-            int pendulumAmplitudeStart = (int)WatchVariableSpecialUtilities.GetPendulumAmplitude(
+            int pendulumAmplitudeStart = (int)VariableSpecialUtilities.GetPendulumAmplitude(
                 pendulum._accelerationDirection, pendulum._accelerationMagnitude, pendulum._angularVelocity, pendulum._angle);
             int? pendulumSwingIndexStartNullable = TableConfig.PendulumSwings.GetPendulumSwingIndex(pendulumAmplitudeStart);
             if (!pendulumSwingIndexStartNullable.HasValue) return (false, null, 0);
@@ -231,7 +231,7 @@ namespace STROOP.Ttc
                     rngObject.Update();
                 }
 
-                int pendulumAmplitude = (int)WatchVariableSpecialUtilities.GetPendulumAmplitude(
+                int pendulumAmplitude = (int)VariableSpecialUtilities.GetPendulumAmplitude(
                     pendulum._accelerationDirection, pendulum._accelerationMagnitude, pendulum._angularVelocity, pendulum._angle);
                 int? pendulumSwingIndexNullable = TableConfig.PendulumSwings.GetPendulumSwingIndex(pendulumAmplitude);
                 if (!pendulumSwingIndexNullable.HasValue) return (false, null, 0);

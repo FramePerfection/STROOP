@@ -9,6 +9,6 @@ namespace STROOP.Structs
         public ComboBox comboBoxSortMethod;
         public ComboBox comboBoxLabelMethod;
         public ComboBox comboBoxSelectionMethod;
-        public ObjectSlotFlowLayoutPanel WatchVariablePanelObjects;
+        public ObjectSlotFlowLayoutPanel VariablePanelObjects;
     }
 }

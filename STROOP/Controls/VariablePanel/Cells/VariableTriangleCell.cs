@@ -6,7 +6,7 @@ namespace STROOP.Controls.VariablePanel.Cells
     {
         static WinFormsVariableSetting SelectTriangleSetting = new WinFormsVariableSetting("Select Triangle", (ctrl, _) =>
         {
-            // if (ctrl.varWrapper is WatchVariableTriangleWrapper triangleWrapper)
+            // if (ctrl.varWrapper is VariableTriangleWrapper triangleWrapper)
             // {
             //     var value = triangleWrapper.CombineValues();
             //     if (value.meaning == CombinedValuesMeaning.SameValue)

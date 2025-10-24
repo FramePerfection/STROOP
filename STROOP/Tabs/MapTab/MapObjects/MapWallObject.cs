@@ -130,7 +130,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             else
                                 baseColor = regularBaseColor;
 
-                        double uphillAngle = WatchVariableSpecialUtilities.GetTriangleUphillAngle(tri);
+                        double uphillAngle = VariableSpecialUtilities.GetTriangleUphillAngle(tri);
                         double pushAngle = MoreMath.ReverseAngle(uphillAngle);
 
                         float d = Size / (tri.XProjection ? tri.NormX : tri.NormZ);

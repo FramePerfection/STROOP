@@ -927,7 +927,7 @@ namespace STROOP.Utilities
         public static bool GotoTriangleVertexClosest(uint triangleAddress, bool useMisalignmentOffset = false)
         {
             if (triangleAddress == 0) return false;
-            int closestVertex = WatchVariableSpecialUtilities.GetClosestTriangleVertexIndex(triangleAddress);
+            int closestVertex = VariableSpecialUtilities.GetClosestTriangleVertexIndex(triangleAddress);
             return GotoTriangleVertex(triangleAddress, closestVertex, useMisalignmentOffset);
         }
 

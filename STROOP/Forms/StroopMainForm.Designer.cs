@@ -74,7 +74,7 @@ namespace STROOP
             this.labelSortMethod = new System.Windows.Forms.Label();
             this.comboBoxSortMethod = new System.Windows.Forms.ComboBox();
             this.labelSlotSize = new System.Windows.Forms.Label();
-            this.WatchVariablePanelObjects = new STROOP.Controls.ObjectSlotFlowLayoutPanel();
+            this.VariablePanelObjects = new STROOP.Controls.ObjectSlotFlowLayoutPanel();
             this.trackBarObjSlotSize = new System.Windows.Forms.TrackBar();
             this.panelConnect.SuspendLayout();
             this.contextMenuStripProcessesList.SuspendLayout();
@@ -476,7 +476,7 @@ namespace STROOP
             this.groupBoxObjects.Controls.Add(this.labelSortMethod);
             this.groupBoxObjects.Controls.Add(this.comboBoxSortMethod);
             this.groupBoxObjects.Controls.Add(this.labelSlotSize);
-            this.groupBoxObjects.Controls.Add(this.WatchVariablePanelObjects);
+            this.groupBoxObjects.Controls.Add(this.VariablePanelObjects);
             this.groupBoxObjects.Controls.Add(this.trackBarObjSlotSize);
             this.groupBoxObjects.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxObjects.Location = new System.Drawing.Point(0, 0);
@@ -558,17 +558,17 @@ namespace STROOP
             this.labelSlotSize.TabIndex = 11;
             this.labelSlotSize.Text = "Slot Size:";
             //
-            // WatchVariablePanelObjects
+            // VariablePanelObjects
             //
-            this.WatchVariablePanelObjects.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.VariablePanelObjects.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.WatchVariablePanelObjects.AutoScroll = true;
-            this.WatchVariablePanelObjects.Location = new System.Drawing.Point(4, 45);
-            this.WatchVariablePanelObjects.Margin = new System.Windows.Forms.Padding(2);
-            this.WatchVariablePanelObjects.Name = "WatchVariablePanelObjects";
-            this.WatchVariablePanelObjects.Size = new System.Drawing.Size(919, 155);
-            this.WatchVariablePanelObjects.TabIndex = 0;
+            this.VariablePanelObjects.AutoScroll = true;
+            this.VariablePanelObjects.Location = new System.Drawing.Point(4, 45);
+            this.VariablePanelObjects.Margin = new System.Windows.Forms.Padding(2);
+            this.VariablePanelObjects.Name = "VariablePanelObjects";
+            this.VariablePanelObjects.Size = new System.Drawing.Size(919, 155);
+            this.VariablePanelObjects.TabIndex = 0;
             //
             // trackBarObjSlotSize
             //
@@ -634,7 +634,7 @@ namespace STROOP
         private System.Windows.Forms.GroupBox groupBoxObjects;
         internal System.Windows.Forms.ComboBox comboBoxSortMethod;
         private System.Windows.Forms.Label labelSortMethod;
-        internal ObjectSlotFlowLayoutPanel WatchVariablePanelObjects;
+        internal ObjectSlotFlowLayoutPanel VariablePanelObjects;
         private BetterSplitContainer splitContainerMain;
         private System.Windows.Forms.Label labelVersionNumber;
         private System.Windows.Forms.TrackBar trackBarObjSlotSize;
