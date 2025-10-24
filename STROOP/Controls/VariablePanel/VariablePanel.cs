@@ -37,7 +37,7 @@ namespace STROOP.Controls.VariablePanel
         [InitializeSpecial]
         static void InitializeSpecial()
         {
-            var target = WatchVariableSpecialUtilities.dictionary;
+            var target = VariableSpecialDictionary.Instance;
             target.Add("WatchVarPanelNameWidth", () => SavedSettingsConfig.WatchVarPanelNameWidth.value, (uint value) =>
             {
                 SavedSettingsConfig.WatchVarPanelNameWidth.value = Math.Max(1, value);
@@ -797,7 +797,7 @@ namespace STROOP.Controls.VariablePanel
             if (elements.Count == 0) return;
             VariablePopOutForm form = new VariablePopOutForm();
             form.Initialize(elements
-                .Select(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, WatchVariableSpecialUtilities.dictionary))
+                .Select(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance))
                 .Where(x => x.var != null)
             );
             form.ShowForm();
@@ -805,7 +805,7 @@ namespace STROOP.Controls.VariablePanel
 
         public void OpenVariables(List<XElement> elements)
         {
-            AddVariables(elements.ConvertAll(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, WatchVariableSpecialUtilities.dictionary)));
+            AddVariables(elements.ConvertAll(x => VariableCellFactory<VariablePanelUiContext>.ParseXml(x, VariableSpecialDictionary.Instance)));
         }
 
         public void SaveVariablesInPlace()

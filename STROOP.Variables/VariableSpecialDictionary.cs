@@ -5,6 +5,8 @@ namespace STROOP.Variables;
 
 public class VariableSpecialDictionary
 {
+    public static VariableSpecialDictionary Instance = new();
+
     private readonly Dictionary<string, IVariable> _dictionary;
 
     public VariableSpecialDictionary() => _dictionary = new Dictionary<string, IVariable>();

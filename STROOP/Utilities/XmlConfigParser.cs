@@ -140,7 +140,7 @@ namespace STROOP.Utilities
             {
                 if (element.Name.ToString() != "Data")
                     continue;
-                var parsed = VariableCellFactory<VariablePanelUiContext>.ParseXml(element, WatchVariableSpecialUtilities.dictionary);
+                var parsed = VariableCellFactory<VariablePanelUiContext>.ParseXml(element, VariableSpecialDictionary.Instance);
                 if (parsed.var != null)
                     objectData.Add(parsed);
             }
@@ -271,7 +271,7 @@ namespace STROOP.Utilities
                             var precursors = new List<VariablePrecursor>();
                             foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
                             {
-                                var parsed = VariableCellFactory<VariablePanelUiContext>.ParseXml(subElement, WatchVariableSpecialUtilities.dictionary);
+                                var parsed = VariableCellFactory<VariablePanelUiContext>.ParseXml(subElement, VariableSpecialDictionary.Instance);
                                 if (parsed.var != null)
                                     precursors.Add(parsed);
                             }

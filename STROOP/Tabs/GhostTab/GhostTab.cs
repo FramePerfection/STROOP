@@ -10,6 +10,7 @@ using System.Linq;
 using OpenTK.Mathematics;
 using STROOP.Core;
 using STROOP.Core.Utilities;
+using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
@@ -28,7 +29,7 @@ namespace STROOP.Tabs.GhostTab
         [InitializeSpecial]
         static void AddSpecialVariables()
         {
-            var target = WatchVariableSpecialUtilities.dictionary;
+            var target = VariableSpecialDictionary.Instance;
             Func<Func<GhostFrame, float>, Func<IEnumerable<float>>> displayGhostVarFloat =
                 (selectMember) => () => GetActiveGhostIndices().Select((uint index) => selectMember((instance.listBoxGhosts.Items[(int)index] as Ghost)?.currentFrame ?? default(GhostFrame)));
 

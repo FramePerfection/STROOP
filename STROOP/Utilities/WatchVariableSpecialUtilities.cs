@@ -18,11 +18,10 @@ namespace STROOP.Utilities
 {
     public static class WatchVariableSpecialUtilities
     {
-        public static VariableSpecialDictionary dictionary { get; private set; }
+        private static VariableSpecialDictionary dictionary => VariableSpecialDictionary.Instance;
 
         static WatchVariableSpecialUtilities()
         {
-            dictionary = new VariableSpecialDictionary();
             AddLiteralEntriesToDictionary();
             AddGeneratedEntriesToDictionary();
             AddPanEntriesToDictionary();
