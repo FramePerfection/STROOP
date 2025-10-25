@@ -1,4 +1,6 @@
-﻿using STROOP.Variables;
+﻿using STROOP.Core;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Controls.VariablePanel.Cells
 {
@@ -6,23 +8,18 @@ namespace STROOP.Controls.VariablePanel.Cells
     {
         static WinFormsVariableSetting SelectTriangleSetting = new WinFormsVariableSetting("Select Triangle", (ctrl, _) =>
         {
-            // if (ctrl.varWrapper is VariableTriangleWrapper triangleWrapper)
-            // {
-            //     var value = triangleWrapper.CombineValues();
-            //     if (value.meaning == CombinedValuesMeaning.SameValue)
-            //         AccessScope<StroopMainForm>.content.GetTab<Tabs.TrianglesTab>().SetCustomTriangleAddresses(value.value);
-            // }
+            if (ctrl.varCell is VariableTriangleCell triangleWrapper)
+            {
+                var value = triangleWrapper.CombineValues<uint>();
+                if (value.meaning == CombinedValuesMeaning.SameValue)
+                    AccessScope<StroopMainForm>.content.GetTab<Tabs.TrianglesTab>().SetCustomTriangleAddresses(value.value);
+            }
 
             return false;
         });
 
         public VariableTriangleCell(IVariable<uint> watchVar, WinFormsVariableControl watchVarControl)
             : base(watchVar, watchVarControl)
-        {
-            AddTriangleContextMenuStripItems();
-        }
-
-        private void AddTriangleContextMenuStripItems()
         {
             control.AddSetting(SelectTriangleSetting);
         }

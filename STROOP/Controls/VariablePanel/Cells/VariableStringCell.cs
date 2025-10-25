@@ -43,23 +43,6 @@ namespace STROOP.Controls.VariablePanel.Cells
             }
         }
 
-        public void AddContextMenuHandler(string name, Action<string> handler, params string[] options)
-        {
-            var opts = new (string, Func<object>, Func<WinFormsVariableControl, bool>)[options.Length];
-            for (int i = 0; i < options.Length; i++)
-            {
-                var optionName = options[i];
-                opts[i] = (optionName, () => optionName, ctrl => false);
-            }
-
-            WinFormsVariableSetting setting = new WinFormsVariableSetting(name, (ctrl, obj) =>
-            {
-                handler((string)obj);
-                return false;
-            }, opts);
-            control.AddSetting(setting);
-        }
-
         public override string GetClass() => "String";
 
         public override string DisplayValue(string value) => value;
