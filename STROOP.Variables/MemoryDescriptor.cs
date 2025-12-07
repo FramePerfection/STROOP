@@ -82,8 +82,8 @@ public class MemoryDescriptor
         => (IMemoryVariable)
             typeof(MemoryVariable<>)
                 .MakeGenericType(ClrType)
-                .GetConstructor(new Type[] { typeof(MemoryDescriptor), typeof(string) })
-                .Invoke(new object[] { this, wrapper });
+                .GetConstructor(new Type[] { typeof(string), typeof(MemoryDescriptor) })
+                .Invoke(new object[] { wrapper, this });
 
     public List<uint> GetAddressList()
         => VariableUtilities.GetBaseAddresses(BaseAddressType).Select(baseAddress => baseAddress + Offset).ToList();
