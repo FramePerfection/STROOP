@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -7,7 +6,7 @@ using STROOP.Utilities;
 namespace STROOP.Ttc
 {
     /** A pendulum is the pendulum that swings back and forth.
-      *  
+      *
       *  A pendulum at rest will call RNG to determine how long
       *  it should wait for and how fast it should accelerates
       *  during the next swing. After it's waited the allotted time,
@@ -17,7 +16,6 @@ namespace STROOP.Ttc
       */
     public class TtcPendulum2 : TtcObject
     {
-
         public int _accelerationDirection;
         public int _angle;
         public int _angularVelocity;
@@ -52,16 +50,18 @@ namespace STROOP.Ttc
 
         public override void Update()
         {
-
             if (_waitingTimer > 0)
-            { //waiting
+            {
+                //waiting
                 _waitingTimer--;
             }
             else
-            { //swinging
+            {
+                //swinging
 
                 if (_accelerationMagnitude == 0)
-                { //give initial acceleration on start
+                {
+                    //give initial acceleration on start
                     _accelerationMagnitude = 13;
                 }
 
@@ -72,20 +72,20 @@ namespace STROOP.Ttc
                 _angle = _angle + _angularVelocity;
 
                 if (_angularVelocity == 0)
-                { //reached peak of swing
+                {
+                    //reached peak of swing
                     _accelerationMagnitude = _accelerationMagnitude == 13 ? 42 : 13;
                 }
             }
-
         }
 
         public override string ToString()
         {
             return _id + OPENER + _accelerationDirection + SEPARATOR +
-                      _angle + SEPARATOR +
-                      _angularVelocity + SEPARATOR +
-                      _accelerationMagnitude + SEPARATOR +
-                      _waitingTimer + CLOSER;
+                   _angle + SEPARATOR +
+                   _angularVelocity + SEPARATOR +
+                   _accelerationMagnitude + SEPARATOR +
+                   _waitingTimer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -132,5 +132,4 @@ namespace STROOP.Ttc
             return new TtcPendulum2(rng, _accelerationDirection, _angle, _angularVelocity, _accelerationMagnitude, _waitingTimer);
         }
     }
-
 }

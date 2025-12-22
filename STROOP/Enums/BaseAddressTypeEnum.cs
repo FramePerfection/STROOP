@@ -6,26 +6,24 @@
 
         [Utilities.DeclaredString]
         public static string
-        None,
-
-        Absolute,
-        Relative,
-
-        Mario,
-        MarioObj,
-        Camera,
-        CameraStruct,
-        LakituStruct,
-        CameraModeInfo,
-        CameraModeTransition,
-        CameraSettings,
-        File,
-        MainSave,
-        Object,
-        ProcessGroup,
-        Coin,
-        Triangle,
-        Area,
-        GfxNode;
+            None,
+            Absolute,
+            Relative,
+            Mario,
+            MarioObj,
+            Camera,
+            CameraStruct,
+            LakituStruct,
+            CameraModeInfo,
+            CameraModeTransition,
+            CameraSettings,
+            File,
+            MainSave,
+            Object,
+            ProcessGroup,
+            Coin,
+            Triangle,
+            Area,
+            GfxNode;
     };
 }

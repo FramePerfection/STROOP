@@ -43,6 +43,7 @@ namespace STROOP.Utilities
         }
 
         static readonly byte[] _swapByteOrder = new byte[] { 0x03, 0x02, 0x01, 0x00 };
+
         public bool ReadAbsolute(UIntPtr address, byte[] buffer, EndiannessType endianness)
         {
             if (Endianness == endianness)

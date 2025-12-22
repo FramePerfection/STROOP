@@ -18,10 +18,7 @@ namespace STROOP.Structs
             {
                 case "RngIndex":
                     name = "Index " + VarHackConfig.EscapeChar;
-                    getterFunction = () =>
-                    {
-                        return RngIndexer.GetRngIndex().ToString();
-                    };
+                    getterFunction = () => { return RngIndexer.GetRngIndex().ToString(); };
                     break;
 
                 case "FloorYNorm":
@@ -36,50 +33,32 @@ namespace STROOP.Structs
 
                 case "DefactoSpeed":
                     name = "Defacto " + VarHackConfig.EscapeChar;
-                    getterFunction = () =>
-                    {
-                        return FormatInteger(WatchVariableSpecialUtilities.GetMarioDeFactoSpeed());
-                    };
+                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetMarioDeFactoSpeed()); };
                     break;
 
                 case "SlidingSpeed":
                     name = "Spd " + VarHackConfig.EscapeChar;
-                    getterFunction = () =>
-                    {
-                        return FormatInteger(WatchVariableSpecialUtilities.GetMarioSlidingSpeed());
-                    };
+                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetMarioSlidingSpeed()); };
                     break;
 
                 case "MarioAction":
                     name = "Action " + VarHackConfig.EscapeChar;
-                    getterFunction = () =>
-                    {
-                        return TableConfig.MarioActions.GetActionName();
-                    };
+                    getterFunction = () => { return TableConfig.MarioActions.GetActionName(); };
                     break;
 
                 case "MarioAnimation":
                     name = "Animation " + VarHackConfig.EscapeChar;
-                    getterFunction = () =>
-                    {
-                        return TableConfig.MarioAnimations.GetAnimationName();
-                    };
+                    getterFunction = () => { return TableConfig.MarioAnimations.GetAnimationName(); };
                     break;
 
                 case "DYawIntendFacing":
                     name = "DYaw " + VarHackConfig.EscapeChar;
-                    getterFunction = () =>
-                    {
-                        return FormatInteger(WatchVariableSpecialUtilities.GetDeltaYawIntendedFacing());
-                    };
+                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetDeltaYawIntendedFacing()); };
                     break;
 
                 case "DYawIntendFacingHau":
                     name = "DYaw " + VarHackConfig.EscapeChar;
-                    getterFunction = () =>
-                    {
-                        return FormatInteger(WatchVariableSpecialUtilities.GetDeltaYawIntendedFacing() / 16);
-                    };
+                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetDeltaYawIntendedFacing() / 16); };
                     break;
 
                 default:
@@ -100,11 +79,13 @@ namespace STROOP.Structs
                     stringValue += ".";
                     decimalIndex = stringValue.Length - 1;
                 }
+
                 while (stringValue.Length <= decimalIndex + numDigits)
                 {
                     stringValue += "0";
                 }
             }
+
             stringValue = stringValue.Replace("-", "M");
             stringValue = stringValue.Replace(".", VarHackConfig.CoinChar);
             return stringValue;

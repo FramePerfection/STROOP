@@ -9,16 +9,14 @@ namespace STROOP
 
         public override string Text
         {
-            get
-            {
-                return base.Text;
-            }
+            get { return base.Text; }
             set
             {
                 if (LastSubmittedText == null)
                 {
                     LastSubmittedText = value;
                 }
+
                 base.Text = value;
             }
         }

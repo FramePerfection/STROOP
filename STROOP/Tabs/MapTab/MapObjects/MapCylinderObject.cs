@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
     public abstract class MapCylinderObject : MapCircleObject
     {
-        protected MapCylinderObject(ObjectCreateParams creationParamters) : base(creationParamters) { }
+        protected MapCylinderObject(ObjectCreateParams creationParamters) : base(creationParamters)
+        {
+        }
 
         protected override List<(float centerX, float centerZ, float radius)> Get2DDimensions()
         {
@@ -29,7 +32,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     var scale = System.Math.Sqrt(1 - dist * dist);
                     if (!double.IsNaN(scale))
                     {
-                        var transform =  Matrix4.CreateScale((float)scale * dim.radius, (dim.maxY - dim.minY) * 0.5f, 1)
+                        var transform = Matrix4.CreateScale((float)scale * dim.radius, (dim.maxY - dim.minY) * 0.5f, 1)
                                         * graphics.BillboardMatrix
                                         * Matrix4.CreateTranslation(dim.centerX, (dim.minY + dim.maxY) * 0.5f, dim.centerZ);
                         graphics.circleRenderer.AddInstance(true, transform, OutlineWidth, color, Utilities.ColorUtilities.ColorToVec4(OutlineColor), Renderers.ShapeRenderer.Shapes.Quad);

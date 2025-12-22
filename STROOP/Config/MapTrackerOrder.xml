@@ -1,65 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AddTracker>
-	<Category name="Objects">
-		<Tracker name="All Objects"/>
-		<Tracker name="Marked Objects"/>
-		<Tracker name="All Objects with Name"/>
-	</Category>
-	<Category name="Triangles">
-		<Tracker name="Level Floor Triangles"/>
-		<Tracker name="Level Wall Triangles"/>
-		<Tracker name="Level Ceiling Triangles"/>
-		<Separator/>
-		<Tracker name="All Object Floor Triangles"/>
-		<Tracker name="All Object Wall Triangles"/>
-		<Tracker name="All Object Ceiling Triangles"/>
-		<Separator/>
-		<Tracker name="Custom Floor Triangles"/>
-		<Tracker name="Custom Wall Triangles"/>
-		<Tracker name="Custom Ceiling Triangles"/>
-	</Category>
-	<Category name="Points">
-		<Tracker name="Custom Unit Points"/>
-		<Tracker name="Custom Cylinder Points"/>
-		<Tracker name="Custom Sphere Points"/>
-		<Tracker name="Custom Icon Points"/>
-	</Category>
-	<Category name="Gridlines">
-		<Tracker name="Unit Gridlines"/>
-		<Tracker name="Float Gridlines"/>
-		<Tracker name="Cell Gridlines"/>
-		<Tracker name="PU Gridlines"/>
-		<Tracker name="Custom Gridlines"/>
-	</Category>
-	<Category name="Level">
-		<Tracker name="Custom Map"/>
-		<Tracker name="Custom Background"/>
-	</Category>
-	<Category name="Mario Positions">
-		<Tracker name="Iwerlipses"/>
-		<Tracker name="Next Positions"/>
-		<Tracker name="Previous Positions"/>
-	</Category>
-	<Category name="Mario Move">
-		<Tracker name="C-Up Floor Triangles"/>
-		<Tracker name="Punch Floor Triangles"/>
-		<Tracker name="Punch Detector"/>
-	</Category>
-	<Category name="Misc">
-		<Tracker name="Waters"/>
-		<Tracker name="Hitbox Triangles"/>
-		<Tracker name="Aggregated Path"/>
-		<Tracker name="Compass"/>
-		<Tracker name="Coordinate Labels"/>
-		<Tracker name="Ledge Grab Checker"/>
-		<Tracker name="HOLP Displayer"/>
-		<Tracker name="Cork Box Tester"/>
-		<Tracker name="Camera View"/>
-	</Category>
-	<Category name="Custom">
-		<Tracker name="Custom PositionAngle"/>
-		<Tracker name="Line Segment"/>
-		<Tracker name="Drawing"/>
-		<Tracker name="Tape Measure"/>
-	</Category>
+  <Category name="Objects">
+    <Tracker name="All Objects"/>
+    <Tracker name="Marked Objects"/>
+    <Tracker name="All Objects with Name"/>
+  </Category>
+  <Category name="Triangles">
+    <Tracker name="Level Floor Triangles"/>
+    <Tracker name="Level Wall Triangles"/>
+    <Tracker name="Level Ceiling Triangles"/>
+    <Separator/>
+    <Tracker name="All Object Floor Triangles"/>
+    <Tracker name="All Object Wall Triangles"/>
+    <Tracker name="All Object Ceiling Triangles"/>
+    <Separator/>
+    <Tracker name="Custom Floor Triangles"/>
+    <Tracker name="Custom Wall Triangles"/>
+    <Tracker name="Custom Ceiling Triangles"/>
+  </Category>
+  <Category name="Points">
+    <Tracker name="Custom Unit Points"/>
+    <Tracker name="Custom Cylinder Points"/>
+    <Tracker name="Custom Sphere Points"/>
+    <Tracker name="Custom Icon Points"/>
+  </Category>
+  <Category name="Gridlines">
+    <Tracker name="Unit Gridlines"/>
+    <Tracker name="Float Gridlines"/>
+    <Tracker name="Cell Gridlines"/>
+    <Tracker name="PU Gridlines"/>
+    <Tracker name="Custom Gridlines"/>
+  </Category>
+  <Category name="Level">
+    <Tracker name="Custom Map"/>
+    <Tracker name="Custom Background"/>
+  </Category>
+  <Category name="Mario Positions">
+    <Tracker name="Iwerlipses"/>
+    <Tracker name="Next Positions"/>
+    <Tracker name="Previous Positions"/>
+  </Category>
+  <Category name="Mario Move">
+    <Tracker name="C-Up Floor Triangles"/>
+    <Tracker name="Punch Floor Triangles"/>
+    <Tracker name="Punch Detector"/>
+  </Category>
+  <Category name="Misc">
+    <Tracker name="Waters"/>
+    <Tracker name="Hitbox Triangles"/>
+    <Tracker name="Aggregated Path"/>
+    <Tracker name="Compass"/>
+    <Tracker name="Coordinate Labels"/>
+    <Tracker name="Ledge Grab Checker"/>
+    <Tracker name="HOLP Displayer"/>
+    <Tracker name="Cork Box Tester"/>
+    <Tracker name="Camera View"/>
+  </Category>
+  <Category name="Custom">
+    <Tracker name="Custom PositionAngle"/>
+    <Tracker name="Line Segment"/>
+    <Tracker name="Drawing"/>
+    <Tracker name="Tape Measure"/>
+  </Category>
 </AddTracker>

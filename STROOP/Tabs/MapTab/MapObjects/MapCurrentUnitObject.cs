@@ -10,7 +10,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("Current Unit", "Current")]
     public class MapCurrentUnitsObject : MapQuadObject
     {
-        public MapCurrentUnitsObject() : this(() => new List<PositionAngle>(new[] { PositionAngle.Mario })) { }
+        public MapCurrentUnitsObject() : this(() => new List<PositionAngle>(new[] { PositionAngle.Mario }))
+        {
+        }
+
         public MapCurrentUnitsObject(PositionAngleProvider positionAngleProvider)
             : base()
         {
@@ -32,8 +35,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 int xMax = xMin + (posAngleX >= 0 ? 1 : -1);
                 int zMin = (short)posAngleZ;
                 int zMax = zMin + (posAngleZ >= 0 ? 1 : -1);
-                quads.Add((Math.Min(xMin, xMax), Math.Max(xMin, xMax), Math.Min  (zMin, zMax), Math.Max(zMin, zMax), (float)obj.Y));
+                quads.Add((Math.Min(xMin, xMax), Math.Max(xMin, xMax), Math.Min(zMin, zMax), Math.Max(zMin, zMax), (float)obj.Y));
             }
+
             return quads;
         }
 

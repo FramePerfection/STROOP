@@ -20,13 +20,12 @@ namespace STROOP.Tabs
         BehaviorCriteria? _lastGeneralizedBehavior;
 
         #region UI Properties
+
         string _slotIndex;
+
         public string SlotIndex
         {
-            get
-            {
-                return _slotIndex;
-            }
+            get { return _slotIndex; }
             set
             {
                 if (_slotIndex != value)
@@ -38,12 +37,10 @@ namespace STROOP.Tabs
         }
 
         string _slotPos;
+
         public string SlotPos
         {
-            get
-            {
-                return _slotPos;
-            }
+            get { return _slotPos; }
             set
             {
                 if (_slotPos != value)
@@ -55,12 +52,10 @@ namespace STROOP.Tabs
         }
 
         string _behavior;
+
         public string Behavior
         {
-            get
-            {
-                return _behavior;
-            }
+            get { return _behavior; }
             set
             {
                 if (_behavior != value)
@@ -73,10 +68,7 @@ namespace STROOP.Tabs
 
         public string ObjectName
         {
-            get
-            {
-                return textBoxObjName.Text;
-            }
+            get { return textBoxObjName.Text; }
             set
             {
                 if (textBoxObjName.Text != value)
@@ -94,30 +86,26 @@ namespace STROOP.Tabs
                     pictureBoxObject.BackColor = value.Lighten(0.7);
                 }
             }
-            get
-            {
-                return panelObjectBorder.BackColor;
-            }
+            get { return panelObjectBorder.BackColor; }
         }
 
         public Image Image
         {
-            get
-            {
-                return pictureBoxObject.Image;
-            }
+            get { return pictureBoxObject.Image; }
             set
             {
                 if (pictureBoxObject.Image != value)
                     pictureBoxObject.Image = value;
             }
         }
+
         #endregion
 
         private HashSet<uint> _addresses
         {
             get => Config.StroopMainForm.ObjectSlotsManager.SelectedSlotsAddresses;
         }
+
         ObjectSlotsManager _objectSlots;
         private List<ObjectDataModel> _objects => _objectSlots.SelectedObjects;
 
@@ -169,7 +157,8 @@ namespace STROOP.Tabs
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonObjGoto,
                 new List<string>() { "Goto", "Goto Laterally", "Goto X", "Goto Y", "Goto Z", null, "Goto Center Top", "Goto Center Laterally" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.GotoObjects(_objects, (true, true, true)),
                     () => ButtonUtilities.GotoObjects(_objects, (true, false, true)),
                     () => ButtonUtilities.GotoObjects(_objects, (true, false, false)),
@@ -184,7 +173,8 @@ namespace STROOP.Tabs
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonObjRetrieve,
                 new List<string>() { "Retrieve", "Retrieve Laterally", "Retrieve X", "Retrieve Y", "Retrieve Z" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.RetrieveObjects(_objects, (true, true, true)),
                     () => ButtonUtilities.RetrieveObjects(_objects, (true, false, true)),
                     () => ButtonUtilities.RetrieveObjects(_objects, (true, false, false)),
@@ -241,7 +231,8 @@ namespace STROOP.Tabs
                     "Retrieve Home Y to Object",
                     "Retrieve Home Z to Object",
                 },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.RetrieveObjectsHome(_objects, (true, true, true)),
                     () => ButtonUtilities.RetrieveObjectsHome(_objects, (true, false, true)),
                     () => ButtonUtilities.RetrieveObjectsHome(_objects, (true, false, false)),
@@ -266,7 +257,8 @@ namespace STROOP.Tabs
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonObjRelease,
                 new List<string>() { "Release by Throwing", "Release by Dropping", "UnRelease" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.ReleaseObject(_objects, true),
                     () => ButtonUtilities.ReleaseObject(_objects, false),
                     () => ButtonUtilities.UnReleaseObject(_objects),
@@ -281,7 +273,8 @@ namespace STROOP.Tabs
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonObjInteract,
                 new List<string>() { "Interact", "UnInteract" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.InteractObject(_objects),
                     () => ButtonUtilities.UnInteractObject(_objects),
                 });
@@ -294,13 +287,15 @@ namespace STROOP.Tabs
                 () => _objects.Count > 0 && _objects.FirstOrDefault().Address == DataModels.Mario.HeldObject);
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonObjClone,
-                new List<string>() {
+                new List<string>()
+                {
                     "Clone with Action Update",
                     "Clone without Action Update",
                     "UnClone with Action Update",
                     "UnClone without Action Update",
                 },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.CloneObject(_objects.FirstOrDefault(), true),
                     () => ButtonUtilities.CloneObject(_objects.FirstOrDefault(), false),
                     () => ButtonUtilities.UnCloneObject(true),
@@ -316,7 +311,8 @@ namespace STROOP.Tabs
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonObjUnload,
                 new List<string>() { "Unload", "Revive" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.UnloadObject(_objects),
                     () => ButtonUtilities.ReviveObject(_objects),
                 });
@@ -329,18 +325,20 @@ namespace STROOP.Tabs
                 () => _objects.Count > 0 && _objects.FirstOrDefault().Address == DataModels.Mario.RiddenObject);
             ControlUtilities.AddContextMenuStripFunctions(
                 buttonObjRide,
-                new List<string>() {
+                new List<string>()
+                {
                     "Ride with Action Update",
                     "Ride without Action Update",
                     "UnRide with Action Update",
                     "UnRide without Action Update",
                 },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () => ButtonUtilities.RideObject(_objects.FirstOrDefault(), true),
                     () => ButtonUtilities.RideObject(_objects.FirstOrDefault(), false),
                     () => ButtonUtilities.UnRideObject(true),
                     () => ButtonUtilities.UnRideObject(false),
-        });
+                });
 
             buttonObjUkikipedia.Click += (sender, e) => ButtonUtilities.UkikipediaObject(_objects.FirstOrDefault());
 
@@ -357,34 +355,25 @@ namespace STROOP.Tabs
                         nOffset,
                         -1 * vOffset,
                         useRelative,
-                        KeyboardUtilities.IsCtrlHeld(),
-                        KeyboardUtilities.IsAltHeld());
+                        GlobalKeyboard.IsCtrlDown(),
+                        GlobalKeyboard.IsAltDown());
                 });
 
             ControlUtilities.InitializeScalarController(
                 buttonObjAngleYawN,
                 buttonObjAngleYawP,
                 textBoxObjAngleYaw,
-                (float yawValue) =>
-                {
-                    ButtonUtilities.RotateObjects(_objects, (int)Math.Round(yawValue), 0, 0, KeyboardUtilities.IsCtrlHeld(), KeyboardUtilities.IsAltHeld());
-                });
+                (float yawValue) => { ButtonUtilities.RotateObjects(_objects, (int)Math.Round(yawValue), 0, 0, GlobalKeyboard.IsCtrlDown(), GlobalKeyboard.IsAltDown()); });
             ControlUtilities.InitializeScalarController(
                 buttonObjAnglePitchN,
                 buttonObjAnglePitchP,
                 textBoxObjAnglePitch,
-                (float pitchValue) =>
-                {
-                    ButtonUtilities.RotateObjects(_objects, 0, (int)Math.Round(pitchValue), 0, KeyboardUtilities.IsCtrlHeld(), KeyboardUtilities.IsAltHeld());
-                });
+                (float pitchValue) => { ButtonUtilities.RotateObjects(_objects, 0, (int)Math.Round(pitchValue), 0, GlobalKeyboard.IsCtrlDown(), GlobalKeyboard.IsAltDown()); });
             ControlUtilities.InitializeScalarController(
                 buttonObjAngleRollN,
                 buttonObjAngleRollP,
                 textBoxObjAngleRoll,
-                (float rollValue) =>
-                {
-                    ButtonUtilities.RotateObjects(_objects, 0, 0, (int)Math.Round(rollValue), KeyboardUtilities.IsCtrlHeld(), KeyboardUtilities.IsAltHeld());
-                });
+                (float rollValue) => { ButtonUtilities.RotateObjects(_objects, 0, 0, (int)Math.Round(rollValue), GlobalKeyboard.IsCtrlDown(), GlobalKeyboard.IsAltDown()); });
 
             ControlUtilities.InitializeScaleController(
                 buttonObjScaleWidthN,
@@ -401,10 +390,7 @@ namespace STROOP.Tabs
                 textBoxObjScaleAggregate,
                 checkBoxObjScaleAggregate,
                 checkBoxObjScaleMultiply,
-                (float widthChange, float heightChange, float depthChange, bool multiply) =>
-                {
-                    ButtonUtilities.ScaleObjects(_objects, widthChange, heightChange, depthChange, multiply);
-                });
+                (float widthChange, float heightChange, float depthChange, bool multiply) => { ButtonUtilities.ScaleObjects(_objects, widthChange, heightChange, depthChange, multiply); });
 
             ControlUtilities.InitializeThreeDimensionController(
                 CoordinateSystem.Euler,
@@ -424,7 +410,7 @@ namespace STROOP.Tabs
 
         // Having an empty action assigned to this adds the context menu entry to the ObjectSlot controls
         public override Action<IEnumerable<ObjectSlot>> objectSlotsClicked => objectSlots => { };
-        
+
         public void SetBehaviorWatchVariables(IEnumerable<NamedVariableCollection.IView> watchVars, Color color)
         {
             watchVariablePanelObject.RemoveVariableGroup(VariableGroup.ObjectSpecific);
@@ -491,15 +477,16 @@ namespace STROOP.Tabs
                     SetBehaviorWatchVariables(
                         Config.ObjectAssociations.GetWatchVarControls(newBehavior),
                         ObjectSlotsConfig.GetProcessingGroupColor(obj.BehaviorProcessGroup)
-                        .Lighten(0.8));
+                            .Lighten(0.8));
                     _lastGeneralizedBehavior = newBehavior;
                 }
+
                 ObjectName = Config.ObjectAssociations.GetObjectName(newBehavior);
                 Image = Config.ObjectAssociations.GetObjectImage(newBehavior).Value;
                 ObjectBackColor = ObjectSlotsConfig.GetProcessingGroupColor(obj.CurrentProcessGroup);
                 int slotPos = obj.VacantSlotIndex ?? obj.ProcessIndex;
                 SlotIndex = (Config.StroopMainForm.ObjectSlotsManager.GetSlotIndexFromObj(obj)
-                    + (SavedSettingsConfig.StartSlotIndexsFromOne ? 1 : 0))?.ToString() ?? "";
+                             + (SavedSettingsConfig.StartSlotIndexsFromOne ? 1 : 0))?.ToString() ?? "";
                 SlotPos = $"{(obj.VacantSlotIndex.HasValue ? "VS " : "")}{slotPos + (SavedSettingsConfig.StartSlotIndexsFromOne ? 1 : 0)}";
                 labelObjAddValue.Text = $"0x{_objects.First().Address:X8}";
             }
@@ -531,8 +518,10 @@ namespace STROOP.Tabs
                         Behavior = "";
                         SetBehaviorWatchVariables(Array.Empty<NamedVariableCollection.IView>(), Color.White);
                     }
+
                     _lastGeneralizedBehavior = multiBehavior;
                 }
+
                 if (!newBehaviors.SequenceEqual(_lastBehaviors))
                 {
                     // Generate new image

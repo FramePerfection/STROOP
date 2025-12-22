@@ -9,14 +9,13 @@ namespace STROOP.Tabs
 {
     public partial class MiscTab : STROOPTab
     {
-
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
             WatchVariableUtilities.baseAddressGetters["LastCoin"] = () =>
             {
                 List<uint> coinAddresses = Config.ObjectSlotsManager.GetLoadedObjectsWithPredicate(
-                    o => o.BehaviorAssociation?.Name == "Yellow Coin" || o.BehaviorAssociation?.Name == "Blue Coin")
+                        o => o.BehaviorAssociation?.Name == "Yellow Coin" || o.BehaviorAssociation?.Name == "Blue Coin")
                     .ConvertAll(objectDataModel => objectDataModel.Address);
                 return coinAddresses.Count > 0 ? new List<uint>() { coinAddresses.Last() } : WatchVariableUtilities.BaseAddressListEmpty;
             };
@@ -82,6 +81,7 @@ namespace STROOP.Tabs
                     RomVersionConfig.SwitchMap(0x8024978C, 0x8024975C), (uint)courseToGoTo.Index);
                 buttonMiscGoToCourse.ContextMenuStrip.Items.Add(item);
             }
+
             buttonMiscGoToCourse.Click += (sender, e) => buttonMiscGoToCourse.ContextMenuStrip.Show(Cursor.Position);
         }
 

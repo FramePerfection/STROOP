@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
 
@@ -12,7 +11,9 @@ namespace STROOP.Utilities
     /// Denotes that a static string variable's value shall be initialized with its field name when <see cref="StringUtilities.InitializeDeclaredStrings(Type)"/> is called on its declaring type.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public class DeclaredStringAttribute : Attribute { }
+    public class DeclaredStringAttribute : Attribute
+    {
+    }
 
     public static class StringUtilities
     {
@@ -39,12 +40,14 @@ namespace STROOP.Utilities
                     ? stringValue.PadLeft(length, appendChar)
                     : stringValue.PadRight(length, appendChar);
             }
+
             if (stringValue.Length > length)
             {
                 return leftAppend
-                  ? stringValue.Substring(stringValue.Length - length)
-                  : stringValue.Substring(0, length);
+                    ? stringValue.Substring(stringValue.Length - length)
+                    : stringValue.Substring(0, length);
             }
+
             return stringValue;
         }
 
@@ -68,6 +71,7 @@ namespace STROOP.Utilities
         }
 
         static System.Text.RegularExpressions.Regex needsJsonStringEscapeRegex = new System.Text.RegularExpressions.Regex("^[-]?(([0-9]+)|(([0-9]+)\\.([0-9]+)))$");
+
         public static string MakeJsonValue(string input)
         {
             input = input.Trim(' ', '"');
@@ -90,6 +94,7 @@ namespace STROOP.Utilities
                 }
                 else
                     set = double.TryParse(str, out numberValue);
+
                 if (set)
                     return numberValue;
             }
@@ -97,6 +102,7 @@ namespace STROOP.Utilities
                 return valueString.ToLower() != "false" && (!int.TryParse(valueString, out var boolNumber) || boolNumber != 0);
             else
                 return valueString;
+
             return 0;
         }
     }

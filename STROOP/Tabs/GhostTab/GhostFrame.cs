@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.GhostTab
 {
@@ -11,7 +12,9 @@ namespace STROOP.Tabs.GhostTab
 
         public void WriteTo(BinaryWriter wr)
         {
-            wr.Write(position.X); wr.Write(position.Y); wr.Write(position.Z);
+            wr.Write(position.X);
+            wr.Write(position.Y);
+            wr.Write(position.Z);
             wr.Write(animationIndex);
             wr.Write(animationFrame);
             wr.Write(oPitch);

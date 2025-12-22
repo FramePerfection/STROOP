@@ -8,7 +8,11 @@ namespace STROOP.M64
         public readonly string HeaderText;
         public readonly bool IsInput;
         private readonly M64InputFrame InputFrame;
-        public int RowIndex { get => InputFrame.FrameIndex; }
+
+        public int RowIndex
+        {
+            get => InputFrame.FrameIndex;
+        }
 
         public M64InputCell(DataGridViewCell cell)
         {

@@ -61,6 +61,7 @@ namespace STROOP.Tabs
                     "Address Invalid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             _currentLines = NumberOfLinesAdd;
             textBoxDisAddress.Text = strAddress;
             StartShowDisassmbly(newAddress, _currentLines);
@@ -102,7 +103,8 @@ namespace STROOP.Tabs
 
                 // Replace "span's"
                 string searchText = "<span class='dis-reg-";
-                int findIndex = richTextBoxDissasembly.Text.IndexOf(searchText); ;
+                int findIndex = richTextBoxDissasembly.Text.IndexOf(searchText);
+                ;
                 while (findIndex >= 0)
                 {
                     richTextBoxDissasembly.ReadOnly = false;
@@ -118,7 +120,8 @@ namespace STROOP.Tabs
                 }
 
                 searchText = "<span class='dis-address-jump'>";
-                findIndex = richTextBoxDissasembly.Text.IndexOf(searchText); ;
+                findIndex = richTextBoxDissasembly.Text.IndexOf(searchText);
+                ;
                 while (findIndex >= 0)
                 {
                     richTextBoxDissasembly.ReadOnly = false;
@@ -137,6 +140,7 @@ namespace STROOP.Tabs
                 // Finish line (no pun intended)
                 richTextBoxDissasembly.AppendText(Environment.NewLine);
             }
+
             richTextBoxDissasembly.Visible = true;
         }
     }

@@ -9,6 +9,7 @@ namespace STROOP.Utilities
 
         [DllImport("user32.dll")]
         static extern short GetAsyncKeyState(Keys vKey);
+
         [DllImport("user32.dll")]
         static extern int GetSystemMetrics(int nIndex);
 

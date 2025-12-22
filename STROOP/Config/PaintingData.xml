@@ -10,7 +10,7 @@
 
   <Data base="Painting" offset="0x8" type="float">X Rotation</Data>
   <Data base="Painting" offset="0xC" type="float">Y Rotation</Data>
-  
+
   <Data base="Painting" offset="0x10" type="float">X</Data>
   <Data base="Painting" offset="0x14" type="float">Y</Data>
   <Data base="Painting" offset="0x18" type="float">Z</Data>

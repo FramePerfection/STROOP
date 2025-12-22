@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
     public abstract class MapBackgroundObject : MapIconObject
     {
         Renderers.SpriteRenderer renderer;
+
         public MapBackgroundObject()
             : base(null)
         {

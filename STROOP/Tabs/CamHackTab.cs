@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
 using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Models;
@@ -202,7 +201,8 @@ namespace STROOP.Tabs
         {
             var selectedSlot = objs.Last();
             uint currentCamHackSlot = Config.Stream.GetUInt32(CamHackConfig.StructAddress + CamHackConfig.ObjectOffset);
-            uint newCamHackSlot = currentCamHackSlot == selectedSlot.CurrentObject.Address ? 0
+            uint newCamHackSlot = currentCamHackSlot == selectedSlot.CurrentObject.Address
+                ? 0
                 : selectedSlot.CurrentObject.Address;
             Config.Stream.SetValue(newCamHackSlot, CamHackConfig.StructAddress + CamHackConfig.ObjectOffset);
         };
@@ -232,6 +232,7 @@ namespace STROOP.Tabs
                     _panVars.Add(watchVariablePanelCamHack.AddVariables(CreatePanVars(i)));
                 }
             }
+
             if (numPans < _numPans) // Need to remove vars
             {
                 for (int i = _numPans - 1; i >= numPans; i--)
@@ -242,6 +243,7 @@ namespace STROOP.Tabs
                     watchVariablePanelCamHack.RemoveVariables(panVars);
                 }
             }
+
             _numPans = numPans;
         }
 
@@ -452,9 +454,9 @@ namespace STROOP.Tabs
             int cameraMode = Config.Stream.GetInt32(CamHackConfig.StructAddress + CamHackConfig.CameraModeOffset);
             ushort absoluteAngle = Config.Stream.GetUInt16(CamHackConfig.StructAddress + CamHackConfig.AbsoluteAngleOffset);
             return cameraMode == 1 && absoluteAngle == 0 ? CamHackMode.RELATIVE_ANGLE :
-                   cameraMode == 1 ? CamHackMode.ABSOLUTE_ANGLE :
-                   cameraMode == 2 ? CamHackMode.FIXED_POS :
-                   cameraMode == 3 ? CamHackMode.FIXED_ORIENTATION : CamHackMode.REGULAR;
+                cameraMode == 1 ? CamHackMode.ABSOLUTE_ANGLE :
+                cameraMode == 2 ? CamHackMode.FIXED_POS :
+                cameraMode == 3 ? CamHackMode.FIXED_ORIENTATION : CamHackMode.REGULAR;
         }
 
         private RadioButton getCorrespondingRadioButton(CamHackMode camHackMode)

@@ -4,6 +4,10 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Windows.Forms;
 using System.Drawing;
+using OpenTK.GLControl;
+using OpenTK.Mathematics;
+using STROOP.Controls;
+using STROOP.Extensions;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -42,9 +46,11 @@ namespace STROOP.Tabs.MapTab
             projectedPos.Y = (1 - projectedPos.Y) * glControl.Height / 2;
             return (projectedPos.Xy - mousePosition2D).LengthSquared < (radius * radius);
         }
+
         public bool Hover3D(Vector3 position, float radius)
         {
-            var lineEnd = cursorOnMap ? mapCursorPosition
+            var lineEnd = cursorOnMap
+                ? mapCursorPosition
                 : view.position + Vector3.Normalize(mapCursorPosition - view.position) * 10000;
             return ((ProjectOnLineSegment(position, view.position, lineEnd) - position).Length < radius);
         }
@@ -65,11 +71,14 @@ namespace STROOP.Tabs.MapTab
 
         public Models.TriangleDataModel hoverTriangle;
 
+        public int emptyVAO { get; private set; }
+
         int mainFrameBuffer, mainColorBuffer, mainDepthBuffer;
 
         public class CachedCollisionStructure
         {
             readonly TriangleClassification filter;
+
             public CachedCollisionStructure(TriangleClassification filter)
             {
                 this.filter = filter;
@@ -79,6 +88,7 @@ namespace STROOP.Tabs.MapTab
 
             DataUtil.CollisionStructure triangles;
             ulong lastUpdate;
+
             public DataUtil.CollisionStructure GetTriangles()
             {
                 uint globalTimer = Config.Stream.GetUInt32(MiscConfig.GlobalTimerAddress);
@@ -87,6 +97,7 @@ namespace STROOP.Tabs.MapTab
                     triangles = new DataUtil.CollisionStructure(filter);
                     lastUpdate = globalTimer;
                 }
+
                 return triangles;
             }
         }
@@ -94,9 +105,32 @@ namespace STROOP.Tabs.MapTab
         public readonly CachedCollisionStructure floors = new CachedCollisionStructure(TriangleClassification.Floor);
         public readonly CachedCollisionStructure ceilings = new CachedCollisionStructure(TriangleClassification.Ceiling);
 
-        private enum MapScale { CourseDefault, MaxCourseSize, Custom };
-        private enum MapCenter { BestFit, Origin, Mario, Custom };
-        private enum MapAngle { Angle0, Angle16384, Angle32768, Angle49152, Mario, Camera, Centripetal, Custom };
+        private enum MapScale
+        {
+            CourseDefault,
+            MaxCourseSize,
+            Custom
+        };
+
+        private enum MapCenter
+        {
+            BestFit,
+            Origin,
+            Mario,
+            Custom
+        };
+
+        private enum MapAngle
+        {
+            Angle0,
+            Angle16384,
+            Angle32768,
+            Angle49152,
+            Mario,
+            Camera,
+            Centripetal,
+            Custom
+        };
 
         private MapScale MapViewScale;
         private MapCenter MapViewCenter;
@@ -118,15 +152,32 @@ namespace STROOP.Tabs.MapTab
         public readonly MapView view;
 
         public float MapViewRadius => (float)MoreMath.GetHypotenuse(glControl.Width / 2, glControl.Height / 2) / MapViewScaleValue;
-        public float MapViewXMin { get => view.position.X - MapViewRadius * glControl.AspectRatio; }
-        public float MapViewXMax { get => view.position.X + MapViewRadius * glControl.AspectRatio; }
-        public float MapViewZMin { get => view.position.Z - MapViewRadius; }
-        public float MapViewZMax { get => view.position.Z + MapViewRadius; }
+
+        public float MapViewXMin
+        {
+            get => view.position.X - MapViewRadius * glControl.AspectRatio;
+        }
+
+        public float MapViewXMax
+        {
+            get => view.position.X + MapViewRadius * glControl.AspectRatio;
+        }
+
+        public float MapViewZMin
+        {
+            get => view.position.Z - MapViewRadius;
+        }
+
+        public float MapViewZMax
+        {
+            get => view.position.Z + MapViewRadius;
+        }
 
         public static readonly int MAX_COURSE_SIZE_X_MIN = -8191;
         public static readonly int MAX_COURSE_SIZE_X_MAX = 8192;
         public static readonly int MAX_COURSE_SIZE_Z_MIN = -8191;
         public static readonly int MAX_COURSE_SIZE_Z_MAX = 8192;
+
         public static readonly RectangleF MAX_COURSE_SIZE =
             new RectangleF(
                 MAX_COURSE_SIZE_X_MIN,
@@ -142,11 +193,12 @@ namespace STROOP.Tabs.MapTab
                 return new Vector2(a.X, a.Y);
             }
         }
+
         public Vector3 mapCursorPosition;
         public bool cursorOnMap = false;
         Vector3 normalAtCursor;
         public float cursorViewPlaneDist = 1000;
-        public bool fixCursorPlane => view.mode == MapView.ViewMode.ThreeDimensional && KeyboardUtilities.IsShiftHeld();
+        public bool fixCursorPlane => view.mode == MapView.ViewMode.ThreeDimensional && keyboardControls.IsShiftDown();
 
         public float nearClip { get; private set; }
         public float farClip { get; private set; }
@@ -157,13 +209,18 @@ namespace STROOP.Tabs.MapTab
         bool[] mouseDown = new bool[3];
         public bool IsMouseDown(int button) => mouseDown[button];
 
+        public readonly KeyboardControls keyboardControls;
 
-        Func<OpenTK.Graphics.IGraphicsContext> getContext;
-        public MapGraphics(MapTab mapTab, GLControl glControl, Func<OpenTK.Graphics.IGraphicsContext> getContext = null)
+        Func<OpenTK.Windowing.Common.IGraphicsContext> getContext;
+
+        public MapGraphics(MapTab mapTab, GLControl glControl, Func<OpenTK.Windowing.Common.IGraphicsContext> getContext = null)
         {
             this.mapTab = mapTab;
             this.glControl = glControl;
             this.getContext = getContext;
+
+            glControl.MouseDown += (_, _) => glControl.Focus();
+            keyboardControls = new(glControl);
             view = new MapView();
             drawLayers = new List<Action>[Enum.GetNames(typeof(DrawLayers)).Length];
             for (int i = 0; i < drawLayers.Length; i++)
@@ -177,6 +234,7 @@ namespace STROOP.Tabs.MapTab
         List<Models.TriangleDataModel> levelTrianglesFor3DMap;
 
         Control previouslyActiveControl;
+
         Control GetActiveLeafControl(ContainerControl root)
         {
             while (root.ActiveControl is ContainerControl ctrl && ctrl.ActiveControl != null)
@@ -187,6 +245,7 @@ namespace STROOP.Tabs.MapTab
 
         List<Action> glInits = new List<Action>();
         bool doingGLInit = false;
+
         void PerformGLInit()
         {
             doingGLInit = true;
@@ -196,6 +255,7 @@ namespace STROOP.Tabs.MapTab
             glInits.Clear();
             doingGLInit = false;
         }
+
         public void DoGLInit(Action action)
         {
             if (doingGLInit)
@@ -237,6 +297,7 @@ namespace STROOP.Tabs.MapTab
 
             glInits.Add(() =>
             {
+                emptyVAO = GL.GenVertexArray();
                 GL.ClearColor(Color.FromKnownColor(KnownColor.Control));
                 GL.Enable(EnableCap.Texture2D);
                 GL.Enable(EnableCap.Blend);
@@ -308,7 +369,7 @@ namespace STROOP.Tabs.MapTab
                 if (glControl.Cursor != cursor)
                     glControl.Cursor = cursor;
 
-                (getContext != null ? getContext() : glControl.Context).MakeCurrent(glControl.WindowInfo);
+                (getContext != null ? getContext() : glControl.Context).MakeCurrent();
                 UpdateMapView();
 
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, mainFrameBuffer);
@@ -337,8 +398,7 @@ namespace STROOP.Tabs.MapTab
                         {
                             foreach (var t in levelTrianglesFor3DMap)
                             {
-                                var color = t.Classification == TriangleClassification.Wall ? new Vector3(0.4f, 0.66f, 0.4f) :
-                                    (t.Classification == TriangleClassification.Floor ? new Vector3(0.4f, 0.4f, 0.8f) : new Vector3(0.8f, 0.4f, 0.4f));
+                                var color = t.Classification == TriangleClassification.Wall ? new Vector3(0.4f, 0.66f, 0.4f) : (t.Classification == TriangleClassification.Floor ? new Vector3(0.4f, 0.4f, 0.8f) : new Vector3(0.8f, 0.4f, 0.4f));
                                 triangleRenderer.Add(t.p1, t.p2, t.p3, false, new Vector4(color, 1), new Vector4(color * 0.5f, 1), new Vector4(color * 0.25f, 1), new Vector4(0.2f, 0.2f, 0.2f, 1), new Vector3(1.5f), false);
                             }
                         });
@@ -368,7 +428,7 @@ namespace STROOP.Tabs.MapTab
                 0, 0, 1, 0,
                 0, 1, 0, 0,
                 0, 0, 0, 1
-                );
+            );
 
 
             float zFar = view.mode == MapView.ViewMode.TopDown || float.IsNaN(view.orthoRelativeFarPlane) ? 100000 : view.orthoRelativeFarPlane;
@@ -381,10 +441,10 @@ namespace STROOP.Tabs.MapTab
                 case MapView.ViewMode.TopDown:
                     BillboardMatrix = swapYZ;
                     ViewMatrix = Matrix4.CreateTranslation(new Vector3(-view.position.X, 0, -view.position.Z))
-                        * swapYZ
-                        * Matrix4.CreateRotationZ((float)(Math.PI + MoreMath.AngleUnitsToRadians(MapViewAngleValue)))
-                        * Matrix4.CreateScale(scale / glControl.AspectRatio, -scale, 1)
-                        * othoDepth;
+                                 * swapYZ
+                                 * Matrix4.CreateRotationZ((float)(Math.PI + MoreMath.AngleUnitsToRadians(MapViewAngleValue)))
+                                 * Matrix4.CreateScale(scale / glControl.AspectRatio, -scale, 1)
+                                 * othoDepth;
                     break;
 
                 case MapView.ViewMode.Orthogonal:
@@ -570,7 +630,7 @@ namespace STROOP.Tabs.MapTab
                 foreach (var hover in mapTab.hoverData)
                     if (mouseDown[0])
                     {
-                        if (KeyboardUtilities.IsCtrlHeld())
+                        if (keyboardControls.IsCtrlDown())
                         {
                             if (hover.CanDrag().HasFlag(DragMask.Angle))
                             {
@@ -612,7 +672,7 @@ namespace STROOP.Tabs.MapTab
 
             if (mouseDown[0])
             {
-                if (!KeyboardUtilities.IsCtrlHeld())
+                if (!keyboardControls.IsCtrlDown())
                 {
                     int pixelDiffX = e.X - _dragStartMouseX;
                     int pixelDiffY = e.Y - _dragStartMouseY;
@@ -654,6 +714,7 @@ namespace STROOP.Tabs.MapTab
                                     view.position = _rotatePivot + dir;
                                 }
                             }
+
                             break;
                     }
                 }
@@ -714,6 +775,7 @@ namespace STROOP.Tabs.MapTab
             }
             else
                 ChangeScale2(delta, SpecialConfig.Map2DScrollSpeed);
+
             UpdateCursor();
         }
 
@@ -723,22 +785,22 @@ namespace STROOP.Tabs.MapTab
             Vector3 up = BillboardMatrix.Row1.Xyz;
             Vector3 right = BillboardMatrix.Row0.Xyz;
             Vector3 relativeMovement = Vector3.Zero;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.W))
+            if (keyboardControls.IsDown(Keys.W))
                 relativeMovement.Z += 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.S))
+            if (keyboardControls.IsDown(Keys.S))
                 relativeMovement.Z -= 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.D))
+            if (keyboardControls.IsDown(Keys.D))
                 relativeMovement.X += 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.A))
+            if (keyboardControls.IsDown(Keys.A))
                 relativeMovement.X -= 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.E))
+            if (keyboardControls.IsDown(Keys.E))
                 relativeMovement.Y += 1;
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Q))
+            if (keyboardControls.IsDown(Keys.Q))
                 relativeMovement.Y -= 1;
             if (relativeMovement != Vector3.Zero)
             {
                 relativeMovement.Normalize();
-                float movement = (float)frameTime * (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftShift) ? 100 : 2000);
+                float movement = (float)frameTime * (keyboardControls.IsShiftDown() ? 100 : 2000);
                 view.position += (right * relativeMovement.X + up * relativeMovement.Y + forwards * relativeMovement.Z) * movement;
             }
         }

@@ -3,7 +3,7 @@
   <Config>
     <FileImageDirectory>Resources\File Images\</FileImageDirectory>
   </Config>
-  
+
   <FileImages>
     <PowerStar>
       <FileImage path="Power Star.png"/>

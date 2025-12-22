@@ -21,6 +21,7 @@ namespace STROOP.Tabs
         private List<MemoryDescriptor> _memTabPrecursors => watchVariablePanelMemory.GetCurrentVariablePrecursors().ToList();
 
         private uint? _address;
+
         public uint? Address
         {
             get => _address;
@@ -32,6 +33,7 @@ namespace STROOP.Tabs
         }
 
         private uint _memorySize;
+
         private uint MemorySize
         {
             get => _memorySize;
@@ -43,6 +45,7 @@ namespace STROOP.Tabs
         }
 
         private BehaviorCriteria? _behavior;
+
         private BehaviorCriteria? Behavior
         {
             get => _behavior;
@@ -54,8 +57,8 @@ namespace STROOP.Tabs
                 if (_behavior.HasValue)
                     _objectSpecificPrecursors.AddRange(
                         Config.ObjectAssociations.GetWatchVarControls(_behavior.Value)
-                        .ConvertAndRemoveNull(x => (x as NamedVariableCollection.IMemoryDescriptorView)?.memoryDescriptor)
-                        );
+                            .ConvertAndRemoveNull(x => (x as NamedVariableCollection.IMemoryDescriptorView)?.memoryDescriptor)
+                    );
             }
         }
 
@@ -108,10 +111,11 @@ namespace STROOP.Tabs
             {
                 if (!Address.HasValue || _objectSnapshot == null) return;
                 List<uint> addresses = new List<uint>() { Address.Value };
-                if (KeyboardUtilities.IsCtrlHeld())
+                if (GlobalKeyboard.IsCtrlDown())
                 {
                     addresses = Config.ObjectSlotsManager.SelectedObjects.ConvertAll(obj => obj.Address);
                 }
+
                 _objectSnapshot.Apply(addresses, spareSecondary);
             };
             buttonMemoryPasteObject.Click += (sender, e) => pasteAction(false);
@@ -170,12 +174,14 @@ namespace STROOP.Tabs
                 RefreshAddressTextbox();
                 return;
             }
+
             address = address - address % 4;
             if (address < 0x80000000 || address + MemorySize >= 0x80000000 + Config.RamSize)
             {
                 RefreshAddressTextbox();
                 return;
             }
+
             checkBoxMemoryUseObjAddress.Checked = false;
             Address = address.Value;
         }
@@ -187,17 +193,20 @@ namespace STROOP.Tabs
                 RefreshMemorySizeTextbox();
                 return;
             }
+
             memorySize = memorySize.Value / 16 * 16;
             if (memorySize.Value == 0)
             {
                 RefreshMemorySizeTextbox();
                 return;
             }
+
             if (Address + memorySize.Value >= 0x80000000 + Config.RamSize)
             {
                 RefreshMemorySizeTextbox();
                 return;
             }
+
             checkBoxMemoryUseObjAddress.Checked = false;
             MemorySize = memorySize.Value;
         }
@@ -223,8 +232,8 @@ namespace STROOP.Tabs
 
         private void MemoryValueClick()
         {
-            bool isCtrlKeyHeld = KeyboardUtilities.IsCtrlHeld();
-            bool isAltKeyHeld = KeyboardUtilities.IsAltHeld();
+            bool isCtrlKeyHeld = GlobalKeyboard.IsCtrlDown();
+            bool isAltKeyHeld = GlobalKeyboard.IsAltDown();
             if (!isCtrlKeyHeld) return;
             int index = richTextBoxMemoryValues.SelectionStart;
             bool useObjAddress = checkBoxMemoryUseObjAddress.Checked;
@@ -254,6 +263,7 @@ namespace STROOP.Tabs
                         watchVariablePanelMemory.AddVariable(valueText.CreatePrecursor(useObjAddress, useHex, useObj, useRelativeName));
                 });
             }
+
             richTextBoxMemoryValues.Parent.Focus();
         }
 
@@ -306,10 +316,12 @@ namespace STROOP.Tabs
                         if (!minObjOffset.HasValue || !maxObjOffset.HasValue) return false;
                         return minObjOffset <= maxPrecursorOffset && maxObjOffset >= minPrecursorOffset;
                     }
+
                     if (memoryDescriptor.BaseAddressType == BaseAddressType.Relative)
                     {
                         return minOffset <= maxPrecursorOffset && maxOffset >= minPrecursorOffset;
                     }
+
                     return false;
                 }));
             }
@@ -319,10 +331,10 @@ namespace STROOP.Tabs
                 WatchVariableSubclass subclass = useObj
                     ? WatchVariableSubclass.Object
                     : WatchVariableSubclass.Number;
-                if (Keyboard.IsKeyDown(Key.A)) subclass = WatchVariableSubclass.Angle;
-                if (Keyboard.IsKeyDown(Key.B)) subclass = WatchVariableSubclass.Boolean;
-                if (Keyboard.IsKeyDown(Key.Q)) subclass = WatchVariableSubclass.Object;
-                if (Keyboard.IsKeyDown(Key.T)) subclass = WatchVariableSubclass.Triangle;
+                if (GlobalKeyboard.IsDown(Keys.A)) subclass = WatchVariableSubclass.Angle;
+                if (GlobalKeyboard.IsDown(Keys.B)) subclass = WatchVariableSubclass.Boolean;
+                if (GlobalKeyboard.IsDown(Keys.Q)) subclass = WatchVariableSubclass.Object;
+                if (GlobalKeyboard.IsDown(Keys.T)) subclass = WatchVariableSubclass.Triangle;
 
                 bool isObjectOrTriangle =
                     subclass == WatchVariableSubclass.Object ||
@@ -362,6 +374,7 @@ namespace STROOP.Tabs
             {
                 Behavior = null;
             }
+
             byte[] bytes = Config.Stream.ReadRam(address.Value, (int)MemorySize, EndiannessType.Big);
 
             // read settings from controls
@@ -417,6 +430,7 @@ namespace STROOP.Tabs
                 uint address = startAddress + (uint)i;
                 builder.Append(HexUtilities.FormatValue(address, 8));
             }
+
             return builder.ToString();
         }
 
@@ -443,6 +457,7 @@ namespace STROOP.Tabs
                 {
                     value = HexUtilities.FormatMemory(value, typeSize * 2, false);
                 }
+
                 stringList.Add(value.ToString());
             }
 

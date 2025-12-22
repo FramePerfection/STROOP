@@ -58,6 +58,7 @@ namespace STROOP.Utilities
                 CoinTrajectory coinTrajectory = CalculateCoinTrajectory(rngIndex + 3 * i);
                 coinTrajectories.Add(coinTrajectory);
             }
+
             return coinTrajectories;
         }
 
@@ -101,6 +102,7 @@ namespace STROOP.Utilities
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             return new CoinTrajectory(hSpeed, vSpeed, angle);
         }
 
@@ -188,6 +190,5 @@ namespace STROOP.Utilities
             coinParamOrder: CoinParamOrder.VHA,
             numCoins: 10,
             name: "Coin Block");
-
     }
 }

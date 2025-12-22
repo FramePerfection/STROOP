@@ -5,7 +5,9 @@ namespace STROOP.Models
     public class CameraDataModel : IUpdatableDataModel
     {
         #region Position
+
         private float _x;
+
         public float X
         {
             get => _x;
@@ -17,6 +19,7 @@ namespace STROOP.Models
         }
 
         private float _y;
+
         public float Y
         {
             get => _y;
@@ -28,6 +31,7 @@ namespace STROOP.Models
         }
 
         private float _z;
+
         public float Z
         {
             get => _z;
@@ -37,9 +41,13 @@ namespace STROOP.Models
                     _z = value;
             }
         }
+
         #endregion
+
         #region Rotation
+
         private ushort _facingYaw;
+
         public ushort FacingYaw
         {
             get => _facingYaw;
@@ -49,7 +57,9 @@ namespace STROOP.Models
                     _facingYaw = value;
             }
         }
+
         private ushort _facingPitch;
+
         public ushort FacingPitch
         {
             get => _facingPitch;
@@ -59,7 +69,9 @@ namespace STROOP.Models
                     _facingPitch = value;
             }
         }
+
         private ushort _facingRoll;
+
         public ushort FacingRoll
         {
             get => _facingRoll;
@@ -69,9 +81,13 @@ namespace STROOP.Models
                     _facingRoll = value;
             }
         }
+
         #endregion
+
         #region FOV
+
         private float _fov;
+
         public float FOV
         {
             get => _fov;
@@ -81,9 +97,13 @@ namespace STROOP.Models
                     _fov = value;
             }
         }
+
         #endregion
+
         #region Objects
+
         private uint _secondaryObject;
+
         public uint SecondaryObject
         {
             get => _secondaryObject;
@@ -95,6 +115,7 @@ namespace STROOP.Models
         }
 
         private uint _hackObject;
+
         public uint HackObject
         {
             get => _hackObject;
@@ -104,6 +125,7 @@ namespace STROOP.Models
                     _hackObject = value;
             }
         }
+
         #endregion
 
         public void Update()
@@ -113,9 +135,9 @@ namespace STROOP.Models
             _y = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.YOffset);
             _z = Config.Stream.GetSingle(CameraConfig.StructAddress + CameraConfig.ZOffset);
 
-            _facingYaw =    Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingYawOffset);
-            _facingPitch =  Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingPitchOffset);
-            _facingRoll =   Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingRollOffset);
+            _facingYaw = Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingYawOffset);
+            _facingPitch = Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingPitchOffset);
+            _facingRoll = Config.Stream.GetUInt16(CameraConfig.StructAddress + CameraConfig.FacingRollOffset);
 
             _fov = Config.Stream.GetSingle(CameraConfig.FOVStructAddress + CameraConfig.FOVValueOffset);
 
@@ -123,6 +145,8 @@ namespace STROOP.Models
             _hackObject = Config.Stream.GetUInt32(CamHackConfig.StructAddress + CamHackConfig.ObjectOffset);
         }
 
-        public void Update2() { }
+        public void Update2()
+        {
+        }
     }
 }

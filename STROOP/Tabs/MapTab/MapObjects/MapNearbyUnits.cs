@@ -5,23 +5,32 @@ using STROOP.Structs.Configurations;
 using System.Windows.Forms;
 using OpenTK;
 using System.Collections.Generic;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
     public class MapNearbyFloorUnits : MapNearbyUnits
     {
-        public MapNearbyFloorUnits(PositionAngleProvider positionAngleProvider) : base(positionAngleProvider) { }
+        public MapNearbyFloorUnits(PositionAngleProvider positionAngleProvider) : base(positionAngleProvider)
+        {
+        }
+
         protected override float GetMaxHeightDifference() => -78;
 
         protected override float GetUnitY(MapGraphics graphics, float x, float y, float z)
-        => graphics.floors.GetTriangles().FindFloorAndY(x, y + searchYOffset, z).floorY;
+            => graphics.floors.GetTriangles().FindFloorAndY(x, y + searchYOffset, z).floorY;
+
         protected override string UnitTypeName() => "Floor";
     }
 
     public class MapNearbyCeilingUnits : MapNearbyUnits
     {
         public float displayOffset = -160;
-        public MapNearbyCeilingUnits(PositionAngleProvider positionAngleProvider) : base(positionAngleProvider) { }
+
+        public MapNearbyCeilingUnits(PositionAngleProvider positionAngleProvider) : base(positionAngleProvider)
+        {
+        }
+
         protected override float GetMaxHeightDifference() => float.NegativeInfinity;
 
         protected override float GetUnitY(MapGraphics graphics, float x, float y, float z)
@@ -29,6 +38,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             var floorY = graphics.floors.GetTriangles().FindFloorAndY(x, y + searchYOffset, z).floorY;
             return graphics.ceilings.GetTriangles().FindCeilingAndY(x, floorY + 80, z).ceilY + displayOffset;
         }
+
         protected override string UnitTypeName() => "Ceiling";
     }
 
@@ -92,15 +102,15 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     if (float.IsNaN(vs[x, z]))
                         continue;
                     Matrix4 transform = Matrix4.CreateRotationX((float)Math.PI / 2)
-                        * Matrix4.CreateScale(0.5f)
-                        * Matrix4.CreateTranslation(x + offset.x + 0.5f, vs[x, z], z + offset.z + 0.5f);
+                                        * Matrix4.CreateScale(0.5f)
+                                        * Matrix4.CreateTranslation(x + offset.x + 0.5f, vs[x, z], z + offset.z + 0.5f);
                     graphics.circleRenderer.AddInstance(
-                             graphics.view.mode != MapView.ViewMode.TopDown,
-                             transform,
-                             OutlineWidth,
-                             color,
-                             outlineColor,
-                             Renderers.ShapeRenderer.Shapes.Quad);
+                        graphics.view.mode != MapView.ViewMode.TopDown,
+                        transform,
+                        OutlineWidth,
+                        color,
+                        outlineColor,
+                        Renderers.ShapeRenderer.Shapes.Quad);
                 }
         }
 
@@ -116,6 +126,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 else
                     l = h + maxDiff;
             }
+
             return (l, h);
         }
 
@@ -133,29 +144,30 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         (low, high) = GetVerticalPiece(vs[x + 1, z], vs[x, z], maxDiff);
 
                         transform = Matrix4.CreateRotationY((float)Math.PI / 2) * Matrix4.CreateScale(0.5f, (high - low) * 0.5f, 0.5f)
-                            * Matrix4.CreateTranslation(x + offset.x + 1, (high + low) * 0.5f, z + offset.z + 0.5f);
+                                                                                * Matrix4.CreateTranslation(x + offset.x + 1, (high + low) * 0.5f, z + offset.z + 0.5f);
                         if (low != high)
                             graphics.circleRenderer.AddInstance(
-                                 graphics.view.mode != MapView.ViewMode.TopDown,
-                                 transform,
-                                 OutlineWidth,
-                                 colorX,
-                                 outlineColor,
-                                 Renderers.ShapeRenderer.Shapes.Quad);
+                                graphics.view.mode != MapView.ViewMode.TopDown,
+                                transform,
+                                OutlineWidth,
+                                colorX,
+                                outlineColor,
+                                Renderers.ShapeRenderer.Shapes.Quad);
                     }
+
                     if (z < vs.GetLength(0) - 1)
                     {
                         (low, high) = GetVerticalPiece(vs[x, z + 1], vs[x, z], maxDiff);
                         transform = Matrix4.CreateScale(0.5f, (high - low) * 0.5f, 0.5f)
-                            * Matrix4.CreateTranslation(x + offset.x + 0.5f, (high + low) * 0.5f, z + offset.z + 1);
+                                    * Matrix4.CreateTranslation(x + offset.x + 0.5f, (high + low) * 0.5f, z + offset.z + 1);
                         if (low != high)
                             graphics.circleRenderer.AddInstance(
-                                     graphics.view.mode != MapView.ViewMode.TopDown,
-                                     transform,
-                                     OutlineWidth,
-                                     colorX,
-                                     outlineColor,
-                                     Renderers.ShapeRenderer.Shapes.Quad);
+                                graphics.view.mode != MapView.ViewMode.TopDown,
+                                transform,
+                                OutlineWidth,
+                                colorX,
+                                outlineColor,
+                                Renderers.ShapeRenderer.Shapes.Quad);
                     }
                 }
         }
@@ -180,6 +192,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     var y = GetUnitY(graphics, x + 0.5f, (float)obj.Y, z + 0.5f);
                     vs[x - minX, z - minZ] = (y < obj.Y - discardUnitsBelow || y > obj.Y + discardUnitsAbove) ? float.NaN : y;
                 }
+
             paCache.value.cachedPos = obj.position;
             paCache.value.vs = vs;
             return (vs, minX, minZ);
@@ -200,6 +213,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         }
 
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
+
         protected override void Draw3D(MapGraphics graphics)
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
@@ -239,26 +253,26 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public override (SaveSettings save, LoadSettings load) SettingsSaveLoad =>
             (node =>
-            {
-                base.SettingsSaveLoad.save(node);
-                SaveValueNode(node, "ShowSteps", showSteps.ToString());
-                SaveValueNode(node, "NumUnits", numUnitsX.ToString());
-                SaveValueNode(node, "DiscardUnitsAbove", discardUnitsAbove.ToString());
-                SaveValueNode(node, "DiscardUnitsBelow", discardUnitsBelow.ToString());
-            }
-        ,
-            node =>
-            {
-                base.SettingsSaveLoad.load(node);
-                if (bool.TryParse(LoadValueNode(node, "ShowSteps"), out var newShowSteps))
-                    itemShowSteps.Checked = newShowSteps;
-                if (int.TryParse(LoadValueNode(node, "NumUnits"), out var numUnits))
-                    numUnitsX = numUnitsZ = numUnits;
-                if (float.TryParse(LoadValueNode(node, "DiscardUnitsAbove"), out var discardAbove))
-                    discardUnitsAbove = discardAbove;
-                if (float.TryParse(LoadValueNode(node, "DiscardUnitsBelow"), out var discardBelow))
-                    discardUnitsBelow = discardBelow;
-            }
+                {
+                    base.SettingsSaveLoad.save(node);
+                    SaveValueNode(node, "ShowSteps", showSteps.ToString());
+                    SaveValueNode(node, "NumUnits", numUnitsX.ToString());
+                    SaveValueNode(node, "DiscardUnitsAbove", discardUnitsAbove.ToString());
+                    SaveValueNode(node, "DiscardUnitsBelow", discardUnitsBelow.ToString());
+                }
+                ,
+                node =>
+                {
+                    base.SettingsSaveLoad.load(node);
+                    if (bool.TryParse(LoadValueNode(node, "ShowSteps"), out var newShowSteps))
+                        itemShowSteps.Checked = newShowSteps;
+                    if (int.TryParse(LoadValueNode(node, "NumUnits"), out var numUnits))
+                        numUnitsX = numUnitsZ = numUnits;
+                    if (float.TryParse(LoadValueNode(node, "DiscardUnitsAbove"), out var discardAbove))
+                        discardUnitsAbove = discardAbove;
+                    if (float.TryParse(LoadValueNode(node, "DiscardUnitsBelow"), out var discardBelow))
+                        discardUnitsBelow = discardBelow;
+                }
         );
     }
 }

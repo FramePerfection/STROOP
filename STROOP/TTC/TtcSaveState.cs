@@ -7,10 +7,8 @@ using System.Linq;
 
 namespace STROOP.Ttc
 {
-
     public class TtcSaveState
     {
-
         private readonly List<byte> _bytes;
 
         public TtcSaveState() : this(
@@ -54,8 +52,5 @@ namespace STROOP.Ttc
         {
             return new TtcSaveStateByteIterator(_bytes);
         }
-
     }
-
-
 }

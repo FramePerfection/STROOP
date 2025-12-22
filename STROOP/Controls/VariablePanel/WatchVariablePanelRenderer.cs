@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
-using OpenTK;
-
+using OpenTK.Mathematics;
 using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -19,6 +17,7 @@ namespace STROOP.Controls.VariablePanel
             {
                 readonly Func<T> factory;
                 Wrapper<OnDemandCall> disposeContext, invalidateContext;
+
                 public OnDemand(Wrapper<OnDemandCall> disposeContext, Func<T> factory, Wrapper<OnDemandCall> invalidateContext = null)
                 {
                     this.factory = factory;
@@ -41,6 +40,7 @@ namespace STROOP.Controls.VariablePanel
                             valueCreated = true;
                             disposeContext.value += DisposeValue;
                         }
+
                         return _value;
                     }
                 }
@@ -93,12 +93,14 @@ namespace STROOP.Controls.VariablePanel
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
                 if (LockConfig.LockingDisabled)
                     image = _disabledLockImage;
                 return image;
             }
 
             Dictionary<WatchVariableControl, WatchVariableControlRenderData> renderDatas = new Dictionary<WatchVariableControl, WatchVariableControlRenderData>();
+
             WatchVariableControlRenderData GetRenderData(WatchVariableControl ctrl)
             {
                 WatchVariableControlRenderData result;
@@ -111,6 +113,7 @@ namespace STROOP.Controls.VariablePanel
             DateTime lastRefreshed;
 
             delegate void OnDemandCall();
+
             Wrapper<OnDemandCall> OnDispose = new Wrapper<OnDemandCall>(), OnInvalidateFonts = new Wrapper<OnDemandCall>();
 
             BufferedGraphics bufferedGraphics = null;
@@ -141,15 +144,15 @@ namespace STROOP.Controls.VariablePanel
                 if (numColumnsWithoutScrollbar * (SavedSettingsConfig.WatchVarPanelNameWidth + SavedSettingsConfig.WatchVarPanelValueWidth) >
                     target.ClientRectangle.Width - 2 * borderMargin)
                     effectiveHeight -= SystemInformation.HorizontalScrollBarHeight;
-                return Math.Max(1, effectiveHeight / elementHeight); 
+                return Math.Max(1, effectiveHeight / elementHeight);
             }
 
             public WatchVariablePanelRenderer(WatchVariablePanel target)
             {
                 this.target = target;
                 boldFont = new OnDemand<Font>(
-                    OnDispose, 
-                    () => Font.FontFamily.IsStyleAvailable(FontStyle.Bold) ? new Font(Font, FontStyle.Bold) : Font, 
+                    OnDispose,
+                    () => Font.FontFamily.IsStyleAvailable(FontStyle.Bold) ? new Font(Font, FontStyle.Bold) : Font,
                     OnInvalidateFonts);
 
                 cellBorderPen = new OnDemand<Pen>(OnDispose, () => new Pen(Color.Gray, 2));
@@ -221,7 +224,7 @@ namespace STROOP.Controls.VariablePanel
                                 baseY + elementMarginTopBottom,
                                 (int)(iconHeight * (_pinnedImage.Width / (float)_pinnedImage.Height)),
                                 iconHeight)
-                                );
+                        );
                 }
 
                 void DrawGrid()
@@ -236,7 +239,11 @@ namespace STROOP.Controls.VariablePanel
                     cursorPos.X -= borderMargin;
                     cursorPos.Y -= borderMargin;
 
-                    void ResetIterators() { iterator = 0; lastColumn = -1; }
+                    void ResetIterators()
+                    {
+                        iterator = 0;
+                        lastColumn = -1;
+                    }
 
                     void GetColumn(int offset, int width, bool clip = true)
                     {
@@ -248,6 +255,7 @@ namespace STROOP.Controls.VariablePanel
                             if (clip)
                                 g.Clip = new Region(new Rectangle(x * elementWidth + offset, 0, width, Height));
                         }
+
                         iterator++;
                     }
 
@@ -315,6 +323,7 @@ namespace STROOP.Controls.VariablePanel
                         }
                         else
                             ctrlData.nameTextOffset = 0;
+
                         g.DrawString(ctrl.VarName, varNameFont, ctrl.IsSelected ? Brushes.White : Brushes.Black, txtPoint);
                     }
 
@@ -343,6 +352,7 @@ namespace STROOP.Controls.VariablePanel
                             var txtPoint = new Point((x + 1) * elementWidth - elementMarginLeftRight, yCoord + elementMarginTopBottom);
                             g.DrawString(ctrl.WatchVarWrapper.GetValueText(), Font, ctrl.IsSelected ? Brushes.White : Brushes.Black, txtPoint, rightAlignFormat);
                         }
+
                         DrawLockAndFixImages(ctrl, x * elementWidth + elementNameWidth, yCoord);
                     }
 
@@ -362,6 +372,7 @@ namespace STROOP.Controls.VariablePanel
                         if (dx < x)
                             g.DrawLine(cellSeparatorPen, xCoord, 0, xCoord, maxY);
                     }
+
                     if (y != maxRows - 1)
                     {
                         var yCoord = (y + 1) * elementHeight;

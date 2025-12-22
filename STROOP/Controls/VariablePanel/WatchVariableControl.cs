@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
 using STROOP.Core.Variables;
 using STROOP.Structs;
 using STROOP.Utilities;
@@ -37,10 +36,15 @@ namespace STROOP.Controls.VariablePanel
 
         private readonly Color _initialBaseColor;
         private Color _baseColor;
+
         public Color BaseColor
         {
             get { return _baseColor; }
-            set { _baseColor = value; currentColor = value; }
+            set
+            {
+                _baseColor = value;
+                currentColor = value;
+            }
         }
 
         public Color currentColor { get; private set; }
@@ -59,7 +63,12 @@ namespace STROOP.Controls.VariablePanel
         public bool alwaysVisible;
 
         bool _isSelected;
-        public bool IsSelected { get { return _isSelected && containingPanel.IsSelected; } set { _isSelected = value; } }
+
+        public bool IsSelected
+        {
+            get { return _isSelected && containingPanel.IsSelected; }
+            set { _isSelected = value; }
+        }
 
         public WatchVariableControl(WatchVariablePanel panel, NamedVariableCollection.IView view)
         {
@@ -129,6 +138,7 @@ namespace STROOP.Controls.VariablePanel
                 foreach (var item in WatchVariableSelectionUtilities.CreateSelectionToolStripItems(containingPanel.GetSelectedVars(), containingPanel))
                     ctx.Items.Add(item);
             }
+
             ctx.Show(System.Windows.Forms.Cursor.Position);
         }
 
@@ -218,7 +228,7 @@ namespace STROOP.Controls.VariablePanel
         }
 
         public void ToggleFixedAddress(bool? fix)
-            => (view as NamedVariableCollection.IMemoryDescriptorView).describedMemoryState.ToggleFixedAddress(fix);
+            => (view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState.ToggleFixedAddress(fix);
 
         public void ToggleHighlighted(Color? color = null)
         {
@@ -238,8 +248,10 @@ namespace STROOP.Controls.VariablePanel
                         || viewType.GetGenericTypeDefinition() == typeof(NamedVariableCollection.XmlMemoryView<>))
                         return viewType.GetGenericArguments()[0];
                 }
+
                 viewType = viewType.BaseType;
             }
+
             return null;
         }
 

@@ -177,6 +177,7 @@ namespace STROOP.Tabs
                 pivotY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
                 pivotZ = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.ZOffset);
             }
+
             return (pivotX, pivotY, pivotZ);
         }
     }

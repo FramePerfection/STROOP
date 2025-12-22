@@ -49,24 +49,175 @@ namespace STROOP.M64
             _D_Right = D_Right;
         }
 
-        public int Frame { get => M64Utilities.ConvertFrameToDisplayedValue(FrameIndex); }
-        public int Id { get => M64Utilities.ConvertFrameToDisplayedValue(IdIndex); }
-        public sbyte X { get => (sbyte)GetByte(2); set { SetByte(2, (byte)value); NotifyChange(); } }
-        public sbyte Y { get => (sbyte)GetByte(3); set { SetByte(3, (byte)value); NotifyChange(); } }
-        public bool A { get => GetBit(7); set { SetBit(7, value); NotifyChange(); } }
-        public bool B { get => GetBit(6); set { SetBit(6, value); NotifyChange(); } }
-        public bool Z { get => GetBit(5); set { SetBit(5, value); NotifyChange(); } }
-        public bool S { get => GetBit(4); set { SetBit(4, value); NotifyChange(); } }
-        public bool R { get => GetBit(12); set { SetBit(12, value); NotifyChange(); } }
-        public bool C_Up { get => GetBit(11); set { SetBit(11, value); NotifyChange(); } }
-        public bool C_Down { get => GetBit(10); set { SetBit(10, value); NotifyChange(); } }
-        public bool C_Left { get => GetBit(9); set { SetBit(9, value); NotifyChange(); } }
-        public bool C_Right { get => GetBit(8); set { SetBit(8, value); NotifyChange(); } }
-        public bool L { get => GetBit(13); set { SetBit(13, value); NotifyChange(); } }
-        public bool D_Up { get => GetBit(3); set { SetBit(3, value); NotifyChange(); } }
-        public bool D_Down { get => GetBit(2); set { SetBit(2, value); NotifyChange(); } }
-        public bool D_Left { get => GetBit(1); set { SetBit(1, value); NotifyChange(); } }
-        public bool D_Right { get => GetBit(0); set { SetBit(0, value); NotifyChange(); } }
+        public int Frame
+        {
+            get => M64Utilities.ConvertFrameToDisplayedValue(FrameIndex);
+        }
+
+        public int Id
+        {
+            get => M64Utilities.ConvertFrameToDisplayedValue(IdIndex);
+        }
+
+        public sbyte X
+        {
+            get => (sbyte)GetByte(2);
+            set
+            {
+                SetByte(2, (byte)value);
+                NotifyChange();
+            }
+        }
+
+        public sbyte Y
+        {
+            get => (sbyte)GetByte(3);
+            set
+            {
+                SetByte(3, (byte)value);
+                NotifyChange();
+            }
+        }
+
+        public bool A
+        {
+            get => GetBit(7);
+            set
+            {
+                SetBit(7, value);
+                NotifyChange();
+            }
+        }
+
+        public bool B
+        {
+            get => GetBit(6);
+            set
+            {
+                SetBit(6, value);
+                NotifyChange();
+            }
+        }
+
+        public bool Z
+        {
+            get => GetBit(5);
+            set
+            {
+                SetBit(5, value);
+                NotifyChange();
+            }
+        }
+
+        public bool S
+        {
+            get => GetBit(4);
+            set
+            {
+                SetBit(4, value);
+                NotifyChange();
+            }
+        }
+
+        public bool R
+        {
+            get => GetBit(12);
+            set
+            {
+                SetBit(12, value);
+                NotifyChange();
+            }
+        }
+
+        public bool C_Up
+        {
+            get => GetBit(11);
+            set
+            {
+                SetBit(11, value);
+                NotifyChange();
+            }
+        }
+
+        public bool C_Down
+        {
+            get => GetBit(10);
+            set
+            {
+                SetBit(10, value);
+                NotifyChange();
+            }
+        }
+
+        public bool C_Left
+        {
+            get => GetBit(9);
+            set
+            {
+                SetBit(9, value);
+                NotifyChange();
+            }
+        }
+
+        public bool C_Right
+        {
+            get => GetBit(8);
+            set
+            {
+                SetBit(8, value);
+                NotifyChange();
+            }
+        }
+
+        public bool L
+        {
+            get => GetBit(13);
+            set
+            {
+                SetBit(13, value);
+                NotifyChange();
+            }
+        }
+
+        public bool D_Up
+        {
+            get => GetBit(3);
+            set
+            {
+                SetBit(3, value);
+                NotifyChange();
+            }
+        }
+
+        public bool D_Down
+        {
+            get => GetBit(2);
+            set
+            {
+                SetBit(2, value);
+                NotifyChange();
+            }
+        }
+
+        public bool D_Left
+        {
+            get => GetBit(1);
+            set
+            {
+                SetBit(1, value);
+                NotifyChange();
+            }
+        }
+
+        public bool D_Right
+        {
+            get => GetBit(0);
+            set
+            {
+                SetBit(0, value);
+                NotifyChange();
+            }
+        }
 
         private readonly sbyte _X;
         private readonly sbyte _Y;
@@ -125,8 +276,7 @@ namespace STROOP.M64
                 DataGridViewRow row = _table.Rows[FrameIndex];
                 DataGridViewColumn col = _table.Columns[columnIndex];
                 DataGridViewCell cell = row.Cells[columnIndex];
-                Color defaultColor = row.DefaultCellStyle.BackColor == M64Config.NewRowColor ?
-                    M64Config.NewRowColor : col.DefaultCellStyle.BackColor;
+                Color defaultColor = row.DefaultCellStyle.BackColor == M64Config.NewRowColor ? M64Config.NewRowColor : col.DefaultCellStyle.BackColor;
                 cell.Style.BackColor = valueChanged ? M64Config.EditedCellColor : defaultColor;
             }
         }
@@ -172,6 +322,7 @@ namespace STROOP.M64
             {
                 return IdIndex == input.IdIndex;
             }
+
             return false;
         }
 
@@ -211,7 +362,6 @@ namespace STROOP.M64
             if (D_Right) inputList.Add("D>");
 
             return "[" + String.Join(",", inputList) + "]";
-
         }
 
         public bool MatchesInputs(M64InputFrame other)

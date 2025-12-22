@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
@@ -6,7 +7,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
     public abstract class MapIconPointObject : MapIconObject
     {
         protected MapIconPointObject(ObjectCreateParams creationParameters)
-        : base(creationParameters) { }
+            : base(creationParameters)
+        {
+        }
 
         protected override void DrawTopDown(MapGraphics graphics)
         {
@@ -25,7 +28,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
 
         public override bool ParticipatesInGlobalIconSize() => true;
-        
+
         public override IHoverData GetHoverData(MapGraphics graphics, ref Vector3 position)
         {
             var radius = Size / graphics.MapViewScaleValue;
@@ -65,11 +68,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         }
                     }
             }
+
             if (hoverData.currentPositionAngle != null)
             {
                 position = hoverData.currentPositionAngle.position;
                 return hoverData;
             }
+
             return null;
         }
     }

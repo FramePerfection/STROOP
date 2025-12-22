@@ -17,7 +17,7 @@ namespace STROOP.Structs
                 "Right click on an angle variable to change its units. You can choose In-Game Angle Units, HAU (Hexadecimal Angle Units), Degrees, Radians, or Revolutions.",
                 "Right click on an angle variable to change whether it's signed or unsigned.",
                 "Right click on a variable that's part of an (x,y,z) coordinate triple for options to copy/paste 3 coordinate values at once. Especially helpful when inputting data " +
-                    "into a spreadsheet, or applying data from a spreadsheet.",
+                "into a spreadsheet, or applying data from a spreadsheet.",
                 "When variables are locked, you can right click on any variable and choose \"Remove All Locks\" to remove all locks, including those not currently visible.",
                 "Right click on the variable panel for options that affect all variables. You can filter variables to show/hide certain variable groups.",
                 "Right click on the variable panel for options that affect all variables. You can save your changes to a tab's variables to keep it that way for the future.",
@@ -43,7 +43,7 @@ namespace STROOP.Structs
                 "Click on a variable while holding Q to give that variable a custom background color.",
                 "Click on a variable while holding O to give that variable the last custom color as its background color.",
                 "Click on a variable while holding F to fix that variable's address. For example, fixing an object variable's address will cause that variable to keep referring to the same object " +
-                    " instead of the currently selected object.",
+                " instead of the currently selected object.",
                 "Click on a variable while holding X to inform STROOP that you want to move that variable. Then click on another variable while holding X to move the first variable there.",
                 "Click on a variable while holding a number to highlight that variable with different colors.",
                 "Click on a variable while holding Shift and a number to give that variable different background colors.",
@@ -60,7 +60,7 @@ namespace STROOP.Structs
                 "In the Object tab, you can remove an object's shadow by setting its Shadow Opacity to 0.",
                 "In the Object tab, you can toggle whether an object is visible via the checkbox in the Visible variable.",
                 "In the Mario tab, you can toggle whether Mario is visible or not via the \"Toggle Visibility\" button. This doesn't affect his movement, and can be useful for getting certain " +
-                    "screenshots.",
+                "screenshots.",
                 "In the File tab, use the \"Everything\" button to unlock all stars/doors/caps/cannons/coins. Use this to quickly gain access to everything when using a new ROM hack or game version.",
                 "In the Map tab, clicking on an object slot will show that object on the map.",
                 "In the Triangles tab, you can neutralize all triangles via the \"Neutralize All Triangles\" button. This can be useful if you don't want lava or the death barrier to affect you.",
@@ -69,9 +69,9 @@ namespace STROOP.Structs
                 "In the Options tab, you can turn off which object overlays are shown, such as the Held Object or Interaction Object.",
                 "In the Options tab, you can change how the \"Goto\" and \"Retrieve\" buttons work. For example, you can set whether you want to go to objects 300 units above or exactly at them.",
                 "In the Options tab, you can set a specific angle for relative position controllers. For example, you could set the Mario position controller's relative settings to consider " +
-                    "angle 1000 as forwards.",
+                "angle 1000 as forwards.",
                 "In the Custom tab, you can show whatever variables you want and record their values as well. You can add variables to the Custom tab either by right clicking and choose " +
-                    "\"Add to Custom Tab\" or clicking on a variable while holding S.",
+                "\"Add to Custom Tab\" or clicking on a variable while holding S.",
                 "In the Custom tab, you can change the size of variables, which applies to all tabs. This is helpful if you want to show several variables on screen while screen recording.",
                 "In the Custom tab, you can save your current list of variables as a file to your computer. Then later you can open that file to show those same variables.",
                 "In the Actions tab, you can see Mario's action (black text) and animation (blue text). This is useful for knowing what Mario is doing when you can't see him on screen.",
@@ -80,7 +80,7 @@ namespace STROOP.Structs
                 "In the HUD tab, you can toggle whether the HUD is displayed using the \"Turn Off HUD\" button. Right click on it for even more options.",
                 "In the Misc tab, you can turn off the music by checking the \"Turn Off Music\" checkbox.",
                 "In the Misc tab, you can see many miscellaneous variables, such as the global timer, RNG value, and RNG index.",
-                
+
                 // Buttons on top
                 "Use the rectangle/line buttons on top to control which panels of STROOP are currently open or closed. Hold a number n to have these buttons affect the nth embedded panel.",
                 "Use the arrow buttons on top to move tabs around, which will be saved for next time. Right click on these arrows for an options to restore the recommended tab order.",

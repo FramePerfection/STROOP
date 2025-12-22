@@ -7,7 +7,7 @@ namespace STROOP.Ttc
     /** A hand is the long horizontal clock hand that rotates
       *  in a circle and that Mario is supposed to ride on to
       *  get to the other side of the course.
-      *  
+      *
       *  A hand has a displacement (i.e. how much it should tick, which
       *  will be positive for CCW ticks and negative for CW ticks).
       *  When timer > max, the hand ticks and calculates a new max
@@ -19,7 +19,6 @@ namespace STROOP.Ttc
       */
     public class TtcHand : TtcObject
     {
-
         public readonly static int DISPLACEMENT_MAGNITUDE = 1092;
         public readonly static int INITIAL_MAX = 10;
 
@@ -60,9 +59,9 @@ namespace STROOP.Ttc
 
         public override void Update()
         {
-
             if (_timerMax == 0)
-            { //course just started
+            {
+                //course just started
                 _timerMax = INITIAL_MAX;
                 _displacement = -1 * DISPLACEMENT_MAGNITUDE;
             }
@@ -72,16 +71,19 @@ namespace STROOP.Ttc
             _directionCountdown = Math.Max(0, _directionCountdown - 1);
 
             if (_timer <= _timerMax)
-            { //waiting
+            {
+                //waiting
                 _timer++;
             }
             else if (_angle == _targetAngle)
-            { //done waiting and reached target
+            {
+                //done waiting and reached target
                 _targetAngle = _targetAngle + _displacement;
                 _targetAngle = Normalize(_targetAngle);
 
                 if (_directionCountdown == 0)
-                { //time to maybe switch directions
+                {
+                    //time to maybe switch directions
                     if (PollRNG() % 4 == 0)
                     {
                         _displacement = DISPLACEMENT_MAGNITUDE;
@@ -99,7 +101,8 @@ namespace STROOP.Ttc
                 _timer++;
             }
             else
-            { //timer high enough, but not at target angle (will only happen at level start)
+            {
+                //timer high enough, but not at target angle (will only happen at level start)
                 _timer++;
             }
         }
@@ -107,11 +110,11 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _angle + SEPARATOR +
-                          _timerMax + SEPARATOR +
-                          _targetAngle + SEPARATOR +
-                          _displacement + SEPARATOR +
-                          _directionCountdown + SEPARATOR +
-                          _timer + CLOSER;
+                   _timerMax + SEPARATOR +
+                   _targetAngle + SEPARATOR +
+                   _displacement + SEPARATOR +
+                   _directionCountdown + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -137,7 +140,4 @@ namespace STROOP.Ttc
             return new TtcHand(rng, _angle, _timerMax, _targetAngle, _displacement, _directionCountdown, _timer);
         }
     }
-
-
-
 }

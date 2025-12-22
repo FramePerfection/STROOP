@@ -11,7 +11,6 @@ namespace STROOP.Ttc
      */
     public class TtcWheel : TtcObject
     {
-
         public readonly static int DISPLACEMENT_MAGNITUDE = 3276;
         public readonly static int INITIAL_MAX = 5;
 
@@ -51,9 +50,9 @@ namespace STROOP.Ttc
 
         public override void Update()
         {
-
             if (_timerMax == 0)
-            { //course just started
+            {
+                //course just started
                 _timerMax = INITIAL_MAX;
                 _displacement = -1 * DISPLACEMENT_MAGNITUDE;
             }
@@ -63,23 +62,28 @@ namespace STROOP.Ttc
             _directionCountdown = Math.Max(0, _directionCountdown - 1);
 
             if (_timer <= _timerMax)
-            { //waiting
+            {
+                //waiting
                 _timer++;
             }
             else if (_angle == _targetAngle)
-            { //done waiting and reached target
+            {
+                //done waiting and reached target
                 _targetAngle = _targetAngle + _displacement;
                 _targetAngle = Normalize(_targetAngle);
 
                 if (_directionCountdown == 0)
-                { //time to maybe switch directions
+                {
+                    //time to maybe switch directions
                     if (PollRNG() % 4 == 0)
-                    { //time to move CCW
+                    {
+                        //time to move CCW
                         _displacement = DISPLACEMENT_MAGNITUDE;
                         _directionCountdown = (PollRNG() % 3) * 30 + 30; // = 30, 60, 90
                     }
                     else
-                    { //time to move CW
+                    {
+                        //time to move CW
                         _displacement = -1 * DISPLACEMENT_MAGNITUDE;
                         _directionCountdown = (PollRNG() % 4) * 60 + 90; // = 90, 150, 210, 270
                     }
@@ -90,7 +94,8 @@ namespace STROOP.Ttc
                 _timer++;
             }
             else
-            { //timer high enough, but not at target angle (will only happen at level start)
+            {
+                //timer high enough, but not at target angle (will only happen at level start)
                 _timer++;
             }
         }
@@ -98,11 +103,11 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _angle + SEPARATOR +
-                          _timerMax + SEPARATOR +
-                          _targetAngle + SEPARATOR +
-                          _displacement + SEPARATOR +
-                          _directionCountdown + SEPARATOR +
-                          _timer + CLOSER;
+                   _timerMax + SEPARATOR +
+                   _targetAngle + SEPARATOR +
+                   _displacement + SEPARATOR +
+                   _directionCountdown + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -130,5 +135,4 @@ namespace STROOP.Ttc
                 _displacement, _directionCountdown, _timer);
         }
     }
-
 }

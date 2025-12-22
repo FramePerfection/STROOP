@@ -5,7 +5,6 @@ namespace STROOP.Utilities
 {
     static public class FontSerializationHelper
     {
-
         static public Font FromString(string value)
         {
             if (value.ToLower() == "<null>")
@@ -26,18 +25,17 @@ namespace STROOP.Utilities
             if (font == null)
                 return "<null>";
             return font.FontFamily.Name
-                    + ":" + font.Size
-                    + ":" + font.Style
-                    + ":" + font.Unit
-                    + ":" + font.GdiCharSet
-                    + ":" + font.GdiVerticalFont
-                    ;
+                   + ":" + font.Size
+                   + ":" + font.Style
+                   + ":" + font.Unit
+                   + ":" + font.GdiCharSet
+                   + ":" + font.GdiVerticalFont
+                ;
         }
     }
 
     static public class EnumSerializationHelper
     {
-
         static public T FromString<T>(string value)
         {
             return (T)Enum.Parse(typeof(T), value, true);

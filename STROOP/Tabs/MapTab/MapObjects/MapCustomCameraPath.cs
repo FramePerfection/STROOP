@@ -5,6 +5,7 @@ using STROOP.Structs.Configurations;
 using System.Collections.Generic;
 using OpenTK;
 using System.Windows.Forms;
+using OpenTK.Mathematics;
 using STROOP.Structs;
 
 namespace STROOP.Tabs.MapTab.MapObjects
@@ -17,11 +18,17 @@ namespace STROOP.Tabs.MapTab.MapObjects
             public class Target : PositionAngle.CustomPositionAngle
             {
                 public readonly KeyFrame parent;
-                public Target(KeyFrame parent) : base(Vector3.Zero) { this.parent = parent; }
+
+                public Target(KeyFrame parent) : base(Vector3.Zero)
+                {
+                    this.parent = parent;
+                }
             }
+
             public uint frame;
             public uint waitFor = 0;
             public readonly PositionAngle targetPoint;
+
             public KeyFrame() : base(Vector3.Zero)
             {
                 targetPoint = new Target(this);
@@ -34,9 +41,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
             public KeyFrame currentKeyFrame;
             public bool target;
             PositionAngle currentPositionAngle => target ? currentKeyFrame.targetPoint : currentKeyFrame;
+
             public KeyFrameHoverData(MapCustomCameraPath parent)
                 : base(parent)
-            { }
+            {
+            }
 
             static uint lastEnteredTime = 30;
 
@@ -94,12 +103,15 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 targetItem.DropDownItems.Add(keyFrameDeleteItem);
             }
 
-            public override void SetLookAt(Vector3 lookAt) { }
+            public override void SetLookAt(Vector3 lookAt)
+            {
+            }
 
             protected override void SetPosition(Vector3 newPosition)
             {
                 currentPositionAngle.position = newPosition;
             }
+
             protected override Vector3 GetPosition() => currentPositionAngle.position;
 
             public override string ToString() => $"{(MapCustomCameraPath)parent}[{((MapCustomCameraPath)parent).GetIndex(currentKeyFrame)}]({currentKeyFrame.frame})";
@@ -143,6 +155,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 }
                 else
                     f.frame += diff;
+
             SortKeyFrames();
         }
 
@@ -186,6 +199,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 actualHoverData.target = false;
                 actualHoverData.currentKeyFrame = (KeyFrame)sas.currentPositionAngle;
             }
+
             return actualHoverData;
         }
 
@@ -263,8 +277,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         current = p;
                         break;
                     }
+
                     last = p;
                 }
+
                 Vector3 resultPos = last?.position ?? current.position;
                 Vector3 resultTarget = (last?.targetPoint ?? current.targetPoint).position;
                 var startFrame = (last?.frame ?? 0) + (last?.waitFor ?? 0);
@@ -304,9 +320,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     frameNode.SetAttribute("targetZ", frame.targetPoint.position.Z.ToString());
                     pathNode.AppendChild(frameNode);
                 }
+
                 node.AppendChild(pathNode);
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);
@@ -329,10 +346,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                 case "targetY": float.TryParse(attr.Value, out tar.Y); break;
                                 case "targetZ": float.TryParse(attr.Value, out tar.Z); break;
                             }
+
                         newFrame.position = pos;
                         newFrame.targetPoint.position = tar;
                         keyFrames.Add(newFrame);
                     }
+
                 SortKeyFrames();
             }
         );

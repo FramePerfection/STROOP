@@ -38,6 +38,7 @@ namespace STROOP.Utilities
             {
                 hexString = StringUtilities.ExactLength(hexString, numDigits.Value, true, '0');
             }
+
             return prefix + hexString;
         }
 

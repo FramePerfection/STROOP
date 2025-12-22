@@ -4,6 +4,7 @@ using System.Drawing;
 using STROOP.Structs.Configurations;
 using System.Windows.Forms;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -13,7 +14,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
         class Drawing : IHoverData
         {
             MapDrawingObject parent;
-            public Drawing(MapDrawingObject target) { this.parent = target; }
+
+            public Drawing(MapDrawingObject target)
+            {
+                this.parent = target;
+            }
 
             public void AddContextMenuItems(MapTab tab, ContextMenuStrip menu)
             {
@@ -38,23 +43,33 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     parent._vertices.Add(parent._lastVertex);
                     parent._vertices.Add(currentVertex);
                 }
+
                 parent._lastVertex = currentVertex;
             }
 
-            public void SetLookAt(Vector3 lookAt) { }
+            public void SetLookAt(Vector3 lookAt)
+            {
+            }
 
             public void LeftClick(Vector3 position)
             {
                 parent._lastVertex = position;
             }
 
-            public void RightClick(Vector3 position) { }
+            public void RightClick(Vector3 position)
+            {
+            }
         }
 
         private readonly List<Vector3> _vertices;
 
         ToolStripMenuItem itemEnableDrawing;
-        private bool drawingEnabled { get { return itemEnableDrawing.Checked; } set { itemEnableDrawing.Checked = value; } }
+
+        private bool drawingEnabled
+        {
+            get { return itemEnableDrawing.Checked; }
+            set { itemEnableDrawing.Checked = value; }
+        }
 
         private Vector3 _lastVertex;
 

@@ -6,7 +6,7 @@
     <DefaultImage>default.png</DefaultImage>
     <DefaultCoordinates x1="-8191" x2="8192" z1="-8191" z2="8192"/>
   </Config>
-  
+
   <Background name="Black Background">
     <Image path="Black Background.png"/>
   </Background>
@@ -40,7 +40,7 @@
 
   <Map name="Transparent" id="000" level="255" area="0">
     <Image path="Transparent.png"/>
-    <Coordinates x1="-8191" x2="8192" z1="-8191" z2="8192" />
+    <Coordinates x1="-8191" x2="8192" z1="-8191" z2="8192"/>
     <BackgroundImage name="Transparent Background"/>
   </Map>
   <Map name="Castle Grounds" id="00A" level="16" area="1">
@@ -73,7 +73,7 @@
     <Coordinates x1="-7252" x2="7455" z1="-3811" z2="7641"/>
     <BackgroundImage name="Black Background"/>
   </Map>
-  <Map name="Castle Courtyard" id="00G" level="26" area="1" >
+  <Map name="Castle Courtyard" id="00G" level="26" area="1">
     <Image path="Castle Courtyard.png"/>
     <Coordinates x1="-3583" x2="3584" z1="-3830" z2="1126"/>
     <BackgroundImage name="Blue Background"/>
@@ -85,7 +85,7 @@
   </Map>
   <Map name="Whomp's Fortress" subName="No Tower" id="02A" level="24" area="1" missionLayout="1">
     <Image path="WF No Tower.png"/>
-    <Coordinates x1="-8191" x2="8192" z1="-8191" z2="8192" />
+    <Coordinates x1="-8191" x2="8192" z1="-8191" z2="8192"/>
     <BackgroundImage name="Blue Background"/>
   </Map>
   <Map name="Whomp's Fortress" subName="Tower" id="02B" level="24" area="1">
@@ -208,12 +208,12 @@
     <Coordinates x1="-6041" x2="6989" z1="-7167" z2="6659"/>
     <BackgroundImage name="Black Background"/>
   </Map>
-  <Map name="Snowman's Land" id="10A" level="10" area="1" >
+  <Map name="Snowman's Land" id="10A" level="10" area="1">
     <Image path="SL.png"/>
     <Coordinates x1="-8191" x2="7168" z1="-8191" z2="8192"/>
     <BackgroundImage name="Snow Background"/>
   </Map>
-  <Map name="Snowman's Land" subName="Igloo" id="10B" level="10" area="2" >
+  <Map name="Snowman's Land" subName="Igloo" id="10B" level="10" area="2">
     <Image path="SL Igloo.png"/>
     <Coordinates x1="-2047" x2="2048" z1="-2047" z2="3482"/>
     <BackgroundImage name="Black Background"/>

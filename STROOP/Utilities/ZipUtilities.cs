@@ -10,10 +10,11 @@ namespace STROOP.Utilities
             using (MemoryStream memory = new MemoryStream())
             {
                 using (GZipStream gzip = new GZipStream(memory,
-                    CompressionMode.Compress, true))
+                           CompressionMode.Compress, true))
                 {
                     gzip.Write(raw, 0, raw.Length);
                 }
+
                 return memory.ToArray();
             }
         }
@@ -23,7 +24,7 @@ namespace STROOP.Utilities
             // Create a GZIP stream with decompression mode.
             // ... Then create a buffer and write into while reading from the GZIP stream.
             using (GZipStream stream = new GZipStream(new MemoryStream(gzip),
-                CompressionMode.Decompress))
+                       CompressionMode.Decompress))
             {
                 const int size = 4096;
                 byte[] buffer = new byte[size];
@@ -37,8 +38,8 @@ namespace STROOP.Utilities
                         {
                             memory.Write(buffer, 0, count);
                         }
-                    }
-                    while (count > 0);
+                    } while (count > 0);
+
                     return memory.ToArray();
                 }
             }

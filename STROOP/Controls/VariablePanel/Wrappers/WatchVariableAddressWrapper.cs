@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-
 using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -23,6 +22,7 @@ namespace STROOP.Controls.VariablePanel
                         AccessScope<StroopMainForm>.content.GetTab<Tabs.MemoryTab>().SetCustomAddress(uintValue);
                     Config.TabControlMain.SelectedTab = Config.TabControlMain.TabPages["tabPageMemory"];
                 }
+
                 return false;
             });
 

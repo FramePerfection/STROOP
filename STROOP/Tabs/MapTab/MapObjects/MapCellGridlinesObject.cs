@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
 
@@ -24,14 +25,16 @@ namespace STROOP.Tabs.MapTab.MapObjects
             List<Vector3> vertices = new List<Vector3>();
             for (int x = -8192; x <= 8192; x += 1024)
             {
-                vertices.Add(new Vector3(x, marioY, - 8192));
+                vertices.Add(new Vector3(x, marioY, -8192));
                 vertices.Add(new Vector3(x, marioY, 8192));
             }
+
             for (int z = -8192; z <= 8192; z += 1024)
             {
                 vertices.Add(new Vector3(-8192, marioY, z));
                 vertices.Add(new Vector3(8192, marioY, z));
             }
+
             return vertices;
         }
 
@@ -40,6 +43,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
             return "Cell Gridlines";
         }
 
-        public override Lazy<Image> GetInternalImage() =>Config.ObjectAssociations.CellGridlinesImage;
+        public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.CellGridlinesImage;
     }
 }

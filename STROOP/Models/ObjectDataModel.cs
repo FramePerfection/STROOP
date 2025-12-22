@@ -11,7 +11,9 @@ namespace STROOP.Models
         public uint Address { get; set; }
 
         #region Behavior
+
         private bool _isActive;
+
         public bool IsActive
         {
             get => _isActive;
@@ -21,10 +23,12 @@ namespace STROOP.Models
                     _isActive = value;
             }
         }
+
         public uint AbsoluteBehavior { get; private set; }
         public uint SegmentedBehavior { get; private set; }
 
         private UInt32 _gfxId;
+
         public UInt32 GraphicsID
         {
             get => _gfxId;
@@ -36,6 +40,7 @@ namespace STROOP.Models
         }
 
         private UInt32 _subType;
+
         public UInt32 SubType
         {
             get => _subType;
@@ -47,6 +52,7 @@ namespace STROOP.Models
         }
 
         private UInt32 _appearance;
+
         public UInt32 Appearance
         {
             get => _appearance;
@@ -58,6 +64,7 @@ namespace STROOP.Models
         }
 
         private UInt32 _spawnObj;
+
         public UInt32 SpawnObj
         {
             get => _spawnObj;
@@ -76,9 +83,13 @@ namespace STROOP.Models
             get => Config.Stream.GetUInt32(Address + ObjectConfig.BehaviorScriptOffset);
             set => Config.Stream.SetValue(value, Address + ObjectConfig.BehaviorScriptOffset);
         }
+
         #endregion
+
         #region Processing/Vacancy
+
         public byte? CurrentProcessGroup { get; set; }
+
         public byte? BehaviorProcessGroup
         {
             get
@@ -91,20 +102,28 @@ namespace STROOP.Models
                 return (byte)((firstScriptAction & 0x00FF0000U) >> 16);
             }
         }
+
         public int ProcessIndex { get; set; }
         public int? VacantSlotIndex { get; set; }
         public bool IsVacant => VacantSlotIndex.HasValue;
+
         #endregion
+
         #region Object Graph
+
         public uint Parent
         {
             get => Config.Stream.GetUInt32(Address + ObjectConfig.ParentOffset);
             set => Config.Stream.SetValue(value, Address + ObjectConfig.ParentOffset);
         }
+
         #endregion
+
         #region Position
+
         private float _x;
         public override double X => _x;
+
         public override bool SetX(double value)
         {
             var success = Config.Stream.SetValue((float)value, Address + ObjectConfig.XOffset);
@@ -115,6 +134,7 @@ namespace STROOP.Models
 
         private float _y;
         public override double Y => _y;
+
         public override bool SetY(double value)
         {
             var success = Config.Stream.SetValue((float)value, Address + ObjectConfig.YOffset);
@@ -125,6 +145,7 @@ namespace STROOP.Models
 
         private float _z;
         public override double Z => _z;
+
         public override bool SetZ(double value)
         {
             var success = Config.Stream.SetValue((float)value, Address + ObjectConfig.ZOffset);
@@ -132,7 +153,9 @@ namespace STROOP.Models
                 _z = (float)value;
             return success;
         }
+
         private float _homeX;
+
         public float HomeX
         {
             get => _homeX;
@@ -144,6 +167,7 @@ namespace STROOP.Models
         }
 
         private float _homeY;
+
         public float HomeY
         {
             get => _homeY;
@@ -155,6 +179,7 @@ namespace STROOP.Models
         }
 
         private float _homeZ;
+
         public float HomeZ
         {
             get => _homeZ;
@@ -166,9 +191,13 @@ namespace STROOP.Models
         }
 
         public double DistanceToMarioCalculated { get; private set; }
+
         #endregion
+
         #region Rotation
+
         private ushort _facingYaw;
+
         public ushort FacingYaw
         {
             get => _facingYaw;
@@ -182,6 +211,7 @@ namespace STROOP.Models
         public override double Angle => FacingYaw;
 
         private ushort _facingPitch;
+
         public ushort FacingPitch
         {
             get => _facingPitch;
@@ -191,7 +221,9 @@ namespace STROOP.Models
                     _facingPitch = value;
             }
         }
+
         private ushort _facingRoll;
+
         public ushort FacingRoll
         {
             get => _facingRoll;
@@ -201,9 +233,13 @@ namespace STROOP.Models
                     _facingRoll = value;
             }
         }
+
         #endregion
+
         #region Statuses
+
         private uint _releaseStatus;
+
         public uint ReleaseStatus
         {
             get => Config.Stream.GetUInt32(Address + ObjectConfig.ReleaseStatusOffset);
@@ -215,6 +251,7 @@ namespace STROOP.Models
         }
 
         private uint _interactionStatus;
+
         public uint InteractionStatus
         {
             get => Config.Stream.GetUInt32(Address + ObjectConfig.InteractionStatusOffset);
@@ -224,9 +261,11 @@ namespace STROOP.Models
                     _interactionStatus = value;
             }
         }
+
         #endregion
 
         private uint _processedNextLink;
+
         public uint ProcessedNextLink
         {
             get => _processedNextLink;
@@ -238,6 +277,7 @@ namespace STROOP.Models
         }
 
         private uint _processedPrevLink;
+
         public uint ProcessedPrevLink
         {
             get => _processedPrevLink;
@@ -274,11 +314,13 @@ namespace STROOP.Models
             else
                 SegmentedBehavior = 0x13000000 + (uint)behaviorOffset;
 
-            uint behaviorAddress = SegmentedBehavior == 0 ? 0 : RomVersionConfig.SwitchReverseMap(
-                SegmentedBehavior,
-                Config.ObjectAssociations.AlignJPBehavior(SegmentedBehavior),
-                SegmentedBehavior, // Shindou objects are the same as U
-                SegmentedBehavior);
+            uint behaviorAddress = SegmentedBehavior == 0
+                ? 0
+                : RomVersionConfig.SwitchReverseMap(
+                    SegmentedBehavior,
+                    Config.ObjectAssociations.AlignJPBehavior(SegmentedBehavior),
+                    SegmentedBehavior, // Shindou objects are the same as U
+                    SegmentedBehavior);
 
             BehaviorCriteria = new BehaviorCriteria()
             {

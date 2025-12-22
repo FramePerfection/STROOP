@@ -7,6 +7,7 @@ using STROOP.Structs;
 using STROOP.Models;
 using System.Windows.Forms;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -65,14 +66,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 _objName,
                 targetStrip,
                 () => Config.StroopMainForm.ObjectSlotsManager.GetLoadedObjectsWithPredicate(predicate).ConvertAll(obj => PositionAngle.Obj(obj.Address))
-                );
+            );
         }
 
         public override Lazy<Image> GetInternalImage()
         {
-            return _iconType == MapTrackerIconType.ObjectSlotImage ?
-                _objImage :
-                _objMapImage;
+            return _iconType == MapTrackerIconType.ObjectSlotImage ? _objImage : _objMapImage;
         }
 
         public override string GetName() => PositionAngle.NameOfMultiple(positionAngleProvider(), $"All {_objName}");
@@ -92,11 +91,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             List<ObjectDataModel> objs = Config.StroopMainForm.ObjectSlotsManager.GetLoadedObjectsWithPredicate(predicate);
             return objs.ConvertAll(obj =>
-                    ((float)obj.X, (float)obj.Y, (float)obj.Z,
+                ((float)obj.X, (float)obj.Y, (float)obj.Z,
                     (float)obj.FacingYaw,
                     Config.ObjectAssociations.GetObjectMapImage(obj.BehaviorCriteria),
                     hoverData.currentPositionAngle != null && obj.Address == PositionAngle.GetObjectAddress(hoverData.currentPositionAngle) ? ObjectUtilities.HoverAlpha() : 1
-                    ));
+                ));
         }
 
         public override bool ParticipatesInGlobalIconSize() => true;

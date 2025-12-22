@@ -28,7 +28,8 @@ namespace STROOP.Tabs
         {
             base.InitializeTab();
 
-            _guiList = XmlConfigParser.CreateInputImageAssocList(@"Config/InputImageAssociations.xml"); ;
+            _guiList = XmlConfigParser.CreateInputImageAssocList(@"Config/InputImageAssociations.xml");
+            ;
 
             inputDisplayPanel.SetInputDisplayGui(_guiList);
         }

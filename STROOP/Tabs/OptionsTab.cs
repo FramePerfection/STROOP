@@ -10,7 +10,6 @@ namespace STROOP.Tabs
 {
     public partial class OptionsTab : STROOPTab
     {
-
         readonly List<SavedSettingsConfig.SavedVariable<bool>> _savedSettingsVariables;
         readonly List<ToolStripMenuItem> _savedSettingsItemList;
 
@@ -95,10 +94,8 @@ namespace STROOP.Tabs
             {
                 checkedListBoxObjectSlotOverlaysToShow.Items.Add(objectSlotOverlayTextList[i], objectSlotOverlayGetterList[i]());
             }
-            checkedListBoxObjectSlotOverlaysToShow.ItemCheck += (sender, e) =>
-            {
-                objectSlotOverlaySetterList[e.Index](e.NewValue == CheckState.Checked);
-            };
+
+            checkedListBoxObjectSlotOverlaysToShow.ItemCheck += (sender, e) => { objectSlotOverlaySetterList[e.Index](e.NewValue == CheckState.Checked); };
 
             Action<bool> setAllObjectSlotOverlays = (bool value) =>
             {

@@ -6,23 +6,23 @@
     <VerticalInputImageDirectory>Resources\Input Images\Vertical\</VerticalInputImageDirectory>
   </Config>
   <InputImages>
-	<Button name="A" path="ButtonA.png"/>
-	<Button name="B" path="ButtonB.png"/>
-	<Button name="Z" path="ButtonZ.png"/>
-	<Button name="Start" path="ButtonStart.png"/>
-	<Button name="R" path="ButtonR.png"/>
-	<Button name="L" path="ButtonL.png"/>
-	<Button name="CUp" path="ButtonCUp.png"/>
-	<Button name="CDown" path="ButtonCDown.png"/>
-	<Button name="CLeft" path="ButtonCLeft.png"/>
-	<Button name="CRight" path="ButtonCRight.png"/>
-	<Button name="DUp" path="ButtonDUp.png"/>
-	<Button name="DDown" path="ButtonDDown.png"/>
-	<Button name="DLeft" path="ButtonDLeft.png"/>
-	<Button name="DRight" path="ButtonDRight.png"/>
-	<Button name="Unused1" path="ButtonU1.png"/>
-	<Button name="Unused2" path="ButtonU2.png"/>
-  
+    <Button name="A" path="ButtonA.png"/>
+    <Button name="B" path="ButtonB.png"/>
+    <Button name="Z" path="ButtonZ.png"/>
+    <Button name="Start" path="ButtonStart.png"/>
+    <Button name="R" path="ButtonR.png"/>
+    <Button name="L" path="ButtonL.png"/>
+    <Button name="CUp" path="ButtonCUp.png"/>
+    <Button name="CDown" path="ButtonCDown.png"/>
+    <Button name="CLeft" path="ButtonCLeft.png"/>
+    <Button name="CRight" path="ButtonCRight.png"/>
+    <Button name="DUp" path="ButtonDUp.png"/>
+    <Button name="DDown" path="ButtonDDown.png"/>
+    <Button name="DLeft" path="ButtonDLeft.png"/>
+    <Button name="DRight" path="ButtonDRight.png"/>
+    <Button name="Unused1" path="ButtonU1.png"/>
+    <Button name="Unused2" path="ButtonU2.png"/>
+
     <ControlStick path="ControlStick.png"/>
     <Controller path="Controller.png"/>
   </InputImages>

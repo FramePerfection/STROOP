@@ -1,8 +1,8 @@
 <Trackers>
   <SemaphoreMario>
-    <Size value="25" />
-    <Color value="FFF0F0F0" />
-    <OutlineColor value="FF000000" />
-    <OutlineWidth value="1" />
+    <Size value="25"/>
+    <Color value="FFF0F0F0"/>
+    <OutlineColor value="FF000000"/>
+    <OutlineWidth value="1"/>
   </SemaphoreMario>
 </Trackers>

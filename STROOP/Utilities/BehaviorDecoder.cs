@@ -116,7 +116,7 @@ namespace STROOP.Utilities
             { BehaviorCommandType.SpawnObject, 12 },
             { BehaviorCommandType.SetHome, 4 },
             { BehaviorCommandType.Cmd_2E, 8 },
-            { BehaviorCommandType.Cmd_2F, 8},
+            { BehaviorCommandType.Cmd_2F, 8 },
             { BehaviorCommandType.SetPhysics, 20 },
             { BehaviorCommandType.Cmd_31, 8 },
             { BehaviorCommandType.SetScaleUniform, 4 },
@@ -129,16 +129,16 @@ namespace STROOP.Utilities
 
         static Dictionary<short, string> OffsetNames = new Dictionary<short, string>()
         {
-            {0x8C, "flags"},
-            {0x9C, "collision_timer"},
-            {0xA0, "x"},
-            {0xA4, "y"},
-            {0xA8, "z"},
-            {0xAC, "x_speed"},
-            {0xB0, "y_speed"},
-            {0xB4, "z_speed"},
-            {0xB8, "h_speed"},
-            {0xE4, "gravity"},
+            { 0x8C, "flags" },
+            { 0x9C, "collision_timer" },
+            { 0xA0, "x" },
+            { 0xA4, "y" },
+            { 0xA8, "z" },
+            { 0xAC, "x_speed" },
+            { 0xB0, "y_speed" },
+            { 0xB4, "z_speed" },
+            { 0xB8, "h_speed" },
+            { 0xE4, "gravity" },
         };
 
         private static string GetOffsetName(short offset)
@@ -160,22 +160,22 @@ namespace STROOP.Utilities
                 decoded += DecodeLine(ref nextAddress);
             }
 
-            return maxDecode == 0 ? null : decoded; 
+            return maxDecode == 0 ? null : decoded;
         }
 
         static int _indentationLevel = 0;
+
         static string DecodeLine(ref int lineAddress)
         {
             bool incrementIndentation = false;
             string decoded = "";
-            uint address = (uint) lineAddress;
+            uint address = (uint)lineAddress;
             var stream = Config.Stream;
 
             // Get command
             int cmdByte = stream.GetByte(address++);
-            BehaviorCommandType? cmd = typeof(BehaviorCommandType).IsEnumDefined(cmdByte) ? 
-                (BehaviorCommandType?) cmdByte : null;
-            
+            BehaviorCommandType? cmd = typeof(BehaviorCommandType).IsEnumDefined(cmdByte) ? (BehaviorCommandType?)cmdByte : null;
+
             switch (cmd)
             {
                 case BehaviorCommandType.Start:
@@ -318,11 +318,12 @@ namespace STROOP.Utilities
             decoded = $"{cmdByte:X2} {indentation}{decoded}\n";
 
             // Incremet address
-            lineAddress += cmd.HasValue && BehaviorCommandLength.ContainsKey(cmd.Value) 
-                ? BehaviorCommandLength[cmd.Value] : 4;
+            lineAddress += cmd.HasValue && BehaviorCommandLength.ContainsKey(cmd.Value)
+                ? BehaviorCommandLength[cmd.Value]
+                : 4;
 
             // Check for end
-            switch(cmd)
+            switch (cmd)
             {
                 case BehaviorCommandType.LoopEnd:
                     lineAddress = -1; // End 

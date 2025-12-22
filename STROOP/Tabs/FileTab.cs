@@ -9,9 +9,34 @@ namespace STROOP.Tabs
 {
     public partial class FileTab : STROOPTab
     {
-        public enum FileMode { FileA, FileB, FileC, FileD, FileASaved, FileBSaved, FileCSaved, FileDSaved };
-        private enum AllCoinsMeaning { Coins100, Coins255, MaxWithoutGlitches, MaxWithGlitches };
-        private enum FileCategory { Stars, Cannons, Doors, Coins, Misc };
+        public enum FileMode
+        {
+            FileA,
+            FileB,
+            FileC,
+            FileD,
+            FileASaved,
+            FileBSaved,
+            FileCSaved,
+            FileDSaved
+        };
+
+        private enum AllCoinsMeaning
+        {
+            Coins100,
+            Coins255,
+            MaxWithoutGlitches,
+            MaxWithGlitches
+        };
+
+        private enum FileCategory
+        {
+            Stars,
+            Cannons,
+            Doors,
+            Coins,
+            Misc
+        };
 
         uint CurrentFileAddress => FileConfig.CurrentFileAddress;
 
@@ -79,21 +104,21 @@ namespace STROOP.Tabs
             currentAllCoinsMeaning = AllCoinsMeaning.Coins100;
 
             radioButtonFileA.Click
-               += (sender, e) => FileMode_Click(FileMode.FileA);
+                += (sender, e) => FileMode_Click(FileMode.FileA);
             radioButtonFileB.Click
-               += (sender, e) => FileMode_Click(FileMode.FileB);
+                += (sender, e) => FileMode_Click(FileMode.FileB);
             radioButtonFileC.Click
-               += (sender, e) => FileMode_Click(FileMode.FileC);
+                += (sender, e) => FileMode_Click(FileMode.FileC);
             radioButtonFileD.Click
-               += (sender, e) => FileMode_Click(FileMode.FileD);
+                += (sender, e) => FileMode_Click(FileMode.FileD);
             radioButtonFileASaved.Click
-               += (sender, e) => FileMode_Click(FileMode.FileASaved);
+                += (sender, e) => FileMode_Click(FileMode.FileASaved);
             radioButtonFileBSaved.Click
-               += (sender, e) => FileMode_Click(FileMode.FileBSaved);
+                += (sender, e) => FileMode_Click(FileMode.FileBSaved);
             radioButtonFileCSaved.Click
-               += (sender, e) => FileMode_Click(FileMode.FileCSaved);
+                += (sender, e) => FileMode_Click(FileMode.FileCSaved);
             radioButtonFileDSaved.Click
-               += (sender, e) => FileMode_Click(FileMode.FileDSaved);
+                += (sender, e) => FileMode_Click(FileMode.FileDSaved);
 
 
             // stars
@@ -268,13 +293,13 @@ namespace STROOP.Tabs
 
             // everything coin score radio buttons
             radioButtonAllCoinsMeaning100Coins.Click
-               += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.Coins100; };
+                += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.Coins100; };
             radioButtonAllCoinsMeaning255Coins.Click
-               += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.Coins255; };
+                += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.Coins255; };
             radioButtonAllCoinsMeaningMaxWithoutGlitches.Click
-               += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.MaxWithoutGlitches; };
+                += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.MaxWithoutGlitches; };
             radioButtonAllCoinsMeaningMaxWithGlitches.Click
-               += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.MaxWithGlitches; };
+                += (sender, e) => { currentAllCoinsMeaning = AllCoinsMeaning.MaxWithGlitches; };
         }
 
         public void DoEverything()
@@ -447,6 +472,7 @@ namespace STROOP.Tabs
                 byte b = Config.Stream.GetByte(fileAddress + i);
                 checksum += b;
             }
+
             return checksum;
         }
 
@@ -476,6 +502,7 @@ namespace STROOP.Tabs
                 byte b = Config.Stream.GetByte(nonSavedAddress + i);
                 Config.Stream.SetValue(b, savedAddress + i);
             }
+
             Config.Stream.SetValue(FileConfig.ChecksumConstantValue, savedAddress + FileConfig.ChecksumConstantOffset);
             Config.Stream.SetValue(checksum, savedAddress + FileConfig.ChecksumOffset);
         }
@@ -505,9 +532,7 @@ namespace STROOP.Tabs
 
         private void FileCopyButton_Click(object sender, EventArgs e)
         {
-            uint addressToCopy = checkBoxInGameCopyPaste.Checked ?
-                GetNonSavedFileAddress() :
-                getFileAddress();
+            uint addressToCopy = checkBoxInGameCopyPaste.Checked ? GetNonSavedFileAddress() : getFileAddress();
             _copiedFile = GetBufferedBytes(addressToCopy);
         }
 
@@ -516,9 +541,7 @@ namespace STROOP.Tabs
             if (_copiedFile == null) return;
 
             uint nonSavedAddress = GetNonSavedFileAddress();
-            List<uint> addressesToPaste = checkBoxInGameCopyPaste.Checked ?
-                new List<uint> { nonSavedAddress, nonSavedAddress + FileConfig.FileStructSize } :
-                new List<uint> { CurrentFileAddress };
+            List<uint> addressesToPaste = checkBoxInGameCopyPaste.Checked ? new List<uint> { nonSavedAddress, nonSavedAddress + FileConfig.FileStructSize } : new List<uint> { CurrentFileAddress };
 
             foreach (uint addressToPaste in addressesToPaste)
             {
@@ -534,6 +557,7 @@ namespace STROOP.Tabs
             {
                 bufferedBytes[i] = Config.Stream.GetByte(fileAddress + (uint)i);
             }
+
             return bufferedBytes;
         }
 
@@ -581,10 +605,12 @@ namespace STROOP.Tabs
                 {
                     setValues(_courseStarsAddressOffsets[i], _courseStarsMasks[i], setOn);
                 }
+
                 if (fileCategories.Contains(FileCategory.Cannons))
                 {
                     setValues(_courseCannonAddressOffsets[i], _courseCannonMasks[i], setOn);
                 }
+
                 if (fileCategories.Contains(FileCategory.Doors))
                 {
                     setValues(_courseDoorAddressOffsets[i], _courseDoorMasks[i], setOn);

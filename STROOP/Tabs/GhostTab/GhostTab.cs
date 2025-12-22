@@ -7,6 +7,7 @@ using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using System.Linq;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.GhostTab
 {
@@ -152,6 +153,7 @@ namespace STROOP.Tabs.GhostTab
                         Array.Copy(BitConverter.GetBytes((ushort)0), 0, buffer, i * 0x20 + 0x1E, 2);
                     }
                 }
+
                 if (updateGhostData)
                 {
                     Config.Stream.WriteRam(buffer, (UIntPtr)(bufferBaseAddress + ghostIndex * 0x1000), EndiannessType.Little);
@@ -258,11 +260,7 @@ namespace STROOP.Tabs.GhostTab
 
             ghostHack.UpdateEnabledStatus();
             bool enabled = ghostHack.Status != RomHack.EnabledStatus.Disabled;
-            labelHackActiveState.Text = (ghostsActive && enabled) ?
-                                         "Ghost hack is enabled." :
-                                         (enabled ?
-                                         "Ghost hack is enabled\nbut not running.\nInside a level,\nsave state and load state,\nthen frame advance." :
-                                         "Ghost hack is disabled.");
+            labelHackActiveState.Text = (ghostsActive && enabled) ? "Ghost hack is enabled." : (enabled ? "Ghost hack is enabled\nbut not running.\nInside a level,\nsave state and load state,\nthen frame advance." : "Ghost hack is disabled.");
             buttonDisableGhostHack.Enabled = enabled;
 
             return true;
@@ -296,7 +294,7 @@ namespace STROOP.Tabs.GhostTab
                 var selectedGhosts = GetSelectedGhosts().ToArray();
                 var nameRepetitions = new Dictionary<string, Wrapper<int>>();
                 IEnumerable<(Ghost, string)> ghostFileNames =
-                        selectedGhosts.Length == 1
+                    selectedGhosts.Length == 1
                         ? new[] { (selectedGhost, dlg.FileName) }
                         : selectedGhosts.ConvertAll(
                             g =>
@@ -310,7 +308,7 @@ namespace STROOP.Tabs.GhostTab
                                 repeatCount.value += 1;
                                 return (g, $"{dlg.FileName.Substring(0, dlg.FileName.Length - ".ghost".Length)}.{g.name}{repetitonString}.ghost");
                             }
-                            );
+                        );
 
                 foreach (var fn in ghostFileNames)
                     using (var wr = new BinaryWriter(new FileStream(fn.Item2, FileMode.Create)))
@@ -355,7 +353,7 @@ namespace STROOP.Tabs.GhostTab
         private void buttonDisableGhostHack_Click(object sender, EventArgs e)
         {
             var txt =
-@"Warning!
+                @"Warning!
 Disabling the ghost hack incorrectly will result in a game crash.
 It is recommended that you load a savestate without the hack enabled instead.
 If the game is not running in ""Pure Interpreter"" mode, FOLLOW THE STEPS EXACTLY.
@@ -369,6 +367,7 @@ Are you sure you want to continue?";
         }
 
         bool suspendHandlers;
+
         private void numericUpDownStartOfPlayback_ValueChanged(object sender, EventArgs e)
         {
             if (!suspendHandlers)
@@ -426,7 +425,7 @@ Are you sure you want to continue?";
             if (ParseWithValidationMessage(textBoxPoolAddr1.Text, out var poolAddr1, "Pool Address 1")
                 && ParseWithValidationMessage(textBoxPoolAddr2.Text, out var poolAddr2, "Pool Address 2")
                 && ParseWithValidationMessage(textBoxPoolSize.Text, out var poolSize, "Pool Size")
-                )
+               )
             {
                 var requiredSpace = poolSize + 0x50;
                 var warningTextBuilder = new System.Text.StringBuilder();

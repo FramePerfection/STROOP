@@ -37,8 +37,8 @@ namespace STROOP.Utilities
         {
             return AskQuestion(
                 String.Format("You are about to paste {0} inputs. " +
-                    "Pasting more than {1} inputs at a time can be slow. " +
-                    "Are you sure you wish to proceed?", numInputs, M64Config.PasteWarningLimit),
+                              "Pasting more than {1} inputs at a time can be slow. " +
+                              "Are you sure you wish to proceed?", numInputs, M64Config.PasteWarningLimit),
                 "High Paste Count Warning");
         }
 
@@ -46,10 +46,10 @@ namespace STROOP.Utilities
         {
             return AskQuestion(
                 "You are about to save the variables in place. " +
-                    "This action will replace the default variables of this tab with the current set of variables. " +
-                    "Then from now on, STROOP will open with this set of variables in this tab. " +
-                    "This action cannot be undone, except by re-downloading STROOP. " +
-                    "Are you sure you wish to proceed?",
+                "This action will replace the default variables of this tab with the current set of variables. " +
+                "Then from now on, STROOP will open with this set of variables in this tab. " +
+                "This action cannot be undone, except by re-downloading STROOP. " +
+                "Are you sure you wish to proceed?",
                 "Save Variables In Place Warning");
         }
 
@@ -80,6 +80,7 @@ namespace STROOP.Utilities
             {
                 dialog.InitialDirectory = path;
             }
+
             return dialog;
         }
 
@@ -100,6 +101,7 @@ namespace STROOP.Utilities
                 if (result != DialogResult.OK) return new List<XElement>();
                 fileName = openFileDialog.FileName;
             }
+
             XDocument varXml = XDocument.Load(fileName);
             return ConvertDocumentIntoElements(varXml);
         }
@@ -114,6 +116,7 @@ namespace STROOP.Utilities
                 if (result != DialogResult.OK) return;
                 fileName = saveFileDialog.FileName;
             }
+
             XDocument document = ConvertElementsIntoDocument(xmlName, elements);
             document.Save(fileName);
         }
@@ -157,6 +160,7 @@ namespace STROOP.Utilities
         }
 
         public delegate bool Parser<T>(string s, out T result);
+
         public static void UpdateNumberFromDialog<T>(
             ref T number,
             string textboxText = "",
@@ -168,13 +172,14 @@ namespace STROOP.Utilities
             if (decimal.TryParse(str, out var dec))
                 number = (T)Convert.ChangeType(dec, typeof(T));
         }
+
         public static void UpdateNumberFromDialog<T>(
             ref T number,
             Parser<T> parser,
             string textboxText = "",
             string labelText = "Enter Value:",
             string buttonText = "OK"
-            )
+        )
         {
             var str = GetStringFromDialog(textboxText, labelText, buttonText);
             if (str == null) return;

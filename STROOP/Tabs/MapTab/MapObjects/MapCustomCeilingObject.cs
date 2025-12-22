@@ -7,7 +7,7 @@ using STROOP.Models;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
-    [ObjectDescription("Custom Ceiling Triangles", "Triangles",  nameof(Create))]
+    [ObjectDescription("Custom Ceiling Triangles", "Triangles", nameof(Create))]
     public class MapCustomCeilingObject : MapCeilingObject
     {
         private readonly List<uint> _triAddressList;

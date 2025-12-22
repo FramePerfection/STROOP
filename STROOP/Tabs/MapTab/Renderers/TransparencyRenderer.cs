@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.Collections.Generic;
+using OpenTK.Mathematics;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab.Renderers
@@ -45,8 +46,8 @@ namespace STROOP.Tabs.MapTab.Renderers
                 colorBuffer = GL.GenTexture();
 
                 canStencil = true;
-                //Generate the Framebuffer for creating the masks front to back
-                tryMakeMaskFBO:
+            //Generate the Framebuffer for creating the masks front to back
+            tryMakeMaskFBO:
                 maskFBO = GL.GenFramebuffer();
                 stencilBuffer = GL.GenRenderbuffer();
                 renderTexture = GL.GenTexture();

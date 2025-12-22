@@ -23,7 +23,7 @@
   <Data type="byte" offset="0x00" base="InputCurrent" subclass="Boolean" mask="0x01" color="Grey">Current D></Data>
   <Data type="byte" offset="0x01" base="InputCurrent" subclass="Boolean" mask="0x40" color="Purple">Current U1</Data>
   <Data type="byte" offset="0x01" base="InputCurrent" subclass="Boolean" mask="0x80" color="Purple">Current U2</Data>
-  
+
   <Data type="byte" offset="0x00" base="InputJustPressed" subclass="Boolean" mask="0x80" color="Blue">Just Pressed A</Data>
   <Data type="byte" offset="0x00" base="InputJustPressed" subclass="Boolean" mask="0x40" color="Green">Just Pressed B</Data>
   <Data type="byte" offset="0x00" base="InputJustPressed" subclass="Boolean" mask="0x20" color="Grey">Just Pressed Z</Data>
@@ -40,7 +40,7 @@
   <Data type="byte" offset="0x00" base="InputJustPressed" subclass="Boolean" mask="0x01" color="Grey">Just Pressed D></Data>
   <Data type="byte" offset="0x01" base="InputJustPressed" subclass="Boolean" mask="0x40" color="Purple">Just Pressed U1</Data>
   <Data type="byte" offset="0x01" base="InputJustPressed" subclass="Boolean" mask="0x80" color="Purple">Just Pressed U2</Data>
-  
+
   <Data type="sbyte" offset="0x02" base="InputBuffered">Buffered X</Data>
   <Data type="sbyte" offset="0x03" base="InputBuffered">Buffered Y</Data>
   <Data type="byte" offset="0x00" base="InputBuffered" subclass="Boolean" mask="0x80" color="Blue">Buffered A</Data>
@@ -59,5 +59,5 @@
   <Data type="byte" offset="0x00" base="InputBuffered" subclass="Boolean" mask="0x01" color="Grey">Buffered D></Data>
   <Data type="byte" offset="0x01" base="InputBuffered" subclass="Boolean" mask="0x40" color="Purple">Buffered U1</Data>
   <Data type="byte" offset="0x01" base="InputBuffered" subclass="Boolean" mask="0x80" color="Purple">Buffered U2</Data>
-  
+
 </VarData>

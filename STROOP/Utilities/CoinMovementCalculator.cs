@@ -46,6 +46,7 @@ namespace STROOP.Utilities
                     }
                 }
             }
+
             Config.Print("END");
         }
 
@@ -72,13 +73,19 @@ namespace STROOP.Utilities
                         numCoinsPassingThroughFloor++;
                     }
                 }
+
                 prevStates = states;
             }
 
             return numCoinsPassingThroughFloor;
         }
 
-        public enum FloorRelativity { ABOVE, INSIDE, BELOW };
+        public enum FloorRelativity
+        {
+            ABOVE,
+            INSIDE,
+            BELOW
+        };
 
         public static List<CoinState> GetCoinStates(int rngIndex, float x, float y, float z)
         {
@@ -176,8 +183,8 @@ namespace STROOP.Utilities
 
                 (double newXSpeed2, double newZSpeed2) = MoreMath.GetComponentsFromVector(
                     newHSpeed, MoreMath.TruncateToMultipleOf16(newAngle));
-                newXSpeed = (float) newXSpeed2;
-                newZSpeed = (float) newZSpeed2;
+                newXSpeed = (float)newXSpeed2;
+                newZSpeed = (float)newZSpeed2;
 
                 return new CoinState(
                     newX, newY, newZ,

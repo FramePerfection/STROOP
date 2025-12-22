@@ -116,6 +116,7 @@ namespace STROOP.Structs
             {
                 startingIndexes.Add(289 + i);
             }
+
             for (int i = 0; i < range; i++)
             {
                 startingIndexes.Add(-382 - i);
@@ -198,6 +199,7 @@ namespace STROOP.Structs
                     intermediateAngles.Add(pendulum._angle);
                     if (pendulum._angularVelocity == 0) break;
                 }
+
                 return intermediateAngles;
             }
         }

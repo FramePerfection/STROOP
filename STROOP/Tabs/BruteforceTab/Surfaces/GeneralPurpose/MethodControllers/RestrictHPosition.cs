@@ -2,9 +2,8 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using OpenTK;
-
+using OpenTK.Mathematics;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab;
 using STROOP.Utilities;
@@ -19,15 +18,20 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
             public bool setBase = false;
             readonly RestrictHPositionMapElement parent;
 
-            public HoverData(RestrictHPositionMapElement parent) { this.parent = parent; }
+            public HoverData(RestrictHPositionMapElement parent)
+            {
+                this.parent = parent;
+            }
 
-            public void AddContextMenuItems(MapTab.MapTab tab, ContextMenuStrip menu) { }
+            public void AddContextMenuItems(MapTab.MapTab tab, ContextMenuStrip menu)
+            {
+            }
 
             public DragMask CanDrag() => parent.dragMask;
 
             public void DragTo(Vector3 position, bool setY)
             {
-                bool snapEnabled = !KeyboardUtilities.IsAltHeld();
+                bool snapEnabled = !GlobalKeyboard.IsAltDown();
                 if (setBase)
                 {
                     position.Y = parent.arrowTip.Y;
@@ -49,6 +53,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                                 snapAngle = snapTestAngle;
                             }
                         }
+
                         if (minSnapDist < snapMargin)
                             parent.direction = -new Vector3((float)Math.Cos(snapAngle), 0, (float)Math.Sin(snapAngle));
                     }
@@ -59,14 +64,21 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                     if (snapEnabled)
                         parent.arrowTip = new Vector3((float)Math.Round(parent.arrowTip.X), parent.arrowTip.Y, (float)Math.Round(parent.arrowTip.Z));
                 }
+
                 parent.RecalculateParameters();
             }
 
-            public void LeftClick(Vector3 position) { }
+            public void LeftClick(Vector3 position)
+            {
+            }
 
-            public void RightClick(Vector3 position) { }
+            public void RightClick(Vector3 position)
+            {
+            }
 
-            public void SetLookAt(Vector3 lookAt) { }
+            public void SetLookAt(Vector3 lookAt)
+            {
+            }
         }
 
         RestrictHPosition parent;
@@ -87,6 +99,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                     hoverData.setBase = true;
                     return hoverData;
                 }
+
                 var andereDist = Vector3.Dot(graphics.mapCursorPosition, direction) - Vector3.Dot(arrowTip, direction);
                 if (Math.Abs(andereDist) < 15 / graphics.MapViewScaleValue)
                 {
@@ -94,6 +107,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                     return hoverData;
                 }
             }
+
             return null;
         }
 
@@ -155,6 +169,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
                     StringAlignment.Center);
             });
         }
+
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
 
         void RecalculateParameters()

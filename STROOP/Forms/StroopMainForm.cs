@@ -21,7 +21,7 @@ namespace STROOP
     public partial class StroopMainForm : Form
     {
         // STROOP VERSION NAME
-        const string _version = "Refactor 0.6.3";
+        const string _version = "Refactor 0.7.0";
 
         public event Action Updating;
 
@@ -34,13 +34,14 @@ namespace STROOP
         int _resizeObjSlotTime = 0;
         readonly bool isMainForm;
         List<Process> _availableProcesses = new List<Process>();
-            
+
         public readonly SearchVariableDialog searchVariableDialog;
-        
+
         public StroopMainForm(bool isMainForm)
         {
             this.searchVariableDialog = new SearchVariableDialog(this);
             this.isMainForm = isMainForm;
+            GlobalKeyboard.AddForm(this);
             InitializeComponent();
             InitTabs();
             ObjectSlotsManager = new ObjectSlotsManager(this, tabControlMain);
@@ -54,6 +55,7 @@ namespace STROOP
                 searchVariableDialog.StartPosition = FormStartPosition.Manual;
                 searchVariableDialog.Location = PointToScreen(new Point(150, 150));
             }
+
             searchVariableDialog.Show();
             searchVariableDialog.Activate();
         }
@@ -71,14 +73,14 @@ namespace STROOP
 
             return Config.Emulators.Where(e => e.ProcessName.ToLower() == process.ProcessName.ToLower());
         }
-        
+
         private bool AttachToProcess(Process process)
         {
             if (process.HasExited)
             {
                 return false;
             }
-            
+
             var emulators = GetEmulatorCandidatesForProcess(process).ToArray();
 
             if (emulators.Length == 0)
@@ -124,10 +126,10 @@ namespace STROOP
             {
                 return $"{process.ProcessName} ({process.Id})";
             }
-            
+
             return process.MainWindowTitle;
         }
-        
+
         private void StroopMainForm_Load(object sender, EventArgs e)
         {
             Config.Stream.OnDisconnect += _sm64Stream_OnDisconnect;
@@ -169,7 +171,7 @@ namespace STROOP
         {
             tabControlMain.Click += (se, ev) =>
             {
-                if (KeyboardUtilities.IsCtrlHeld())
+                if (GlobalKeyboard.IsCtrlDown())
                 {
                     SavedSettingsConfig.RemoveTab(tabControlMain.SelectedTab);
                 }
@@ -274,7 +276,8 @@ namespace STROOP
             ControlUtilities.AddContextMenuStripFunctions(
                 trackBarObjSlotSize,
                 new List<string>() { "Reset to Default Object Slot Size" },
-                new List<Action>() {
+                new List<Action>()
+                {
                     () =>
                     {
                         trackBarObjSlotSize.Value = ObjectSlotsManager.DefaultSlotSize;
@@ -286,34 +289,31 @@ namespace STROOP
         private void _sm64Stream_WarnReadonlyOff(object sender, EventArgs e)
         {
             this.TryInvoke(new Action(() =>
+            {
+                var dr = MessageBox.Show("Warning! Editing variables and enabling hacks may cause the emulator to freeze. Turn off read-only mode?",
+                    "Turn Off Read-only Mode?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                switch (dr)
                 {
-                    var dr = MessageBox.Show("Warning! Editing variables and enabling hacks may cause the emulator to freeze. Turn off read-only mode?",
-                        "Turn Off Read-only Mode?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                    switch (dr)
-                    {
-                        case DialogResult.Yes:
-                            Config.Stream.Readonly = false;
-                            Config.Stream.ShowWarning = false;
-                            break;
+                    case DialogResult.Yes:
+                        Config.Stream.Readonly = false;
+                        Config.Stream.ShowWarning = false;
+                        break;
 
-                        case DialogResult.No:
-                            Config.Stream.ShowWarning = false;
-                            break;
+                    case DialogResult.No:
+                        Config.Stream.ShowWarning = false;
+                        break;
 
-                        case DialogResult.Cancel:
-                            break;
-                    }
-                }));
+                    case DialogResult.Cancel:
+                        break;
+                }
+            }));
         }
 
         private void _sm64Stream_OnDisconnect(object sender, EventArgs e)
         {
-            this.BeginInvoke(new Action(() =>
-            {
-                buttonRefresh_Click(this, new EventArgs());
-            }));
+            this.BeginInvoke(new Action(() => { buttonRefresh_Click(this, new EventArgs()); }));
         }
-        
+
         private List<Process> GetAvailableProcesses()
         {
             var AvailableProcesses = Process.GetProcesses();
@@ -332,7 +332,7 @@ namespace STROOP
                         if (!Config.Emulators.Any(e => e.ProcessName.ToLower() == p.ProcessName.ToLower()))
                             continue;
                     }
-                    
+
 
                     if (p.HasExited)
                         continue;
@@ -344,6 +344,7 @@ namespace STROOP
 
                 resortList.Add(p);
             }
+
             return resortList;
         }
 
@@ -357,6 +358,7 @@ namespace STROOP
                     UpdateGlobalConfig();
                     DataModels.Update();
                 }
+
                 FormManager.Update();
                 ObjectSlotsManager.Update();
                 //Config.InjectionManager.Update();
@@ -441,7 +443,7 @@ namespace STROOP
 
         private void buttonMoveTabLeft_Click(object sender, EventArgs e)
         {
-            if (KeyboardUtilities.IsCtrlHeld() || KeyboardUtilities.IsNumberHeld())
+            if (GlobalKeyboard.IsCtrlDown() || GlobalKeyboard.IsNumberDown())
             {
                 ObjectOrderingUtilities.Move(false);
             }
@@ -453,7 +455,7 @@ namespace STROOP
 
         private void buttonMoveTabRight_Click(object sender, EventArgs e)
         {
-            if (KeyboardUtilities.IsCtrlHeld() || KeyboardUtilities.IsNumberHeld())
+            if (GlobalKeyboard.IsCtrlDown() || GlobalKeyboard.IsNumberDown())
             {
                 ObjectOrderingUtilities.Move(true);
             }
@@ -482,12 +484,12 @@ namespace STROOP
         {
             buttonTabAdd.ContextMenuStrip.Show(Cursor.Position);
         }
-        
+
         private void contextMenuStripProcessesList_Opening(object sender, CancelEventArgs e)
         {
             itemShowSimilarProcesses.Checked = SavedSettingsConfig.ProcessListShowSimilarProcesses.value;
         }
-        
+
         private void itemShowSimilarProcesses_CheckedChanged(object sender, EventArgs e)
         {
             SavedSettingsConfig.ProcessListShowSimilarProcesses.value = itemShowSimilarProcesses.Checked;
@@ -507,7 +509,7 @@ namespace STROOP
             {
                 return;
             }
-            
+
             // If there is no selection, we automatically choose to the first one
             if (listBoxProcessesList.SelectedIndex == -1)
             {
@@ -554,13 +556,13 @@ namespace STROOP
             buttonRefresh_Click(this, new EventArgs());
             panelConnect.Visible = true;
         }
-        
+
         private void buttonRefreshAndConnect_Click(object sender, EventArgs e)
         {
             buttonRefresh_Click(sender, e);
             buttonConnect_Click(sender, e);
         }
-        
+
         private void listBoxProcessesList_DoubleClick(object sender, EventArgs e)
         {
             buttonConnect_Click(sender, e);
@@ -609,6 +611,7 @@ namespace STROOP
                     MessageBox.Show("Savestate is corrupted, not a savestate, or doesn't exist", "Invalid Savestate", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+
             labelProcessSelect.Text = "Connected To: " + Config.Stream.ProcessName;
             panelConnect.Visible = false;
         }
@@ -638,6 +641,7 @@ namespace STROOP
         }
 
         public T GetTab<T>() where T : Tabs.STROOPTab => (T)tabsByType[typeof(T)];
+
         public IEnumerable<Tabs.STROOPTab> EnumerateTabs()
         {
             foreach (var t in tabsByType)
@@ -652,6 +656,7 @@ namespace STROOP
                 Config.Stream.OnDisconnect -= _sm64Stream_OnDisconnect;
                 Config.Stream.WarnReadonlyOff -= _sm64Stream_WarnReadonlyOff;
             }
+
             if (isMainForm)
             {
                 if (Config.Stream != null)

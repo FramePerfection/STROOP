@@ -5,6 +5,7 @@ using OpenTK;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
 using System.Windows.Forms;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -41,6 +42,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     vertices.Add(new Vector3((float)x2, (float)y1, (float)z2));
                 }
             }
+
             return vertices;
         }
 
@@ -76,7 +78,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "UseRelativeAngles", _itemUseRelativeAngles.ToString());
                 SaveValueNode(node, "AngleDiff", _angleDiff.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

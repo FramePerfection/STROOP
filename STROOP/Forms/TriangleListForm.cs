@@ -46,16 +46,13 @@ namespace STROOP.Forms
         {
             dataGridView.Rows.Clear();
             List<(uint address, double dist)> dataList = _triAddressList.ConvertAll(address =>
-             {
-                 TriangleDataModel tri = TriangleDataModel.Create(address);
-                 double dist = tri.GetDistToMidpoint();
-                 return (address, dist);
-             });
-            dataList = Enumerable.OrderBy(dataList, data => data.dist).ToList();
-            dataList.ForEach(data =>
             {
-                dataGridView.Rows.Add(HexUtilities.FormatValue(data.address), Math.Round(data.dist, 3));
+                TriangleDataModel tri = TriangleDataModel.Create(address);
+                double dist = tri.GetDistToMidpoint();
+                return (address, dist);
             });
+            dataList = Enumerable.OrderBy(dataList, data => data.dist).ToList();
+            dataList.ForEach(data => { dataGridView.Rows.Add(HexUtilities.FormatValue(data.address), Math.Round(data.dist, 3)); });
             labelNumTriangles.Text = _triAddressList.Count + " Triangles";
         }
 
@@ -82,6 +79,7 @@ namespace STROOP.Forms
                 DialogUtilities.DisplayMessage("Attempted to remove twice in 1 second.", "Warning");
                 return;
             }
+
             _lastRemoveTime = removeTime;
 
             List<DataGridViewRow> rows = ControlUtilities.GetTableSelectedRows(dataGridView);

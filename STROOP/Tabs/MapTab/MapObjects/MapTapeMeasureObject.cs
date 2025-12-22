@@ -6,6 +6,7 @@ using STROOP.Structs.Configurations;
 using System.Windows.Forms;
 using OpenTK;
 using System.Linq;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -22,6 +23,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             MapTapeMeasureObject parent;
             public bool dragA;
             float cursorY;
+
             public TapeHoverData(MapTapeMeasureObject parent)
             {
                 this.parent = parent;
@@ -38,9 +40,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 parent.targetTracker.textBoxSize.Text = (parent.Size = (parent.a - parent.b).Length).ToString();
             }
 
-            public void SetLookAt(Vector3 lookAt) { }
+            public void SetLookAt(Vector3 lookAt)
+            {
+            }
 
-            public void LeftClick(Vector3 position) { }
+            public void LeftClick(Vector3 position)
+            {
+            }
 
             public void RightClick(Vector3 position)
             {
@@ -120,7 +126,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         protected override ContextMenuStrip GetContextMenuStrip(MapTracker targetTracker)
         {
             this.targetTracker = targetTracker;
-            
+
             var _contextMenuStrip = base.GetContextMenuStrip(targetTracker);
             _contextMenuStrip.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Enable dragging")?.PerformClick();
             return _contextMenuStrip;
@@ -140,7 +146,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 Vector3 _a = aProvider?.Invoke() ?? a;
                 Vector3 _b = bProvider?.Invoke() ?? b;
                 List<Vector3> ends = new List<Vector3>();
-                ends.AddRange(new[] {
+                ends.AddRange(new[]
+                {
                     new Vector3(float.NaN),
                     new Vector3(float.NaN, 0, float.NaN),
                     new Vector3(0, 0, float.NaN),
@@ -166,6 +173,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         nameString += "x";
                         colorIndex |= 1;
                     }
+
                     if (!float.IsNaN(end.Y))
                         p1.Y = p2.Y = end.Y == 0 ? p1.Y : p2.Y;
                     else
@@ -173,6 +181,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         nameString += "y";
                         colorIndex |= 2;
                     }
+
                     if (!float.IsNaN(end.Z))
                         p1.Z = p2.Z = end.Z == 0 ? p1.Z : p2.Z;
                     else
@@ -227,6 +236,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     return hoverData;
                 }
             }
+
             return null;
         }
     }

@@ -1,5 +1,5 @@
 ﻿/* TODO: Implement accordingly (maybe)
- * 
+ *
  * old ToString of PositionAngle
 public override string ToString()
 {
@@ -28,7 +28,7 @@ using STROOP.Structs.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Utilities
 {
@@ -58,7 +58,7 @@ namespace STROOP.Utilities
             CameraConfig.ZOffset,
             CameraConfig.FacingYawOffset,
             "Camera"
-            );
+        );
 
         public static PositionAngle CameraFocus = new MemoryPositionAngle(
             () => CameraConfig.StructAddress,
@@ -67,7 +67,7 @@ namespace STROOP.Utilities
             CameraConfig.FocusZOffset,
             CameraConfig.FacingYawOffset,
             "CameraFocus"
-            );
+        );
 
         public static PositionAngle CamHackCamera = new MemoryPositionAngle(
             () => CamHackConfig.StructAddress,
@@ -76,7 +76,7 @@ namespace STROOP.Utilities
             CamHackConfig.CameraZOffset,
             () => CamHackUtilities.GetCamHackYawFacing(),
             "CamHack Camera"
-            );
+        );
 
         public static PositionAngle CamHackFocus = new MemoryPositionAngle(
             () => CamHackConfig.StructAddress,
@@ -85,12 +85,13 @@ namespace STROOP.Utilities
             CamHackConfig.FocusZOffset,
             () => CamHackUtilities.GetCamHackYawFacing(),
             "CamHck Focus"
-            );
+        );
 
         public virtual Vector4 GetArrowColor(Vector4 baseColor) => baseColor;
 
         public static Dictionary<uint, (double, double, double, double, List<double>)> Schedule =
             new Dictionary<uint, (double, double, double, double, List<double>)>();
+
         public static int ScheduleOffset = 0;
 
         private static uint GetScheduleIndex()
@@ -101,7 +102,9 @@ namespace STROOP.Utilities
 
         public bool CompareType(PositionAngle other) => other == null ? false : (GetType() == other.GetType());
 
-        protected PositionAngle() { }
+        protected PositionAngle()
+        {
+        }
 
         public static PositionAngle Selected = new MemoryPositionAngle(
             () =>
@@ -114,7 +117,7 @@ namespace STROOP.Utilities
             ObjectConfig.YOffset,
             ObjectConfig.ZOffset,
             ObjectConfig.YawFacingOffset
-            );
+        );
 
         public static PositionAngle Custom(Vector3 position, ushort angle = 0) => new CustomPositionAngle(position, angle);
 
@@ -183,14 +186,19 @@ namespace STROOP.Utilities
 
         public static PositionAngle GoombaProjection(uint address) => new GoombaProjectionPositionAngle(address);
         public static PositionAngle Tri(uint address, uint index) => new TrianglePositionAngle(() => address, index);
+
         public static PositionAngle ObjTri(uint address, uint triangleIndex, uint projectionIndex) =>
             new TrianglePositionAngle(() => TriangleUtilities.GetTriangleAddressOfObjectTriangleIndex(address, (int)triangleIndex), projectionIndex);
+
         public static PositionAngle Wall(uint index) =>
             new TrianglePositionAngle(() => Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.WallTriangleOffset), index);
+
         public static PositionAngle Floor(uint index) =>
             new TrianglePositionAngle(() => Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.FloorTriangleOffset), index);
+
         public static PositionAngle Ceiling(uint index) =>
             new TrianglePositionAngle(() => Config.Stream.GetUInt32(MarioConfig.StructAddress + MarioConfig.CeilingTriangleOffset), index);
+
         public static PositionAngle Snow(uint index) => new SnowPositionAngle(index);
 
         public static PositionAngle Hybrid(PositionAngle posAngle1, PositionAngle posAngle2) => new HybridPositionAngle(() => posAngle1, () => posAngle2);
@@ -240,7 +248,7 @@ namespace STROOP.Utilities
                 return ObjHome(address.Value);
             }
             else if (parts.Count == 2 &&
-                (parts[0] == "objgfx" || parts[0] == "objectgfx" || parts[0] == "objgraphics" || parts[0] == "objectgraphics"))
+                     (parts[0] == "objgfx" || parts[0] == "objectgfx" || parts[0] == "objgraphics" || parts[0] == "objectgraphics"))
             {
                 uint? address = ParsingUtilities.ParseHexNullable(parts[1]);
                 if (!address.HasValue) return null;
@@ -348,6 +356,7 @@ namespace STROOP.Utilities
                 uint? ghostIndex = ParsingUtilities.ParseUIntNullable(parts[1]);
                 if (ghostIndex == null) return null;
                 var tab = AccessScope<StroopMainForm>.content.GetTab<Tabs.GhostTab.GhostTab>();
+
                 PositionAngle GetGhost()
                 {
                     int i = 0;
@@ -356,6 +365,7 @@ namespace STROOP.Utilities
                             return g;
                     return PositionAngle.NaN;
                 }
+
                 return new HybridPositionAngle(GetGhost, GetGhost);
             }
             else if (parts.Count == 1)
@@ -400,6 +410,7 @@ namespace STROOP.Utilities
                 }
                 else
                     n = posAngle.GetMapName();
+
                 if (count == 0)
                 {
                     result = n;
@@ -410,8 +421,10 @@ namespace STROOP.Utilities
                     if (result != n)
                         result = "Objects";
                 }
+
                 count++;
             }
+
             if (count == 0)
                 return nameIfNone == null ? "None" : nameIfNone;
 
@@ -427,7 +440,12 @@ namespace STROOP.Utilities
         public Vector3 position
         {
             get { return new Vector3((float)X, (float)Y, (float)Z); }
-            set { SetX(value.X); SetY(value.Y); SetZ(value.Z); }
+            set
+            {
+                SetX(value.X);
+                SetY(value.Y);
+                SetZ(value.Z);
+            }
         }
 
         public abstract double X { get; }
@@ -530,7 +548,7 @@ namespace STROOP.Utilities
 
         private static bool GetToggle()
         {
-            return KeyboardUtilities.IsCtrlHeld();
+            return GlobalKeyboard.IsCtrlDown();
         }
 
         public static bool SetDistance(PositionAngle p1, PositionAngle p2, double distance)

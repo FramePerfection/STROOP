@@ -23,25 +23,25 @@ namespace STROOP.Utilities
             GroupBox groupBox,
             string identifierSubString,
             Action<float, float, float, bool> actionMove)
-             => InitializeThreeDimensionController(
-                 coordinateSystem,
-                 allowRelativeOptions,
-                 groupBox,
-                 groupBox.Controls[$"button{identifierSubString}Xn"] as Button ?? groupBox.Controls[$"button{identifierSubString}Tn"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}Xp"] as Button ?? groupBox.Controls[$"button{identifierSubString}Tp"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}Zn"] as Button ?? groupBox.Controls[$"button{identifierSubString}Pn"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}Zp"] as Button ?? groupBox.Controls[$"button{identifierSubString}Pp"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}XnZn"] as Button ?? groupBox.Controls[$"button{identifierSubString}TnPn"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}XnZp"] as Button ?? groupBox.Controls[$"button{identifierSubString}TnPp"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}XpZn"] as Button ?? groupBox.Controls[$"button{identifierSubString}TpPn"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}XpZp"] as Button ?? groupBox.Controls[$"button{identifierSubString}TpPp"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}Yp"] as Button ?? groupBox.Controls[$"button{identifierSubString}Rn"] as Button,
-                 groupBox.Controls[$"button{identifierSubString}Yn"] as Button ?? groupBox.Controls[$"button{identifierSubString}Rp"] as Button,
-                 groupBox.Controls[$"textBox{identifierSubString}XZ"] as TextBox ?? groupBox.Controls[$"textBox{identifierSubString}TP"] as TextBox,
-                 groupBox.Controls[$"textBox{identifierSubString}Y"] as TextBox ?? groupBox.Controls[$"textBox{identifierSubString}R"] as TextBox,
-                 groupBox.Controls[$"checkBox{identifierSubString}Relative"] as CheckBox,
-                 actionMove
-                 );
+            => InitializeThreeDimensionController(
+                coordinateSystem,
+                allowRelativeOptions,
+                groupBox,
+                groupBox.Controls[$"button{identifierSubString}Xn"] as Button ?? groupBox.Controls[$"button{identifierSubString}Tn"] as Button,
+                groupBox.Controls[$"button{identifierSubString}Xp"] as Button ?? groupBox.Controls[$"button{identifierSubString}Tp"] as Button,
+                groupBox.Controls[$"button{identifierSubString}Zn"] as Button ?? groupBox.Controls[$"button{identifierSubString}Pn"] as Button,
+                groupBox.Controls[$"button{identifierSubString}Zp"] as Button ?? groupBox.Controls[$"button{identifierSubString}Pp"] as Button,
+                groupBox.Controls[$"button{identifierSubString}XnZn"] as Button ?? groupBox.Controls[$"button{identifierSubString}TnPn"] as Button,
+                groupBox.Controls[$"button{identifierSubString}XnZp"] as Button ?? groupBox.Controls[$"button{identifierSubString}TnPp"] as Button,
+                groupBox.Controls[$"button{identifierSubString}XpZn"] as Button ?? groupBox.Controls[$"button{identifierSubString}TpPn"] as Button,
+                groupBox.Controls[$"button{identifierSubString}XpZp"] as Button ?? groupBox.Controls[$"button{identifierSubString}TpPp"] as Button,
+                groupBox.Controls[$"button{identifierSubString}Yp"] as Button ?? groupBox.Controls[$"button{identifierSubString}Rn"] as Button,
+                groupBox.Controls[$"button{identifierSubString}Yn"] as Button ?? groupBox.Controls[$"button{identifierSubString}Rp"] as Button,
+                groupBox.Controls[$"textBox{identifierSubString}XZ"] as TextBox ?? groupBox.Controls[$"textBox{identifierSubString}TP"] as TextBox,
+                groupBox.Controls[$"textBox{identifierSubString}Y"] as TextBox ?? groupBox.Controls[$"textBox{identifierSubString}R"] as TextBox,
+                groupBox.Controls[$"checkBox{identifierSubString}Relative"] as CheckBox,
+                actionMove
+            );
 
         public static void InitializeThreeDimensionController(
             CoordinateSystem coordinateSystem,
@@ -172,6 +172,7 @@ namespace STROOP.Utilities
                 {
                     itemList[i].Checked = i == direction;
                 }
+
                 lastDirection = direction;
 
                 for (int i = 0; i < buttonList.Count; i++)
@@ -317,10 +318,7 @@ namespace STROOP.Utilities
                 scaleAggregateTextbox.Visible = showAggregate;
             };
 
-            Action actionAggregateCheckedChanged = () =>
-            {
-                setShowAggregate(aggregateCheckbox.Checked);
-            };
+            Action actionAggregateCheckedChanged = () => { setShowAggregate(aggregateCheckbox.Checked); };
 
             Action<string, string> setOperationSymbols = (string leftSymbol, string rightSymbol) =>
             {
@@ -510,6 +508,7 @@ namespace STROOP.Utilities
             {
                 dictionary.Add(itemValues[i], itemList[i]);
             }
+
             Action<T> valueAction = (T value) =>
             {
                 setterAction(value);
@@ -555,6 +554,7 @@ namespace STROOP.Utilities
             {
                 cells.Add(cell);
             }
+
             return cells.Min(cell => cell.RowIndex);
         }
 
@@ -566,6 +566,7 @@ namespace STROOP.Utilities
             {
                 cells.Add(cell);
             }
+
             return cells.Max(cell => cell.RowIndex);
         }
 
@@ -576,6 +577,7 @@ namespace STROOP.Utilities
             {
                 summedHeight += row.Height;
             }
+
             return summedHeight;
         }
 
@@ -601,6 +603,7 @@ namespace STROOP.Utilities
             {
                 rows.Add(row);
             }
+
             return rows;
         }
 
@@ -611,6 +614,7 @@ namespace STROOP.Utilities
             {
                 rows.Add(row);
             }
+
             return rows;
         }
 
@@ -620,6 +624,7 @@ namespace STROOP.Utilities
             {
                 control = control.Parent;
             }
+
             return (Form)control;
         }
 
@@ -629,6 +634,7 @@ namespace STROOP.Utilities
             {
                 control = control.Parent;
             }
+
             return (TabPage)control;
         }
 
@@ -660,6 +666,7 @@ namespace STROOP.Utilities
                 if (control is SplitContainer splitContainer)
                     return splitContainer;
             }
+
             return null;
         }
 
@@ -670,12 +677,13 @@ namespace STROOP.Utilities
                 if (child is SplitContainer)
                     return (SplitContainer)child;
             }
+
             return null;
         }
 
         public static SplitContainer GetDescendantSplitContainer(Control control, Orientation orientation, int? indexNullable = null)
         {
-            int index = indexNullable ?? (KeyboardUtilities.GetCurrentlyInputtedNumber() - 1) ?? 0;
+            int index = indexNullable ?? (GlobalKeyboard.GetCurrentlyInputtedNumber() - 1) ?? 0;
             List<SplitContainer> splitContainerList = GetAllDescendantSplitContainers(control);
             splitContainerList = splitContainerList.FindAll(
                 splitContainer => splitContainer.Visible);
@@ -698,11 +706,13 @@ namespace STROOP.Utilities
                 {
                     splitContainerList.Add(splitContainer);
                 }
+
                 foreach (Control child in dequeue.Controls)
                 {
                     queue.Add(child);
                 }
             }
+
             return splitContainerList;
         }
 
@@ -714,6 +724,7 @@ namespace STROOP.Utilities
                 if (TypeUtilities.IsSubtype(field.FieldType, typeof(T)))
                     valueList.Add((T)field.GetValue(instance));
             }
+
             return valueList;
         }
 
@@ -739,6 +750,7 @@ namespace STROOP.Utilities
                 List<List<T>> subsets = GetSubsets<T>(masterList, i);
                 output.AddRange(subsets);
             }
+
             return output;
         }
 
@@ -789,6 +801,7 @@ namespace STROOP.Utilities
                 list[k] = list[n];
                 list[n] = temp;
             }
+
             return list;
         }
     }

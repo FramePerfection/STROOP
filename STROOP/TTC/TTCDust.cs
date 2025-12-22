@@ -5,11 +5,11 @@ namespace STROOP.Ttc
 {
     /** Dust is the dust created at Mario's feet when he accelerates
     *  or decelerates or does any other dust making technique.
-    *  
+    *
     *  Dust calls RNG 4 times when it spawns. To simulate this
     *  with this class, simply use the addDustFrames method
     *  to specify which frames dust is present on.
-    *  
+    *
     *  For example, if you hold forwards when the frame counter
     *  says 98 and then press frame advance, then on frame 99
     *  Mario will still be motionless. It's not until frame 100
@@ -18,7 +18,6 @@ namespace STROOP.Ttc
     */
     public class TtcDust : TtcObject
     {
-
         public List<int> _dustFrames;
 
         public TtcDust(TtcRng rng) : base(rng)
@@ -54,7 +53,7 @@ namespace STROOP.Ttc
         }
 
         /** Add an arbitrary number of dust frames.
-	     */
+         */
         public void AddDustFrames(List<int> dustFrames)
         {
             _dustFrames.AddRange(dustFrames);
@@ -70,6 +69,4 @@ namespace STROOP.Ttc
             return new TtcDust(rng, _dustFrames);
         }
     }
-
-
 }

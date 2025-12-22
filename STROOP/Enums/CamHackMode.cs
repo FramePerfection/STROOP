@@ -8,5 +8,4 @@
         FIXED_POS,
         FIXED_ORIENTATION,
     };
-
 }

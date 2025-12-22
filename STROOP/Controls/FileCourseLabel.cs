@@ -11,6 +11,7 @@ namespace STROOP
         protected byte _mask;
 
         static ToolTip _toolTip;
+
         public static ToolTip AddressToolTip
         {
             get
@@ -21,12 +22,10 @@ namespace STROOP
                     _toolTip.IsBalloon = false;
                     _toolTip.ShowAlways = true;
                 }
+
                 return _toolTip;
             }
-            set
-            {
-                _toolTip = value;
-            }
+            set { _toolTip = value; }
         }
 
         public FileCourseLabel()

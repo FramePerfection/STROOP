@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using STROOP.Core.Variables;
 using STROOP.Forms;
 
@@ -18,6 +17,7 @@ namespace STROOP.Controls.VariablePanel
             ["TtcSpeedSettingDescription"] = () => SelectionForm.ShowTtcSpeedSettingDescriptionSelectionForm(),
             ["AreaTerrainDescription"] = () => SelectionForm.ShowAreaTerrainDescriptionSelectionForm(),
         };
+
         static Dictionary<string, WatchVariableSetting> settingsForSpecials = new Dictionary<string, WatchVariableSetting>();
 
         public WatchVariableStringWrapper(NamedVariableCollection.IView<string> watchVar, WatchVariableControl watchVarControl)
@@ -44,13 +44,18 @@ namespace STROOP.Controls.VariablePanel
 
         public void AddContextMenuHandler(string name, Action<string> handler, params string[] options)
         {
-            var opts = new(string, Func<object>, Func<WatchVariableControl, bool>)[options.Length];
+            var opts = new (string, Func<object>, Func<WatchVariableControl, bool>)[options.Length];
             for (int i = 0; i < options.Length; i++)
             {
                 var optionName = options[i];
                 opts[i] = (optionName, () => optionName, ctrl => false);
             }
-            WatchVariableSetting setting = new WatchVariableSetting(name, (ctrl, obj) => { handler((string)obj); return false; }, opts);
+
+            WatchVariableSetting setting = new WatchVariableSetting(name, (ctrl, obj) =>
+            {
+                handler((string)obj);
+                return false;
+            }, opts);
             _watchVarControl.AddSetting(setting);
         }
 

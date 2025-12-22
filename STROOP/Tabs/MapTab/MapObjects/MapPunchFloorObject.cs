@@ -23,7 +23,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 .ConvertAll(tri => tri.Address);
         }
 
-        public MapPunchFloorObject() : base(GetPunchTriangleList()) { }
+        public MapPunchFloorObject() : base(GetPunchTriangleList())
+        {
+        }
 
         public override string GetName() => "Punch Floor Tris";
 

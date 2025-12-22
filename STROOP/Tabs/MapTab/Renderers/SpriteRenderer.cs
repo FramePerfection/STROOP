@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab.Renderers
@@ -11,6 +12,7 @@ namespace STROOP.Tabs.MapTab.Renderers
             SpriteRenderer parent;
 
             protected override int GetShader() => GraphicsUtil.GetShaderProgram("Resources/Shaders/Sprites.vert.glsl", "Resources/Shaders/DepthMask.frag.glsl");
+
             public TransparentSpriteRenderer(SpriteRenderer parent, int maxExpectedInstances) : base(maxExpectedInstances)
             {
                 this.parent = parent;
@@ -70,6 +72,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                 GL.EnableVertexAttribArray(i);
                 GL.VertexAttribDivisor(i, 1);
             }
+
             GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, InstanceData.Size, sizeof(float) * 0);
             GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, InstanceData.Size, sizeof(float) * 4);
             GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, InstanceData.Size, sizeof(float) * 8);

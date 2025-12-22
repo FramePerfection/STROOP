@@ -15,18 +15,21 @@ namespace STROOP.Utilities
             {
                 return address;
             }
+
             if (structSize == 2)
             {
                 int baseValue = (address / 4) * 4;
                 int modValue = address % 4;
                 return baseValue + (2 - modValue);
             }
+
             if (structSize == 1)
             {
                 int baseValue = (address / 4) * 4;
                 int modValue = address % 4;
                 return baseValue + (3 - modValue);
             }
+
             throw new ArgumentOutOfRangeException();
         }
 
@@ -41,20 +44,22 @@ namespace STROOP.Utilities
             {
                 return address;
             }
+
             if (structSize == 2)
             {
                 uint baseValue = (address / 4) * 4;
                 uint modValue = address % 4;
                 return baseValue + (2 - modValue);
             }
+
             if (structSize == 1)
             {
                 uint baseValue = (address / 4) * 4;
                 uint modValue = address % 4;
                 return baseValue + (3 - modValue);
             }
+
             throw new ArgumentOutOfRangeException();
         }
-
     }
 }

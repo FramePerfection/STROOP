@@ -7,6 +7,7 @@ namespace STROOP
         private TabPage _currentTab;
 
         private TabPage _previousTab;
+
         public TabPage PreviousTab
         {
             get => _previousTab ?? SelectedTab;

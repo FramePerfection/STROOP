@@ -16,47 +16,47 @@
   <MapImage name="Empty" path="empty.png"/>
   <MapImage name="Point" path="point.png"/>
 
-  <MapImage name="Mario" path = "Mario.png"/>
-  <MapImage name="MarioMap" path = "Mario Top.png"/>
-  <MapImage name="MarioMapHatOnly" path = "Mario Hat Top.png"/>
-  <MapImage name="MarioMapNoHat" path = "Mario Top No Hat.png"/>
-  <MapImage name="Holp" path = "HOLP.png"/>
-  <MapImage name="Home" path = "Home.png"/>
-  <MapImage name="IntendedNextPosition" path = "Intended Next Position.png"/>
+  <MapImage name="Mario" path="Mario.png"/>
+  <MapImage name="MarioMap" path="Mario Top.png"/>
+  <MapImage name="MarioMapHatOnly" path="Mario Hat Top.png"/>
+  <MapImage name="MarioMapNoHat" path="Mario Top No Hat.png"/>
+  <MapImage name="Holp" path="HOLP.png"/>
+  <MapImage name="Home" path="Home.png"/>
+  <MapImage name="IntendedNextPosition" path="Intended Next Position.png"/>
 
-  <MapImage name="GreenMarioMap"     path="Mario Green.png"/>
-  <MapImage name="OrangeMarioMap"    path="Mario Orange.png"/>
-  <MapImage name="PurpleMarioMap"    path="Mario Purple.png"/>
-  <MapImage name="BlueMarioMap"      path="Mario Blue.png"/>
+  <MapImage name="GreenMarioMap" path="Mario Green.png"/>
+  <MapImage name="OrangeMarioMap" path="Mario Orange.png"/>
+  <MapImage name="PurpleMarioMap" path="Mario Purple.png"/>
+  <MapImage name="BlueMarioMap" path="Mario Blue.png"/>
   <MapImage name="TurquoiseMarioMap" path="Mario Turquoise.png"/>
-  <MapImage name="YellowMarioMap"    path="Mario Yellow.png"/>
-  <MapImage name="PinkMarioMap"      path="Mario Pink.png"/>
-  <MapImage name="BrownMarioMap"     path="Mario Brown.png"/>
-  <MapImage name="WhiteMarioMap"     path="Mario White.png"/>
-  <MapImage name="GreyMarioMap"      path="Mario Grey.png"/>
-  
-  <MapImage name="TriangleFloor" path = "Triangle Floor.png"/>
-  <MapImage name="TriangleWall" path = "Triangle Wall.png"/>
-  <MapImage name="TriangleCeiling" path = "Triangle Ceiling.png"/>
-  <MapImage name="TriangleOther" path = "Triangle Other.png"/>
-  <MapImage name="TriangleHackTris" path = "Triangle Hack Tris.png"/>
-  <MapImage name="CellGridlines" path = "Cell Gridlines.png"/>
-  <MapImage name="CurrentCell" path = "Current Cell.png"/>
-  <MapImage name="UnitGridlines" path = "Unit Gridlines.png"/>
-  <MapImage name="CurrentUnit" path = "Current Unit.png"/>
-  <MapImage name="NextPositions" path = "Next Positions.png"/>
-  <MapImage name="Arrow" path = "Arrow.png"/>
-  <MapImage name="Iwerlipses" path = "Iwerlipses.png"/>
-  <MapImage name="Cylinder" path = "Cylinder.png"/>
-  <MapImage name="Sphere" path = "Sphere.png"/>
-  <MapImage name="Path" path = "Path.png"/>
-  <MapImage name="CustomPoints" path = "Custom Points.png"/>
-  <MapImage name="CustomGridlines" path = "Custom Gridlines.png"/>
-  <MapImage name="Hud" path = "HUD.png"/>
-  <MapImage name="Debug" path = "DEBUG.png"/>
-  <MapImage name="Misc" path = "MISC.png"/>
-  <MapImage name="Camera" path = "Camera.png"/>
-  <MapImage name="CameraMap" path = "Camera.png"/>
+  <MapImage name="YellowMarioMap" path="Mario Yellow.png"/>
+  <MapImage name="PinkMarioMap" path="Mario Pink.png"/>
+  <MapImage name="BrownMarioMap" path="Mario Brown.png"/>
+  <MapImage name="WhiteMarioMap" path="Mario White.png"/>
+  <MapImage name="GreyMarioMap" path="Mario Grey.png"/>
+
+  <MapImage name="TriangleFloor" path="Triangle Floor.png"/>
+  <MapImage name="TriangleWall" path="Triangle Wall.png"/>
+  <MapImage name="TriangleCeiling" path="Triangle Ceiling.png"/>
+  <MapImage name="TriangleOther" path="Triangle Other.png"/>
+  <MapImage name="TriangleHackTris" path="Triangle Hack Tris.png"/>
+  <MapImage name="CellGridlines" path="Cell Gridlines.png"/>
+  <MapImage name="CurrentCell" path="Current Cell.png"/>
+  <MapImage name="UnitGridlines" path="Unit Gridlines.png"/>
+  <MapImage name="CurrentUnit" path="Current Unit.png"/>
+  <MapImage name="NextPositions" path="Next Positions.png"/>
+  <MapImage name="Arrow" path="Arrow.png"/>
+  <MapImage name="Iwerlipses" path="Iwerlipses.png"/>
+  <MapImage name="Cylinder" path="Cylinder.png"/>
+  <MapImage name="Sphere" path="Sphere.png"/>
+  <MapImage name="Path" path="Path.png"/>
+  <MapImage name="CustomPoints" path="Custom Points.png"/>
+  <MapImage name="CustomGridlines" path="Custom Gridlines.png"/>
+  <MapImage name="Hud" path="HUD.png"/>
+  <MapImage name="Debug" path="DEBUG.png"/>
+  <MapImage name="Misc" path="MISC.png"/>
+  <MapImage name="Camera" path="Camera.png"/>
+  <MapImage name="CameraMap" path="Camera.png"/>
 
   <Hud>
     <Image path="HUD.png"/>
@@ -3725,42 +3725,42 @@
   <Object behaviorScriptAddress="0x13004AB0" name="Carpet" gfxId="0x8018D2A8">
     <SpawnCode gfxId="0x37"/>
     <Image path="Carpet.png"/>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x189"  mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x189" mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
   </Object>
   <Object behaviorScriptAddress="0x13004AB0" name="Ski Lift" gfxId="0x80184AE8">
     <SpawnCode gfxId="0x36"/>
     <Image path="Ski Lift.png"/>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x189"  mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x189" mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
   </Object>
   <Object behaviorScriptAddress="0x13004AB0" name="BitFS Fixed Track Elevator" gfxId="0x80178368">
     <SpawnCode gfxId="0x36"/>
     <Image path="BitFS Fixed Track Elevator.png"/>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x189"  mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x189" mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
   </Object>
   <Object behaviorScriptAddress="0x13004AB0" name="Fixed Track Elevator" gfxId="0x80188FFC">
     <SpawnCode gfxId="0xCA"/>
     <Image path="Checkered Elevator.png"/>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x189"  mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x189" mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
   </Object>
   <Object behaviorScriptAddress="0x13004AB0" name="Fixed Track Elevator" gfxId="0x8017C6EC">
     <Image path="Checkered Elevator.png"/>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x189"  mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x189" mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
   </Object>
   <Object behaviorScriptAddress="0x13004AB0" name="Carpet / Ski Lift / Fixed Track Elevator">
     <Image path="Carpet.png"/>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x188"  mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
-    <Data groupList="ObjectSpecific" type="byte" offset="0x189"  mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x04" base="Object" subclass="Boolean">Yaw Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x188" mask="0x08" base="Object" subclass="Boolean" invertBool="true">Pitch Locked</Data>
+    <Data groupList="ObjectSpecific" type="byte" offset="0x189" mask="0x80" base="Object" subclass="Boolean">Track Balls</Data>
   </Object>
   <Object behaviorScriptAddress="0x13004AF4" name="Elevator Track Ball">
     <Image path="Bowling Ball.png"/>
@@ -4504,6 +4504,6 @@
     <SpawnCode gfxId="0xD0"/>
     <Image path="Blue Thing.png"/>
   </Object>
--->
+  -->
 
 </ObjectAssociations>

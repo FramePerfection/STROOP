@@ -76,16 +76,22 @@ namespace STROOP.Structs
             CameraColor;
 
         public uint MarioBehavior;
-        public uint SegmentTable { get => RomVersionConfig.SwitchMap(SegmentTableUS, SegmentTableJP, SegmentTableSH, SegmentTableEU); }
+
+        public uint SegmentTable
+        {
+            get => RomVersionConfig.SwitchMap(SegmentTableUS, SegmentTableJP, SegmentTableSH, SegmentTableEU);
+        }
+
         public uint SegmentTableUS = 0x8033B400;
         public uint SegmentTableJP = 0x8033A090;
         public uint SegmentTableSH = 0x8031DC58;
         public uint SegmentTableEU = 0x803096C8;
         public uint BehaviorBankStart;
-        
+
         public HashSet<ObjectBehaviorAssociation> BehaviorAssociations => _objAssoc;
 
         public List<SpawnHack> SpawnHacks => _spawnHacks;
+
         public ObjectAssociations()
         {
             _transparentDefaultImage = new Lazy<Image>(() => DefaultImage.Value.GetOpaqueImage(0.5f));
@@ -125,6 +131,7 @@ namespace STROOP.Structs
         }
 
         private Dictionary<BehaviorCriteria, ObjectBehaviorAssociation> _cachedObjAssoc = new Dictionary<BehaviorCriteria, ObjectBehaviorAssociation>();
+
         public ObjectBehaviorAssociation FindObjectAssociation(BehaviorCriteria behaviorCriteria)
         {
             if (_cachedObjAssoc.ContainsKey(behaviorCriteria))
@@ -179,7 +186,7 @@ namespace STROOP.Structs
                 return DefaultImage;
             if (assoc.MapImage == null)
                 return DefaultImage;
-            
+
             return assoc.MapImage;
         }
 

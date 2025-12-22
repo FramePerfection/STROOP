@@ -7,7 +7,7 @@
 
   <Data type="short" offset="0x18" base="Mario" color="Yellow">Action Phase</Data>
   <Data type="short" offset="0x1A" base="Mario" color="Yellow" jsonName="mario_action_timer">Action Timer</Data>
-  
+
   <Data type="short" offset="0x1E" base="Mario" color="Green">Punch Timer</Data>
   <Data type="byte" offset="0x2A" base="Mario" color="Green" jsonName="mario_wallkick_timer">Wall Kick Timer</Data>
   <Data type="byte" offset="0x2B" base="Mario" color="Green">Landing Timer</Data>

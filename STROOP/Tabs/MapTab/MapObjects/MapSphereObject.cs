@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {

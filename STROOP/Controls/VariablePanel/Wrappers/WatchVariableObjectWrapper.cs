@@ -10,18 +10,18 @@ namespace STROOP.Controls.VariablePanel
     {
         static WatchVariableSetting DisplayAsObjectSetting = new WatchVariableSetting(
             "Display as Object",
-                (ctrl, obj) =>
-                {
-                    if (ctrl.WatchVarWrapper is WatchVariableObjectWrapper objectWrapper)
-                        if (obj is bool doDisplayAsObject)
-                            objectWrapper._displayAsObject = doDisplayAsObject;
-                        else
-                            return false;
-                    return true;
-                },
-                ("Object", () => true, WrapperProperty<WatchVariableObjectWrapper>(o => o._displayAsObject)),
-                ("Address", () => true, WrapperProperty<WatchVariableObjectWrapper>(o => !o._displayAsObject))
-            );
+            (ctrl, obj) =>
+            {
+                if (ctrl.WatchVarWrapper is WatchVariableObjectWrapper objectWrapper)
+                    if (obj is bool doDisplayAsObject)
+                        objectWrapper._displayAsObject = doDisplayAsObject;
+                    else
+                        return false;
+                return true;
+            },
+            ("Object", () => true, WrapperProperty<WatchVariableObjectWrapper>(o => o._displayAsObject)),
+            ("Address", () => true, WrapperProperty<WatchVariableObjectWrapper>(o => !o._displayAsObject))
+        );
 
         static WatchVariableSetting SelectObjectSetting = new WatchVariableSetting(
             "Select Object",
@@ -33,6 +33,7 @@ namespace STROOP.Controls.VariablePanel
                     if (value.meaning == CombinedValuesMeaning.SameValue)
                         Config.ObjectSlotsManager.SelectSlotByAddress((uint)value.value);
                 }
+
                 return false;
             });
 
@@ -62,6 +63,7 @@ namespace STROOP.Controls.VariablePanel
                 if (uintValueNullable.HasValue)
                     return Config.ObjectSlotsManager.GetDescriptiveSlotLabelFromAddress(uintValueNullable.Value, false);
             }
+
             return base.DisplayValue(value);
         }
 
@@ -74,11 +76,13 @@ namespace STROOP.Controls.VariablePanel
                 result = 0;
                 return true;
             }
+
             if (slotName == "(unused object)" || slotName == "unused object")
             {
                 result = ObjectSlotsConfig.UnusedSlotAddress;
                 return true;
             }
+
             if (slotName.StartsWith("slot"))
             {
                 slotName = slotName.Remove(0, "slot".Length);

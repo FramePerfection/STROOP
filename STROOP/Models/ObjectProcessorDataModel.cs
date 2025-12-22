@@ -8,7 +8,11 @@ namespace STROOP.Models
     public class ObjectProcessorDataModel : IUpdatableDataModel
     {
         private List<ObjectDataModel> _objects;
-        public IReadOnlyList<ObjectDataModel> Objects { get => _objects.AsReadOnly(); }
+
+        public IReadOnlyList<ObjectDataModel> Objects
+        {
+            get => _objects.AsReadOnly();
+        }
 
         public int ActiveObjectCount { get; private set; }
 
@@ -138,6 +142,7 @@ namespace STROOP.Models
                 obj = new ObjectDataModel(address, false);
                 _objects[slotIndex] = obj;
             }
+
             obj.Address = address;
 
             return obj;

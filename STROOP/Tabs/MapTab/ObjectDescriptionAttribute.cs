@@ -8,6 +8,7 @@ namespace STROOP.Tabs.MapTab
         public readonly string DisplayName;
         public readonly string Initializer;
         public readonly string Category;
+
         public ObjectDescriptionAttribute(string DisplayName, string Category, string InitializerName = null)
         {
             this.DisplayName = DisplayName;

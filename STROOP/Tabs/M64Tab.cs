@@ -125,7 +125,7 @@ namespace STROOP.Tabs
             string inputsString = textBoxM64SelectionInputs.Text;
             if (!startFrame.HasValue || !endFrame.HasValue) return;
             M64CopiedData copiedData = M64CopiedData.CreateCopiedData(
-                 dataGridViewM64Inputs, _m64File.CurrentFileName,
+                dataGridViewM64Inputs, _m64File.CurrentFileName,
                 startFrame.Value, endFrame.Value, useRow, inputsString);
             if (copiedData == null) return;
             listBoxM64Copied.Items.Add(copiedData);
@@ -165,6 +165,7 @@ namespace STROOP.Tabs
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             propertyGridM64Header.Refresh();
         }
 
@@ -189,7 +190,7 @@ namespace STROOP.Tabs
         public void UpdateSelectionTextboxes()
         {
             List<M64InputCell> cells = M64Utilities.GetSelectedInputCells(
-                 dataGridViewM64Inputs, CellSelectionType.Cells);
+                dataGridViewM64Inputs, CellSelectionType.Cells);
             (int? minFrame, int? maxFrame, string inputsString) = M64Utilities.GetCellStats(cells, true);
             if (minFrame.HasValue) textBoxM64SelectionStartFrame.Text = minFrame.Value.ToString();
             if (maxFrame.HasValue) textBoxM64SelectionEndFrame.Text = maxFrame.Value.ToString();
@@ -200,11 +201,11 @@ namespace STROOP.Tabs
         {
             (int? startFrame, int? endFrame) = GetFrameBounds();
             List<M64InputCell> cells = M64Utilities.GetSelectedInputCells(
-                 dataGridViewM64Inputs,
+                dataGridViewM64Inputs,
                 cellSelectionType,
                 startFrame,
                 endFrame,
-                 textBoxM64SelectionInputs.Text);
+                textBoxM64SelectionInputs.Text);
             int? intOnValue = ParsingUtilities.ParseIntNullable(textBoxM64OnValue.Text);
             cells.ForEach(cell => cell.SetValue(value, intOnValue));
             dataGridViewM64Inputs.Refresh();
@@ -234,8 +235,8 @@ namespace STROOP.Tabs
             {
                 MessageBox.Show(
                     "Could not save file.\n" +
-                        "Perhaps Mupen is currently editing it.\n" +
-                        "Try closing Mupen and trying again.",
+                    "Perhaps Mupen is currently editing it.\n" +
+                    "Try closing Mupen and trying again.",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -249,8 +250,8 @@ namespace STROOP.Tabs
             {
                 MessageBox.Show(
                     "Could not save file.\n" +
-                        "Perhaps Mupen is currently editing it.\n" +
-                        "Try closing Mupen and trying again.",
+                    "Perhaps Mupen is currently editing it.\n" +
+                    "Try closing Mupen and trying again.",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -278,12 +279,13 @@ namespace STROOP.Tabs
             {
                 MessageBox.Show(
                     "Could not open file " + filePath + ".\n" +
-                        "Perhaps Mupen is currently editing it.\n" +
-                        "Try closing Mupen and trying again.",
+                    "Perhaps Mupen is currently editing it.\n" +
+                    "Try closing Mupen and trying again.",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+
             dataGridViewM64Inputs.DataSource = _m64File.Inputs;
             UpdateTableSettings();
             propertyGridM64Header.SelectedObject = _m64File.Header;
@@ -302,7 +304,7 @@ namespace STROOP.Tabs
 
         private void ListBoxCopied_KeyDown()
         {
-            if (KeyboardUtilities.IsDeletishKeyHeld())
+            if (GlobalKeyboard.IsDeletishKeyDown())
             {
                 M64CopiedData copiedData = listBoxM64Copied.SelectedItem as M64CopiedData;
                 if (copiedData == null || copiedData == M64CopiedData.OneEmptyFrame) return;
@@ -316,11 +318,11 @@ namespace STROOP.Tabs
         private void PerformQuickDuplication()
         {
             int? iter1StartObserved = ParsingUtilities.ParseIntNullable(
-                 textBoxM64QuickDuplication1stIterationStart.Text);
+                textBoxM64QuickDuplication1stIterationStart.Text);
             int? iter2StartObserved = ParsingUtilities.ParseIntNullable(
-                 textBoxM64QuickDuplication2ndIterationStart.Text);
+                textBoxM64QuickDuplication2ndIterationStart.Text);
             int? totalIters = ParsingUtilities.ParseIntNullable(
-                 textBoxM64QuickDuplicationTotalIterations.Text);
+                textBoxM64QuickDuplicationTotalIterations.Text);
             if (!iter1StartObserved.HasValue ||
                 !iter2StartObserved.HasValue ||
                 !totalIters.HasValue) return;
@@ -331,7 +333,7 @@ namespace STROOP.Tabs
             int iter1End = iter2Start - 1;
 
             M64CopiedData copiedData = M64CopiedData.CreateCopiedData(
-                 dataGridViewM64Inputs, _m64File.CurrentFileName,
+                dataGridViewM64Inputs, _m64File.CurrentFileName,
                 iter1Start, iter1End, true /* useRow */);
             _m64File.Paste(copiedData, iter2Start, true /* insert */, multiplicity);
         }
@@ -391,10 +393,10 @@ namespace STROOP.Tabs
             int originalFrameCount = _m64File.OriginalFrameCount;
             int frameCountDiff = currentFrameCount - originalFrameCount;
             labelM64NumInputsValue.Text = String.Format(
-               "{0} / {1} [{2}]",
-               currentFrameCount,
-               originalFrameCount,
-               StringUtilities.FormatIntegerWithSign(frameCountDiff));
+                "{0} / {1} [{2}]",
+                currentFrameCount,
+                originalFrameCount,
+                StringUtilities.FormatIntegerWithSign(frameCountDiff));
 
             FrameInputRelationType selectedFrameInputRelation =
                 (FrameInputRelationType)comboBoxM64FrameInputRelation.SelectedItem;

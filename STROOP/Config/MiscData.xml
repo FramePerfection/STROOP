@@ -18,7 +18,7 @@
   <Data groupList="Coin" base="None" specialType="GoalRngValue" color="Pink">Goal RNG Value</Data>
   <Data groupList="Coin" base="None" specialType="GoalRngIndex" color="Pink">Goal RNG Index</Data>
   <Data groupList="Coin" base="None" specialType="GoalRngIndexDiff" color="Pink">Goal RNG Index Diff</Data>
-  
+
   <Data groupList="Basic" base="None" specialType="PlayTime" subclass="String">Play Time</Data>
   <Data groupList="Basic" base="None" specialType="NumberOfLoadedObjects">Num Loaded Objs</Data>
   <Data groupList="Basic" type="uint" offsetUS="0x80361160" offsetJP="0x8035FDF0" offsetEU="0x8032ED90" base="Relative" subclass="Object">Currently Processed Obj</Data>

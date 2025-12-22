@@ -76,6 +76,7 @@ namespace STROOP
                 _currentValue = value;
                 Invalidate();
             }
+
             _hasUpdated = true;
         }
     }

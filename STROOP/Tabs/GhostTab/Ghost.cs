@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using OpenTK;
+using OpenTK.Mathematics;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.GhostTab
@@ -12,6 +13,7 @@ namespace STROOP.Tabs.GhostTab
         {
             GhostFrame currentFrame;
             readonly Ghost g;
+
             public GhostPositionAngle(Ghost g) : base()
             {
                 this.g = g;
@@ -55,12 +57,13 @@ namespace STROOP.Tabs.GhostTab
         {
             positionAngle = new GhostPositionAngle(this);
         }
+
         public Ghost(uint playbackBaseFrame, Dictionary<uint, GhostFrame> playbackFrames)
         {
             this.playbackBaseFrame = originalPlaybackBaseFrame = playbackBaseFrame;
             this.playbackFrames = playbackFrames;
-
         }
+
         public static Ghost FromFile(BinaryReader reader)
         {
             Ghost result = new Ghost();
@@ -80,6 +83,7 @@ namespace STROOP.Tabs.GhostTab
             {
                 return null;
             }
+
             return result;
         }
 

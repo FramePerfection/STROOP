@@ -81,12 +81,13 @@ namespace STROOP.M64
                 Inputs.Add(new M64InputFrame(
                     i / 4, BitConverter.ToUInt32(frameBytes, i), true, this, tab.dataGridViewM64Inputs));
             }
+
             tab.dataGridViewM64Inputs.Refresh();
             tab.propertyGridM64Header.Refresh();
             tab.propertyGridM64Stats.Refresh();
 
             return true;
-        } 
+        }
 
         private byte[] ToBytes()
         {
@@ -118,6 +119,7 @@ namespace STROOP.M64
             {
                 return false;
             }
+
             return true;
         }
 
@@ -154,6 +156,7 @@ namespace STROOP.M64
                 ModifiedFrames.Remove(Inputs[startIndex]);
                 Inputs.RemoveAt(startIndex);
             }
+
             RefreshInputFrames(startIndex);
             tab.dataGridViewM64Inputs.DataSource = Inputs;
             tab.UpdateTableSettings(ModifiedFrames);
@@ -195,6 +198,7 @@ namespace STROOP.M64
                         SetPasteProgressCount(i + 1, pasteCount);
                     }
                 }
+
                 RefreshInputFrames(index);
                 tab.dataGridViewM64Inputs.DataSource = Inputs;
                 tab.UpdateTableSettings(ModifiedFrames);

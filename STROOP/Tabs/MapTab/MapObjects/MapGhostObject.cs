@@ -4,6 +4,7 @@ using STROOP.Utilities;
 using STROOP.Structs.Configurations;
 using System.Windows.Forms;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -22,7 +23,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
                 foreach (var pa in positionAngleProvider())
-                if (pa is GhostTab.Ghost.GhostPositionAngle a)
+                    if (pa is GhostTab.Ghost.GhostPositionAngle a)
                     {
                         var transparent = graphics.view.mode == MapView.ViewMode.ThreeDimensional;
                         var alpha = hoverData.currentPositionAngle == a ? ObjectUtilities.HoverAlpha() : 1;
@@ -50,12 +51,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
             base.InitSubTrackerContextMenuStrip(mapTab, targetStrip);
 
             targetStrip.Items.AddHandlerToItem("Add Tracker for Ghost Graphics Angle",
-                 tracker.MakeCreateTrackerHandler(mapTab, "GhostGraphicsAngle", _ =>
+                tracker.MakeCreateTrackerHandler(mapTab, "GhostGraphicsAngle", _ =>
                     new MapArrowObject(
-                     positionAngleProvider,
-                     __ => __.Angle,
-                     MapArrowObject.ArrowSource.Constant(100),
-                     $"Ghost Graphics Angle")));
+                        positionAngleProvider,
+                        __ => __.Angle,
+                        MapArrowObject.ArrowSource.Constant(100),
+                        $"Ghost Graphics Angle")));
         }
 
         public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.GreenMarioMapImage;

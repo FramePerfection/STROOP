@@ -32,6 +32,7 @@ namespace STROOP.Tabs.MapTab
         Dictionary<string, CreateTracker> createChildTrackers = new Dictionary<string, CreateTracker>();
 
         public delegate void RemovedFromMapEventHandler();
+
         public event RemovedFromMapEventHandler Killed;
         public Func<bool> ConfirmRemoveFromMap;
 
@@ -80,9 +81,9 @@ namespace STROOP.Tabs.MapTab
                 ToolStripMenuItem itemUseObjectSlotImage = new ToolStripMenuItem("Use Object Slot Image");
                 ToolStripMenuItem itemUseCustomImage = new ToolStripMenuItem("Use Custom Image");
                 List<ToolStripMenuItem> pictureBoxItems = new List<ToolStripMenuItem>()
-            {
-                itemUseTopDownImage, itemUseObjectSlotImage, itemUseCustomImage
-            };
+                {
+                    itemUseTopDownImage, itemUseObjectSlotImage, itemUseCustomImage
+                };
                 itemUseTopDownImage.Click += (sender, e) =>
                 {
                     this.mapObject.SetIconType(MapTrackerIconType.TopDownImage);
@@ -151,7 +152,7 @@ namespace STROOP.Tabs.MapTab
                 if (pictureBoxCog.ContextMenuStrip.Items.Count == 0)
                     pictureBoxCog.ContextMenuStrip.Items.Add(
                         new ToolStripMenuItem("No options available") { Enabled = false }
-                        );
+                    );
                 pictureBoxCog.Click += (sender, e) => pictureBoxCog.ContextMenuStrip.Show(Cursor.Position);
 
                 MapUtilities.CreateTrackBarContextMenuStrip(trackBarSize);
@@ -181,6 +182,7 @@ namespace STROOP.Tabs.MapTab
                 childTracker.SaveChildTrackers(childNode);
                 childTrackersNode.AppendChild(childNode);
             }
+
             node.AppendChild(childTrackersNode);
         }
 
@@ -199,6 +201,7 @@ namespace STROOP.Tabs.MapTab
                     childTrackers.Add(t);
                     childTrackers.AddRange(t.LoadChildTrackers(n));
                 }
+
             return childTrackers;
         }
 
@@ -334,15 +337,15 @@ namespace STROOP.Tabs.MapTab
 
         private void pictureBoxUpArrow_Click(object sender, EventArgs e)
         {
-            int numMoves = KeyboardUtilities.GetCurrentlyInputtedNumber() ?? 1;
-            if (KeyboardUtilities.IsCtrlHeld()) numMoves = 0;
+            int numMoves = GlobalKeyboard.GetCurrentlyInputtedNumber() ?? 1;
+            if (GlobalKeyboard.IsCtrlDown()) numMoves = 0;
             this.GetParent<MapTrackerFlowLayoutPanel>().MoveUpControl(this, numMoves);
         }
 
         private void pictureBoxDownArrow_Click(object sender, EventArgs e)
         {
-            int numMoves = KeyboardUtilities.GetCurrentlyInputtedNumber() ?? 1;
-            if (KeyboardUtilities.IsCtrlHeld()) numMoves = 0;
+            int numMoves = GlobalKeyboard.GetCurrentlyInputtedNumber() ?? 1;
+            if (GlobalKeyboard.IsCtrlDown()) numMoves = 0;
             this.GetParent<MapTrackerFlowLayoutPanel>().MoveDownControl(this, numMoves);
         }
 

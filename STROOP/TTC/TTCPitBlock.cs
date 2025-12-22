@@ -6,7 +6,7 @@ namespace STROOP.Ttc
 {
     /** The pit block is the cube platform that moves up and down
      *  near the pit and the pendulums star. There is only 1 pit block.
-     *  
+     *
      *  The piblock moves up, waits, moves down, waits, then repeats.
      *  It calls RNG when it reaches the top to determine how long
      *  it should wait for. It does not do this at the bottom,
@@ -14,7 +14,6 @@ namespace STROOP.Ttc
      */
     public class TtcPitBlock : TtcObject
     {
-
         public readonly static int MIN_HEIGHT = -71;
         public readonly static int MAX_HEIGHT = 259;
 
@@ -53,33 +52,41 @@ namespace STROOP.Ttc
         public override void Update()
         {
             if (_timer <= _timerMax)
-            { //don't move
+            {
+                //don't move
                 _timer++;
             }
             else
-            { //move
+            {
+                //move
                 if (_direction == 0)
-                { //move up
+                {
+                    //move up
                     _height = Math.Min(MAX_HEIGHT, _height + _verticalSpeed);
                     if (_height == MIN_HEIGHT || _height == MAX_HEIGHT)
-                    { //reached top
+                    {
+                        //reached top
                         _verticalSpeed = -9;
                         _direction = 1;
                         _timer = 0;
                         _timerMax = (PollRNG() % 6) * 20 + 10; // = 10, 30, 50, 70, 90, 110
                     }
+
                     _timer++;
                 }
                 else
-                { //move down
+                {
+                    //move down
                     _height = Math.Max(MIN_HEIGHT, _height + _verticalSpeed);
                     if (_height == MIN_HEIGHT || _height == MAX_HEIGHT)
-                    { //reached bottom
+                    {
+                        //reached bottom
                         _verticalSpeed = 11;
                         _direction = 0;
                         _timer = 0;
                         _timerMax = 20;
                     }
+
                     _timer++;
                 }
             }
@@ -88,10 +95,10 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _height + SEPARATOR +
-                    _verticalSpeed + SEPARATOR +
-                    _direction + SEPARATOR +
-                    _timerMax + SEPARATOR +
-                    _timer + CLOSER;
+                   _verticalSpeed + SEPARATOR +
+                   _direction + SEPARATOR +
+                   _timerMax + SEPARATOR +
+                   _timer + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -116,5 +123,4 @@ namespace STROOP.Ttc
             return new TtcPitBlock(rng, _height, _verticalSpeed, _direction, _timerMax, _timer);
         }
     }
-
 }

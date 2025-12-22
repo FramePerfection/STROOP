@@ -31,15 +31,14 @@ namespace STROOP
             byte hatLocationMode = (byte)(Config.Stream.GetByte(FileConfig.CurrentFileAddress + FileConfig.HatLocationModeOffset) & FileConfig.HatLocationModeMask);
 
             return hatLocationMode == FileConfig.HatLocationMarioMask ? HatLocation.Mario :
-                   hatLocationMode == FileConfig.HatLocationKleptoMask ? HatLocation.SSLKlepto :
-                   hatLocationMode == FileConfig.HatLocationSnowmanMask ? HatLocation.SLSnowman :
-                   hatLocationMode == FileConfig.HatLocationUkikiMask ? HatLocation.TTMUkiki :
-                   hatLocationMode == FileConfig.HatLocationGroundMask ?
-                       (hatLocationLevel == FileConfig.HatLocationLevelSSLValue ? HatLocation.SSLGround :
-                        hatLocationLevel == FileConfig.HatLocationLevelSLValue ? HatLocation.SLGround :
-                        hatLocationLevel == FileConfig.HatLocationLevelTTMValue ? HatLocation.TTMGround :
-                        (HatLocation?)null) :
-                   null;
+                hatLocationMode == FileConfig.HatLocationKleptoMask ? HatLocation.SSLKlepto :
+                hatLocationMode == FileConfig.HatLocationSnowmanMask ? HatLocation.SLSnowman :
+                hatLocationMode == FileConfig.HatLocationUkikiMask ? HatLocation.TTMUkiki :
+                hatLocationMode == FileConfig.HatLocationGroundMask ? (hatLocationLevel == FileConfig.HatLocationLevelSSLValue ? HatLocation.SSLGround :
+                    hatLocationLevel == FileConfig.HatLocationLevelSLValue ? HatLocation.SLGround :
+                    hatLocationLevel == FileConfig.HatLocationLevelTTMValue ? HatLocation.TTMGround :
+                    (HatLocation?)null) :
+                null;
         }
 
         private Image GetImageForValue(HatLocation? hatLocation)
@@ -107,6 +106,7 @@ namespace STROOP
                 _currentHatLocation = currentHatLocation;
                 Invalidate();
             }
+
             _hasUpdated = true;
         }
     }

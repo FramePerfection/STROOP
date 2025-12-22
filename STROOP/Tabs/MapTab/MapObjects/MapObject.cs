@@ -7,6 +7,7 @@ using OpenTK;
 using System.Windows.Forms;
 using OpenTK.Graphics;
 using System.Globalization;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -14,7 +15,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         List<(string key, string value)> xmlEntries = new List<(string, string)>();
 
-        public ObjectCreateParams() { }
+        public ObjectCreateParams()
+        {
+        }
 
         public ObjectCreateParams(System.Xml.XmlNode node)
         {
@@ -31,6 +34,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 innerNode.InnerText = f.value;
                 node.AppendChild(innerNode);
             }
+
             return node;
         }
 
@@ -60,9 +64,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
             if (points == null)
             {
                 (string, bool)? result = DialogUtilities.GetStringAndSideFromDialog(
-                     labelText: "Enter points as pairs or triplets of floats.",
-                     button1Text: "Pairs",
-                     button2Text: "Triplets");
+                    labelText: "Enter points as pairs or triplets of floats.",
+                    button1Text: "Pairs",
+                    button2Text: "Triplets");
                 if (!result.HasValue) return null;
                 (string text, bool useTriplets) = result.Value;
                 points = MapUtilities.ParsePoints(text, useTriplets);
@@ -70,6 +74,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     creationParameters = new ObjectCreateParams();
                 creationParameters.AddValue(nodeName, ParsingUtilities.CreatePointList(points));
             }
+
             return points;
         }
 
@@ -85,6 +90,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 result = DialogUtilities.GetStringFromDialog(labelText: dialogPrompt);
                 creationParameters.AddValue(nodeName, result);
             }
+
             return result;
         }
     }
@@ -100,14 +106,15 @@ namespace STROOP.Tabs.MapTab.MapObjects
         ToolStripMenuItem itemEnableDraggingY = new ToolStripMenuItem("Enable Y");
         ToolStripMenuItem itemEnableDraggingZ = new ToolStripMenuItem("Enable Z");
         ToolStripMenuItem itemEnableDraggingAngle = new ToolStripMenuItem("Enable Angle (hold ctrl)");
+
         public bool enableDragging
         {
             get => itemEnableDragging.Checked;
             set => itemEnableDragging.Checked
                 = itemEnableDraggingX.Checked
-                = itemEnableDraggingY.Checked
-                = itemEnableDraggingZ.Checked
-                = itemEnableDraggingAngle.Checked = value;
+                    = itemEnableDraggingY.Checked
+                        = itemEnableDraggingZ.Checked
+                            = itemEnableDraggingAngle.Checked = value;
         }
 
         public DragMask dragMask =>
@@ -129,19 +136,31 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public event Action SizeChanged;
         float _Size = 25;
-        public float Size { get { return _Size; } set { _Size = value; SizeChanged?.Invoke(); } }
+
+        public float Size
+        {
+            get { return _Size; }
+            set
+            {
+                _Size = value;
+                SizeChanged?.Invoke();
+            }
+        }
 
         public double Opacity = 1;
+
         public byte OpacityByte
         {
             get => (byte)(Opacity * 255);
             set => Opacity = value / 255f;
         }
+
         public int OpacityPercent
         {
             get => (int)(Opacity * 100);
             set => Opacity = value / 100.0;
         }
+
         public float OutlineWidth = 1;
         public Color Color = SystemColors.Control;
         public Color4 Color4 => new Color4(Color.R, Color.G, Color.B, OpacityByte);
@@ -149,6 +168,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public bool? CustomRotates = null;
         public bool InternalRotates = false;
+
         public bool Rotates
         {
             get => CustomRotates ?? InternalRotates;
@@ -156,9 +176,14 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public bool ShowTriUnits = false;
 
-        public MapObject() { }
+        public MapObject()
+        {
+        }
 
-        protected MapObject(ObjectCreateParams creationParameters) { this.creationParameters = creationParameters; }
+        protected MapObject(ObjectCreateParams creationParameters)
+        {
+            this.creationParameters = creationParameters;
+        }
 
         public static float Get3DIconScale(MapGraphics graphics, float x, float y, float z) => (0.5f * (float)Math.Tan(1) * (new Vector3(x, y, z) - graphics.view.position).Length) / graphics.glControl.Height;
 
@@ -194,9 +219,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
             float scale = Math.Max(image.Height / desiredDiameter, image.Width / desiredDiameter);
             float dsads = (float)MoreMath.AngleUnitsToRadians(angle);
             Matrix4 transform = Matrix4.CreateScale(image.Width / scale, image.Height / scale, 1)
-                * Matrix4.CreateRotationZ(-dsads)
-                * graphics.BillboardMatrix
-                * Matrix4.CreateTranslation(x, y, z);
+                                * Matrix4.CreateRotationZ(-dsads)
+                                * graphics.BillboardMatrix
+                                * Matrix4.CreateTranslation(x, y, z);
 
             var textureIndex = graphics.rendererCollection.GetObjectTextureLayer(image);
             if (sortTransparent)
@@ -230,9 +255,14 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         protected Lazy<Image> _customImage = null;
         public abstract Lazy<Image> GetInternalImage();
-        public Lazy<Image> GetImage() { return _customImage ?? GetInternalImage(); }
+
+        public Lazy<Image> GetImage()
+        {
+            return _customImage ?? GetInternalImage();
+        }
 
         protected MapTrackerIconType _iconType = MapTrackerIconType.TopDownImage;
+
         public virtual void SetIconType(MapTrackerIconType iconType, Lazy<Image> image = null)
         {
             if ((iconType == MapTrackerIconType.CustomImage) != (image != null))
@@ -258,6 +288,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         public override string ToString() => GetName();
 
         public MapTracker tracker { get; private set; }
+
         public ContextMenuStrip BindToTracker(MapTracker tracker)
         {
             this.tracker = tracker;
@@ -275,6 +306,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     itemEnableDragging.DropDownItems.Add(item);
                     item.Click += (_, __) => item.Checked = !item.Checked;
                 }
+
                 _contextMenuStrip.Items.Add(itemEnableDragging);
             }
 
@@ -286,35 +318,38 @@ namespace STROOP.Tabs.MapTab.MapObjects
             MapObjectObject.AddPositionAngleSubTrackers(GetName(), tracker, targetStrip, positionAngleProvider);
         }
 
-        public virtual void Update() { }
+        public virtual void Update()
+        {
+        }
 
         public virtual bool ParticipatesInGlobalIconSize() => false;
 
         public delegate void SaveSettings(System.Xml.XmlNode node);
+
         public delegate void LoadSettings(System.Xml.XmlNode node);
 
         public virtual (SaveSettings save, LoadSettings load) SettingsSaveLoad => (
-        (System.Xml.XmlNode node) =>
-        {
-            SaveValueNode(node, "EnableDragging", enableDragging.ToString());
-            SaveValueNode(node, "Size", Size.ToString());
-            SaveValueNode(node, "Color", Color.ToArgb().ToString("X"));
-            SaveValueNode(node, "OutlineColor", OutlineColor.ToArgb().ToString("X"));
-            SaveValueNode(node, "OutlineWidth", OutlineWidth.ToString());
-        }
-        , (System.Xml.XmlNode node) =>
-        {
-            if (bool.TryParse(LoadValueNode(node, "EnableDragging"), out bool _enableDragging))
-                enableDragging = _enableDragging;
-            if (float.TryParse(LoadValueNode(node, "Size"), out float size))
-                Size = size;
-            if (int.TryParse(LoadValueNode(node, "Color"), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int color))
-                Color = Color.FromArgb(color);
-            if (int.TryParse(LoadValueNode(node, "OutlineColor"), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int outlineColor))
-                OutlineColor = Color.FromArgb(outlineColor);
-            if (float.TryParse(LoadValueNode(node, "OutlineWidth"), out float outlineWidth))
-                OutlineWidth = outlineWidth;
-        }
+            (System.Xml.XmlNode node) =>
+            {
+                SaveValueNode(node, "EnableDragging", enableDragging.ToString());
+                SaveValueNode(node, "Size", Size.ToString());
+                SaveValueNode(node, "Color", Color.ToArgb().ToString("X"));
+                SaveValueNode(node, "OutlineColor", OutlineColor.ToArgb().ToString("X"));
+                SaveValueNode(node, "OutlineWidth", OutlineWidth.ToString());
+            }
+            , (System.Xml.XmlNode node) =>
+            {
+                if (bool.TryParse(LoadValueNode(node, "EnableDragging"), out bool _enableDragging))
+                    enableDragging = _enableDragging;
+                if (float.TryParse(LoadValueNode(node, "Size"), out float size))
+                    Size = size;
+                if (int.TryParse(LoadValueNode(node, "Color"), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int color))
+                    Color = Color.FromArgb(color);
+                if (int.TryParse(LoadValueNode(node, "OutlineColor"), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int outlineColor))
+                    OutlineColor = Color.FromArgb(outlineColor);
+                if (float.TryParse(LoadValueNode(node, "OutlineWidth"), out float outlineWidth))
+                    OutlineWidth = outlineWidth;
+            }
         );
 
         protected void SaveValueNode(System.Xml.XmlNode parentNode, string valueName, string value)
@@ -335,6 +370,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
             return null;
         }
 
-        public virtual void CleanUp() { OnCleanup?.Invoke(); }
+        public virtual void CleanUp()
+        {
+            OnCleanup?.Invoke();
+        }
     }
 }

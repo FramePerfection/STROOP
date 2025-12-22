@@ -39,6 +39,7 @@ namespace STROOP.Utilities
                     coinTrajectory => Qualifies(coinTrajectory)).Count;
                 if (numQualifiedCoins < numQualifiedCoinsMin) return false;
             }
+
             return true;
         }
 
@@ -81,6 +82,5 @@ namespace STROOP.Utilities
 
             return true;
         }
-
     }
 }

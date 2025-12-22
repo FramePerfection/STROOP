@@ -18,9 +18,34 @@ namespace STROOP.Managers
         /// </summary>
         public static readonly int DefaultSlotSize = 36;
 
-        public enum SortMethodType { ProcessingOrder, MemoryOrder, DistanceToMario };
-        public enum SlotLabelType { Recommended, SlotPosVs, SlotPos, SlotIndex, RngUsage };
-        public enum SelectionMethodType { Clicked, Held, StoodOn, Interaction, Used, Floor, Wall, Ceiling, Closest };
+        public enum SortMethodType
+        {
+            ProcessingOrder,
+            MemoryOrder,
+            DistanceToMario
+        };
+
+        public enum SlotLabelType
+        {
+            Recommended,
+            SlotPosVs,
+            SlotPos,
+            SlotIndex,
+            RngUsage
+        };
+
+        public enum SelectionMethodType
+        {
+            Clicked,
+            Held,
+            StoodOn,
+            Interaction,
+            Used,
+            Floor,
+            Wall,
+            Ceiling,
+            Closest
+        };
 
         public uint? HoveredObjectAddress;
 
@@ -63,7 +88,9 @@ namespace STROOP.Managers
                 objectSlot.Click += (sender, e) => OnSlotClick(sender, e);
                 ObjectSlots.Add(objectSlot);
                 mainForm.WatchVariablePanelObjects.Controls.Add(objectSlot);
-            };
+            }
+
+            ;
 
             SlotLabelsForObjects = new ReadOnlyDictionary<ObjectDataModel, string>(_slotLabels);
             ChangeSlotSize(DefaultSlotSize);
@@ -92,10 +119,10 @@ namespace STROOP.Managers
             ObjectSlot selectedSlot = sender as ObjectSlot;
             selectedSlot.Focus();
 
-            bool isCtrlKeyHeld = KeyboardUtilities.IsCtrlHeld();
-            bool isShiftKeyHeld = KeyboardUtilities.IsShiftHeld();
-            bool isAltKeyHeld = KeyboardUtilities.IsAltHeld();
-            int? numberHeld = KeyboardUtilities.GetCurrentlyInputtedNumber();
+            bool isCtrlKeyHeld = GlobalKeyboard.IsCtrlDown();
+            bool isShiftKeyHeld = GlobalKeyboard.IsShiftDown();
+            bool isAltKeyHeld = GlobalKeyboard.IsAltDown();
+            int? numberHeld = GlobalKeyboard.GetCurrentlyInputtedNumber();
 
             DoSlotClickUsingInput(selectedSlot, isCtrlKeyHeld, isShiftKeyHeld, isAltKeyHeld, numberHeld);
         }
@@ -119,6 +146,7 @@ namespace STROOP.Managers
                 }
                 else
                     newSelection = new List<ObjectSlot>() { selectedSlot };
+
                 foreach (var objSlot in newSelection)
                     MarkedSlotsAddressesDictionary[objSlot.CurrentObject.Address] = markedColor.Value;
             }
@@ -139,6 +167,7 @@ namespace STROOP.Managers
                             selection.Add(selectedSlot.CurrentObject.Address);
                             newSelection = new List<ObjectSlot>() { selectedSlot };
                         }
+
                         stroopTab.objectSlotsClicked?.Invoke(newSelection);
                     }
         }
@@ -168,6 +197,7 @@ namespace STROOP.Managers
                     newSelection.Add(ObjectSlots[index]);
                 }
             }
+
             return newSelection;
         }
 
@@ -181,7 +211,6 @@ namespace STROOP.Managers
         {
             foreach (uint address in addresses)
                 MarkedSlotsAddressesDictionary.Remove(address);
-
         }
 
         public void Update()
@@ -292,6 +321,7 @@ namespace STROOP.Managers
                 foreach (ObjectDataModel obj in DataModels.Objects.Where(o => o != null))
                     _lockedSlotIndices[obj.Address] = new Tuple<int?, int?>(obj.ProcessIndex, obj.VacantSlotIndex);
             }
+
             _slotLabels.Clear();
             foreach (ObjectDataModel obj in sortedObjects.Where(o => o != null))
                 _slotLabels[obj] = GetSlotLabelFromObject(obj);
@@ -306,7 +336,7 @@ namespace STROOP.Managers
             if (name == null) return new List<ObjectDataModel>();
 
             return DataModels.Objects.Where(o => o != null && o.IsActive
-                && o.BehaviorAssociation?.Name?.ToLower() == name.ToLower()).ToList();
+                                                           && o.BehaviorAssociation?.Name?.ToLower() == name.ToLower()).ToList();
         }
 
         public List<ObjectDataModel> GetLoadedObjectsWithPredicate(Func<ObjectDataModel, bool> func)
@@ -379,7 +409,7 @@ namespace STROOP.Managers
 
                 case SlotLabelType.SlotPos:
                     return String.Format("{0}", _lockedSlotIndices[obj.Address].Item1
-                        + (SavedSettingsConfig.StartSlotIndexsFromOne ? 1 : 0));
+                                                + (SavedSettingsConfig.StartSlotIndexsFromOne ? 1 : 0));
 
                 case SlotLabelType.SlotPosVs:
                     var vacantSlotIndex = _lockedSlotIndices[obj.Address].Item2;
@@ -387,7 +417,7 @@ namespace STROOP.Managers
                         goto case SlotLabelType.SlotPos;
 
                     return String.Format("VS{0}", vacantSlotIndex.Value
-                        + (SavedSettingsConfig.StartSlotIndexsFromOne ? 1 : 0));
+                                                  + (SavedSettingsConfig.StartSlotIndexsFromOne ? 1 : 0));
 
                 case SlotLabelType.RngUsage:
                     return ObjectRngUtilities.GetNumRngUsagesAsString(obj);

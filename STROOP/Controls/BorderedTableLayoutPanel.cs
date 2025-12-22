@@ -15,12 +15,10 @@ namespace STROOP.Controls
         }
 
         bool _showBorder = false;
+
         public bool ShowBorder
         {
-            get
-            {
-                return _showBorder;
-            }
+            get { return _showBorder; }
             set
             {
                 if (_showBorder == value)
@@ -33,10 +31,7 @@ namespace STROOP.Controls
 
         public Color BorderColor
         {
-            get
-            {
-                return _borderPen.Color;
-            }
+            get { return _borderPen.Color; }
             set
             {
                 if (_borderPen.Color == value)
@@ -51,10 +46,7 @@ namespace STROOP.Controls
 
         public float BorderWidth
         {
-            get
-            {
-                return _borderPen.Width;
-            }
+            get { return _borderPen.Width; }
             set
             {
                 if (_borderPen.Width == value)

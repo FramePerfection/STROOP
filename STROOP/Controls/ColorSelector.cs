@@ -10,10 +10,7 @@ namespace STROOP.Controls
     {
         public Color SelectedColor
         {
-            get
-            {
-                return panelColorSelector.BackColor;
-            }
+            get { return panelColorSelector.BackColor; }
             set
             {
                 Color originalColor = SelectedColor;

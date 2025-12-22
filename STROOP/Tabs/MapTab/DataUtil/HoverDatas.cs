@@ -3,6 +3,7 @@ using STROOP.Utilities;
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -20,9 +21,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 this.parent = parent;
             }
 
-            public virtual void LeftClick(Vector3 position) { }
+            public virtual void LeftClick(Vector3 position)
+            {
+            }
 
-            public virtual void RightClick(Vector3 position) { }
+            public virtual void RightClick(Vector3 position)
+            {
+            }
 
             public virtual DragMask CanDrag() => parent.dragMask;
 
@@ -49,10 +54,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             {
                 var myItem = new ToolStripMenuItem(ToString());
                 var copyPositionItem = new ToolStripMenuItem("Copy Position");
-                copyPositionItem.Click += (_, __) =>
-                {
-                    CopyUtilities.CopyPosition(GetPosition());
-                };
+                copyPositionItem.Click += (_, __) => { CopyUtilities.CopyPosition(GetPosition()); };
                 myItem.DropDownItems.Add(copyPositionItem);
 
                 var pastePositionItem = new ToolStripMenuItem("Paste Position");
@@ -86,8 +88,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         makeReferencePointItem.DropDownItems.AddHandlerToItem(
                             customPoints.GetName(),
                             () => customPoints.AddPoint(GetPosition())
-                            );
+                        );
                     }
+
                 makeReferencePointItem.DropDownItems.AddHandlerToItem(
                     "New Collection",
                     () =>
@@ -107,7 +110,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             customPoints.AddPoint(GetPosition());
                         }
                     }
-                    );
+                );
                 myItem.DropDownItems.Add(makeReferencePointItem);
 
                 if (tab.graphics.view.mode != MapView.ViewMode.TopDown)
@@ -116,6 +119,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     pivotItem.Click += (_, __) => Pivot(tab);
                     myItem.DropDownItems.Add(pivotItem);
                 }
+
                 menu.Items.Add(myItem);
             }
         }
@@ -123,7 +127,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
         protected class MapObjectHoverData : PointHoverData, IPositionCalculatorProvider
         {
             public PositionAngle currentPositionAngle;
-            public MapObjectHoverData(MapObject parent) : base(parent) { }
+
+            public MapObjectHoverData(MapObject parent) : base(parent)
+            {
+            }
 
             protected override void SetPosition(Vector3 position)
             {
@@ -133,6 +140,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 currentPositionAngle.SetY(position.Y);
                 currentPositionAngle.SetZ(position.Z);
             }
+
             protected override Vector3 GetPosition() => currentPositionAngle?.position ?? Vector3.Zero;
 
             public override void Pivot(MapTab tab)

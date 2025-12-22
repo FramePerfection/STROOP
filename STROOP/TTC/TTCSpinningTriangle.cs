@@ -9,7 +9,6 @@ namespace STROOP.Ttc
      */
     public class TtcSpinningTriangle : TtcObject
     {
-
         public int _angle;
         public int _currentAngularVelocity;
         public int _targetAngularVelocity;
@@ -54,8 +53,8 @@ namespace STROOP.Ttc
         public override string ToString()
         {
             return _id + OPENER + _angle + SEPARATOR +
-                    _currentAngularVelocity + SEPARATOR +
-                    _targetAngularVelocity + CLOSER;
+                   _currentAngularVelocity + SEPARATOR +
+                   _targetAngularVelocity + CLOSER;
         }
 
         public override List<object> GetFields()
@@ -75,6 +74,4 @@ namespace STROOP.Ttc
             return new TtcSpinningTriangle(rng, _angle, _currentAngularVelocity, _targetAngularVelocity);
         }
     }
-
-
 }

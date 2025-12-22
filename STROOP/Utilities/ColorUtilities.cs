@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Utilities
 {
@@ -25,7 +25,7 @@ namespace STROOP.Utilities
 
         public static readonly List<Color> ColorList =
             ColorToParamsDictionary.Values.ToList()
-              .ConvertAll(html => ColorTranslator.FromHtml(html));
+                .ConvertAll(html => ColorTranslator.FromHtml(html));
 
         private static readonly Dictionary<string, string> ParamsToColorDictionary =
             DictionaryUtilities.ReverseDictionary(ColorToParamsDictionary);
@@ -54,9 +54,10 @@ namespace STROOP.Utilities
         }
 
         public static Color LastCustomColor = SystemColors.Control;
+
         public static Color GetColorForVariable()
         {
-            int? inputtedNumber = KeyboardUtilities.GetCurrentlyInputtedNumber();
+            int? inputtedNumber = GlobalKeyboard.GetCurrentlyInputtedNumber();
 
             if (inputtedNumber.HasValue &&
                 inputtedNumber.Value > 0 &&
@@ -64,12 +65,13 @@ namespace STROOP.Utilities
             {
                 return ColorList[inputtedNumber.Value - 1];
             }
+
             return SystemColors.Control;
         }
 
         public static Color? GetColorForHighlight()
         {
-            int? inputtedNumber = KeyboardUtilities.GetCurrentlyInputtedNumber();
+            int? inputtedNumber = GlobalKeyboard.GetCurrentlyInputtedNumber();
             switch (inputtedNumber)
             {
                 case 1:

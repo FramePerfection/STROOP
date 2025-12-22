@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 using System.Windows.Forms;
 using System.Drawing;
+using OpenTK.GLControl;
+using OpenTK.Mathematics;
+using STROOP.Extensions;
 using STROOP.Utilities;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace STROOP.Controls
 {
     public class ModelGraphics
     {
+        private KeyboardControls _keyboardControls;
+        private MouseControls _mouseControls;
+
         volatile float _cameraAngle = 0;
         volatile float _cameraRadius = 0;
         volatile float _cameraHeight = 0;
@@ -29,6 +34,7 @@ namespace STROOP.Controls
         public RectangleF MapView;
         public GLControl Control;
         Timer _timer;
+        float _speedMul;
 
         public bool ManualMode = false;
 
@@ -38,36 +44,26 @@ namespace STROOP.Controls
             _timer = new Timer();
             _timer.Interval = 1000 / 60;
             _timer.Tick += _timer_Tick;
-        }
 
-        private void _timer_Tick(object sender, EventArgs e)
-        {
-            if (!ManualMode)
+            control.MouseWheel += HandleMouseWheel;
+            EventHandler disposeHandler = null;
+            disposeHandler = (_, _) =>
             {
-                KeyboardState keyState = Keyboard.GetState();
-
-                float speed = 0.01f;
-                if (keyState.IsKeyDown(Key.ControlLeft) || keyState.IsKeyDown(Key.ControlRight))
-                    speed = 0.0f;
-                else if (keyState.IsKeyDown(Key.ShiftLeft) || keyState.IsKeyDown(Key.ShiftRight))
-                    speed = 0.03f;
-                else if (keyState.IsKeyDown(Key.AltLeft) || keyState.IsKeyDown(Key.AltRight))
-                    speed = 0.003f;
-
-                _cameraAngle += speed;
-            }
-
-            CameraFly();
+                control.Disposed -= disposeHandler;
+                control.MouseWheel -= HandleMouseWheel;
+            };
+            control.Disposed += disposeHandler;
         }
 
         public void Load()
         {
             Control.MakeCurrent();
-            Control.Context.LoadAll();
 
             Control.Paint += OnPaint;
             Control.Resize += OnResize;
-            Control.MouseDown += Control_MouseClick;
+            _keyboardControls = new KeyboardControls(Control);
+            _mouseControls = new MouseControls(Control);
+            Control.MouseDown += (_, _) => Control.Focus();
 
             GL.ClearColor(Color.FromKnownColor(KnownColor.Control));
             GL.Enable(EnableCap.DepthTest);
@@ -77,44 +73,45 @@ namespace STROOP.Controls
             SetupViewport();
         }
 
-        volatile bool _mousePressedWithin = false;
-        private void Control_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void _timer_Tick(object sender, EventArgs e)
         {
-            _mousePressedWithin = true;
+            if (!ManualMode)
+            {
+                float speed = 0.01f;
+                if (_keyboardControls.IsCtrlDown())
+                    speed = 0.0f;
+                else if (_keyboardControls.IsShiftDown())
+                    speed = 0.03f;
+                else if (_keyboardControls.IsAltDown())
+                    speed = 0.003f;
+
+                _cameraAngle += speed;
+            }
+
+            CameraFly();
+            _mouseControls.NextFrame();
         }
 
-        bool _mousePressed = false;
-
-        Vector2 _pMouseCoords;
-        float? _pMouseScroll = null;
-        public void CameraFly()
+        private void CameraFly()
         {
-            KeyboardState keyState = Keyboard.GetState();
-
             // Calculate key speed multiplier
-            float speedMul = 1f;
-            if (keyState.IsKeyDown(Key.ControlLeft) || keyState.IsKeyDown(Key.ControlRight))
-                speedMul = 0.0f;
-            else if (keyState.IsKeyDown(Key.ShiftLeft) || keyState.IsKeyDown(Key.ShiftRight))
-                speedMul = 3.0f;
-            else if (keyState.IsKeyDown(Key.AltLeft) || keyState.IsKeyDown(Key.AltRight))
-                speedMul = 0.3f;
+            _speedMul = 1f;
+            if (_keyboardControls.IsCtrlDown())
+                _speedMul = 0.0f;
+            else if (_keyboardControls.IsShiftDown())
+                _speedMul = 0.03f;
+            else if (_keyboardControls.IsAltDown())
+                _speedMul = 0.003f;
 
             // Handle mouse
-            MouseState mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == OpenTK.Input.ButtonState.Pressed && _mousePressedWithin)
+            if (_mouseControls.IsDown(MouseButtons.Left))
             {
-                // Reset previous coordinates so no movement occurs during the initial press 
-                if (!_mousePressed)
-                {
-                    _pMouseCoords = new Vector2(mouseState.X, mouseState.Y);
-                }
+                // Reset previous coordinates so no movement occurs during the initial press
 
-                // Calcualte mouse delta
-                Vector2 delta = new Vector2(mouseState.X, mouseState.Y) - _pMouseCoords;
+                Vector2 delta = _mouseControls.delta;
 
                 // Add speed multiplier
-                delta *= speedMul * 0.009f;
+                delta *= _speedMul * 0.009f;
                 delta *= _pov / 90;
 
                 // Trackball (add mouse deltas to angle)
@@ -130,59 +127,44 @@ namespace STROOP.Controls
                     _cameraManualAngleLong = (float)(-Math.PI / 2) + 0.001f;
                 }
 
-                // Update mouse coordinates for next time
-                _pMouseCoords = new Vector2(mouseState.X, mouseState.Y);
-
-                _mousePressed = true;
                 ManualMode = true;
             }
-            else
-            {
-                if (_mousePressed)
-                    _mousePressedWithin = false;
-                _mousePressed = false;
-            }
-
-            // Don't do anything if we don't have focus
-            if (!Control.Focused)
-                return;
-
-            if (!_pMouseScroll.HasValue)
-                _pMouseScroll = mouseState.ScrollWheelValue;
-            float deltaScroll = mouseState.ScrollWheelValue - _pMouseScroll.Value;
-            _zoom += deltaScroll * 0.1f * speedMul;
-            _pMouseScroll = mouseState.ScrollWheelValue;
 
             Vector3 relDeltaPos = new Vector3(0, 0, 0);
-            float posSpeed = speedMul * _modelRadius * 0.01f; // Move at a rate relative to the model size
+            float posSpeed = _speedMul * _modelRadius * 0.01f; // Move at a rate relative to the model size
 
             // Handle Positional Movement 
-            if (keyState.IsKeyDown(Key.W) || keyState.IsKeyDown(Key.Up))
+            if (_keyboardControls.IsDown(Keys.W) || _keyboardControls.IsDown(Keys.Up))
             {
                 relDeltaPos.Z += posSpeed;
                 ManualMode = true;
             }
-            if (keyState.IsKeyDown(Key.A) || keyState.IsKeyDown(Key.Left))
+
+            if (_keyboardControls.IsDown(Keys.A) || _keyboardControls.IsDown(Keys.Left))
             {
                 relDeltaPos.X += posSpeed;
                 ManualMode = true;
             }
-            if (keyState.IsKeyDown(Key.S) || keyState.IsKeyDown(Key.Down))
+
+            if (_keyboardControls.IsDown(Keys.S) || _keyboardControls.IsDown(Keys.Down))
             {
                 relDeltaPos.Z += -posSpeed;
                 ManualMode = true;
             }
-            if (keyState.IsKeyDown(Key.D) || keyState.IsKeyDown(Key.Right))
+
+            if (_keyboardControls.IsDown(Keys.D) || _keyboardControls.IsDown(Keys.Right))
             {
                 relDeltaPos.X += -posSpeed;
                 ManualMode = true;
             }
-            if (keyState.IsKeyDown(Key.Q))
+
+            if (_keyboardControls.IsDown(Keys.Q))
             {
                 relDeltaPos.Y += -posSpeed;
                 ManualMode = true;
             }
-            if (keyState.IsKeyDown(Key.E))
+
+            if (_keyboardControls.IsDown(Keys.E))
             {
                 relDeltaPos.Y += posSpeed;
                 ManualMode = true;
@@ -196,11 +178,17 @@ namespace STROOP.Controls
             // The Z unit is the normalized camera look vector (to move towards the look),
             // Hence, move formard.
             _cameraPosition += Vector3.Cross(Vector3.UnitY, _cameraLook) * relDeltaPos.X
-                + Vector3.UnitY * relDeltaPos.Y
-                + _cameraLook * relDeltaPos.Z;
+                               + Vector3.UnitY * relDeltaPos.Y
+                               + _cameraLook * relDeltaPos.Z;
         }
 
-        public void OnPaint(object sender, EventArgs e)
+        private void HandleMouseWheel(object sender, MouseEventArgs e)
+        {
+            float deltaScroll = e.Delta / 120.0f; // screw this stupid magic number, read https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mousewheel?redirectedfrom=MSDN or something
+            _zoom += deltaScroll * 0.1f * _speedMul;
+        }
+
+        private void OnPaint(object sender, EventArgs e)
         {
             Control.MakeCurrent();
 
@@ -240,7 +228,7 @@ namespace STROOP.Controls
             Control.SwapBuffers();
         }
 
-        public void OnResize(object sender, EventArgs e)
+        private void OnResize(object sender, EventArgs e)
         {
             Control.MakeCurrent();
             SetupViewport();
@@ -289,6 +277,7 @@ namespace STROOP.Controls
                     GL.Vertex3(_vertices[t[1]]);
                     GL.Vertex3(_vertices[t[2]]);
                 }
+
                 GL.End();
 
                 // Draw lines
@@ -304,6 +293,7 @@ namespace STROOP.Controls
                     GL.Vertex3(_vertices[t[1]]);
                     GL.Vertex3(_vertices[t[2]]);
                 }
+
                 GL.End();
 
                 // Draw vertices
@@ -321,6 +311,7 @@ namespace STROOP.Controls
 
                     GL.Vertex3(v);
                 }
+
                 GL.End();
             }
         }

@@ -13,6 +13,7 @@ namespace STROOP.Tabs.MapTab
             public static object FileMoveLock = new object();
 
             static volatile Task currentlyDownloading;
+
             public static void Download(string sourcePath, Action<Lazy<Image>> assignment)
             {
                 if (currentlyDownloading == null)
@@ -37,6 +38,7 @@ namespace STROOP.Tabs.MapTab
                             assignment(MapTab.MapAssociations.BrokenBackgroundImage);
                             return;
                         }
+
                         assignment(new Lazy<Image>(() => Image.FromFile(sourcePath)));
                         currentlyDownloading = null;
                     })).Start();
@@ -61,9 +63,10 @@ namespace STROOP.Tabs.MapTab
                 else
                     ImageQueryManager.Download(sourcePath, _ => loadedImage = _);
             }
+
             return MapTab.MapAssociations.DownloadingBackgroundImage;
         }
-        
+
         public BackgroundImage(string name, string sourcePath)
         {
             this.Name = name;

@@ -53,7 +53,9 @@ namespace STROOP.Utilities
                 var log = String.Format("{0}\n{1}\n{2}\n", e.Message, e.TargetSite.ToString(), e.StackTrace);
                 File.AppendAllText("error.txt", log);
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
         }
 
         private void ExceptionHandler(Task obj)
@@ -94,7 +96,7 @@ namespace STROOP.Utilities
 
                 return true;
 
-                Error:
+            Error:
                 _io = null;
                 return false;
             }
@@ -121,14 +123,17 @@ namespace STROOP.Utilities
                 MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
             return SwitchIO(newIo);
         }
 
 
         int suspendCounter = 0;
+
         class SuspendScope : Scope
         {
             readonly ProcessStream stream;
+
             public SuspendScope(ProcessStream stream)
             {
                 this.stream = stream;
@@ -136,6 +141,7 @@ namespace STROOP.Utilities
                     stream._io?.Suspend();
                 stream.suspendCounter++;
             }
+
             protected override void Close()
             {
                 stream.suspendCounter--;
@@ -143,6 +149,7 @@ namespace STROOP.Utilities
                     stream._io?.Resume();
             }
         }
+
         public Scope Suspend() => new SuspendScope(this);
 
         private void ProcessClosed(object sender, EventArgs e)
@@ -368,11 +375,13 @@ namespace STROOP.Utilities
             {
                 value = (byte)(value << shift.Value);
             }
+
             if (mask.HasValue)
             {
                 byte oldValue = GetByte(address, absoluteAddress);
                 value = (byte)((oldValue & ~mask.Value) | (value & mask.Value));
             }
+
             bool returnValue = WriteRam(new byte[] { value }, (UIntPtr)address, EndiannessType.Little, absoluteAddress);
             return returnValue;
         }
@@ -383,11 +392,13 @@ namespace STROOP.Utilities
             {
                 value = (sbyte)(value << shift.Value);
             }
+
             if (mask.HasValue)
             {
                 sbyte oldValue = GetSByte(address, absoluteAddress);
                 value = (sbyte)((oldValue & ~mask.Value) | (value & mask.Value));
             }
+
             bool returnValue = WriteRam(new byte[] { (byte)value }, (UIntPtr)address, EndiannessType.Little, absoluteAddress);
             return returnValue;
         }
@@ -398,11 +409,13 @@ namespace STROOP.Utilities
             {
                 value = (short)(value << shift.Value);
             }
+
             if (mask.HasValue)
             {
                 short oldValue = GetInt16(address, absoluteAddress);
                 value = (short)((oldValue & ~mask.Value) | (value & mask.Value));
             }
+
             bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
             return returnValue;
         }
@@ -413,11 +426,13 @@ namespace STROOP.Utilities
             {
                 value = (ushort)(value << shift.Value);
             }
+
             if (mask.HasValue)
             {
                 ushort oldValue = GetUInt16(address, absoluteAddress);
                 value = (ushort)((oldValue & ~mask.Value) | (value & mask.Value));
             }
+
             bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
             return returnValue;
         }
@@ -428,11 +443,13 @@ namespace STROOP.Utilities
             {
                 value = (int)(value << shift.Value);
             }
+
             if (mask.HasValue)
             {
                 int oldValue = GetInt32(address, absoluteAddress);
                 value = (int)((oldValue & ~mask.Value) | (value & mask.Value));
             }
+
             bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
             return returnValue;
         }
@@ -443,11 +460,13 @@ namespace STROOP.Utilities
             {
                 value = (uint)(value << shift.Value);
             }
+
             if (mask.HasValue)
             {
                 uint oldValue = GetUInt32(address, absoluteAddress);
                 value = (uint)((oldValue & ~mask.Value) | (value & mask.Value));
             }
+
             bool returnValue = WriteRam(BitConverter.GetBytes(value), (UIntPtr)address, EndiannessType.Little, absoluteAddress);
             return returnValue;
         }
@@ -470,7 +489,7 @@ namespace STROOP.Utilities
         }
 
         public bool WriteRam(byte[] buffer, uint address, EndiannessType endianness,
-           int bufferStart = 0, int? length = null, bool safeWrite = true)
+            int bufferStart = 0, int? length = null, bool safeWrite = true)
         {
             return WriteRam(buffer, (UIntPtr)address, endianness, false, bufferStart, length, safeWrite);
         }
@@ -509,6 +528,7 @@ namespace STROOP.Utilities
                     if (result && _io.ReadRelative(address.ToUInt32(), writeBytes, endianness))
                         Array.Copy(writeBytes, 0, Ram, address.ToUInt32() & 0x00FFFFFF, writeBytes.Length);
                 }
+
                 // Resume stream 
                 if (safeWrite && !preSuspended)
                     _io?.Resume();
@@ -584,6 +604,7 @@ namespace STROOP.Utilities
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -607,6 +628,7 @@ namespace STROOP.Utilities
         {
             Dispose(true);
         }
+
         #endregion
     }
 }

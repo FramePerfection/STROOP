@@ -5,6 +5,7 @@ using STROOP.Structs.Configurations;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -13,15 +14,19 @@ namespace STROOP.Tabs.MapTab.MapObjects
     {
         class CustomPointHoverData : MapObjectHoverData
         {
-            public CustomPointHoverData(MapCustomIconPoints parent) : base(parent) { }
+            public CustomPointHoverData(MapCustomIconPoints parent) : base(parent)
+            {
+            }
+
             public override void AddContextMenuItems(MapTab tab, ContextMenuStrip menu)
             {
                 base.AddContextMenuItems(tab, menu);
                 menu.Items.GetSubItem(ToString()).DropDownItems.AddHandlerToItem(
                     "Remove",
                     () => ((MapCustomIconPoints)parent).positionAngles.Remove(currentPositionAngle)
-                    );
+                );
             }
+
             public override string ToString() => $"{parent.GetName()} {currentPositionAngle.position}";
         }
 
@@ -74,13 +79,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "Name", name);
                 SaveValueNode(node, "Points", ParsingUtilities.CreatePointList(positionAngles.ConvertAll(_ => ((float)_.X, (float)_.Y, (float)_.Z))));
             }
-        ,
+            ,
             node =>
             {
                 name = LoadValueNode(node, "Name") ?? "Custom Points";
                 positionAngles = new List<PositionAngle>(
                     ParsingUtilities.ParsePointList(LoadValueNode(node, "Points")).ConvertAll(_ => PositionAngle.Custom(new Vector3(_.Item1, _.Item2, _.Item3)))
-                    );
+                );
             }
         );
     }

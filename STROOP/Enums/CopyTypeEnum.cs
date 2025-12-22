@@ -8,6 +8,7 @@
         CopyWithLineBreaks,
         CopyWithCommasAndSpaces,
         CopyWithNames,
+
         //CopyAsTable,
         CopyForCode,
         CopyForBruteforcerJson,

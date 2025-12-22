@@ -10,7 +10,6 @@ namespace STROOP.Ttc
      */
     public abstract class TtcObject
     {
-
         //variables to tweak how objects are printed
         public static readonly string OPENER = "(";
         public static readonly string SEPARATOR = ",";
@@ -75,7 +74,6 @@ namespace STROOP.Ttc
 
         public virtual void ApplyToAddress(uint address)
         {
-
         }
 
         /** Returns an angle between 0 and 65535 inclusive
@@ -93,17 +91,20 @@ namespace STROOP.Ttc
         protected static int MoveNumberTowards(int currentNumber, int targetNumber, int maxDisplacement)
         {
             if (currentNumber == targetNumber)
-            { //exactly equal to target
+            {
+                //exactly equal to target
                 return currentNumber;
             }
             else if (currentNumber < targetNumber)
-            { //lower than target
+            {
+                //lower than target
                 int diff = targetNumber - currentNumber;
                 int newNumber = currentNumber + Math.Min(diff, maxDisplacement);
                 return newNumber;
             }
             else
-            { //higher than target
+            {
+                //higher than target
                 int diff = currentNumber - targetNumber;
                 int newNumber = currentNumber - Math.Min(diff, maxDisplacement);
                 return newNumber;
@@ -121,13 +122,16 @@ namespace STROOP.Ttc
 
             int newAngle;
             if (diff < 32768)
-            { //target is slightly above current
+            {
+                //target is slightly above current
                 newAngle = currentAngle + Math.Min(diff, maxDisplacement);
             }
             else
-            { //target is slightly below current
+            {
+                //target is slightly below current
                 newAngle = currentAngle - Math.Min(65536 - diff, maxDisplacement);
             }
+
             return Normalize(newAngle);
         }
 

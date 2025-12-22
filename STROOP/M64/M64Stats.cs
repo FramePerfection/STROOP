@@ -10,9 +10,21 @@ namespace STROOP.M64
     public class M64Stats
     {
         private readonly M64File _m64;
-        private byte[] _rawBytes { get => _m64.RawBytes; }
-        private M64Header _header { get => _m64.Header; }
-        private BindingList<M64InputFrame> _inputs { get => _m64.Inputs; }
+
+        private byte[] _rawBytes
+        {
+            get => _m64.RawBytes;
+        }
+
+        private M64Header _header
+        {
+            get => _m64.Header;
+        }
+
+        private BindingList<M64InputFrame> _inputs
+        {
+            get => _m64.Inputs;
+        }
 
         [Category("\u200B\u200B\u200BMain Button Presses"), DisplayName("\u200B\u200B\u200B\u200BNum A Presses")]
         public int NumAPresses
@@ -159,8 +171,7 @@ namespace STROOP.M64
 
             for (int i = 0; i <= _inputs.Count; i++)
             {
-                bool isCurrentlyPressed = i == _inputs.Count ?
-                    false : isPressedFunction(_inputs[i]);
+                bool isCurrentlyPressed = i == _inputs.Count ? false : isPressedFunction(_inputs[i]);
                 if (isAlreadyPressed)
                 {
                     if (isCurrentlyPressed) // still pressing
@@ -209,6 +220,7 @@ namespace STROOP.M64
                 bool isJoystickFrame = frame.X != 0 || frame.Y != 0;
                 if (isJoystickFrame) joystickFrames.Add((i, frame.X, frame.Y));
             }
+
             return joystickFrames;
         }
 
@@ -235,6 +247,7 @@ namespace STROOP.M64
                     lastInputsString = inputsString;
                 }
             }
+
             return inputChanges;
         }
 
@@ -303,6 +316,7 @@ namespace STROOP.M64
                     "{0} press #{1}: frame {2} to frame {3} ({4} frame{5})",
                     buttonName, i + 1, startFrame, endFrame, frameSpan, pluralitySuffix));
             }
+
             return String.Join("\r\n", lines);
         }
 
@@ -319,6 +333,7 @@ namespace STROOP.M64
                     "Joystick frame #{0} on frame {1}: ({2},{3})",
                     i + 1, frame, x, y));
             }
+
             return String.Join("\r\n", lines);
         }
 
@@ -331,11 +346,12 @@ namespace STROOP.M64
             for (int i = 0; i < inputChanges.Count - 1; i++)
             {
                 (int frame1, string inputsString1) = inputChanges[i];
-                (int frame2, string inputsString2) = inputChanges[i+1];
+                (int frame2, string inputsString2) = inputChanges[i + 1];
                 lines.Add(String.Format(
                     "Input change #{0} on frame {1}: from {2} to {3}",
                     i + 1, frame2, inputsString1, inputsString2));
             }
+
             return String.Join("\r\n", lines);
         }
     }

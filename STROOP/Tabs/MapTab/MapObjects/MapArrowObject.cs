@@ -6,12 +6,14 @@ using STROOP.Utilities;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using System.Windows.Forms;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
     public class MapArrowObject : MapLineObject
     {
         public delegate double GetYaw(PositionAngle obj);
+
         public delegate double GetRecommendedSize(PositionAngle obj);
 
         public GetYaw getYaw;
@@ -43,7 +45,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
-
                 Vector4 color = GetColor(graphics);
                 foreach (var posAngle in positionAngleProvider())
                     graphics.lineRenderer.AddArrow(
@@ -55,6 +56,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         OutlineWidth);
             });
         }
+
         protected override List<Vector3> GetVertices(MapGraphics graphics) => new List<Vector3>();
 
         public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.ArrowImage;
@@ -88,6 +90,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             result = hexResult;
                             return true;
                         }
+
                         result = double.NaN;
                         return false;
                     });
@@ -113,7 +116,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "ArrowHeadSideLength", _arrowHeadSideLength.ToString());
                 SaveValueNode(node, "YawOffset", _yawOffset.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

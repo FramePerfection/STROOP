@@ -6,6 +6,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using OpenTK;
 using System.Windows.Forms;
+using OpenTK.Mathematics;
 using STROOP.Models;
 
 namespace STROOP.Tabs.MapTab.MapObjects
@@ -68,6 +69,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         }
                     }
                 }
+
             return base.GetHoverData(graphics, ref position);
         }
 
@@ -91,8 +93,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
             var rightProjection = Math.Min(projectionDist, ((tri.XProjection ? projectionA.Z : projectionA.X) - min) / rightAbs);
 
             Vector3 baseOffset = new Vector3(0, _hitboxVerticalOffset, 0);
-            return new[] { (baseOffset, baseOffset + right * rightProjection),
-                (baseOffset, baseOffset - right* leftProjection)};
+            return new[]
+            {
+                (baseOffset, baseOffset + right * rightProjection),
+                (baseOffset, baseOffset - right * leftProjection)
+            };
         }
 
         protected override Vector3[] GetVolumeDisplacements(TriangleDataModel tri)
@@ -149,7 +154,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         protected override void DrawTopDown(MapGraphics graphics)
         {
-
             float marioHeight = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
             float? height = _relativeHeight.HasValue ? marioHeight - _relativeHeight.Value : (float?)null;
             height = height ?? _absoluteHeight;
@@ -238,7 +242,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                     new Vector3(vtx2.X, 0, vtx2.Y),
                                     new Vector3(vtx3.X, 0, vtx3.Y),
                                     false, color, outlineColor, OutlineWidth, false
-                                    );
+                                );
                             }
                         }
                     }
@@ -277,9 +281,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             {
                 string text = DialogUtilities.GetStringFromDialog(labelText: "Enter the height at which you want to see the wall triangles.");
                 float? absoluteHeightNullable =
-                    text == "" ?
-                    Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) :
-                    ParsingUtilities.ParseFloatNullable(text);
+                    text == "" ? Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) : ParsingUtilities.ParseFloatNullable(text);
                 if (absoluteHeightNullable.HasValue)
                     _absoluteHeight = absoluteHeightNullable.Value;
             };
@@ -307,7 +309,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SaveValueNode(node, "AbsoluteHeight", _absoluteHeight.ToString());
                 SaveValueNode(node, "HitboxVerticalOffset", _hitboxVerticalOffset.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

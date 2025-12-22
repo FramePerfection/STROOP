@@ -21,9 +21,11 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
             public string name = "<undefined>";
             public uint frame = 30;
             public double weight = 1.0;
+
             public Dictionary<Identifier, string> parameterDefinitions = new Dictionary<Identifier, string>(
                 new Utilities.EqualityComparer<Identifier>((a, b) => a.name == b.name, a => a.name.GetHashCode())
-                );
+            );
+
             public Dictionary<string, IBruteforceVariableView> parameterValues = new Dictionary<string, IBruteforceVariableView>();
 
             public Type GetParameterWrapperType(string name)
@@ -33,7 +35,9 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 return null;
             }
 
-            public ScoringFuncPrecursor() { }
+            public ScoringFuncPrecursor()
+            {
+            }
 
             public ScoringFuncPrecursor(ScoringFuncPrecursor src)
             {
@@ -93,6 +97,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                                     lastTokens.Push(tokenBuilder.ToString());
                                     tokenBuilder.Clear();
                                 }
+
                             break;
                         case ';':
                             var nameToken = tokenBuilder.ToString();
@@ -109,6 +114,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                             break;
                     }
                 }
+
             if (currentPrecursor != null)
                 scoringFuncsByName.Add(currentPrecursor.name, currentPrecursor);
         }
@@ -149,6 +155,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
             flowPanelScoring.Controls.Remove(ctrl);
             ctrl.Dispose();
         }
+
         private void btnAddMethod_Click(object sender, EventArgs e)
         {
             var ctr = new ContextMenuStrip();
@@ -157,6 +164,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 var precursor = scoringFunc.Value;
                 ctr.Items.AddHandlerToItem(precursor.name, () => AddMethod(new ScoringFuncPrecursor(precursor)));
             }
+
             ctr.Show(Cursor.Position);
         }
 
@@ -190,9 +198,11 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                         first = false;
                     }
                 }
+
                 strBuilder.Append("\n\t]");
                 return strBuilder.ToString();
             }
+
             return base.GetParameter(parameterName);
         }
 
@@ -224,21 +234,23 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                         if (obj.TryGetValue<JsonNodeObject>("params", out var parametersNode))
                             foreach (var n in parametersNode.values)
                             {
-                                if (precursor.parameterDefinitions.TryGetValue(new ScoringFuncPrecursor.Identifier { name = n.Key }, out var bruteforcerType)) {
+                                if (precursor.parameterDefinitions.TryGetValue(new ScoringFuncPrecursor.Identifier { name = n.Key }, out var bruteforcerType))
+                                {
                                     if (n.Value is JsonNodeString stringNode)
                                         precursor.parameterValues[n.Key] = BF_VariableUtilties.CreateNamedVariable(
                                             bruteforcerType,
                                             n.Key,
                                             StringUtilities.GetJsonValue(precursor.GetParameterWrapperType(n.Key), stringNode.value)
-                                            );
+                                        );
                                     else
                                         precursor.parameterValues[n.Key] = BF_VariableUtilties.CreateNamedVariable(
                                             bruteforcerType,
                                             n.Key,
                                             n.Value.valueObject
-                                            );
+                                        );
                                 }
                             }
+
                         AddMethod(precursor);
                     }
                 }

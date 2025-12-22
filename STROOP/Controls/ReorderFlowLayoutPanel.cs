@@ -5,6 +5,7 @@ namespace STROOP.Controls
     public class ReorderFlowLayoutPanel : FlowLayoutPanel
     {
         Control currentDragControl;
+
         void StartDragging(object sender, MouseEventArgs e)
         {
             currentDragControl = sender as Control;
@@ -40,6 +41,7 @@ namespace STROOP.Controls
                 currentDragControl = null;
                 return;
             }
+
             var pt = PointToClient(((Control)sender).PointToScreen(e.Location));
             if (FlowDirection == FlowDirection.TopDown)
             {
@@ -51,6 +53,7 @@ namespace STROOP.Controls
                     if (ctrl != currentDragControl)
                         destIndex++;
                 }
+
                 Controls.SetChildIndex(currentDragControl, destIndex);
             }
         }

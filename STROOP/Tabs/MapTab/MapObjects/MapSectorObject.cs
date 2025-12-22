@@ -5,6 +5,7 @@ using STROOP.Utilities;
 using STROOP.Structs.Configurations;
 using OpenTK;
 using System.Windows.Forms;
+using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -59,6 +60,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 (double x, double y, double z, double angle) = _posAngle.GetValues();
                 lst.Add(((float)x, (float)z, Size, (float)angle, _angleRadius));
             }
+
             return lst;
         }
 
@@ -89,7 +91,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 base.SettingsSaveLoad.save(node);
                 SaveValueNode(node, "AngleRadius", _angleRadius.ToString());
             }
-        ,
+            ,
             (System.Xml.XmlNode node) =>
             {
                 base.SettingsSaveLoad.load(node);

@@ -35,7 +35,7 @@ namespace STROOP.Forms
             textBoxSelect.Text = selectionText;
             buttonSet.Text = buttonText;
             listBoxSelections.DataSource = items;
-                
+
             Action enterAction = () =>
             {
                 T selection = (T)listBoxSelections.SelectedItem;
@@ -113,6 +113,7 @@ namespace STROOP.Forms
                 int? animationIndex = TableConfig.MarioAnimations.GetAnimationFromName(animationName);
                 return animationIndex;
             }
+
             return null;
         }
 
