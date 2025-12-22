@@ -25,18 +25,19 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         static readonly Lazy<Image>[] MARIO_IMAGES =
         [
-            Config.ObjectAssociations.PinkMarioMapImage,
-            Config.ObjectAssociations.YellowMarioMapImage,
-            Config.ObjectAssociations.PurpleMarioMapImage,
-            Config.ObjectAssociations.GreyMarioMapImage,
-            Config.ObjectAssociations.TurquoiseMarioMapImage,
-            Config.ObjectAssociations.GreenMarioMapImage,
-            Config.ObjectAssociations.BrownMarioMapImage,
+            Config.ObjectAssociations.PinkMarioMapImage, // Initial
+            Config.ObjectAssociations.YellowMarioMapImage, // After warp_area
+            Config.ObjectAssociations.PurpleMarioMapImage, // After check_instant_warp
+            Config.ObjectAssociations.GreyMarioMapImage, // After platform displacement
+            Config.ObjectAssociations.TurquoiseMarioMapImage, // After initial wall check A
+            Config.ObjectAssociations.GreenMarioMapImage, // After initial wall check B
+            Config.ObjectAssociations.BrownMarioMapImage, // After object interactions
 
-            Config.ObjectAssociations.OrangeMarioMapImage,
-            Config.ObjectAssociations.TurquoiseMarioMapImage,
-            Config.ObjectAssociations.GreenMarioMapImage,
-            Config.ObjectAssociations.BlueMarioMapImage,
+            // These are used for each quarter-step
+            Config.ObjectAssociations.OrangeMarioMapImage, // Intended position
+            Config.ObjectAssociations.TurquoiseMarioMapImage, // After wall check A
+            Config.ObjectAssociations.GreenMarioMapImage, // After wall check B
+            Config.ObjectAssociations.BlueMarioMapImage, // After floor check
         ];
 
         private DateTime _showEachPointStartTime = DateTime.MinValue;
