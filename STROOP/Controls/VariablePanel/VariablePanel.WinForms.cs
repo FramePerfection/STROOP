@@ -9,6 +9,7 @@ using STROOP.Variables.VariablePanel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -212,4 +213,9 @@ public partial class VariablePanel
 
         strip.Show(System.Windows.Forms.Cursor.Position);
     }
+
+    // Prevent unwanted scrolling to the top left of the renderer child control
+    // For details, see https://stackoverflow.com/questions/419774/how-can-you-stop-a-winforms-panel-from-scrolling
+    protected override Point ScrollToControl(Control activeControl)
+        => DisplayRectangle.Location;
 }
