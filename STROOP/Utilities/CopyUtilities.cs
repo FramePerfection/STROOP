@@ -76,7 +76,7 @@ namespace STROOP.Utilities
         public static void CopyPosition(Vector3 v)
         {
             DataObject vec3Data = new DataObject("Position", v);
-            vec3Data.SetText($"{v.X}; {v.Y}; {v.Z}");
+            vec3Data.SetText($"{v.X}, {v.Y}, {v.Z}");
             Clipboard.SetDataObject(vec3Data);
         }
 
