@@ -18,7 +18,7 @@ namespace STROOP.Tabs
         private int _numGaps = 0;
         private int _recordFreq = 1;
 
-        private CopyTypeEnum _copyType = CopyTypeEnum.CopyWithTabs;
+        private CopyUtilities.CopyType _copyType = CopyUtilities.CopyType.WithTabs;
 
         public CustomTab()
         {
@@ -43,7 +43,7 @@ namespace STROOP.Tabs
             ControlUtilities.AddCheckableDropDownItems(
                 itemSetDefaultCopyType,
                 CopyUtilities.GetCopyNames(),
-                EnumUtilities.GetEnumValues<CopyTypeEnum>(typeof(CopyTypeEnum)),
+                EnumUtilities.GetEnumValues<CopyUtilities.CopyType>(typeof(CopyUtilities.CopyType)),
                 copyType => _copyType = copyType,
                 _copyType);
             CopyUtilities.AddContextMenuStripFunctions(buttonCopyVars, VariablePanelCustom.GetCurrentlyVisibleCells);

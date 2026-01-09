@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
-using STROOP.Structs;
 using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Utilities
 {
     public static class CopyUtilities
     {
-        public static void Copy(List<IVariableCellUi<WinFormsVariablePanelUiContext>> vars, CopyTypeEnum copyType)
+        public enum CopyType
         {
-            int index = EnumUtilities.GetEnumValues<CopyTypeEnum>(typeof(CopyTypeEnum)).IndexOf(copyType);
+            WithCommas,
+            WithSpaces,
+            WithTabs,
+            WithLineBreaks,
+            WithCommasAndSpaces,
+            WithNames,
+        }
+
+        public static void Copy(List<IVariableCellUi<WinFormsVariablePanelUiContext>> vars, CopyType copyType)
+        {
+            int index = EnumUtilities.GetEnumValues<CopyType>(typeof(CopyType)).IndexOf(copyType);
             GetCopyActions(() => vars)[index]();
         }
 
