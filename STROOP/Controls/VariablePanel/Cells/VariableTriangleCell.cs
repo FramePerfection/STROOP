@@ -18,8 +18,8 @@ namespace STROOP.Controls.VariablePanel.Cells
             return false;
         });
 
-        public VariableTriangleCell(IVariable<uint> watchVar, WinFormsVariableControl watchVarControl)
-            : base(watchVar, watchVarControl)
+        public VariableTriangleCell(VariableNumberCell<uint> baseCell)
+            : base(baseCell)
         {
             control.AddSetting(SelectTriangleSetting);
         }

@@ -1,15 +1,12 @@
 ﻿using STROOP.Core;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
-using STROOP.Variables;
 using STROOP.Variables.VariablePanel.Cells;
 
 namespace STROOP.Controls.VariablePanel.Cells;
 
-// TODO: refactor this such that it takes a NumberWrapper as a base wrapper, similar to selection wrappers,
-//       in order to avoid code duplication with RoundToZero
-public class VariableAddressCell(IVariable<uint> watchVar, WinFormsVariableControl watchVarControl)
-    : VariableAddressCell<WinFormsVariablePanelUiContext>(watchVar, watchVarControl)
+public class VariableAddressCell(VariableNumberCell<uint> baseCell)
+    : VariableAddressCell<WinFormsVariablePanelUiContext>(baseCell)
 {
     protected override void ShowMemory(uint address)
     {
@@ -22,6 +19,4 @@ public class VariableAddressCell(IVariable<uint> watchVar, WinFormsVariableContr
             AccessScope<StroopMainForm>.content.GetTab<Tabs.MemoryTab>().SetCustomAddress(address);
         Config.TabControlMain.SelectedTab = Config.TabControlMain.TabPages["tabPageMemory"];
     }
-
-    protected override bool RoundToZero() => !SavedSettingsConfig.DontRoundValuesToZero;
 }

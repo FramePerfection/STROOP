@@ -106,7 +106,7 @@ namespace STROOP.Variables.VariablePanel.Cells
             AddNumberContextMenuStripItems();
         }
 
-        protected abstract bool RoundToZero();
+        internal protected abstract bool RoundToZero();
 
         protected virtual int? GetHexDigitCount() => (view as IMemoryVariable)?.memoryDescriptor.NibbleCount;
 

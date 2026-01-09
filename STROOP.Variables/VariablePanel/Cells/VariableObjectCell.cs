@@ -37,8 +37,8 @@ namespace STROOP.Variables.VariablePanel.Cells
 
         private bool _displayAsObject;
 
-        public VariableObjectCell(IVariable<uint> watchVar, VariableCellControl<TUiContext> varCellControl)
-            : base(watchVar, varCellControl)
+        public VariableObjectCell(VariableNumberCell<TUiContext, uint> baseCell)
+            : base(baseCell)
         {
             _displayAsObject = true;
 

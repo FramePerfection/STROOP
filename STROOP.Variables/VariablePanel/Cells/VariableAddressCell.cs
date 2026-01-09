@@ -1,6 +1,4 @@
-﻿using STROOP.Variables.Utilities;
-
-namespace STROOP.Variables.VariablePanel.Cells
+﻿namespace STROOP.Variables.VariablePanel.Cells
 {
     public abstract class VariableAddressCell<TUiContext> : VariableNumberCell<TUiContext, uint>
         where TUiContext : IUiContext
@@ -15,14 +13,19 @@ namespace STROOP.Variables.VariablePanel.Cells
                 return false;
             });
 
+        private VariableNumberCell<TUiContext, uint> baseCell;
+
         protected abstract void ShowMemory(uint address);
 
-        public VariableAddressCell(IVariable<uint> watchVar, VariableCellControl<TUiContext> varCellControl)
-            : base(watchVar.WithKeyedValue(CommonVariableProperties.useHex, true.ToString()), varCellControl)
+        public VariableAddressCell(VariableNumberCell<TUiContext, uint> baseCell)
+            : base((IVariable<uint>)baseCell.control.view, baseCell.control)
         {
-            varCellControl.AddSetting(_viewAddressCellSetting);
+            control.view.SetValueByKey(CommonVariableProperties.useHex, true.ToString());
+            control.AddSetting(_viewAddressCellSetting);
         }
 
         public override string GetClass() => "Address";
+
+        internal protected sealed override bool RoundToZero() => baseCell.RoundToZero();
     }
 }

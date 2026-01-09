@@ -46,7 +46,11 @@ namespace STROOP.Variables.VariablePanel
             }
         }
 
-        internal static bool TryCreateWrapper(IVariable view, VariableCellControl<TUiContext> cellControl, out IVariableCell result)
+        internal static bool TryCreateWrapper(
+            IVariable view,
+            VariableCellControl<TUiContext> cellControl,
+            out IVariableCell result,
+            Type wrapperType = null)
         {
             result = null;
             var interfaceType = view.GetType().GetInterfaces().FirstOrDefault(x => x.Name == $"{nameof(IVariable)}`1");
@@ -58,24 +62,50 @@ namespace STROOP.Variables.VariablePanel
 
             bool isNullable = view.ClrType.IsGenericType && view.ClrType.GetGenericTypeDefinition() == typeof(Nullable<>);
             var genericArgument = isNullable ? view.ClrType.GetGenericArguments()[0] : view.ClrType;
-            var wrapperType = wrapperTypes[view.Subclass];
-            if (wrapperType.IsGenericTypeDefinition)
-                wrapperType = wrapperType.MakeGenericType(genericArgument);
-            if (isNullable)
-                wrapperType = typeof(VariableNullableCell<,,>).MakeGenericType(
-                    typeof(TUiContext),
-                    wrapperType,
-                    interfaceType.GenericTypeArguments[0].GenericTypeArguments[0]
-                );
-            var constructor = wrapperType.GetConstructor([ interfaceType, typeof(VariableCellControl<TUiContext>) ]);
-            if (constructor == null)
+            if (wrapperType == null)
             {
-                result = new VariableCellFallback(view, cellControl);
-                return false;
+                wrapperType = wrapperTypes[view.Subclass];
+                if (wrapperType.IsGenericTypeDefinition)
+                    wrapperType = wrapperType.MakeGenericType(genericArgument);
+                if (isNullable)
+                    wrapperType = typeof(VariableNullableCell<,,>).MakeGenericType(
+                        typeof(TUiContext),
+                        wrapperType,
+                        interfaceType.GenericTypeArguments[0].GenericTypeArguments[0]
+                    );
             }
 
-            result = (IVariableCell)constructor.Invoke([ view, cellControl ]);
-            return true;
+            // Try to create as a root cell
+            var constructor = wrapperType.GetConstructor([ interfaceType, typeof(VariableCellControl<TUiContext>) ]);
+            if (constructor != null)
+            {
+                result = (IVariableCell)constructor.Invoke([ view, cellControl ]);
+                return true;
+            }
+
+            // Try to create as a decorator cell
+            var decoratorCtor = wrapperType
+                .GetConstructors()
+                .Select(x => new { Parameters = x.GetParameters(), Ctor = x, })
+                .SingleOrDefault(x =>
+                    x.Parameters.Length == 1
+                    && x.Parameters[0].ParameterType.GetInterfaces().Any(IsMatchingBaseCellType)
+                );
+            if (decoratorCtor != null
+                && TryCreateWrapper(view, cellControl, out var baseWrapper, decoratorCtor.Parameters[0].ParameterType))
+            {
+                result = (IVariableCell)decoratorCtor.Ctor.Invoke([ baseWrapper ]);
+                return true;
+            }
+
+            // Could not construct a matching cell, yield a fallback
+            result = new VariableCellFallback(view, cellControl);
+            return false;
+
+            bool IsMatchingBaseCellType(Type t)
+                => t.IsGenericType
+                   && t.GetGenericTypeDefinition() == typeof(IVariableCellData<>)
+                   && t.GetGenericArguments()[0] == interfaceType.GetGenericArguments()[0];
         }
 
         public static (string name, IVariable var) ParseXml(XElement element, VariableSpecialDictionary sepcialVariables)

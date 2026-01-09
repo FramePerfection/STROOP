@@ -3,7 +3,8 @@ using STROOP.Variables.Utilities;
 
 namespace STROOP.Variables.VariablePanel.Cells
 {
-    public abstract class VariableAngleCell<TUiContext, TNumber> : VariableNumberCell<TUiContext, TNumber>
+    public abstract class VariableAngleCell<TUiContext, TNumber>
+        : VariableNumberCell<TUiContext, TNumber>
         where TNumber : struct, IConvertible
         where TUiContext : IUiContext
     {
@@ -69,6 +70,8 @@ namespace STROOP.Variables.VariablePanel.Cells
             ("Don't Reverse", () => false, WrapperProperty<VariableAngleCell<TUiContext, TNumber>>(wr => !wr._reverse))
         );
 
+        private VariableNumberCell<TUiContext, TNumber> baseCell;
+
         private readonly bool _defaultSigned;
         private bool _signed;
 
@@ -103,11 +106,13 @@ namespace STROOP.Variables.VariablePanel.Cells
         private readonly bool _isYaw;
         private bool effectiveSigned => _signed && (!_isYaw || DisplayAsUnsigned());
 
-        public VariableAngleCell(IVariable<TNumber> watchVar, VariableCellControl<TUiContext> varCellControl)
-            : base(watchVar, varCellControl)
+        public VariableAngleCell(VariableNumberCell<TUiContext, TNumber> baseCell)
+            : base((IVariable<TNumber>)baseCell.control.view, baseCell.control)
         {
+            this.baseCell = baseCell;
+
             var displayType = (view as IMemoryVariable)?.memoryDescriptor.ClrType ?? typeof(double);
-            if (TypeUtilities.StringToType.TryGetValue(varCellControl.view.GetValueByKey(CommonVariableProperties.display) ?? "", out var dType))
+            if (TypeUtilities.StringToType.TryGetValue(control.view.GetValueByKey(CommonVariableProperties.display) ?? "", out var dType))
                 displayType = dType;
 
             _baseType = displayType;
@@ -129,7 +134,7 @@ namespace STROOP.Variables.VariablePanel.Cells
             _defaultReverse = false;
             _reverse = _defaultReverse;
 
-            if (bool.TryParse(varCellControl.view.GetValueByKey("yaw"), out var isYaw))
+            if (bool.TryParse(control.view.GetValueByKey("yaw"), out var isYaw))
                 _isYaw = isYaw;
             else
                 _isYaw = DEFAULT_IS_YAW;
@@ -234,6 +239,8 @@ namespace STROOP.Variables.VariablePanel.Cells
 
             return doubleValue;
         }
+
+        internal protected sealed override bool RoundToZero() => baseCell.RoundToZero();
 
         protected override int? GetHexDigitCount() => TypeUtilities.TypeSize[_effectiveType] * 2;
 

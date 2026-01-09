@@ -15,7 +15,7 @@ public class VariableNumberCell<TNumber>(IVariable<TNumber> view, WinFormsVariab
     , INumberVariableCell
     where TNumber : struct, IConvertible
 {
-    protected override bool RoundToZero() => !SavedSettingsConfig.DontRoundValuesToZero;
+    protected sealed override bool RoundToZero() => !SavedSettingsConfig.DontRoundValuesToZero;
 
     public override bool TryParseValue(string value, out TNumber result)
         => ParsingUtilities.TryParseNumber(value, out result);
