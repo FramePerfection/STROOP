@@ -176,7 +176,8 @@ namespace STROOP
             Config.Stream.OnDisconnect += _sm64Stream_OnDisconnect;
             Config.Stream.WarnReadonlyOff += _sm64Stream_WarnReadonlyOff;
 
-            comboBoxRomVersion.DataSource = Enum.GetValues(typeof(RomVersionSelection));
+            comboBoxRomVersion.Items.AddRange(["AUTO", .. Enum.GetNames<RomVersion>()]);
+            comboBoxRomVersion.SelectedItem = "AUTO";
             comboBoxReadWriteMode.DataSource = Enum.GetValues(typeof(ReadWriteMode));
 
             SetUpContextMenuStrips();
@@ -425,7 +426,18 @@ namespace STROOP
         private void UpdateGlobalConfig()
         {
             // Rom Version
-            UpdateRomVersion(comboBoxRomVersion);
+            if ((comboBoxRomVersion.SelectedItem as string)?.StartsWith("AUTO") ?? false)
+            {
+                var autoVersion = RomVersionConfig.GetRomVersionUsingTell();
+                if (autoVersion != null)
+                {
+                    RomVersionConfig.Version = autoVersion.Value;
+                    comboBoxRomVersion.Items[0] = $"AUTO ({autoVersion})";
+                    comboBoxRomVersion.SelectedItem = comboBoxRomVersion.Items[0];
+                }
+            }
+            else if (Enum.TryParse<RomVersion>(comboBoxRomVersion.SelectedItem as string ?? "", out var explicitVersion))
+                RomVersionConfig.Version = explicitVersion;
 
             // Readonly / Read+Write
             Config.Stream.Readonly = (ReadWriteMode)comboBoxReadWriteMode.SelectedItem == ReadWriteMode.ReadOnly;
