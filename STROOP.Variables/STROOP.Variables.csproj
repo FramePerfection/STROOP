@@ -10,8 +10,4 @@
         <ProjectReference Include="..\STROOP.Core\STROOP.Core.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Views\" />
-    </ItemGroup>
-
 </Project>
