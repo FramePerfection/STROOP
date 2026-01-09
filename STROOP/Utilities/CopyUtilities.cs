@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
 using STROOP.Structs;
-using STROOP.Variables.Utilities;
 using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Utilities
@@ -45,8 +44,6 @@ namespace STROOP.Utilities
                 "Copy with Line Breaks",
                 "Copy with Commas and Spaces",
                 "Copy with Names",
-                "Copy as Table",
-                "Copy for Code",
             };
         }
 
@@ -60,8 +57,6 @@ namespace STROOP.Utilities
                 () => CopyWithSeparator(getVars(), "\r\n"),
                 () => CopyWithSeparator(getVars(), ", "),
                 () => CopyWithNames(getVars()),
-                () => CopyAsTable(getVars()),
-                () => CopyForCode(getVars()),
             };
         }
 
@@ -79,65 +74,10 @@ namespace STROOP.Utilities
             Clipboard.SetText(string.Join("\r\n", lines));
         }
 
-        private static void CopyAsTable(List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls)
-        {
-            // TODO: reconsider CopyAsTable
-            //if (controls.Count == 0) return;
-            //List<string> hexAddresses = controls.Select(x => x.view as NamedVariableCollection.MemoryDescriptorView).Where(x => x != null).ConvertAll(address => HexUtilities.FormatValue(address));
-            //string header = "Vars\t" + string.Join("\t", hexAddresses);
-
-            //List<string> names = controls.ConvertAll(control => control.VarName);
-            //List<List<object>> valuesTable = controls.ConvertAll(control => control.view.GetValues());
-            //List<string> valuesStrings = new List<string>();
-            //for (int i = 0; i < names.Count; i++)
-            //{
-            //    string line = names[i] + "\t" + string.Join("\t", valuesTable[i]);
-            //    valuesStrings.Add(line);
-            //}
-
-            //string output = header + "\r\n" + string.Join("\r\n", valuesStrings);
-            //Clipboard.SetText(output);
-        }
-
-        private static void CopyForCode(List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls)
-        {
-            if (controls.Count == 0) return;
-            Func<string, string> varNameFunc;
-            if (GlobalKeyboard.IsCtrlDown())
-            {
-                string template = DialogUtilities.GetStringFromDialog("$");
-                if (template == null) return;
-                varNameFunc = varName => template.Replace("$", varName);
-            }
-            else
-            {
-                varNameFunc = varName => varName;
-            }
-
-            List<string> lines = new List<string>();
-            foreach (VariableCellControl<WinFormsVariablePanelUiContext> watchVar in controls)
-            {
-                Type type = watchVar.GetMemoryType();
-                string line = string.Format(
-                    "{0} {1} = {2}{3};",
-                    type != null ? TypeUtilities.TypeToString[type] : "double",
-                    varNameFunc(watchVar.VarName.Replace(" ", "")),
-                    // TODO: indicate that the watchVarWrapper should produce code conforming output (whatever that means)
-                    watchVar.varCell.GetValueText(),
-                    type == typeof(float) ? "f" : "");
-                lines.Add(line);
-            }
-
-            if (lines.Count > 0)
-            {
-                Clipboard.SetText(string.Join("\r\n", lines));
-            }
-        }
-
         public static void CopyPosition(Vector3 v)
         {
             DataObject vec3Data = new DataObject("Position", v);
-            vec3Data.SetText($"{v.X}; {v.Y}; {v.Z}");
+            vec3Data.SetText($"{v.X}, {v.Y}, {v.Z}");
             Clipboard.SetDataObject(vec3Data);
         }
 
