@@ -60,11 +60,11 @@ file static class Static
             => ProcessStream.Instance.SetValue((byte)value, address, false, descriptor.Mask, descriptor.Shift);
 
         _memoryWriters[typeof(long)] = (value, address, descriptor)
-            => ProcessStream.Instance.SetValue((ulong)value, address, false, descriptor.Mask, descriptor.Shift);
+            => ProcessStream.Instance.SetValue((long)value, address, false, descriptor.Mask, descriptor.Shift);
         _memoryWriters[typeof(int)] = (value, address, descriptor)
-            => ProcessStream.Instance.SetValue((uint)value, address, false, descriptor.Mask, descriptor.Shift);
+            => ProcessStream.Instance.SetValue((int)value, address, false, descriptor.Mask, descriptor.Shift);
         _memoryWriters[typeof(short)] = (value, address, descriptor)
-            => ProcessStream.Instance.SetValue((ushort)value, address, false, descriptor.Mask, descriptor.Shift);
+            => ProcessStream.Instance.SetValue((short)value, address, false, descriptor.Mask, descriptor.Shift);
         _memoryWriters[typeof(sbyte)] = (value, address, descriptor)
             => ProcessStream.Instance.SetValue((byte)value, address, false, descriptor.Mask, descriptor.Shift);
 
