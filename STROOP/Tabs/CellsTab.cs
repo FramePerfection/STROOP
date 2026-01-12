@@ -1,8 +1,12 @@
-﻿using STROOP.Structs.Configurations;
+﻿using STROOP.Core;
+using STROOP.Core.Utilities;
+using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using STROOP.Structs;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
@@ -11,14 +15,14 @@ namespace STROOP.Tabs
         static IEnumerable<uint> GetTriangleAddresses()
         {
             var addr = AccessScope<StroopMainForm>.content.GetTab<CellsTab>().TriangleAddress;
-            return addr != 0 ? new List<uint> { addr } : WatchVariableUtilities.BaseAddressListEmpty;
+            return addr != 0 ? new List<uint> { addr } : VariableUtilities.BaseAddressListEmpty;
         }
 
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["CellsTriangle"] = GetTriangleAddresses;
-            WatchVariableUtilities.baseAddressGetters["CellsTriangleExertionForceTable"] = () =>
+            VariableUtilities.baseAddressGetters["CellsTriangle"] = GetTriangleAddresses;
+            VariableUtilities.baseAddressGetters["CellsTriangleExertionForceTable"] = () =>
                 GetTriangleAddresses().ConvertAll(triangleAddress =>
                 {
                     uint exertionForceIndex = Config.Stream.GetByte(triangleAddress + TriangleOffsetsConfig.ExertionForceIndex);

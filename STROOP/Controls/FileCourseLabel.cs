@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Tabs;
 
 namespace STROOP
 {
@@ -48,15 +49,15 @@ namespace STROOP
         private void SetValue(byte value)
         {
             byte maskedValue = (byte)(value & _mask);
-            byte oldByte = Config.Stream.GetByte(FileConfig.CurrentFileAddress + _addressOffset);
+            byte oldByte = Config.Stream.GetByte(FileTab.CurrentFileAddress + _addressOffset);
             byte unmaskedOldByte = (byte)(oldByte & ~_mask);
             byte newByte = (byte)(unmaskedOldByte | maskedValue);
-            Config.Stream.SetValue(newByte, FileConfig.CurrentFileAddress + _addressOffset);
+            Config.Stream.SetValue(newByte, FileTab.CurrentFileAddress + _addressOffset);
         }
 
         private byte GetValue()
         {
-            byte currentByte = Config.Stream.GetByte(FileConfig.CurrentFileAddress + _addressOffset);
+            byte currentByte = Config.Stream.GetByte(FileTab.CurrentFileAddress + _addressOffset);
             byte maskedCurrentByte = (byte)(currentByte & _mask);
             return maskedCurrentByte;
         }

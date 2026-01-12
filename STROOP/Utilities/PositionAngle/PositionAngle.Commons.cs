@@ -2,6 +2,7 @@
 using STROOP.Structs.Configurations;
 using System;
 using OpenTK.Mathematics;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Utilities
 {

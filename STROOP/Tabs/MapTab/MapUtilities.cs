@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenTK.Graphics.OpenGL;
+using STROOP.Core;
 using STROOP.Utilities;
 using STROOP.Structs;
 using STROOP.Models;
+using STROOP.Variables.Utilities;
 using System.Windows.Forms;
 
 namespace STROOP.Tabs.MapTab
@@ -38,7 +40,7 @@ namespace STROOP.Tabs.MapTab
         public static (float x1, float z1, float x2, float z2, bool xProjection, double pushAngle)? Get2DWallDataFromTri(
             TriangleDataModel tri, float? heightNullable = null)
         {
-            double uphillAngle = WatchVariableSpecialUtilities.GetTriangleUphillAngle(tri);
+            double uphillAngle = VariableSpecialUtilities.GetTriangleUphillAngle(tri);
             double pushAngle = MoreMath.ReverseAngle(uphillAngle);
 
             if (!heightNullable.HasValue)

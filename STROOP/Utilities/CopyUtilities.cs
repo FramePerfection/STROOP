@@ -3,20 +3,30 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
 using STROOP.Controls.VariablePanel;
-using STROOP.Structs;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Utilities
 {
     public static class CopyUtilities
     {
-        public static void Copy(List<WatchVariableControl> vars, CopyTypeEnum copyType)
+        public enum CopyType
         {
-            int index = EnumUtilities.GetEnumValues<CopyTypeEnum>(typeof(CopyTypeEnum)).IndexOf(copyType);
+            WithCommas,
+            WithSpaces,
+            WithTabs,
+            WithLineBreaks,
+            WithCommasAndSpaces,
+            WithNames,
+        }
+
+        public static void Copy(List<IVariableCellUi<WinFormsVariablePanelUiContext>> vars, CopyType copyType)
+        {
+            int index = EnumUtilities.GetEnumValues<CopyType>(typeof(CopyType)).IndexOf(copyType);
             GetCopyActions(() => vars)[index]();
         }
 
         public static void AddContextMenuStripFunctions(
-            Control control, Func<List<WatchVariableControl>> getVars)
+            Control control, Func<List<IVariableCellUi<WinFormsVariablePanelUiContext>>> getVars)
         {
             ControlUtilities.AddContextMenuStripFunctions(
                 control,
@@ -25,7 +35,7 @@ namespace STROOP.Utilities
         }
 
         public static void AddDropDownItems(
-            ToolStripMenuItem control, Func<List<WatchVariableControl>> getVars)
+            ToolStripMenuItem control, Func<List<IVariableCellUi<WinFormsVariablePanelUiContext>>> getVars)
         {
             ControlUtilities.AddDropDownItems(
                 control,
@@ -46,7 +56,7 @@ namespace STROOP.Utilities
             };
         }
 
-        private static List<Action> GetCopyActions(Func<List<WatchVariableControl>> getVars)
+        private static List<Action> GetCopyActions(Func<List<IVariableCellUi<WinFormsVariablePanelUiContext>>> getVars)
         {
             return new List<Action>()
             {
@@ -60,16 +70,16 @@ namespace STROOP.Utilities
         }
 
         private static void CopyWithSeparator(
-            List<WatchVariableControl> controls, string separator)
+            List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls, string separator)
         {
             if (controls.Count == 0) return;
-            Clipboard.SetText(string.Join(separator, controls.ConvertAll(control => control.WatchVarWrapper.GetValueText())));
+            Clipboard.SetText(string.Join(separator, controls.ConvertAll(cell => cell.GetValueText())));
         }
 
-        private static void CopyWithNames(List<WatchVariableControl> controls)
+        private static void CopyWithNames(List<IVariableCellUi<WinFormsVariablePanelUiContext>> controls)
         {
             if (controls.Count == 0) return;
-            List<string> lines = controls.ConvertAll(watchVar => watchVar.VarName + "\t" + watchVar.WatchVarWrapper.GetValueText());
+            List<string> lines = controls.ConvertAll(cell => cell.control.VarName + "\t" + cell.GetValueText());
             Clipboard.SetText(string.Join("\r\n", lines));
         }
 
@@ -85,7 +95,7 @@ namespace STROOP.Utilities
             v = default(Vector3);
             bool hasData = false;
             var clipboardObj = Clipboard.GetDataObject();
-            if (!(hasData |= ParsingUtilities.TryParseVector3(clipboardObj.GetData(DataFormats.Text) as string, out v)))
+            if (!(hasData |= OpenTKUtilities.TryParseVector3(clipboardObj.GetData(DataFormats.Text) as string, out v)))
             {
                 if (Clipboard.GetData("Position") is Vector3 dataVector)
                 {

@@ -6,6 +6,7 @@ using STROOP.Structs.Configurations;
 using OpenTK;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -38,13 +39,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     graphics.lineRenderer.Add(
                         new Vector3(centerX, 0, centerZ),
                         new Vector3(centerX + (float)Math.Sin(pfft) * radius, 0, centerZ + (float)Math.Cos(pfft) * radius),
-                        ColorUtilities.ColorToVec4(OutlineColor),
+                        OpenTKUtilities.ColorToVec4(OutlineColor),
                         OutlineWidth);
 
                     graphics.lineRenderer.Add(
                         new Vector3(centerX, 0, centerZ),
                         new Vector3(centerX + (float)Math.Sin(pfft2) * radius, 0, centerZ + (float)Math.Cos(pfft2) * radius),
-                        ColorUtilities.ColorToVec4(OutlineColor),
+                        OpenTKUtilities.ColorToVec4(OutlineColor),
                         OutlineWidth);
                 }
             });

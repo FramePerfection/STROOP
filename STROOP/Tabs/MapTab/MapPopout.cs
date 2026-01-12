@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using OpenTK.GLControl;
+using STROOP.Core;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab

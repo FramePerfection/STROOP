@@ -262,7 +262,7 @@
             this.radioButtonFileC = new System.Windows.Forms.RadioButton();
             this.radioButtonFileBSaved = new System.Windows.Forms.RadioButton();
             this.buttonFileSave = new System.Windows.Forms.Button();
-            this.watchVariablePanelFile = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelFile = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerFile)).BeginInit();
             this.splitContainerFile.Panel1.SuspendLayout();
             this.splitContainerFile.Panel2.SuspendLayout();
@@ -472,7 +472,7 @@
             // 
             // splitContainerFile.Panel2
             // 
-            this.splitContainerFile.Panel2.Controls.Add(this.watchVariablePanelFile);
+            this.splitContainerFile.Panel2.Controls.Add(this._variablePanelFile);
             this.splitContainerFile.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerFile.Panel2MinSize = 0;
             this.splitContainerFile.Size = new System.Drawing.Size(915, 463);
@@ -3743,14 +3743,14 @@
             // 
             // watchVariablePanelFile
             // 
-            this.watchVariablePanelFile.AutoScroll = true;
-            this.watchVariablePanelFile.DataPath = "Config/FileData.xml";
-            this.watchVariablePanelFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelFile.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelFile.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelFile.Name = "watchVariablePanelFile";
-            this.watchVariablePanelFile.Size = new System.Drawing.Size(250, 457);
-            this.watchVariablePanelFile.TabIndex = 2;
+            this._variablePanelFile.AutoScroll = true;
+            this._variablePanelFile.DataPath = "Config/FileData.xml";
+            this._variablePanelFile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelFile.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelFile.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelFile.Name = "_variablePanelFile";
+            this._variablePanelFile.Size = new System.Drawing.Size(250, 457);
+            this._variablePanelFile.TabIndex = 2;
             // 
             // FileTab
             // 
@@ -4163,6 +4163,6 @@
         private System.Windows.Forms.RadioButton radioButtonFileC;
         private System.Windows.Forms.RadioButton radioButtonFileBSaved;
         private System.Windows.Forms.Button buttonFileSave;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelFile;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelFile;
     }
 }

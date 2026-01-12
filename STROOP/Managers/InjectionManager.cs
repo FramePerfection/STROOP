@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STROOP.Core;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using STROOP.Structs;

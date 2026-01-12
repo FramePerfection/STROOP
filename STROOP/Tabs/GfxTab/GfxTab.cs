@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using STROOP.Controls.VariablePanel;
+using STROOP.Core;
+using STROOP.Core.Utilities;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Tabs.GfxTab
 {
@@ -23,12 +28,12 @@ namespace STROOP.Tabs.GfxTab
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters[BaseAddressType.GfxNode] =
+            VariableUtilities.baseAddressGetters[BaseAddressType.GfxNode] =
                 () => AccessScope<GfxTab>.content?.SelectedNode?.Address.Yield() ?? Array.Empty<uint>();
         }
 
         public GfxNode SelectedNode;
-        IEnumerable<WatchVariableControl> SpecificVariables;
+        IEnumerable<IWinFormsVariableCell> SpecificVariables;
 
         public GfxTab()
         {
@@ -43,7 +48,7 @@ namespace STROOP.Tabs.GfxTab
             buttonGfxDumpDisplayList.Click += DumpButton_Click;
             buttonGfxHitboxHack.Click += (sender, e) => InjectHitboxViewCode();
 
-            SpecificVariables = new List<WatchVariableControl>();
+            SpecificVariables = new List<IWinFormsVariableCell>();
         }
 
         public override void InitializeTab()
@@ -51,7 +56,7 @@ namespace STROOP.Tabs.GfxTab
             base.InitializeTab();
             SuspendLayout();
             foreach (var precursor in GfxNode.GetCommonVariables())
-                watchVariablePanelGfx.AddVariable(precursor);
+                _variablePanelGfx.AddVariable(precursor);
             ResumeLayout();
         }
 
@@ -60,18 +65,18 @@ namespace STROOP.Tabs.GfxTab
         // Inject code that shows hitboxes in-game
         // Note: a bit ugly at the moment. Hack folder is hardcoded instead of taken from Config file,
         // and it's put here in the GFX tab by a lack of a better place. The hacks in the hack tab are
-        // constantly reapplied when memory is changed, which doesn't work with this hack which initializes 
+        // constantly reapplied when memory is changed, which doesn't work with this hack which initializes
         // variables that are later changed.
         public void InjectHitboxViewCode()
         {
             RomHack hck = null;
             try
             {
-                if (RomVersionConfig.Version == Structs.RomVersion.US)
+                if (RomVersionConfig.Version == RomVersion.US)
                 {
                     hck = new RomHack("Resources\\Hacks\\HitboxViewU.hck", "HitboxView");
                 }
-                else if (RomVersionConfig.Version == Structs.RomVersion.JP)
+                else if (RomVersionConfig.Version == RomVersion.JP)
                 {
                     hck = new RomHack("Resources\\Hacks\\HitboxViewJ.hck", "HitboxView");
                 }
@@ -114,11 +119,11 @@ namespace STROOP.Tabs.GfxTab
         // The variables in the first 0x14 bytes in a GFX node are common, but after that there are type-specific variables
         void UpdateSpecificVariables(GfxNode node)
         {
-            watchVariablePanelGfx.RemoveVariables(SpecificVariables);
+            _variablePanelGfx.RemoveVariables(SpecificVariables);
             if (node != null)
-                SpecificVariables = watchVariablePanelGfx.AddVariables(node.GetTypeSpecificVariables());
+                SpecificVariables = _variablePanelGfx.AddVariables(node.GetTypeSpecificVariables());
             else
-                SpecificVariables = new WatchVariableControl[0];
+                SpecificVariables = Array.Empty<IWinFormsVariableCell>();
         }
 
         // Build a GFX tree for every object that is selected in the object slot view

@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainerPainting = new STROOP.BetterSplitContainer();
             this.listBoxPainting = new System.Windows.Forms.ListBox();
-            this.watchVariablePanelPainting = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelPainting = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerPainting)).BeginInit();
             this.splitContainerPainting.Panel1.SuspendLayout();
             this.splitContainerPainting.Panel2.SuspendLayout();
@@ -57,7 +57,7 @@
             // 
             // splitContainerPainting.Panel2
             // 
-            this.splitContainerPainting.Panel2.Controls.Add(this.watchVariablePanelPainting);
+            this.splitContainerPainting.Panel2.Controls.Add(this._variablePanelPainting);
             this.splitContainerPainting.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerPainting.Panel2MinSize = 0;
             this.splitContainerPainting.Size = new System.Drawing.Size(915, 463);
@@ -77,13 +77,13 @@
             // 
             // watchVariablePanelPainting
             // 
-            this.watchVariablePanelPainting.DataPath = "Config/PaintingData.xml";
-            this.watchVariablePanelPainting.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelPainting.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelPainting.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelPainting.Name = "watchVariablePanelPainting";
-            this.watchVariablePanelPainting.Size = new System.Drawing.Size(755, 457);
-            this.watchVariablePanelPainting.TabIndex = 7;
+            this._variablePanelPainting.DataPath = "Config/PaintingData.xml";
+            this._variablePanelPainting.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelPainting.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelPainting.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelPainting.Name = "_variablePanelPainting";
+            this._variablePanelPainting.Size = new System.Drawing.Size(755, 457);
+            this._variablePanelPainting.TabIndex = 7;
             // 
             // PaintingTab
             // 
@@ -104,6 +104,6 @@
 
         private BetterSplitContainer splitContainerPainting;
         private System.Windows.Forms.ListBox listBoxPainting;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelPainting;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelPainting;
     }
 }

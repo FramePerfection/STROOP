@@ -4,11 +4,14 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using STROOP.Controls.VariablePanel;
-using STROOP.Core.Variables;
 using STROOP.Models;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Tabs
 {
@@ -17,13 +20,13 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["CamHack"] = () => new List<uint> { CamHackConfig.StructAddress };
+            VariableUtilities.baseAddressGetters["CamHack"] = () => new List<uint> { CamHackConfig.StructAddress };
         }
 
         public CamHackMode CurrentCamHackMode { get; private set; }
 
         private int _numPans = 0;
-        private List<IEnumerable<WatchVariableControl>> _panVars = new List<IEnumerable<WatchVariableControl>>();
+        private List<IEnumerable<IWinFormsVariableCell>> _panVars = new List<IEnumerable<IWinFormsVariableCell>>();
 
         public CamHackTab()
         {
@@ -229,7 +232,7 @@ namespace STROOP.Tabs
                 for (int i = _numPans; i < numPans; i++)
                 {
                     SpecialConfig.PanModels.Add(new PanModel());
-                    _panVars.Add(watchVariablePanelCamHack.AddVariables(CreatePanVars(i)));
+                    _panVars.Add(_variablePanelCamHack.AddVariables(CreatePanVars(i)));
                 }
             }
 
@@ -240,14 +243,14 @@ namespace STROOP.Tabs
                     SpecialConfig.PanModels.RemoveAt(i);
                     var panVars = _panVars[i];
                     _panVars.Remove(panVars);
-                    watchVariablePanelCamHack.RemoveVariables(panVars);
+                    _variablePanelCamHack.RemoveVariables(panVars);
                 }
             }
 
             _numPans = numPans;
         }
 
-        private NamedVariableCollection.IView CreatePanVar(
+        private VariablePrecursor CreatePanVar(
             string name,
             string specialType,
             string color,
@@ -264,13 +267,13 @@ namespace STROOP.Tabs
             if (coord != null) xElement.Add(new XAttribute("coord", coord));
             if (display != null) xElement.Add(new XAttribute("display", display));
             if (yaw != null) xElement.Add(new XAttribute("yaw", yaw));
-            return NamedVariableCollection.ParseXml(xElement);
+            return VariableCellFactory<WinFormsVariablePanelUiContext>.ParseXml(xElement, VariableSpecialDictionary.Instance);
         }
 
-        private List<NamedVariableCollection.IView> CreatePanVars(int index)
+        private List<VariablePrecursor> CreatePanVars(int index)
         {
-            WatchVariableSpecialUtilities.AddPanEntriesToDictionary(index);
-            return new List<NamedVariableCollection.IView>
+            VariableSpecialUtilities.AddPanEntriesToDictionary(index);
+            return new List<VariablePrecursor>
             {
                 CreatePanVar("Global Timer", String.Format("Pan{0}GlobalTimer", index), "Orange"),
                 CreatePanVar(String.Format("Pan{0} Start Time", index), String.Format("Pan{0}StartTime", index), "Orange"),

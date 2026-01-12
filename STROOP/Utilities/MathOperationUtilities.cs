@@ -5,69 +5,69 @@ namespace STROOP.Utilities
 {
     public static class MathOperationUtilities
     {
-        public static string GetSymbol(BinaryMathOperation operation, bool useX = true, bool useSlash = true)
+        public static string GetSymbol(BinaryOperationName operationName, bool useX = true, bool useSlash = true)
         {
-            switch (operation)
+            switch (operationName)
             {
-                case BinaryMathOperation.Add:
+                case BinaryOperationName.Add:
                     return "+";
-                case BinaryMathOperation.Subtract:
+                case BinaryOperationName.Subtract:
                     return "-";
-                case BinaryMathOperation.Multiply:
+                case BinaryOperationName.Multiply:
                     return useX ? "×" : "*";
-                case BinaryMathOperation.Divide:
+                case BinaryOperationName.Divide:
                     return useSlash ? "/" : "÷";
-                case BinaryMathOperation.Modulo:
+                case BinaryOperationName.Modulo:
                     return "%";
-                case BinaryMathOperation.NonNegativeModulo:
+                case BinaryOperationName.NonNegativeModulo:
                     return "%%";
-                case BinaryMathOperation.Exponent:
+                case BinaryOperationName.Exponent:
                     return "^";
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public static string GetNoun(BinaryMathOperation operation)
+        public static string GetNoun(BinaryOperationName operationName)
         {
-            switch (operation)
+            switch (operationName)
             {
-                case BinaryMathOperation.Add:
+                case BinaryOperationName.Add:
                     return "Addition";
-                case BinaryMathOperation.Subtract:
+                case BinaryOperationName.Subtract:
                     return "Subtraction";
-                case BinaryMathOperation.Multiply:
+                case BinaryOperationName.Multiply:
                     return "Multiplication";
-                case BinaryMathOperation.Divide:
+                case BinaryOperationName.Divide:
                     return "Division";
-                case BinaryMathOperation.Modulo:
+                case BinaryOperationName.Modulo:
                     return "Modulo";
-                case BinaryMathOperation.NonNegativeModulo:
+                case BinaryOperationName.NonNegativeModulo:
                     return "Non-Negative Modulo";
-                case BinaryMathOperation.Exponent:
+                case BinaryOperationName.Exponent:
                     return "Exponent";
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public static string GetResultName(BinaryMathOperation operation)
+        public static string GetResultName(BinaryOperationName operationName)
         {
-            switch (operation)
+            switch (operationName)
             {
-                case BinaryMathOperation.Add:
+                case BinaryOperationName.Add:
                     return "Sum";
-                case BinaryMathOperation.Subtract:
+                case BinaryOperationName.Subtract:
                     return "Difference";
-                case BinaryMathOperation.Multiply:
+                case BinaryOperationName.Multiply:
                     return "Product";
-                case BinaryMathOperation.Divide:
+                case BinaryOperationName.Divide:
                     return "Quotient";
-                case BinaryMathOperation.Modulo:
+                case BinaryOperationName.Modulo:
                     return "Modulo";
-                case BinaryMathOperation.NonNegativeModulo:
+                case BinaryOperationName.NonNegativeModulo:
                     return "Non-Negative Modulo";
-                case BinaryMathOperation.Exponent:
+                case BinaryOperationName.Exponent:
                     return "Exponent";
                 default:
                     throw new ArgumentOutOfRangeException();

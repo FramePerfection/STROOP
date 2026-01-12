@@ -1,4 +1,5 @@
-﻿using STROOP.Forms;
+﻿using STROOP.Core;
+using STROOP.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using STROOP.Structs;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Utilities
 {
@@ -205,7 +207,7 @@ namespace STROOP.Utilities
             string buttonText = "OK")
         {
             string text = GetStringFromDialog(textBoxText, labelText, buttonText);
-            float? relativeHeightNullable = Utilities.ParsingUtilities.ParseFloatNullable(text);
+            float? relativeHeightNullable = ParsingUtilities.ParseFloatNullable(text);
             if (relativeHeightNullable.HasValue)
                 return relativeHeightNullable.Value;
             return defaultValue;
@@ -221,21 +223,6 @@ namespace STROOP.Utilities
             if (valueSplitForm.ShowDialog() == DialogResult.OK)
                 return (valueSplitForm.StringValue, valueSplitForm.RightButtonClicked);
             return null;
-        }
-
-        public static List<string> ReadFileLines(string filePath)
-        {
-            List<string> lines = new List<string>();
-            string line;
-
-            StreamReader file = new StreamReader(filePath);
-            while ((line = file.ReadLine()) != null)
-            {
-                lines.Add(line);
-            }
-
-            file.Close();
-            return lines;
         }
 
         public static Image GetImage()

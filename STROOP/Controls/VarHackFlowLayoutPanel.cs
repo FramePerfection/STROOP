@@ -1,4 +1,5 @@
-﻿using STROOP.Forms;
+﻿using STROOP.Core;
+using STROOP.Forms;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using System;

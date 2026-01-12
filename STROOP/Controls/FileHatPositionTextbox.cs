@@ -1,4 +1,5 @@
 ﻿using STROOP.Structs.Configurations;
+using STROOP.Tabs;
 
 namespace STROOP
 {
@@ -18,7 +19,7 @@ namespace STROOP
 
         private short GetHatLocationValueFromMemory()
         {
-            return Config.Stream.GetInt16(FileConfig.CurrentFileAddress + _addressOffset);
+            return Config.Stream.GetInt16(FileTab.CurrentFileAddress + _addressOffset);
         }
 
         protected override void SubmitValue()
@@ -30,7 +31,7 @@ namespace STROOP
                 return;
             }
 
-            Config.Stream.SetValue(value, FileConfig.CurrentFileAddress + _addressOffset);
+            Config.Stream.SetValue(value, FileTab.CurrentFileAddress + _addressOffset);
         }
 
         protected override void ResetValue()

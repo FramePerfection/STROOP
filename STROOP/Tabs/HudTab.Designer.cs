@@ -41,7 +41,7 @@
             this.button100Lives = new STROOP.BinaryButton();
             this.buttonTurnOnOffHud = new STROOP.BinaryButton();
             this.buttonFullHp = new System.Windows.Forms.Button();
-            this.watchVariablePanelHud = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelHud = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerHud)).BeginInit();
             this.splitContainerHud.Panel1.SuspendLayout();
             this.splitContainerHud.Panel2.SuspendLayout();
@@ -78,7 +78,7 @@
             // 
             // splitContainerHud.Panel2
             // 
-            this.splitContainerHud.Panel2.Controls.Add(this.watchVariablePanelHud);
+            this.splitContainerHud.Panel2.Controls.Add(this._variablePanelHud);
             this.splitContainerHud.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerHud.Panel2MinSize = 0;
             this.splitContainerHud.Size = new System.Drawing.Size(915, 463);
@@ -194,13 +194,13 @@
             // 
             // watchVariablePanelHud
             // 
-            this.watchVariablePanelHud.DataPath = "Config/HudData.xml";
-            this.watchVariablePanelHud.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelHud.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelHud.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelHud.Name = "watchVariablePanelHud";
-            this.watchVariablePanelHud.Size = new System.Drawing.Size(791, 457);
-            this.watchVariablePanelHud.TabIndex = 3;
+            this._variablePanelHud.DataPath = "Config/HudData.xml";
+            this._variablePanelHud.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelHud.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelHud.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelHud.Name = "_variablePanelHud";
+            this._variablePanelHud.Size = new System.Drawing.Size(791, 457);
+            this._variablePanelHud.TabIndex = 3;
             // 
             // HudTab
             // 
@@ -234,6 +234,6 @@
         private BinaryButton button100Lives;
         private BinaryButton buttonTurnOnOffHud;
         private System.Windows.Forms.Button buttonFullHp;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelHud;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelHud;
     }
 }

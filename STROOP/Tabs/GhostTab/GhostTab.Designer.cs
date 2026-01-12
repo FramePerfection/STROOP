@@ -51,7 +51,7 @@
             this.labelHackActiveState = new System.Windows.Forms.Label();
             this.buttonDisableGhostHack = new System.Windows.Forms.Button();
             this.buttonEnableGhostHack = new System.Windows.Forms.Button();
-            this.watchVariablePanelGhost = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelGhost = new STROOP.Controls.VariablePanel.VariablePanel();
             this.groupBoxVariables = new System.Windows.Forms.GroupBox();
             this.groupBoxHelp = new System.Windows.Forms.GroupBox();
             this.buttonTutorialFileWatch = new System.Windows.Forms.Button();
@@ -346,23 +346,23 @@
             // 
             // watchVariablePanelGhost
             // 
-            this.watchVariablePanelGhost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._variablePanelGhost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.watchVariablePanelGhost.AutoScroll = true;
-            this.watchVariablePanelGhost.DataPath = "Config/GhostData.xml";
-            this.watchVariablePanelGhost.elementNameWidth = null;
-            this.watchVariablePanelGhost.elementValueWidth = null;
-            this.watchVariablePanelGhost.Location = new System.Drawing.Point(6, 19);
-            this.watchVariablePanelGhost.Name = "watchVariablePanelGhost";
-            this.watchVariablePanelGhost.Size = new System.Drawing.Size(209, 432);
-            this.watchVariablePanelGhost.TabIndex = 4;
+            this._variablePanelGhost.AutoScroll = true;
+            this._variablePanelGhost.DataPath = "Config/GhostData.xml";
+            this._variablePanelGhost.elementNameWidth = null;
+            this._variablePanelGhost.elementValueWidth = null;
+            this._variablePanelGhost.Location = new System.Drawing.Point(6, 19);
+            this._variablePanelGhost.Name = "_variablePanelGhost";
+            this._variablePanelGhost.Size = new System.Drawing.Size(209, 432);
+            this._variablePanelGhost.TabIndex = 4;
             // 
             // groupBoxVariables
             // 
             this.groupBoxVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxVariables.Controls.Add(this.watchVariablePanelGhost);
+            this.groupBoxVariables.Controls.Add(this._variablePanelGhost);
             this.groupBoxVariables.Location = new System.Drawing.Point(691, 3);
             this.groupBoxVariables.Name = "groupBoxVariables";
             this.groupBoxVariables.Size = new System.Drawing.Size(221, 457);
@@ -547,7 +547,7 @@
         public System.Windows.Forms.Label labelHackActiveState;
         private System.Windows.Forms.TextBox textBoxGhostName;
         public System.Windows.Forms.Label labelName;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelGhost;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelGhost;
         private System.Windows.Forms.Button buttonWatchGhostFile;
         private System.Windows.Forms.Button buttonTutorialRecord;
         private System.Windows.Forms.GroupBox groupBoxVariables;

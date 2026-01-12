@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
@@ -9,7 +11,7 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["HackedArea"] = () => new List<uint> { MiscConfig.HackedAreaAddress };
+            VariableUtilities.baseAddressGetters["HackedArea"] = () => new List<uint> { MiscConfig.HackedAreaAddress };
         }
 
         private static readonly List<string> ALL_VAR_GROUPS =
@@ -30,7 +32,7 @@ namespace STROOP.Tabs
         public QuarterFramesTab()
         {
             InitializeComponent();
-            watchVariablePanelQuarterFrame.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelQuarterFrame.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
         }
 
         public override string GetDisplayName() => "QFrames";

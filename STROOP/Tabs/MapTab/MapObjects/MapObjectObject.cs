@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STROOP.Core.Utilities;
+using System;
 using System.Drawing;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;

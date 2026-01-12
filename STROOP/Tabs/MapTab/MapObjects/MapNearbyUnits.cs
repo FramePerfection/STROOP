@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using OpenTK;
 using System.Collections.Generic;
 using OpenTK.Mathematics;
+using STROOP.Core.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -202,8 +203,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
-                var color = ColorUtilities.ColorToVec4(Color, OpacityByte);
-                var outlineColor = ColorUtilities.ColorToVec4(OutlineColor);
+                var color = OpenTKUtilities.ColorToVec4(Color, OpacityByte);
+                var outlineColor = OpenTKUtilities.ColorToVec4(OutlineColor);
                 foreach (var obj in positionAngleProvider())
                 {
                     var dat = GetRenderValues(graphics, obj);
@@ -218,8 +219,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
-                var color = ColorUtilities.ColorToVec4(Color, OpacityByte);
-                var outlineColor = ColorUtilities.ColorToVec4(OutlineColor);
+                var color = OpenTKUtilities.ColorToVec4(Color, OpacityByte);
+                var outlineColor = OpenTKUtilities.ColorToVec4(OutlineColor);
                 foreach (var obj in positionAngleProvider())
                 {
                     var dat = GetRenderValues(graphics, obj);

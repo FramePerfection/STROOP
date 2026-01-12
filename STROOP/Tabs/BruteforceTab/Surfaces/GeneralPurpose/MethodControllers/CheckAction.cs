@@ -3,6 +3,7 @@ using STROOP.Controls.VariablePanel;
 using STROOP.Core.Variables;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
 {
@@ -29,13 +30,13 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose.MethodControllers
 
                 // Init to current action if not loaded from file?
                 if (currentActionVariable.view.GetNumberValues<uint>().FirstOrDefault() == 0)
-                    currentActionVariable.SetValue(Config.Stream.GetInt32(Structs.MarioConfig.StructAddress + Structs.MarioConfig.ActionOffset));
+                    currentActionVariable.SetValue(Config.Stream.GetInt32(MarioConfig.StructAddress + MarioConfig.ActionOffset));
 
                 var ctrl = (WatchVariableSelectionWrapper<WatchVariableStringWrapper, string>)panel.AddVariable(view).WatchVarWrapper;
                 ctrl.DisplaySingleOption = true;
                 ctrl.options.Add(("Set action now", () =>
                         {
-                            var action = Config.Stream.GetInt32(Structs.MarioConfig.StructAddress + Structs.MarioConfig.ActionOffset);
+                            var action = Config.Stream.GetInt32(MarioConfig.StructAddress + MarioConfig.ActionOffset);
                             currentActionVariable.SetValue(action);
                             return null;
                         }

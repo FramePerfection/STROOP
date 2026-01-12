@@ -1,4 +1,6 @@
-﻿using System;
+﻿using STROOP.Core;
+using STROOP.Core.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
@@ -9,6 +11,8 @@ using STROOP.Extensions;
 using System.Drawing.Drawing2D;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 using static STROOP.Managers.ObjectSlotsManager;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -112,13 +116,6 @@ namespace STROOP
                     })));
                 }
 
-                lst.Add(new Overlay("Locked", GetAddressExpression((obj, address) =>
-                    !LockConfig.LockingDisabled && WatchVariableLockManager.ContainsAnyLocksForObject(address))));
-
-                lst.Add(new Overlay("LockDisabled", GetAddressExpression((obj, address) =>
-                    LockConfig.LockingDisabled && WatchVariableLockManager.ContainsAnyLocksForObject(address))));
-
-                //TODO: Figure out what "LockReadOnly" is supposed to be
                 Func<ObjectSlot, uint, bool> shownOnMap = (obj, address) =>
                     AccessScope<StroopMainForm>.content.GetTab<Tabs.MapTab.MapTab>().TracksObject(address);
 

@@ -49,7 +49,7 @@
             this.dataGridViewSearch = new System.Windows.Forms.DataGridView();
             this.Address = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.watchVariablePanelSearch = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelSearch = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerSearch)).BeginInit();
             this.splitContainerSearch.Panel1.SuspendLayout();
             this.splitContainerSearch.Panel2.SuspendLayout();
@@ -80,7 +80,7 @@
             // 
             // splitContainerSearch.Panel2
             // 
-            this.splitContainerSearch.Panel2.Controls.Add(this.watchVariablePanelSearch);
+            this.splitContainerSearch.Panel2.Controls.Add(this._variablePanelSearch);
             this.splitContainerSearch.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerSearch.Panel2MinSize = 0;
             this.splitContainerSearch.Size = new System.Drawing.Size(915, 463);
@@ -292,13 +292,13 @@
             // 
             // watchVariablePanelSearch
             // 
-            this.watchVariablePanelSearch.DataPath = null;
-            this.watchVariablePanelSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelSearch.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelSearch.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelSearch.Name = "watchVariablePanelSearch";
-            this.watchVariablePanelSearch.Size = new System.Drawing.Size(451, 457);
-            this.watchVariablePanelSearch.TabIndex = 7;
+            this._variablePanelSearch.DataPath = null;
+            this._variablePanelSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelSearch.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelSearch.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelSearch.Name = "_variablePanelSearch";
+            this._variablePanelSearch.Size = new System.Drawing.Size(451, 457);
+            this._variablePanelSearch.TabIndex = 7;
             // 
             // SearchTab
             // 
@@ -340,6 +340,6 @@
         private System.Windows.Forms.DataGridView dataGridViewSearch;
         private System.Windows.Forms.DataGridViewTextBoxColumn Address;
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelSearch;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelSearch;
     }
 }

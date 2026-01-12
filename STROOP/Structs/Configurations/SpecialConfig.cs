@@ -1,4 +1,5 @@
-﻿using STROOP.Models;
+﻿using STROOP.Core;
+using STROOP.Models;
 using STROOP.Utilities;
 using System;
 using System.Collections.Generic;

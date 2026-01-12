@@ -1,11 +1,11 @@
-﻿using STROOP.Utilities;
+﻿using STROOP.Core;
+using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Structs.Configurations
 {
     public static class MainSaveConfig
     {
-        public static uint CurrentMainSaveAddress => AccessScope<StroopMainForm>.content.GetTab<Tabs.MainSaveTab>().CurrentMainSaveAddress;
-
         public static uint MainSaveStructAddress
         {
             get => RomVersionConfig.SwitchMap(MainSaveStructAddressUS, MainSaveStructAddressJP);

@@ -104,7 +104,7 @@
             this.radioButtonCamHackMode2 = new System.Windows.Forms.RadioButton();
             this.radioButtonCamHackMode1AbsoluteAngle = new System.Windows.Forms.RadioButton();
             this.radioButtonCamHackMode1RelativeAngle = new System.Windows.Forms.RadioButton();
-            this.watchVariablePanelCamHack = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelCamHack = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerCamHack)).BeginInit();
             this.splitContainerCamHack.Panel1.SuspendLayout();
             this.splitContainerCamHack.Panel2.SuspendLayout();
@@ -145,7 +145,7 @@
             // 
             // splitContainerCamHack.Panel2
             // 
-            this.splitContainerCamHack.Panel2.Controls.Add(this.watchVariablePanelCamHack);
+            this.splitContainerCamHack.Panel2.Controls.Add(this._variablePanelCamHack);
             this.splitContainerCamHack.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerCamHack.Panel2MinSize = 0;
             this.splitContainerCamHack.Size = new System.Drawing.Size(915, 463);
@@ -959,13 +959,13 @@
             // 
             // watchVariablePanelCamHack
             // 
-            this.watchVariablePanelCamHack.DataPath = "Config/CamHackData.xml";
-            this.watchVariablePanelCamHack.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelCamHack.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelCamHack.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelCamHack.Name = "watchVariablePanelCamHack";
-            this.watchVariablePanelCamHack.Size = new System.Drawing.Size(469, 457);
-            this.watchVariablePanelCamHack.TabIndex = 2;
+            this._variablePanelCamHack.DataPath = "Config/CamHackData.xml";
+            this._variablePanelCamHack.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelCamHack.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelCamHack.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelCamHack.Name = "_variablePanelCamHack";
+            this._variablePanelCamHack.Size = new System.Drawing.Size(469, 457);
+            this._variablePanelCamHack.TabIndex = 2;
             // 
             // CamHackTab
             // 
@@ -1070,6 +1070,6 @@
         private System.Windows.Forms.RadioButton radioButtonCamHackMode2;
         private System.Windows.Forms.RadioButton radioButtonCamHackMode1AbsoluteAngle;
         private System.Windows.Forms.RadioButton radioButtonCamHackMode1RelativeAngle;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelCamHack;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelCamHack;
     }
 }

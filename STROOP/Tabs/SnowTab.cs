@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using STROOP.Controls.VariablePanel;
-using STROOP.Core.Variables;
+using STROOP.Core.Utilities;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Tabs
 {
@@ -31,12 +33,12 @@ namespace STROOP.Tabs
             };
 
         private short _numSnowParticles;
-        private List<IEnumerable<WatchVariableControl>> _snowParticleControls;
+        private List<IEnumerable<IWinFormsVariableCell>> _snowParticleCells;
 
         public SnowTab()
         {
             InitializeComponent();
-            watchVariablePanelSnow.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelSnow.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
         }
 
         public override string GetDisplayName() => "Snow";
@@ -46,7 +48,7 @@ namespace STROOP.Tabs
             base.InitializeTab();
 
             _numSnowParticles = 0;
-            _snowParticleControls = new List<IEnumerable<WatchVariableControl>>();
+            _snowParticleCells = new List<IEnumerable<IWinFormsVariableCell>>();
 
             buttonSnowRetrieve.Click += (sender, e) =>
             {
@@ -77,7 +79,7 @@ namespace STROOP.Tabs
                 });
         }
 
-        private List<NamedVariableCollection.IView> GetSnowParticleControls(int index)
+        private List<VariablePrecursor> GetSnowParticleControls(int index)
         {
             uint structOffset = (uint)index * SnowConfig.ParticleStructSize;
             List<uint> offsets = new List<uint>()
@@ -93,19 +95,15 @@ namespace STROOP.Tabs
                 String.Format("Particle {0} Z", index),
             };
 
-            var controls = new List<NamedVariableCollection.IView>();
+            var precursors = new List<VariablePrecursor>();
             for (int i = 0; i < 3; i++)
-            {
-                var view = new NamedVariableCollection.CustomView<int>(typeof(WatchVariableNumberWrapper<uint>))
+                precursors.Add((names[i], new CustomVariable<int>(VariableSubclass.Number)
                 {
-                    Name = names[i],
-                    _getterFunction = () => Config.Stream.GetInt32(Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield(),
-                    _setterFunction = (val) => Config.Stream.SetValue(val, Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield()
-                };
-                controls.Add(view);
-            }
+                    getter = () => Config.Stream.GetInt32(Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield(),
+                    setter = (val) => Config.Stream.SetValue(val, Config.Stream.GetUInt32(SnowConfig.SnowArrayPointerAddress) + offsets[i]).Yield()
+                }));
 
-            return controls;
+            return precursors;
         }
 
         public override void Update(bool updateView)
@@ -116,16 +114,16 @@ namespace STROOP.Tabs
             if (numSnowParticles > _numSnowParticles) // need to add controls
             {
                 for (int i = _numSnowParticles; i < numSnowParticles; i++)
-                    _snowParticleControls.Add(watchVariablePanelSnow.AddVariables(GetSnowParticleControls(i)));
+                    _snowParticleCells.Add(_variablePanelSnow.AddVariables(GetSnowParticleControls(i)));
                 _numSnowParticles = numSnowParticles;
             }
             else if (numSnowParticles < _numSnowParticles) // need to remove controls
             {
                 for (int i = _numSnowParticles - 1; i >= numSnowParticles; i--)
                 {
-                    var snowParticleControls = _snowParticleControls[i];
-                    _snowParticleControls.Remove(snowParticleControls);
-                    watchVariablePanelSnow.RemoveVariables(snowParticleControls);
+                    var snowParticleControls = _snowParticleCells[i];
+                    _snowParticleCells.Remove(snowParticleControls);
+                    _variablePanelSnow.RemoveVariables(snowParticleControls);
                 }
 
                 _numSnowParticles = numSnowParticles;

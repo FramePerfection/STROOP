@@ -5,6 +5,7 @@ using System.Text;
 using STROOP.Structs;
 using System.ComponentModel;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.M64
 {

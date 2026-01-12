@@ -1,6 +1,8 @@
-﻿using System;
+﻿using STROOP.Core.Utilities;
+using System;
 using STROOP.Core.Variables;
 using STROOP.Utilities;
+using STROOP.Variables;
 
 namespace STROOP.Tabs.BruteforceTab
 {
@@ -38,8 +40,8 @@ namespace STROOP.Tabs.BruteforceTab
         {
         }
 
-        public BruteforceVariableView(Type wrapperType, string name, T defaultValue = default(T))
-            : base(wrapperType)
+        public BruteforceVariableView(WatchVariableSubclass subclass, string name, T defaultValue = default(T))
+            : base(subclass)
         {
             Name = name;
             _value = defaultValue;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Controls
 {
@@ -34,7 +35,7 @@ namespace STROOP.Controls
 
             panelColorSelector.Click += (sender, e) =>
             {
-                Color? newColor = ColorUtilities.GetColorFromDialog(SelectedColor);
+                Color? newColor = ColorDialogUtilities.GetColorFromDialog(SelectedColor);
                 if (newColor.HasValue) SelectedColor = newColor.Value;
             };
         }
@@ -46,7 +47,7 @@ namespace STROOP.Controls
 
         private void SubmitColorText()
         {
-            Color? newColor = ColorUtilities.ConvertDecimalToColor(textBoxColorSelector.Text);
+            Color? newColor = ColorUtilities.ConvertDecimalToColor(ParsingUtilities.ParseIntList(textBoxColorSelector.Text));
             if (newColor.HasValue)
             {
                 SelectedColor = newColor.Value;

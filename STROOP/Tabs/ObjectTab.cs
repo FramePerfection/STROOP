@@ -9,7 +9,9 @@ using System.Windows.Forms;
 using STROOP.Structs.Configurations;
 using STROOP.Forms;
 using STROOP.Models;
-using STROOP.Core.Variables;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Tabs
 {
@@ -137,7 +139,7 @@ namespace STROOP.Tabs
         public ObjectTab()
         {
             InitializeComponent();
-            watchVariablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
         }
 
         public override string GetDisplayName() => "Object";
@@ -145,7 +147,7 @@ namespace STROOP.Tabs
         public override void InitializeTab()
         {
             base.InitializeTab();
-            this.watchVariablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            this._variablePanelObject.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
             _objectSlots = Config.StroopMainForm.ObjectSlotsManager;
 
             labelObjAddValue.Click += ObjAddressLabel_Click;
@@ -411,11 +413,11 @@ namespace STROOP.Tabs
         // Having an empty action assigned to this adds the context menu entry to the ObjectSlot controls
         public override Action<IEnumerable<ObjectSlot>> objectSlotsClicked => objectSlots => { };
 
-        public void SetBehaviorWatchVariables(IEnumerable<NamedVariableCollection.IView> watchVars, Color color)
+        public void SetBehaviorVariables(IEnumerable<VariablePrecursor> precursors, Color color)
         {
-            watchVariablePanelObject.RemoveVariableGroup(VariableGroup.ObjectSpecific);
-            foreach (var ctrl in watchVariablePanelObject.AddVariables(watchVars))
-                ctrl.BaseColor = color;
+            _variablePanelObject.RemoveVariableGroup(VariableGroup.ObjectSpecific);
+            foreach (var ctrl in _variablePanelObject.AddVariables(precursors))
+                ctrl.control.BaseColor = color;
         }
 
         private void ObjAddressLabel_Click(object sender, EventArgs e)
@@ -465,7 +467,7 @@ namespace STROOP.Tabs
                 SlotPos = "";
                 labelObjAddValue.Text = "";
                 _lastGeneralizedBehavior = null;
-                SetBehaviorWatchVariables(Array.Empty<NamedVariableCollection.IView>(), Color.White);
+                SetBehaviorVariables([], Color.White);
             }
             else if (_objects.Count() == 1)
             {
@@ -474,8 +476,8 @@ namespace STROOP.Tabs
                 if (!BehaviorCriteria.HasSameAssociation(_lastGeneralizedBehavior, newBehavior))
                 {
                     Behavior = $"0x{obj.SegmentedBehavior & 0x00FFFFFF:X4}";
-                    SetBehaviorWatchVariables(
-                        Config.ObjectAssociations.GetWatchVarControls(newBehavior),
+                    SetBehaviorVariables(
+                        Config.ObjectAssociations.GetVariablePrecursors(newBehavior),
                         ObjectSlotsConfig.GetProcessingGroupColor(obj.BehaviorProcessGroup)
                             .Lighten(0.8));
                     _lastGeneralizedBehavior = newBehavior;
@@ -509,14 +511,14 @@ namespace STROOP.Tabs
                     if (multiBehavior.HasValue)
                     {
                         Behavior = $"0x{multiBehavior.Value.BehaviorAddress:X4}";
-                        SetBehaviorWatchVariables(
-                            Config.ObjectAssociations.GetWatchVarControls(multiBehavior.Value),
+                        SetBehaviorVariables(
+                            Config.ObjectAssociations.GetVariablePrecursors(multiBehavior.Value),
                             ObjectSlotsConfig.GetProcessingGroupColor(processGroup).Lighten(0.8));
                     }
                     else
                     {
                         Behavior = "";
-                        SetBehaviorWatchVariables(Array.Empty<NamedVariableCollection.IView>(), Color.White);
+                        SetBehaviorVariables([], Color.White);
                     }
 
                     _lastGeneralizedBehavior = multiBehavior;

@@ -1,7 +1,9 @@
-﻿using STROOP.Core.Variables;
-using STROOP.Structs;
-using STROOP.Structs.Configurations;
+﻿using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,11 +76,12 @@ namespace STROOP.Tabs
             foreach (DataGridViewRow row in rows)
             {
                 uint? addressNullable = ParsingUtilities.ParseHexNullable(row.Cells[0].Value);
-                if (!addressNullable.HasValue) continue;
-                uint address = addressNullable.Value;
+                if (!addressNullable.HasValue)
+                    continue;
 
+                uint address = addressNullable.Value;
                 MemoryDescriptor watchVar = new MemoryDescriptor(_memoryType, BaseAddressType.Relative, address);
-                watchVariablePanelSearch.AddVariable(watchVar.CreateView());
+                _variablePanelSearch.AddVariable(($"{_memoryType.Name}@0x{address : X8}", watchVar.CreateVariable()));
             }
         }
 

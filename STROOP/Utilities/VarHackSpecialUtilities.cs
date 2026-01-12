@@ -1,5 +1,6 @@
 ﻿using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 using System;
 
 namespace STROOP.Structs
@@ -33,12 +34,12 @@ namespace STROOP.Structs
 
                 case "DefactoSpeed":
                     name = "Defacto " + VarHackConfig.EscapeChar;
-                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetMarioDeFactoSpeed()); };
+                    getterFunction = () => { return FormatInteger(VariableSpecialUtilities.GetMarioDeFactoSpeed()); };
                     break;
 
                 case "SlidingSpeed":
                     name = "Spd " + VarHackConfig.EscapeChar;
-                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetMarioSlidingSpeed()); };
+                    getterFunction = () => { return FormatInteger(VariableSpecialUtilities.GetMarioSlidingSpeed()); };
                     break;
 
                 case "MarioAction":
@@ -53,12 +54,12 @@ namespace STROOP.Structs
 
                 case "DYawIntendFacing":
                     name = "DYaw " + VarHackConfig.EscapeChar;
-                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetDeltaYawIntendedFacing()); };
+                    getterFunction = () => { return FormatInteger(VariableSpecialUtilities.GetDeltaYawIntendedFacing()); };
                     break;
 
                 case "DYawIntendFacingHau":
                     name = "DYaw " + VarHackConfig.EscapeChar;
-                    getterFunction = () => { return FormatInteger(WatchVariableSpecialUtilities.GetDeltaYawIntendedFacing() / 16); };
+                    getterFunction = () => { return FormatInteger(VariableSpecialUtilities.GetDeltaYawIntendedFacing() / 16); };
                     break;
 
                 default:

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
 using OpenTK.Mathematics;
+using STROOP.Core;
 using STROOP.Tabs.MapTab;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;

@@ -1,5 +1,7 @@
 ﻿using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 using System.Collections.Generic;
 
 namespace STROOP.Tabs
@@ -27,7 +29,7 @@ namespace STROOP.Tabs
         public PuTab()
         {
             InitializeComponent();
-            watchVariablePanelPu.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelPu.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
         }
 
         public override string GetDisplayName() => "PU";

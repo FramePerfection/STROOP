@@ -1,5 +1,6 @@
 ﻿using STROOP.Ttc;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -173,8 +174,8 @@ namespace STROOP.Structs
             {
                 return new List<PendulumSwing>()
                 {
-                    new PendulumSwing((int)WatchVariableSpecialUtilities.GetPendulumAmplitude(Amplitude, 13), 13, this, PrimaryIndex, SecondaryIndex + 1),
-                    new PendulumSwing((int)WatchVariableSpecialUtilities.GetPendulumAmplitude(Amplitude, 42), 42, this, PrimaryIndex, SecondaryIndex + 1),
+                    new PendulumSwing((int)VariableSpecialUtilities.GetPendulumAmplitude(Amplitude, 13), 13, this, PrimaryIndex, SecondaryIndex + 1),
+                    new PendulumSwing((int)VariableSpecialUtilities.GetPendulumAmplitude(Amplitude, 42), 42, this, PrimaryIndex, SecondaryIndex + 1),
                 };
             }
 

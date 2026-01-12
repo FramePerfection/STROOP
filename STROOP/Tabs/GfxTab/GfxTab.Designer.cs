@@ -37,7 +37,7 @@
             this.buttonGfxDumpDisplayList = new System.Windows.Forms.Button();
             this.buttonGfxRefreshObject = new System.Windows.Forms.Button();
             this.buttonGfxRefresh = new System.Windows.Forms.Button();
-            this.watchVariablePanelGfx = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelGfx = new STROOP.Controls.VariablePanel.VariablePanel();
             this.richTextBoxGfx = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerGfxLeft)).BeginInit();
             this.splitContainerGfxLeft.Panel1.SuspendLayout();
@@ -116,7 +116,7 @@
             // 
             // splitContainerGfxMiddle.Panel2
             // 
-            this.splitContainerGfxMiddle.Panel2.Controls.Add(this.watchVariablePanelGfx);
+            this.splitContainerGfxMiddle.Panel2.Controls.Add(this._variablePanelGfx);
             this.splitContainerGfxMiddle.Size = new System.Drawing.Size(325, 463);
             this.splitContainerGfxMiddle.SplitterDistance = 60;
             this.splitContainerGfxMiddle.TabIndex = 1;
@@ -159,12 +159,12 @@
             // 
             // watchVariablePanelGfx
             // 
-            this.watchVariablePanelGfx.DataPath = null;
-            this.watchVariablePanelGfx.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelGfx.Location = new System.Drawing.Point(0, 0);
-            this.watchVariablePanelGfx.Name = "watchVariablePanelGfx";
-            this.watchVariablePanelGfx.Size = new System.Drawing.Size(325, 399);
-            this.watchVariablePanelGfx.TabIndex = 0;
+            this._variablePanelGfx.DataPath = null;
+            this._variablePanelGfx.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelGfx.Location = new System.Drawing.Point(0, 0);
+            this._variablePanelGfx.Name = "_variablePanelGfx";
+            this._variablePanelGfx.Size = new System.Drawing.Size(325, 399);
+            this._variablePanelGfx.TabIndex = 0;
             // 
             // richTextBoxGfx
             // 
@@ -209,7 +209,7 @@
         private System.Windows.Forms.Button buttonGfxDumpDisplayList;
         private System.Windows.Forms.Button buttonGfxRefreshObject;
         private System.Windows.Forms.Button buttonGfxRefresh;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelGfx;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelGfx;
         private System.Windows.Forms.RichTextBox richTextBoxGfx;
     }
 }
