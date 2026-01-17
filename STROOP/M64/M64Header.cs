@@ -546,15 +546,15 @@ namespace STROOP.M64
             AuthorshipTag = BitConverter.ToUInt32(bytes, 0x024);
             BruteforceExtraData = BitConverter.ToUInt32(bytes, 0x028);
             NumRerecordsHi = BitConverter.ToUInt32(bytes, 0x02C);
-            RomName = Encoding.ASCII.GetString(bytes, 0x0C4, 32).Replace("\0", "");
+            RomName = Encoding.ASCII.GetString(bytes, 0x0C4, 32).TrimEnd('\0');
             Crc32 = BitConverter.ToUInt32(bytes, 0x0E4);
             CountryCode = BitConverter.ToUInt16(bytes, 0x0E8);
-            VideoPlugin = Encoding.ASCII.GetString(bytes, 0x122, 64).Replace("\0", "");
-            SoundPlugin = Encoding.ASCII.GetString(bytes, 0x162, 64).Replace("\0", "");
-            InputPlugin = Encoding.ASCII.GetString(bytes, 0x1A2, 64).Replace("\0", "");
-            RspPlugin = Encoding.ASCII.GetString(bytes, 0x1E2, 64).Replace("\0", "");
-            Author = Encoding.UTF8.GetString(bytes, 0x222, 222).Replace("\0", "");
-            Description = Encoding.UTF8.GetString(bytes, 0x300, 256).Replace("\0", "");
+            VideoPlugin = Encoding.ASCII.GetString(bytes, 0x122, 64).TrimEnd('\0');
+            SoundPlugin = Encoding.ASCII.GetString(bytes, 0x162, 64).TrimEnd('\0');
+            InputPlugin = Encoding.ASCII.GetString(bytes, 0x1A2, 64).TrimEnd('\0');
+            RspPlugin = Encoding.ASCII.GetString(bytes, 0x1E2, 64).TrimEnd('\0');
+            Author = Encoding.UTF8.GetString(bytes, 0x222, 222).TrimEnd('\0');
+            Description = Encoding.UTF8.GetString(bytes, 0x300, 256).TrimEnd('\0');
 
             // Verify that serialization works correctly
             if (!Enumerable.SequenceEqual(bytes, ToBytes())) throw new ArgumentOutOfRangeException();
