@@ -1,4 +1,5 @@
-﻿using STROOP.Core;
+using STROOP.Core;
+using STROOP.Forms;
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -6,7 +7,8 @@ using System.Windows.Forms;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
-using STROOP.Variables;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace STROOP
@@ -37,20 +39,21 @@ namespace STROOP
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            LoadingHandler.ShowLoadingForm();
-
-
             StroopMainForm mainForm;
             Initialize(out mainForm);
 
-            LoadingHandler.CloseForm();
             Application.Run(mainForm);
         }
 
         static void Initialize(out StroopMainForm mainForm)
         {
             StroopMainForm tmpMainForm = null;
-            LoadingHandler.LoadingForm.RunLoadingTasks(
+            MainLoadingForm loadingForm = new MainLoadingForm();
+            var semaphore = new SemaphoreSlim(0, 1);
+            loadingForm.Shown += (_, _) => semaphore.Release();
+            Task.Run(() => Application.Run(loadingForm));
+            semaphore.Wait();
+            loadingForm.RunLoadingTasks(
                 ("Loading Main Configuration",
                     () =>
                     {
@@ -96,6 +99,7 @@ namespace STROOP
                 )
             );
             mainForm = tmpMainForm;
+            loadingForm.Invoke(loadingForm.Close);
         }
     }
 }
