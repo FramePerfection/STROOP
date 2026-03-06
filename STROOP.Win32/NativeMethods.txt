@@ -20,3 +20,7 @@ CFM_MASK
 SCF_*
 EM_*
 SendMessage
+
+GetAsyncKeyState
+GetSystemMetrics
+SYSTEM_METRICS_INDEX
