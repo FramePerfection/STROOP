@@ -53,9 +53,6 @@
         <Compile Update="Controls\TabControlEx.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="Controls\CarretlessTextBox.cs">
-            <SubType>Component</SubType>
-        </Compile>
         <Compile Update="Controls\MainSaveTextbox.cs">
             <SubType>Component</SubType>
         </Compile>

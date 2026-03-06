@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace STROOP.Controls.VariablePanel;
 
-public class VariablePanelValueEditBox : CarretlessTextBox, IValueEditBox
+public class VariablePanelValueEditBox : TextBox, IValueEditBox
 {
     private readonly EventHandler _handleLostFocus;
     private bool killed = false;
