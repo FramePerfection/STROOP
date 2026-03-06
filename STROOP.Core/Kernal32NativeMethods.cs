@@ -8,29 +8,6 @@ namespace STROOP.Core;
 
 public static class Kernal32NativeMethods
 {
-    [Flags]
-    public enum MemoryType : uint
-    {
-        MEM_IMAGE = 0x1000000,
-        MEM_MAPPED = 0x40000,
-        MEM_PRIVATE = 0x20000,
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct MemoryBasicInformation
-    {
-        public UIntPtr BaseAddress;
-        public IntPtr AllocationBase;
-        public uint AllocationProtect;
-        public IntPtr RegionSize;
-        public uint State;
-        public uint Protect;
-        public MemoryType Type;
-    }
-
-    [DllImport("kernel32.dll")]
-    public static extern IntPtr VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, out MemoryBasicInformation lpBuffer, IntPtr dwLength);
-
     public static void ResumeProcess(Process process)
     {
         // Resume all threads
