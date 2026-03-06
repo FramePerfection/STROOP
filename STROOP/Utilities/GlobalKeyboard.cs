@@ -1,51 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace STROOP.Utilities;
 
 public static class GlobalKeyboard
 {
-    static HashSet<Keys> pressedKeys = new();
-    static HashSet<Form> registeredForms = new();
+    [DllImport("user32.dll")]
+    static extern short GetAsyncKeyState(Keys vKey);
 
-    public static void AddForm(Form form)
-    {
-        registeredForms.Add(form);
-        form.KeyPreview = true;
-        form.KeyDown += OnKeyDown;
-        form.KeyUp += OnKeyUp;
+    private static bool IsDownInternal(Keys key)
+        => (GetAsyncKeyState(key) & 0x8000) != 0;
 
-        EventHandler unbind = null;
-        unbind = (sender, e) =>
-        {
-            registeredForms.Remove(form);
-            ((Form)sender).Disposed -= unbind;
-            form.KeyDown -= OnKeyDown;
-            form.KeyUp -= OnKeyUp;
-        };
-        form.Disposed += unbind;
-    }
+    public static bool IsDown(Keys key) => IsDownInternal(key);
 
-    public static bool IsDown(Keys key) => pressedKeys.Contains(key) && registeredForms.Any(f => Form.ActiveForm == f);
-
-    public static bool IsCtrlDown() => pressedKeys.Contains(Keys.ControlKey);
-    public static bool IsShiftDown() => pressedKeys.Contains(Keys.ShiftKey);
-    public static bool IsAltDown() => pressedKeys.Contains(Keys.Menu) || pressedKeys.Contains(Keys.Alt); // Don't ask me why...
+    public static bool IsCtrlDown() => IsDown(Keys.ControlKey);
+    public static bool IsShiftDown() => IsDown(Keys.ShiftKey);
+    public static bool IsAltDown() => IsDown(Keys.Menu) || IsDown(Keys.Alt); // Don't ask me why...
 
     public static int? GetCurrentlyInputtedNumber()
     {
-        if (pressedKeys.Contains(Keys.D1)) return 1;
-        if (pressedKeys.Contains(Keys.D2)) return 2;
-        if (pressedKeys.Contains(Keys.D3)) return 3;
-        if (pressedKeys.Contains(Keys.D4)) return 4;
-        if (pressedKeys.Contains(Keys.D5)) return 5;
-        if (pressedKeys.Contains(Keys.D6)) return 6;
-        if (pressedKeys.Contains(Keys.D7)) return 7;
-        if (pressedKeys.Contains(Keys.D8)) return 8;
-        if (pressedKeys.Contains(Keys.D9)) return 9;
-        if (pressedKeys.Contains(Keys.D0)) return 0;
+        if (IsDown(Keys.D1)) return 1;
+        if (IsDown(Keys.D2)) return 2;
+        if (IsDown(Keys.D3)) return 3;
+        if (IsDown(Keys.D4)) return 4;
+        if (IsDown(Keys.D5)) return 5;
+        if (IsDown(Keys.D6)) return 6;
+        if (IsDown(Keys.D7)) return 7;
+        if (IsDown(Keys.D8)) return 8;
+        if (IsDown(Keys.D9)) return 9;
+        if (IsDown(Keys.D0)) return 0;
         return null;
     }
 
@@ -60,10 +43,4 @@ public static class GlobalKeyboard
                IsDown(Keys.Back) ||
                IsDown(Keys.Escape);
     }
-
-    private static void OnKeyDown(object sender, KeyEventArgs e)
-        => pressedKeys.Add(e.KeyCode);
-
-    private static void OnKeyUp(object sender, KeyEventArgs e)
-        => pressedKeys.Remove(e.KeyCode);
 }

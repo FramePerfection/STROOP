@@ -41,7 +41,6 @@ namespace STROOP
         {
             this.searchVariableDialog = new SearchVariableDialog(this);
             this.isMainForm = isMainForm;
-            GlobalKeyboard.AddForm(this);
             InitializeComponent();
             InitTabs();
             ObjectSlotsManager = new ObjectSlotsManager(this, tabControlMain);
