@@ -1,1 +1,15 @@
-﻿
+﻿OpenThread
+SuspendThread
+ResumeThread
+CloseHandle
+OpenProcess
+ReadProcessMemory
+WriteProcessMemory
+QueryWorkingSetEx
+SymInitialize
+SymCleanup
+SymFromName
+IsWow64Process
+
+PSAPI_WORKING_SET_EX_INFORMATION
+MEMORY_BASIC_INFORMATION

@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using STROOP.Win32;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Windows.Win32.Foundation;
+using Windows.Win32.System.ProcessStatus;
 using static STROOP.Core.Kernal32NativeMethods;
 
 namespace STROOP.Core.GameMemoryAccess;
@@ -15,12 +18,11 @@ public class DolphinProcessIO : WindowsProcessRamIO
     {
         MemoryBasicInformation info;
         IntPtr infoSize = (IntPtr)Marshal.SizeOf(typeof(MemoryBasicInformation));
-        uint setInfoSize = (uint)Marshal.SizeOf(typeof(PsapiWorkingSetExInformation));
 
         _baseOffset = (UIntPtr)0;
         bool mem1Found = false;
         for (IntPtr p = new IntPtr();
-             VQueryEx(_processHandle, p, out info, infoSize) == infoSize;
+             VirtualQueryEx(_processHandle, p, out info, infoSize) == infoSize;
              p = (IntPtr)(p.ToInt64() + info.RegionSize.ToInt64()))
         {
             if (mem1Found)
@@ -43,11 +45,9 @@ public class DolphinProcessIO : WindowsProcessRamIO
                 // exists and have nothing to do with the emulated memory. Only the right page has valid
                 // working set information so an additional check is required that it is backed by physical
                 // memory.
-                PsapiWorkingSetExInformation wsInfo;
-                wsInfo.VirtualAddress = (IntPtr)info.BaseAddress.ToUInt64();
-                if (QWorkingSetEx(_processHandle, out wsInfo, setInfoSize))
+                if (NativeMethodWrappers.QueryWorkingSetEx((HANDLE)_processHandle, info.BaseAddress, out PSAPI_WORKING_SET_EX_INFORMATION wsInfo))
                 {
-                    if ((wsInfo.VirtualAttributes & 0x01) != 0)
+                    if ((wsInfo.VirtualAttributes.Flags & 0x01) != 0)
                     {
                         _baseOffset = info.BaseAddress;
                         mem1Found = true;
