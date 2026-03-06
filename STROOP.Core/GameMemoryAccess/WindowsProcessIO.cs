@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Threading;
-using static STROOP.Core.Kernal32NativeMethods;
+using static STROOP.Core.ProcessHelper;
 
 namespace STROOP.Core.GameMemoryAccess;
 

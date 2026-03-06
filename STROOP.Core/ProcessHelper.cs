@@ -6,7 +6,7 @@ using Windows.Win32.System.Threading;
 
 namespace STROOP.Core;
 
-public static class Kernal32NativeMethods
+public static class ProcessHelper
 {
     public static void ResumeProcess(Process process)
     {
