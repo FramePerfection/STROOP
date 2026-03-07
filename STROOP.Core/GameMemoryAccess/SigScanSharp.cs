@@ -25,7 +25,7 @@
  */
 
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using STROOP.Win32;
 
 namespace STROOP.Core.GameMemoryAccess;
 
@@ -52,7 +52,7 @@ public class SigScanSharp
         g_dictStringPatterns.Clear();
         try
         {
-            return Win32.ReadProcessMemory(g_hProcess, g_lpModuleBase, g_arrModuleBuffer, (IntPtr)targetModule.ModuleMemorySize);
+            return NativeMethodWrappers.ReadProcessMemory(g_hProcess, (UIntPtr)g_lpModuleBase, g_arrModuleBuffer);
         }
         catch (AccessViolationException)
         {
@@ -111,11 +111,5 @@ public class SigScanSharp
             patternbytes.Add(szByte == "?" ? (byte)0x0 : Convert.ToByte(szByte, 16));
 
         return patternbytes.ToArray();
-    }
-
-    private static class Win32
-    {
-        [DllImport("kernel32.dll")]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, IntPtr dwSize, IntPtr lpNumberOfBytesRead = default(IntPtr));
     }
 }

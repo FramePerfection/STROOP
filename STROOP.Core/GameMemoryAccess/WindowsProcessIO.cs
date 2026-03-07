@@ -1,6 +1,10 @@
-﻿using System.ComponentModel;
+﻿using STROOP.Win32;
+using System.ComponentModel;
 using System.Diagnostics;
-using static STROOP.Core.Kernal32NativeMethods;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.System.Threading;
+using static STROOP.Core.ProcessHelper;
 
 namespace STROOP.Core.GameMemoryAccess;
 
@@ -29,16 +33,20 @@ public class WindowsProcessRamIO : BaseProcessIO, IDisposable
 
         _process.EnableRaisingEvents = true;
 
-        ProcessAccess accessFlags = ProcessAccess.PROCESS_QUERY_LIMITED_INFORMATION | ProcessAccess.SUSPEND_RESUME
-                                                                                    | ProcessAccess.VM_OPERATION | ProcessAccess.VM_READ | ProcessAccess.VM_WRITE;
-        _processHandle = ProcessGetHandleFromId(accessFlags, false, _process.Id);
+        var accessFlags = PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_LIMITED_INFORMATION
+                          | PROCESS_ACCESS_RIGHTS.PROCESS_SUSPEND_RESUME
+                          | PROCESS_ACCESS_RIGHTS.PROCESS_VM_OPERATION
+                          | PROCESS_ACCESS_RIGHTS.PROCESS_VM_READ
+                          | PROCESS_ACCESS_RIGHTS.PROCESS_VM_WRITE;
+
+        _processHandle = PInvoke.OpenProcess(accessFlags, false, (uint)_process.Id);
         try
         {
             CalculateOffset();
         }
         catch (Exception e)
         {
-            CloseProcess(_processHandle);
+            PInvoke.CloseHandle((HANDLE)_processHandle);
             throw;
         }
 
@@ -52,16 +60,10 @@ public class WindowsProcessRamIO : BaseProcessIO, IDisposable
     }
 
     protected override bool ReadFunc(UIntPtr address, byte[] buffer)
-    {
-        int numOfBytes = 0;
-        return ProcessReadMemory(_processHandle, address, buffer, (IntPtr)buffer.Length, ref numOfBytes);
-    }
+        => NativeMethodWrappers.ReadProcessMemory(_processHandle, address, buffer);
 
     protected override bool WriteFunc(UIntPtr address, byte[] buffer)
-    {
-        int numOfBytes = 0;
-        return ProcessWriteMemory(_processHandle, address, buffer, (IntPtr)buffer.Length, ref numOfBytes);
-    }
+        => NativeMethodWrappers.WriteProcessMemory(_processHandle, address, buffer);
 
     public override byte[] ReadAllMemory()
     {
@@ -71,8 +73,8 @@ public class WindowsProcessRamIO : BaseProcessIO, IDisposable
 
         for (uint address = 0; true; address++)
         {
-            bool success = ProcessReadMemory(_processHandle, (UIntPtr)address, buffer, (IntPtr)buffer.Length, ref numBytes);
-            if (!success) break;
+            if (!NativeMethodWrappers.ReadProcessMemory(_processHandle, address, buffer))
+                break;
             output.Add(buffer[0]);
         }
 
@@ -91,30 +93,29 @@ public class WindowsProcessRamIO : BaseProcessIO, IDisposable
     // see https://msdn.microsoft.com/en-us/library/windows/desktop/ms684139%28v=vs.85%29.aspx
     public static bool Is64Bit(Process process)
         => Environment.Is64BitOperatingSystem
-           && IsWow64Process(process.Handle, out bool isWow64)
+           && PInvoke.IsWow64Process(process.SafeHandle, out var isWow64)
             ? !isWow64
             : throw new Win32Exception();
 
     protected virtual void CalculateOffset()
     {
         // Find CORE_RDRAM export from mupen if present
-        Win32SymbolInfo symbol = Win32SymbolInfo.Create();
-        if (SymInitialize(_process.Handle, null, true))
+        if (PInvoke.SymInitialize(_process.SafeHandle, null, true))
         {
             try
             {
-                if (SymFromName(_process.Handle, "CORE_RDRAM", ref symbol))
+                if (NativeMethodWrappers.GetSymbolAddress(_process.SafeHandle, "CORE_RDRAM", out var address))
                 {
                     bool is64Bit = Is64Bit(_process);
                     byte[]? buffer = new byte[is64Bit ? 8 : 4];
-                    ReadAbsolute((UIntPtr)symbol.Address, buffer, EndiannessType.Little);
+                    ReadAbsolute((UIntPtr)address, buffer, EndiannessType.Little);
                     _baseOffset = (UIntPtr)(is64Bit ? BitConverter.ToUInt64(buffer, 0) : (ulong)BitConverter.ToUInt32(buffer, 0));
                     return;
                 }
             }
             finally
             {
-                if (!SymCleanup(_process.Handle))
+                if (!PInvoke.SymCleanup(_process.SafeHandle))
                     throw new Win32Exception();
             }
         }
@@ -122,7 +123,7 @@ public class WindowsProcessRamIO : BaseProcessIO, IDisposable
         {
             // documentation doesn't say what to do when SymInitialize returns false, so just call this and don't care for its result for good (or bad) measure :shrug:
             // https://learn.microsoft.com/en-us/windows/win32/api/dbghelp/nf-dbghelp-syminitialize
-            SymCleanup(_process.Handle);
+            PInvoke.SymCleanup(_process.SafeHandle);
         }
 
         // Find DLL offset if needed
@@ -243,7 +244,7 @@ public class WindowsProcessRamIO : BaseProcessIO, IDisposable
             }
 
             // Close old process
-            CloseProcess(_processHandle);
+            PInvoke.CloseHandle((HANDLE)_processHandle);
 
             disposedValue = true;
         }

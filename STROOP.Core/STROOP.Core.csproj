@@ -6,4 +6,7 @@
         <Nullable>disable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\STROOP.Win32\STROOP.Win32.csproj" />
+    </ItemGroup>
 </Project>
