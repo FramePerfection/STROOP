@@ -116,8 +116,8 @@ namespace STROOP.Variables.VariablePanel
                     var specialType = element.Attribute(XName.Get("specialType"))?.Value;
                     return (element.Value,
                         specialType != null
-                            ? sepcialVariables.TryGetValue(specialType, out var special)
-                                ? special
+                            ? sepcialVariables.TryGetValue(specialType, out var specialFactory)
+                                ? specialFactory(element.Attribute(XName.Get("groupList"))?.Value ?? "Special")
                                 : null
                             : FromXml(element).view);
             }

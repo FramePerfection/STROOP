@@ -7,19 +7,24 @@ public class VariableSpecialDictionary
 {
     public static VariableSpecialDictionary Instance = new();
 
-    private readonly Dictionary<string, IVariable> _dictionary;
+    private readonly Dictionary<string, Func<string, IVariable>> _dictionary;
 
-    public VariableSpecialDictionary() => _dictionary = new Dictionary<string, IVariable>();
+    public VariableSpecialDictionary() => _dictionary = new Dictionary<string, Func<string, IVariable>>();
 
-    public bool TryGetValue(string key, out IVariable getterSetter)
-        => _dictionary.TryGetValue(key, out getterSetter);
+    public bool TryGetValue(string key, out Func<string, IVariable> variableFactory)
+        => _dictionary.TryGetValue(key, out variableFactory);
 
     public void Add<T>(string key, IVariable<T>.ValueGetter getter, IVariable<T>.ValueSetter setter, string? subclass = null)
     {
-        _dictionary[key] = new CustomVariable<T>(subclass.DefaultIfNull<T>())
+        _dictionary[key] = groupList =>
         {
-            getter = getter,
-            setter = setter,
+            var result = new CustomVariable<T>(subclass.DefaultIfNull<T>())
+            {
+                getter = getter,
+                setter = setter,
+            };
+            result.SetValueByKey("groupList", groupList);
+            return result;
         };
     }
 
@@ -34,11 +39,5 @@ public class VariableSpecialDictionary
         );
 
     public void Add<T>(string key, Func<T> getter, IVariable<T>.ValueSetter setter, string? subclass = null)
-    {
-        _dictionary[key] = new CustomVariable<T>(subclass.DefaultIfNull<T>())
-        {
-            getter = () => getter().Yield(),
-            setter = setter,
-        };
-    }
+        => Add(key, () => getter().Yield(), setter, subclass);
 }
