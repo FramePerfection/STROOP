@@ -59,13 +59,15 @@ public static class NativeMethodWrappers
 
     public static unsafe bool GetSymbolAddress(SafeHandle hProcess, string name, out ulong address)
     {
-        var symbol = new SYMBOL_INFO
-        {
-            MaxNameLen = 2000,
-            SizeOfStruct = 88,
-        };
-        var result = PInvoke.SymFromName(hProcess, name, &symbol);
-        address = symbol.Address;
+        const int MAX_NAME_LENGTH = 2000;
+
+        // See https://learn.microsoft.com/en-us/windows/win32/debug/retrieving-symbol-information-by-name
+        var symbol = (SYMBOL_INFO*)Marshal.AllocHGlobal(Marshal.SizeOf<SYMBOL_INFO>() + MAX_NAME_LENGTH * sizeof(CHAR) + (sizeof(ulong) - 1) / sizeof(ulong));
+        symbol->MaxNameLen = MAX_NAME_LENGTH;
+        symbol->SizeOfStruct = (uint)sizeof(SYMBOL_INFO);
+        var result = PInvoke.SymFromName(hProcess, name, symbol);
+        address = symbol->Address;
+        Marshal.FreeHGlobal((IntPtr)symbol);
         return result;
     }
 }
