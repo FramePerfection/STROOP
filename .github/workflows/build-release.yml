@@ -1,0 +1,31 @@
+﻿# .github/workflows/release-merge-build.yml
+name: Release Merge Build
+
+on:
+  push:
+    branches:
+      - Release
+
+jobs:
+  release-build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution (Release)
+        run: dotnet build ./STROOP.sln -c Release -o ./artifacts --no-restore
+
+      - name: Upload release build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-build
+          path: ./artifacts
