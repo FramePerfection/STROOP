@@ -506,7 +506,7 @@ namespace STROOP
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+            e.Graphics.InterpolationMode = InterpolationMode.High;
             e.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
             lock (_gfxLock)
             {
