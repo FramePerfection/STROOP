@@ -21,7 +21,7 @@ namespace STROOP
     public partial class StroopMainForm : Form
     {
         // STROOP VERSION NAME
-        const string _version = "Refactor 0.7.2";
+        const string _version = "Refactor 0.7.3";
 
         public event Action Updating;
 
@@ -41,7 +41,6 @@ namespace STROOP
         {
             this.searchVariableDialog = new SearchVariableDialog(this);
             this.isMainForm = isMainForm;
-            GlobalKeyboard.AddForm(this);
             InitializeComponent();
             InitTabs();
             ObjectSlotsManager = new ObjectSlotsManager(this, tabControlMain);
