@@ -4,6 +4,7 @@ using System.Linq;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables.SM64MemoryLayout;
 using System.Diagnostics;
 
 namespace STROOP.Utilities
@@ -926,7 +927,7 @@ namespace STROOP.Utilities
         public static bool GotoTriangleVertexClosest(uint triangleAddress, bool useMisalignmentOffset = false)
         {
             if (triangleAddress == 0) return false;
-            int closestVertex = WatchVariableSpecialUtilities.GetClosestTriangleVertexIndex(triangleAddress);
+            int closestVertex = VariableSpecialUtilities.GetClosestTriangleVertexIndex(triangleAddress);
             return GotoTriangleVertex(triangleAddress, closestVertex, useMisalignmentOffset);
         }
 

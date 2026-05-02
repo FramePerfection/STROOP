@@ -1,4 +1,7 @@
-﻿using System;
+﻿using STROOP.Controls.VariablePanel;
+using STROOP.Core;
+using STROOP.Core.GameMemoryAccess;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -11,7 +14,10 @@ using STROOP.Extensions;
 using System.Xml;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab;
-using STROOP.Core.Variables;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Utilities
 {
@@ -115,13 +121,10 @@ namespace STROOP.Utilities
             return doc;
         }
 
-        public static List<NamedVariableCollection.IView> OpenWatchVariables(string path) => OpenWatchVariableControlPrecursors(path);
-
-        public static List<NamedVariableCollection.IView> OpenWatchVariableControlPrecursors(string path)
+        public static List<VariablePrecursor> OpenVariableControlPrecursors(string path)
         {
             string schemaFile = "MiscDataSchema.xsd";
-            var objectData = new List<NamedVariableCollection.IView>();
-            var assembly = Assembly.GetExecutingAssembly();
+            var objectData = new List<VariablePrecursor>();
 
             // Create schema set
             var schemaSet = new XmlSchemaSet() { XmlResolver = new ResourceXmlResolver() };
@@ -137,9 +140,9 @@ namespace STROOP.Utilities
             {
                 if (element.Name.ToString() != "Data")
                     continue;
-                var view = NamedVariableCollection.ParseXml(element);
-                if (view != null)
-                    objectData.Add(view);
+                var parsed = VariableCellFactory<WinFormsVariablePanelUiContext>.ParseXml(element, VariableSpecialDictionary.Instance);
+                if (parsed.var != null)
+                    objectData.Add(parsed);
             }
 
             return objectData;
@@ -265,12 +268,12 @@ namespace STROOP.Utilities
                                 rotates = bool.Parse(element.Element(XName.Get("MapImage")).Attribute(XName.Get("rotates")).Value);
                             }
 
-                            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
+                            var precursors = new List<VariablePrecursor>();
                             foreach (var subElement in element.Elements().Where(x => x.Name == "Data"))
                             {
-                                var variableView = NamedVariableCollection.ParseXml(subElement);
-                                if (variableView != null)
-                                    precursors.Add(variableView);
+                                var parsed = VariableCellFactory<WinFormsVariablePanelUiContext>.ParseXml(subElement, VariableSpecialDictionary.Instance);
+                                if (parsed.var != null)
+                                    precursors.Add(parsed);
                             }
 
                             var newBehavior = new ObjectBehaviorAssociation()

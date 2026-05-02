@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using STROOP.Core;
+using STROOP.Core.Utilities;
+using System.Collections.Generic;
 using STROOP.Utilities;
 using System;
 using System.Linq;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 using GetterFuncsDic = System.Collections.Generic.Dictionary<string, System.Func<STROOP.Tabs.BruteforceTab.ValueGetters.Option>>;
 
 namespace STROOP.Tabs.BruteforceTab

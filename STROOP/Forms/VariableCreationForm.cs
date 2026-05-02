@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
-using STROOP.Core.Variables;
-using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Forms
 {
@@ -16,7 +18,7 @@ namespace STROOP.Forms
         public VariableCreationForm()
         {
             InitializeComponent();
-            var baseTypeValues = WatchVariableUtilities.baseAddressGetters.Keys.ToArray();
+            var baseTypeValues = VariableUtilities.baseAddressGetters.Keys.ToArray();
             comboBoxTypeValue.DataSource = TypeUtilities.InGameTypeList;
             comboBoxBaseValue.DataSource = baseTypeValues;
             comboBoxTypeValue.SelectedIndex = TypeUtilities.InGameTypeList.IndexOf("int");
@@ -38,24 +40,18 @@ namespace STROOP.Forms
                 });
         }
 
-        public void Initialize(WatchVariablePanel varPanel)
+        public void Initialize(VariablePanel varPanel)
         {
-            buttonAddVariable.Click += (sender, e) => varPanel.AddVariable(CreateWatchVariableControl());
+            buttonAddVariable.Click += (sender, e) => varPanel.AddVariable(CreateVariable());
         }
 
-        private NamedVariableCollection.IView CreateWatchVariableControl()
+        private VariablePrecursor CreateVariable()
         {
             string memoryTypeString = comboBoxTypeValue.SelectedItem.ToString();
             string baseAddressType = (string)comboBoxBaseValue.SelectedItem;
             uint offset = ParsingUtilities.ParseHexNullable(textBoxOffsetValue.Text) ?? 0;
 
-            var memoryType = TypeUtilities.StringToType[memoryTypeString];
-
-            var isAbsolute = baseAddressType == BaseAddressType.Absolute;
-
-            var result = new MemoryDescriptor(TypeUtilities.StringToType[memoryTypeString], baseAddressType, offset).CreateView();
-            result.Name = textBoxNameValue.Text;
-            return result;
+            return (textBoxNameValue.Text, new MemoryDescriptor(TypeUtilities.StringToType[memoryTypeString], baseAddressType, offset).CreateVariable());
         }
     }
 }

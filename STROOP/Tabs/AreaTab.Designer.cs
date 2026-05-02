@@ -40,7 +40,7 @@
             this.radioButtonArea1 = new System.Windows.Forms.RadioButton();
             this.radioButtonArea2 = new System.Windows.Forms.RadioButton();
             this.checkBoxSelectCurrentArea = new System.Windows.Forms.CheckBox();
-            this.watchVariablePanelArea = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelArea = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerArea)).BeginInit();
             this.splitContainerArea.Panel1.SuspendLayout();
             this.splitContainerArea.Panel2.SuspendLayout();
@@ -75,7 +75,7 @@
             // 
             // splitContainerArea.Panel2
             // 
-            this.splitContainerArea.Panel2.Controls.Add(this.watchVariablePanelArea);
+            this.splitContainerArea.Panel2.Controls.Add(this._variablePanelArea);
             this.splitContainerArea.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerArea.Panel2MinSize = 0;
             this.splitContainerArea.Size = new System.Drawing.Size(915, 463);
@@ -188,13 +188,13 @@
             // 
             // watchVariablePanelArea
             // 
-            this.watchVariablePanelArea.DataPath = "Config/AreaData.xml";
-            this.watchVariablePanelArea.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelArea.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelArea.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelArea.Name = "watchVariablePanelArea";
-            this.watchVariablePanelArea.Size = new System.Drawing.Size(755, 457);
-            this.watchVariablePanelArea.TabIndex = 7;
+            this._variablePanelArea.DataPath = "Config/AreaData.xml";
+            this._variablePanelArea.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelArea.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelArea.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelArea.Name = "_variablePanelArea";
+            this._variablePanelArea.Size = new System.Drawing.Size(755, 457);
+            this._variablePanelArea.TabIndex = 7;
             // 
             // AreaTab
             // 
@@ -225,6 +225,6 @@
         private System.Windows.Forms.RadioButton radioButtonArea1;
         private System.Windows.Forms.RadioButton radioButtonArea2;
         private System.Windows.Forms.CheckBox checkBoxSelectCurrentArea;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelArea;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelArea;
     }
 }

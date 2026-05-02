@@ -1,4 +1,6 @@
-﻿namespace STROOP.Structs.Configurations
+﻿using STROOP.Variables.SM64MemoryLayout;
+
+namespace STROOP.Structs.Configurations
 {
     public static class HudConfig
     {

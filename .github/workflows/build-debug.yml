@@ -1,0 +1,31 @@
+# .github/workflows/debug-build.yml
+name: PR Debug Build (Development)
+
+on:
+  pull_request:
+    branches:
+      - Development
+
+jobs:
+  debug-build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution (Debug)
+        run: dotnet build ./STROOP.sln -c Debug -o ./artifacts --no-restore
+
+      - name: Upload debug build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-build
+          path: ./artifacts

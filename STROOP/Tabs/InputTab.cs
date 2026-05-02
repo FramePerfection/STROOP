@@ -2,6 +2,8 @@
 using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
@@ -10,9 +12,9 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["InputCurrent"] = () => new List<uint> { InputConfig.CurrentInputAddress };
-            WatchVariableUtilities.baseAddressGetters["InputJustPressed"] = () => new List<uint> { InputConfig.JustPressedInputAddress };
-            WatchVariableUtilities.baseAddressGetters["InputBuffered"] = () => new List<uint> { InputConfig.BufferedInputAddress };
+            VariableUtilities.baseAddressGetters["InputCurrent"] = () => new List<uint> { InputConfig.CurrentInputAddress };
+            VariableUtilities.baseAddressGetters["InputJustPressed"] = () => new List<uint> { InputConfig.JustPressedInputAddress };
+            VariableUtilities.baseAddressGetters["InputBuffered"] = () => new List<uint> { InputConfig.BufferedInputAddress };
         }
 
         List<InputImageGui> _guiList;

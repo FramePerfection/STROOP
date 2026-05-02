@@ -23,7 +23,7 @@ namespace STROOP.Ttc
 
         public int _endingYaw
         {
-            get => WatchVariableSpecialUtilities.GetCogEndingYaw(
+            get => VariableSpecialUtilities.GetCogEndingYaw(
                 MoreMath.NormalizeAngleUshort(_angle), _currentAngularVelocity, _targetAngularVelocity);
         }
 

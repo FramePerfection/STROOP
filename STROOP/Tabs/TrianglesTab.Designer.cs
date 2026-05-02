@@ -85,7 +85,7 @@
             this.buttonGotoV3 = new System.Windows.Forms.Button();
             this.buttonGotoV1 = new System.Windows.Forms.Button();
             this.buttonGotoV2 = new System.Windows.Forms.Button();
-            this.watchVariablePanelTriangles = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelTriangles = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTriangles)).BeginInit();
             this.splitContainerTriangles.Panel1.SuspendLayout();
             this.splitContainerTriangles.Panel2.SuspendLayout();
@@ -143,7 +143,7 @@
             // 
             // splitContainerTriangles.Panel2
             // 
-            this.splitContainerTriangles.Panel2.Controls.Add(this.watchVariablePanelTriangles);
+            this.splitContainerTriangles.Panel2.Controls.Add(this._variablePanelTriangles);
             this.splitContainerTriangles.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerTriangles.Panel2MinSize = 0;
             this.splitContainerTriangles.Size = new System.Drawing.Size(915, 463);
@@ -707,13 +707,13 @@
             // 
             // watchVariablePanelTriangles
             // 
-            this.watchVariablePanelTriangles.DataPath = "Config/TrianglesData.xml";
-            this.watchVariablePanelTriangles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelTriangles.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelTriangles.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelTriangles.Name = "watchVariablePanelTriangles";
-            this.watchVariablePanelTriangles.Size = new System.Drawing.Size(700, 457);
-            this.watchVariablePanelTriangles.TabIndex = 7;
+            this._variablePanelTriangles.DataPath = "Config/TrianglesData.xml";
+            this._variablePanelTriangles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelTriangles.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelTriangles.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelTriangles.Name = "_variablePanelTriangles";
+            this._variablePanelTriangles.Size = new System.Drawing.Size(700, 457);
+            this._variablePanelTriangles.TabIndex = 7;
             // 
             // TrianglesTab
             // 
@@ -795,6 +795,6 @@
         private System.Windows.Forms.Button buttonGotoV3;
         private System.Windows.Forms.Button buttonGotoV1;
         private System.Windows.Forms.Button buttonGotoV2;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelTriangles;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelTriangles;
     }
 }

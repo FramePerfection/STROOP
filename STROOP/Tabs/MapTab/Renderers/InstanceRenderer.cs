@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
+using STROOP.Core;
 using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab.Renderers

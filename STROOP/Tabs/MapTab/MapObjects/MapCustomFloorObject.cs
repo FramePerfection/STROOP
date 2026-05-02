@@ -4,6 +4,7 @@ using System.Drawing;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using STROOP.Models;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {

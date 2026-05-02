@@ -1,6 +1,8 @@
-﻿using STROOP.M64;
+﻿using STROOP.Core;
+using STROOP.M64;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

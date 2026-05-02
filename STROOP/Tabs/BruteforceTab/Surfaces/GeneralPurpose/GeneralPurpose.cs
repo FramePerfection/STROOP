@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
 {
@@ -23,7 +24,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
             public double weight = 1.0;
 
             public Dictionary<Identifier, string> parameterDefinitions = new Dictionary<Identifier, string>(
-                new Utilities.EqualityComparer<Identifier>((a, b) => a.name == b.name, a => a.name.GetHashCode())
+                new Core.Utilities.EqualityComparer<Identifier>((a, b) => a.name == b.name, a => a.name.GetHashCode())
             );
 
             public Dictionary<string, IBruteforceVariableView> parameterValues = new Dictionary<string, IBruteforceVariableView>();
@@ -240,7 +241,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                                         precursor.parameterValues[n.Key] = BF_VariableUtilties.CreateNamedVariable(
                                             bruteforcerType,
                                             n.Key,
-                                            StringUtilities.GetJsonValue(precursor.GetParameterWrapperType(n.Key), stringNode.value)
+                                            BruteforceTab.GetJsonValue(precursor.GetParameterWrapperType(n.Key), stringNode.value)
                                         );
                                     else
                                         precursor.parameterValues[n.Key] = BF_VariableUtilties.CreateNamedVariable(

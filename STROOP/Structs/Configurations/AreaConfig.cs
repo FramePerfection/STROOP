@@ -1,11 +1,11 @@
-﻿using STROOP.Utilities;
+﻿using STROOP.Core;
+using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Structs.Configurations
 {
     public static class AreaConfig
     {
-        public static uint SelectedAreaAddress => AccessScope<StroopMainForm>.content.GetTab<Tabs.AreaTab>().SelectedAreaAddress;
-
         public static uint AreaStartAddress
         {
             get => RomVersionConfig.SwitchMap(AreaStartAddressUS, AreaStartAddressJP, 0, AreaStartAddressEU);

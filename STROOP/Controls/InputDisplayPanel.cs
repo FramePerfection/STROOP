@@ -16,8 +16,6 @@ namespace STROOP
         InputDisplayTypeEnum _inputDisplayType;
         InputFrame _currentInputs = null;
 
-        object _gfxLock = new object();
-
         public InputDisplayPanel()
         {
             this.DoubleBuffered = true;

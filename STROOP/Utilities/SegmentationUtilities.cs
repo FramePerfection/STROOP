@@ -1,5 +1,6 @@
 ﻿using STROOP.Managers;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.SM64MemoryLayout;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

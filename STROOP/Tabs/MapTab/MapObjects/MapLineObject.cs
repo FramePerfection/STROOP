@@ -13,7 +13,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
         }
 
-        protected virtual Vector4 GetColor(MapGraphics graphics) => ColorUtilities.ColorToVec4(OutlineColor, OpacityByte);
+        protected virtual Vector4 GetColor(MapGraphics graphics) => OpenTKUtilities.ColorToVec4(OutlineColor, OpacityByte);
 
         protected override void DrawTopDown(MapGraphics graphics)
         {

@@ -4,6 +4,7 @@ using System.Drawing;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -20,7 +21,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         protected override List<(float xMin, float xMax, float zMin, float zMax, float y)> GetQuadList()
         {
-            (int cellX, int cellZ) = WatchVariableSpecialUtilities.GetMarioCell();
+            (int cellX, int cellZ) = VariableSpecialUtilities.GetMarioCell();
             int xMin = (cellX - 8) * 1024;
             int xMax = xMin + 1024;
             int zMin = (cellZ - 8) * 1024;

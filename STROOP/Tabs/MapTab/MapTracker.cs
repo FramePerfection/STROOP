@@ -1,10 +1,12 @@
-﻿using System;
+﻿using STROOP.Core;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Tabs.MapTab.MapObjects;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab
 {

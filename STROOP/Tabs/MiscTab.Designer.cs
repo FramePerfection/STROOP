@@ -37,7 +37,7 @@
             this.checkBoxTurnOffMusic = new System.Windows.Forms.CheckBox();
             this.panelMiscBorder = new System.Windows.Forms.Panel();
             this.pictureBoxMisc = new STROOP.Controls.IntPictureBox();
-            this.watchVariablePanelMisc = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelMisc = new STROOP.Controls.VariablePanel.VariablePanel();
             this.txtRNGIncrement = new STROOP.BetterTextbox();
             this.labelRNGIncrement = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMisc)).BeginInit();
@@ -71,7 +71,7 @@
             // 
             // splitContainerMisc.Panel2
             // 
-            this.splitContainerMisc.Panel2.Controls.Add(this.watchVariablePanelMisc);
+            this.splitContainerMisc.Panel2.Controls.Add(this._variablePanelMisc);
             this.splitContainerMisc.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerMisc.Panel2MinSize = 0;
             this.splitContainerMisc.Size = new System.Drawing.Size(915, 463);
@@ -157,13 +157,13 @@
             // 
             // watchVariablePanelMisc
             // 
-            this.watchVariablePanelMisc.DataPath = "Config/MiscData.xml";
-            this.watchVariablePanelMisc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelMisc.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelMisc.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelMisc.Name = "watchVariablePanelMisc";
-            this.watchVariablePanelMisc.Size = new System.Drawing.Size(778, 457);
-            this.watchVariablePanelMisc.TabIndex = 5;
+            this._variablePanelMisc.DataPath = "Config/MiscData.xml";
+            this._variablePanelMisc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelMisc.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelMisc.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelMisc.Name = "_variablePanelMisc";
+            this._variablePanelMisc.Size = new System.Drawing.Size(778, 457);
+            this._variablePanelMisc.TabIndex = 5;
             // 
             // txtRNGIncrement
             // 
@@ -213,7 +213,7 @@
         private System.Windows.Forms.CheckBox checkBoxTurnOffMusic;
         private System.Windows.Forms.Panel panelMiscBorder;
         private Controls.IntPictureBox pictureBoxMisc;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelMisc;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelMisc;
         private System.Windows.Forms.Label labelRNGIncrement;
         private BetterTextbox txtRNGIncrement;
     }

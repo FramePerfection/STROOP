@@ -3,6 +3,9 @@ using STROOP.Structs;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 using System.Linq;
 
 namespace STROOP.Tabs
@@ -12,15 +15,15 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["LastCoin"] = () =>
+            VariableUtilities.baseAddressGetters["LastCoin"] = () =>
             {
                 List<uint> coinAddresses = Config.ObjectSlotsManager.GetLoadedObjectsWithPredicate(
                         o => o.BehaviorAssociation?.Name == "Yellow Coin" || o.BehaviorAssociation?.Name == "Blue Coin")
                     .ConvertAll(objectDataModel => objectDataModel.Address);
-                return coinAddresses.Count > 0 ? new List<uint>() { coinAddresses.Last() } : WatchVariableUtilities.BaseAddressListEmpty;
+                return coinAddresses.Count > 0 ? new List<uint>() { coinAddresses.Last() } : VariableUtilities.BaseAddressListEmpty;
             };
 
-            WatchVariableUtilities.baseAddressGetters["WarpDestination"] = () => new List<uint>() { MiscConfig.WarpDestinationAddress };
+            VariableUtilities.baseAddressGetters["WarpDestination"] = () => new List<uint>() { MiscConfig.WarpDestinationAddress };
         }
 
         private static readonly List<string> ALL_VAR_GROUPS =
@@ -44,7 +47,7 @@ namespace STROOP.Tabs
         public MiscTab()
         {
             InitializeComponent();
-            watchVariablePanelMisc.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelMisc.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
             if (Program.IsVisualStudioHostProcess()) return;
         }
 
@@ -58,7 +61,7 @@ namespace STROOP.Tabs
             panelMiscBorder.BackColor = Config.ObjectAssociations.MiscColor;
             pictureBoxMisc.BackColor = Config.ObjectAssociations.MiscColor.Lighten(0.5);
 
-            watchVariablePanelMisc.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
+            _variablePanelMisc.SetGroups(ALL_VAR_GROUPS, VISIBLE_VAR_GROUPS);
 
 
             buttonRNGIndexTester.Click += (sender, e) =>

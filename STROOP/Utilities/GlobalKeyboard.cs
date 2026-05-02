@@ -1,15 +1,12 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using Windows.Win32;
 
 namespace STROOP.Utilities;
 
 public static class GlobalKeyboard
 {
-    [DllImport("user32.dll")]
-    static extern short GetAsyncKeyState(Keys vKey);
-
     private static bool IsDownInternal(Keys key)
-        => (GetAsyncKeyState(key) & 0x8000) != 0;
+        => (PInvoke.GetAsyncKeyState((int)key) & 0x8000) != 0;
 
     public static bool IsDown(Keys key) => IsDownInternal(key);
 

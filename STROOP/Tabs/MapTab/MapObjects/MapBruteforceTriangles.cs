@@ -107,7 +107,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         tri.p2 + offset,
                         tri.p3 + offset,
                         false,
-                        ColorUtilities.ColorToVec4(Color, 128),
+                        OpenTKUtilities.ColorToVec4(Color, 128),
                         new Vector4(OutlineColor.R / 255f, OutlineColor.G / 255f, OutlineColor.B / 255f, OutlineColor.A / 255f),
                         new Vector3(OutlineWidth),
                         true);

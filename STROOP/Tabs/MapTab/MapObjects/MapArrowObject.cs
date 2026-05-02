@@ -7,6 +7,8 @@ using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -141,7 +143,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             public static GetYaw MarioFacingYaw = posAngle => Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.FacingYawOffset);
             public static GetYaw MarioIndendedYaw = posAngle => Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.IntendedYawOffset);
             public static GetYaw MarioMovingYaw = posAngle => Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.MovingYawOffset);
-            public static GetYaw MarioSlidingYaw = posAngle => WatchVariableSpecialUtilities.GetMarioSlidingAngle();
+            public static GetYaw MarioSlidingYaw = posAngle => VariableSpecialUtilities.GetMarioSlidingAngle();
             public static GetYaw MarioTwirlingYaw = posAngle => Config.Stream.GetUInt16(MarioConfig.StructAddress + MarioConfig.TwirlYawOffset);
 
 
@@ -150,7 +152,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
 
             public static GetRecommendedSize MarioHSpeed = posAngle => Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.HSpeedOffset);
-            public static GetRecommendedSize MarioSlidingSpeed = posAngle => WatchVariableSpecialUtilities.GetMarioSlidingSpeed();
+            public static GetRecommendedSize MarioSlidingSpeed = posAngle => VariableSpecialUtilities.GetMarioSlidingSpeed();
 
 
             public static GetRecommendedSize Constant(double length) => _ => length;

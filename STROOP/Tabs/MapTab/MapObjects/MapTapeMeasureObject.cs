@@ -191,7 +191,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     }
 
                     var lineColor = colors[colorIndex - 1];
-                    graphics.lineRenderer.Add(p1, p2, ColorUtilities.ColorToVec4(lineColor), OutlineWidth);
+                    graphics.lineRenderer.Add(p1, p2, OpenTKUtilities.ColorToVec4(lineColor), OutlineWidth);
                     graphics.textRenderer.AddText($"{nameString}: {(p1 - p2).Length}", (p1 + p2) * 0.5f, lineColor, StringAlignment.Far);
                 }
             });

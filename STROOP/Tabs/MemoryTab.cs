@@ -1,4 +1,6 @@
-﻿using STROOP.Models;
+﻿using STROOP.Core;
+using STROOP.Core.Utilities;
+using STROOP.Models;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
@@ -8,8 +10,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Windows.Input;
-using STROOP.Core.Variables;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
+using STROOP.Variables.VariablePanel;
 
 namespace STROOP.Tabs
 {
@@ -18,7 +22,7 @@ namespace STROOP.Tabs
         private readonly List<ValueText> _currentValueTexts;
         private readonly List<MemoryDescriptor> _objectPrecursors;
         private readonly List<MemoryDescriptor> _objectSpecificPrecursors;
-        private List<MemoryDescriptor> _memTabPrecursors => watchVariablePanelMemory.GetCurrentVariablePrecursors().ToList();
+        private List<MemoryDescriptor> _memTabPrecursors => _variablePanelMemory.GetCurrentVariableMemoryDescriptors().ToList();
 
         private uint? _address;
 
@@ -56,8 +60,8 @@ namespace STROOP.Tabs
                 _objectSpecificPrecursors.Clear();
                 if (_behavior.HasValue)
                     _objectSpecificPrecursors.AddRange(
-                        Config.ObjectAssociations.GetWatchVarControls(_behavior.Value)
-                            .ConvertAndRemoveNull(x => (x as NamedVariableCollection.IMemoryDescriptorView)?.memoryDescriptor)
+                        Config.ObjectAssociations.GetVariablePrecursors(_behavior.Value)
+                            .ConvertAndRemoveNull(x => (x as IMemoryVariable)?.memoryDescriptor)
                     );
             }
         }
@@ -77,8 +81,8 @@ namespace STROOP.Tabs
             _objectSnapshot = null;
 
             _currentValueTexts = new List<ValueText>();
-            _objectPrecursors = XmlConfigParser.OpenWatchVariableControlPrecursors(watchVariablePanelMemory.DataPath)
-                .ConvertAndRemoveNull(x => (x as NamedVariableCollection.MemoryDescriptorView)?.memoryDescriptor);
+            _objectPrecursors = XmlConfigParser.OpenVariableControlPrecursors(_variablePanelMemory.DataPath)
+                .ConvertAndRemoveNull(x => (x as IMemoryVariable)?.memoryDescriptor);
             _objectSpecificPrecursors = new List<MemoryDescriptor>();
         }
 
@@ -249,8 +253,10 @@ namespace STROOP.Tabs
                     {
                         precursorLists.ForEach(precursors =>
                         {
-                            foreach (var ctrl in watchVariablePanelMemory.AddVariables(valueText.GetOverlapped(precursors).Select(x => x.CreateView())))
-                                ctrl.GroupList.Add("Custom");
+                            var overlapped = valueText.GetOverlapped(precursors)
+                                .Select(x => ($"{x.ClrType.Name}@0x{x.Offset : X8}", (IVariable)x.CreateVariable()));
+                            foreach (var cell in _variablePanelMemory.AddVariables(overlapped))
+                                cell.control.GroupList.Add("Custom");
                         });
                     }
                 });
@@ -260,7 +266,7 @@ namespace STROOP.Tabs
                 _currentValueTexts.ForEach(valueText =>
                 {
                     if (index >= valueText.StringIndex && index <= valueText.StringIndex + valueText.StringSize)
-                        watchVariablePanelMemory.AddVariable(valueText.CreatePrecursor(useObjAddress, useHex, useObj, useRelativeName));
+                        _variablePanelMemory.AddVariable(valueText.CreatePrecursor(useObjAddress, useHex, useObj, useRelativeName));
                 });
             }
 
@@ -326,19 +332,15 @@ namespace STROOP.Tabs
                 }));
             }
 
-            public NamedVariableCollection.IView CreatePrecursor(bool useObjAddress, bool useHex, bool useObj, bool useRelativeName)
+            public VariablePrecursor CreatePrecursor(bool useObjAddress, bool useHex, bool useObj, bool useRelativeName)
             {
-                WatchVariableSubclass subclass = useObj
-                    ? WatchVariableSubclass.Object
-                    : WatchVariableSubclass.Number;
-                if (GlobalKeyboard.IsDown(Keys.A)) subclass = WatchVariableSubclass.Angle;
-                if (GlobalKeyboard.IsDown(Keys.B)) subclass = WatchVariableSubclass.Boolean;
-                if (GlobalKeyboard.IsDown(Keys.Q)) subclass = WatchVariableSubclass.Object;
-                if (GlobalKeyboard.IsDown(Keys.T)) subclass = WatchVariableSubclass.Triangle;
+                string subclass = useObj ? VariableSubclass.Object : VariableSubclass.Number;
+                if (GlobalKeyboard.IsDown(Keys.A)) subclass = VariableSubclass.Angle;
+                if (GlobalKeyboard.IsDown(Keys.B)) subclass = VariableSubclass.Boolean;
+                if (GlobalKeyboard.IsDown(Keys.Q)) subclass = VariableSubclass.Object;
+                if (GlobalKeyboard.IsDown(Keys.T)) subclass = VariableSubclass.Triangle;
 
-                bool isObjectOrTriangle =
-                    subclass == WatchVariableSubclass.Object ||
-                    subclass == WatchVariableSubclass.Triangle;
+                bool isObjectOrTriangle = subclass == VariableSubclass.Object || subclass == VariableSubclass.Triangle;
 
                 Type effectiveType = isObjectOrTriangle
                     ? typeof(uint)
@@ -347,11 +349,11 @@ namespace STROOP.Tabs
                 string baseAddressType = useObjAddress ? BaseAddressType.Object : BaseAddressType.Relative;
                 uint offset = useObjAddress ? (uint)ByteIndex : MemoryAddress;
                 uint nameOffset = useRelativeName ? (uint)ByteIndex : MemoryAddress;
-                bool isAbsolute = baseAddressType == BaseAddressType.Absolute;
 
-                var view = new MemoryDescriptor(effectiveType, baseAddressType, offset).CreateView();
-                view.SetValueByKey(NamedVariableCollection.ViewProperties.useHex, true);
-                return view;
+                var view = new MemoryDescriptor(effectiveType, baseAddressType, offset).CreateVariable();
+                view.SetValueByKey(CommonVariableProperties.useHex, true.ToString());
+                var name = TypeUtilities.TypeToString.GetValueOrDefault(effectiveType, effectiveType.Name) + " " + HexUtilities.FormatValue(nameOffset);
+                return (name, view);
             }
         }
 

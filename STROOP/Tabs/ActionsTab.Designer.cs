@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.textBoxAnimationDescription = new STROOP.BetterTextbox();
             this.textBoxActionDescription = new STROOP.BetterTextbox();
-            this.watchVariablePanelActions = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelActions = new STROOP.Controls.VariablePanel.VariablePanel();
             this.SuspendLayout();
             // 
             // textBoxAnimationDescription
@@ -61,19 +61,19 @@
             // 
             // watchVariablePanelActions
             // 
-            this.watchVariablePanelActions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._variablePanelActions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.watchVariablePanelActions.DataPath = "Config/ActionsData.xml";
-            this.watchVariablePanelActions.Location = new System.Drawing.Point(3, 70);
-            this.watchVariablePanelActions.Name = "watchVariablePanelActions";
-            this.watchVariablePanelActions.Size = new System.Drawing.Size(909, 390);
-            this.watchVariablePanelActions.TabIndex = 37;
+            this._variablePanelActions.DataPath = "Config/ActionsData.xml";
+            this._variablePanelActions.Location = new System.Drawing.Point(3, 70);
+            this._variablePanelActions.Name = "_variablePanelActions";
+            this._variablePanelActions.Size = new System.Drawing.Size(909, 390);
+            this._variablePanelActions.TabIndex = 37;
             // 
             // ActionsTab
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.Controls.Add(this.watchVariablePanelActions);
+            this.Controls.Add(this._variablePanelActions);
             this.Controls.Add(this.textBoxAnimationDescription);
             this.Controls.Add(this.textBoxActionDescription);
             this.Name = "ActionsTab";
@@ -87,6 +87,6 @@
 
         private BetterTextbox textBoxAnimationDescription;
         private BetterTextbox textBoxActionDescription;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelActions;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelActions;
     }
 }

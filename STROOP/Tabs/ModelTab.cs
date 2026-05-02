@@ -8,6 +8,7 @@ using STROOP.Utilities;
 using STROOP.Controls;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {

@@ -1,6 +1,9 @@
-﻿using STROOP.Structs;
+﻿using STROOP.Core;
+using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Tabs;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -190,7 +193,7 @@ namespace STROOP.Forms
                     {
                         Config.Stream.SetValue(
                             terrainType.Value,
-                            AreaConfig.SelectedAreaAddress + AreaConfig.TerrainTypeOffset);
+                            AreaTab.SelectedAreaAddress + AreaConfig.TerrainTypeOffset);
                     }
                 });
             selectionForm.Show();

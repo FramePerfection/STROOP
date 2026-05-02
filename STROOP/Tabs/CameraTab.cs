@@ -1,13 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using STROOP.Core;
+using System.Collections.Generic;
 using System.Linq;
 using STROOP.Structs;
 using STROOP.Utilities;
 using STROOP.Structs.Configurations;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
     public partial class CameraTab : STROOPTab
     {
+        [InitializeBaseAddress]
+        static void InitializeBaseAddresses()
+        {
+            VariableUtilities.baseAddressGetters[BaseAddressType.Camera] = () => new List<uint> { CameraConfig.StructAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraStruct] = () => new List<uint> { CameraConfig.CamStructAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.LakituStruct] = () => new List<uint> { CameraConfig.LakituStructAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraModeInfo] = () => new List<uint> { CameraConfig.ModeInfoAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraModeTransition] = () => new List<uint> { CameraConfig.ModeTransitionAddress };
+            VariableUtilities.baseAddressGetters[BaseAddressType.CameraSettings] = () =>
+            {
+                uint a1 = 0x8033B910;
+                uint a2 = ProcessStream.Instance.GetUInt32(a1);
+                uint a3 = ProcessStream.Instance.GetUInt32(a2 + 0x10);
+                uint a4 = ProcessStream.Instance.GetUInt32(a3 + 0x08);
+                uint a5 = ProcessStream.Instance.GetUInt32(a4 + 0x10);
+                return new List<uint> { a5 };
+            };
+        }
+
         public CameraTab()
         {
             InitializeComponent();

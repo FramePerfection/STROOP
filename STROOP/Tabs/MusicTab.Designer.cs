@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainerMusic = new STROOP.BetterSplitContainer();
             this.listBoxMusic = new System.Windows.Forms.ListBox();
-            this.watchVariablePanelMusic = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelMusic = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMusic)).BeginInit();
             this.splitContainerMusic.Panel1.SuspendLayout();
             this.splitContainerMusic.Panel2.SuspendLayout();
@@ -57,7 +57,7 @@
             // 
             // splitContainerMusic.Panel2
             // 
-            this.splitContainerMusic.Panel2.Controls.Add(this.watchVariablePanelMusic);
+            this.splitContainerMusic.Panel2.Controls.Add(this._variablePanelMusic);
             this.splitContainerMusic.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerMusic.Panel2MinSize = 0;
             this.splitContainerMusic.Size = new System.Drawing.Size(915, 463);
@@ -76,12 +76,12 @@
             // 
             // watchVariablePanelMusic
             // 
-            this.watchVariablePanelMusic.DataPath = "Config/MusicData2.xml";
-            this.watchVariablePanelMusic.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelMusic.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelMusic.Name = "watchVariablePanelMusic";
-            this.watchVariablePanelMusic.Size = new System.Drawing.Size(755, 457);
-            this.watchVariablePanelMusic.TabIndex = 7;
+            this._variablePanelMusic.DataPath = "Config/MusicData2.xml";
+            this._variablePanelMusic.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelMusic.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelMusic.Name = "_variablePanelMusic";
+            this._variablePanelMusic.Size = new System.Drawing.Size(755, 457);
+            this._variablePanelMusic.TabIndex = 7;
             // 
             // MusicTab
             // 
@@ -102,6 +102,6 @@
 
         private BetterSplitContainer splitContainerMusic;
         private System.Windows.Forms.ListBox listBoxMusic;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelMusic;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelMusic;
     }
 }

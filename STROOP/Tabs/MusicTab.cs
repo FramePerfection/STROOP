@@ -1,7 +1,10 @@
-﻿using STROOP.Structs.Configurations;
+﻿using STROOP.Core;
+using STROOP.Structs.Configurations;
 using STROOP.Utilities;
 using System.Collections.Generic;
 using STROOP.Structs;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
@@ -10,10 +13,10 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["Music"] = () =>
+            VariableUtilities.baseAddressGetters["Music"] = () =>
             {
                 uint? musicAddress = AccessScope<StroopMainForm>.content.GetTab<MusicTab>().GetMusicAddress();
-                return musicAddress != null ? new List<uint>() { musicAddress.Value } : WatchVariableUtilities.BaseAddressListEmpty;
+                return musicAddress != null ? new List<uint>() { musicAddress.Value } : VariableUtilities.BaseAddressListEmpty;
             };
         }
 

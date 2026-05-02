@@ -6,9 +6,12 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using STROOP.Controls.VariablePanel;
+using STROOP.Core;
+using STROOP.Core.Utilities;
 using STROOP.Core.Variables;
 using STROOP.Tabs.BruteforceTab.BF_Utilities;
 using STROOP.Utilities;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
 {
@@ -101,7 +104,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
             bruteforceTab.Updating += UpdateTooltip;
             Disposed += (_, __) => bruteforceTab.Updating -= UpdateTooltip;
 
-            variablePanelBaseValues.AddVariable(new NamedVariableCollection.CustomView<double>(typeof(WatchVariableNumberWrapper<double>))
+            variablePanelBaseValues.AddVariable(new NamedVariableCollection.CustomView<double>(WatchVariableSubclass.Number)
             {
                 Name = "weight",
                 _getterFunction = () => precursor.weight.Yield(),
@@ -204,7 +207,7 @@ namespace STROOP.Tabs.BruteforceTab.Surfaces.GeneralPurpose
                 if (!first)
                     strBuilder.AppendLine(",");
                 first = false;
-                strBuilder.Append($"{tabs2}\"{parameterValue.Key}\": {StringUtilities.MakeJsonValue(parameterValue.Value.value.ToString())}");
+                strBuilder.Append($"{tabs2}\"{parameterValue.Key}\": {BruteforceTab.MakeJsonValue(parameterValue.Value.value.ToString())}");
             }
 
             strBuilder.AppendLine($"\n{tabs1}}}");

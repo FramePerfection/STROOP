@@ -5,6 +5,7 @@ using OpenTK;
 using OpenTK.Mathematics;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {

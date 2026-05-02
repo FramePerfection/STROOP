@@ -33,7 +33,7 @@
             this.splitContainerWarpLeft = new STROOP.BetterSplitContainer();
             this.buttonWarpInstructions = new System.Windows.Forms.Button();
             this.buttonWarpHookUpTeleporters = new System.Windows.Forms.Button();
-            this.watchVariablePanelWarp = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelWarp = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerWarp)).BeginInit();
             this.splitContainerWarp.Panel1.SuspendLayout();
             this.splitContainerWarp.Panel2.SuspendLayout();
@@ -61,7 +61,7 @@
             // 
             // splitContainerWarp.Panel2
             // 
-            this.splitContainerWarp.Panel2.Controls.Add(this.watchVariablePanelWarp);
+            this.splitContainerWarp.Panel2.Controls.Add(this._variablePanelWarp);
             this.splitContainerWarp.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerWarp.Panel2MinSize = 0;
             this.splitContainerWarp.Size = new System.Drawing.Size(915, 463);
@@ -120,11 +120,11 @@
             // 
             // watchVariablePanelWarp
             // 
-            this.watchVariablePanelWarp.DataPath = "Config/WarpData.xml";
-            this.watchVariablePanelWarp.Location = new System.Drawing.Point(1, 2);
-            this.watchVariablePanelWarp.Name = "watchVariablePanelWarp";
-            this.watchVariablePanelWarp.Size = new System.Drawing.Size(800, 454);
-            this.watchVariablePanelWarp.TabIndex = 0;
+            this._variablePanelWarp.DataPath = "Config/WarpData.xml";
+            this._variablePanelWarp.Location = new System.Drawing.Point(1, 2);
+            this._variablePanelWarp.Name = "_variablePanelWarp";
+            this._variablePanelWarp.Size = new System.Drawing.Size(800, 454);
+            this._variablePanelWarp.TabIndex = 0;
             // 
             // WarpTab
             // 
@@ -151,6 +151,6 @@
         private BetterSplitContainer splitContainerWarpLeft;
         private System.Windows.Forms.Button buttonWarpInstructions;
         private System.Windows.Forms.Button buttonWarpHookUpTeleporters;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelWarp;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelWarp;
     }
 }

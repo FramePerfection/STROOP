@@ -4,7 +4,9 @@ using System.Drawing;
 using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using STROOP.Utilities;
-using STROOP.Core.Variables;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.GfxTab
 {
@@ -15,7 +17,7 @@ namespace STROOP.Tabs.GfxTab
         public virtual string Name
         {
             get { return "GFX node"; }
-        } //This name is overridden by all the sub classes corresponding 
+        } //This name is overridden by all the sub classes corresponding
 
         public uint Address;
         public List<GfxNode> Children;
@@ -81,7 +83,7 @@ namespace STROOP.Tabs.GfxTab
                 for (int i = 0; i < _maxSiblings; i++)
                 {
                     res.Children.Add(ReadGfxNode(currentAddress));
-                    currentAddress = Config.Stream.GetUInt32(currentAddress + 0x08); //offset 0x08 = next pointer 
+                    currentAddress = Config.Stream.GetUInt32(currentAddress + 0x08); //offset 0x08 = next pointer
                     if (currentAddress == childAddress) break;
                 }
             }
@@ -89,45 +91,45 @@ namespace STROOP.Tabs.GfxTab
             return res;
         }
 
-        public static List<NamedVariableCollection.IView> GetCommonVariables()
+        public static List<VariablePrecursor> GetCommonVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
             precursors.Add(gfxProperty<ushort>("Type", 0x00));
-            precursors.Add(gfxProperty<ushort>("Active", 0x02, WatchVariableSubclass.Boolean, 0x01));
-            precursors.Add(gfxProperty<ushort>("Bit 1", 0x02, WatchVariableSubclass.Boolean, 0x02));
-            precursors.Add(gfxProperty<ushort>("Billboard object", 0x02, WatchVariableSubclass.Boolean, 0x04));
-            precursors.Add(gfxProperty<ushort>("Bit 3", 0x02, WatchVariableSubclass.Boolean, 0x08));
-            precursors.Add(gfxProperty<ushort>("Invisible object", 0x02, WatchVariableSubclass.Boolean, 0x10));
-            precursors.Add(gfxProperty<ushort>("Is animated", 0x02, WatchVariableSubclass.Boolean, 0x20));
+            precursors.Add(gfxProperty<ushort>("Active", 0x02, VariableSubclass.Boolean, 0x01));
+            precursors.Add(gfxProperty<ushort>("Bit 1", 0x02, VariableSubclass.Boolean, 0x02));
+            precursors.Add(gfxProperty<ushort>("Billboard object", 0x02, VariableSubclass.Boolean, 0x04));
+            precursors.Add(gfxProperty<ushort>("Bit 3", 0x02, VariableSubclass.Boolean, 0x08));
+            precursors.Add(gfxProperty<ushort>("Invisible object", 0x02, VariableSubclass.Boolean, 0x10));
+            precursors.Add(gfxProperty<ushort>("Is animated", 0x02, VariableSubclass.Boolean, 0x20));
             precursors.Add(gfxProperty<byte>("List index", 0x02));   //note: not actually a byte, but the result of (short>>8)
-            precursors.Add(gfxProperty<uint>("Previous", 0x04, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Next", 0x08, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Parent", 0x0C, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Child", 0x10, WatchVariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Previous", 0x04, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Next", 0x08, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Parent", 0x0C, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Child", 0x10, VariableSubclass.Address));
             return precursors;
         }
 
         // Wrapper to make defining variables easier
-        protected static NamedVariableCollection.IView<T> gfxProperty<T>(
+        protected static VariablePrecursor gfxProperty<T>(
             string name,
             uint offset,
-            WatchVariableSubclass subclass = WatchVariableSubclass.Number,
+            string? subclass = null,
             uint? mask = null)
             where T : struct, IConvertible
         {
+            subclass ??= VariableSubclass.Number;
             mask = mask ?? 0xFFFFFFFF;
             Color color = (offset <= 0x13)
                 ? ColorUtilities.GetColorFromString("Yellow")
                 : ColorUtilities.GetColorFromString("LightBlue");
 
             var descriptor = new MemoryDescriptor(typeof(T), BaseAddressType.GfxNode, offset, mask);
-            var view = descriptor.CreateView(subclass.ToString());
-            view.Name = name;
-            return (NamedVariableCollection.MemoryDescriptorView<T>)view;
+            var view = descriptor.CreateVariable(subclass.ToString());
+            return (name, (MemoryVariable<T>)view);
         }
 
-        // If there are type specific variables, this should be overridden 
-        public virtual IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables() => Array.Empty<NamedVariableCollection.IView>();
+        // If there are type specific variables, this should be overridden
+        public virtual IEnumerable<VariablePrecursor> GetTypeSpecificVariables() => Array.Empty<VariablePrecursor>();
     }
 
     internal class GfxChildSelector : GfxNode
@@ -164,10 +166,10 @@ namespace STROOP.Tabs.GfxTab
             }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Selection function", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Selection function", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<ushort>("Selected child", 0x1E));
             return precursors;
         }
@@ -180,10 +182,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Background image"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            var precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Draw function", 0x14, WatchVariableSubclass.Address));
+            var precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Draw function", 0x14, VariableSubclass.Address));
             return precursors;
         }
     }
@@ -199,12 +201,12 @@ namespace STROOP.Tabs.GfxTab
         //int marioOffset  0x18        memory offset from marioData to check
         //void* heldObj      0x1c        another struct
         //short[3] position     0x20,2,4
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Function pointer", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Function pointer", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<int>("Mario offset", 0x18));
-            precursors.Add(gfxProperty<uint>("Held object", 0x1C, WatchVariableSubclass.Object));
+            precursors.Add(gfxProperty<uint>("Held object", 0x1C, VariableSubclass.Object));
             precursors.Add(gfxProperty<short>("Position x", 0x20));
             precursors.Add(gfxProperty<short>("Position y", 0x22));
             precursors.Add(gfxProperty<short>("Position z", 0x24));
@@ -254,10 +256,10 @@ namespace STROOP.Tabs.GfxTab
             }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            var precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Function pointer", 0x14, WatchVariableSubclass.Address));
+            var precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Function pointer", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<ushort>("Parameter 1", 0x18));
             precursors.Add(gfxProperty<ushort>("Parameter 2", 0x1A));
             return precursors;
@@ -271,10 +273,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Camera"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Update function", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Update function", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<float>("X from", 0x1C));
             precursors.Add(gfxProperty<float>("Y from", 0x20));
             precursors.Add(gfxProperty<float>("Z from", 0x24));
@@ -292,10 +294,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Projection 3D"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Update function", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Update function", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<float>("Fov", 0x1C));
             precursors.Add(gfxProperty<short>("Z clip near", 0x20));
             precursors.Add(gfxProperty<short>("Z clip far", 0x22));
@@ -310,10 +312,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Object parent"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Temp child", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Temp child", 0x14, VariableSubclass.Address));
             return precursors;
         }
     }
@@ -325,9 +327,9 @@ namespace STROOP.Tabs.GfxTab
             get { return "Shadow"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
             precursors.Add(gfxProperty<short>("Radius", 0x14));
             precursors.Add(gfxProperty<byte>("Opacity", 0x16));
             precursors.Add(gfxProperty<byte>("Type", 0x17));
@@ -342,9 +344,9 @@ namespace STROOP.Tabs.GfxTab
             get { return "Scaling node"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
             precursors.Add(gfxProperty<float>("Scale", 0x18));
             return precursors;
         }
@@ -366,10 +368,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Animated node"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Display list", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Display list", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<short>("X offset", 0x18));
             precursors.Add(gfxProperty<short>("Y offset", 0x1A));
             precursors.Add(gfxProperty<short>("Z offset", 0x1C));
@@ -384,10 +386,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Game object"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Shared child", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Shared child", 0x14, VariableSubclass.Address));
             return precursors;
         }
     }
@@ -399,10 +401,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Rotation"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Segmented address", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Segmented address", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<short>("Angle x", 0x18)); //Todo: make these angle types
             precursors.Add(gfxProperty<short>("Angle y", 0x1A));
             precursors.Add(gfxProperty<short>("Angle z", 0x1C));
@@ -418,10 +420,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Menu model"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Segmented address", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Segmented address", 0x14, VariableSubclass.Address));
             precursors.Add(gfxProperty<short>("X offset", 0x18));
             precursors.Add(gfxProperty<short>("Y offset", 0x1A));
             precursors.Add(gfxProperty<short>("Z offset", 0x1C));
@@ -436,9 +438,9 @@ namespace STROOP.Tabs.GfxTab
             get { return "Debug transformation"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            var precursors = new List<NamedVariableCollection.IView>();
+            var precursors = new List<VariablePrecursor>();
             precursors.Add(gfxProperty<short>("X translation", 0x18));
             precursors.Add(gfxProperty<short>("Y translation", 0x1A));
             precursors.Add(gfxProperty<short>("Z translation", 0x1C));
@@ -456,12 +458,12 @@ namespace STROOP.Tabs.GfxTab
             get { return "Level of detail"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            var precursors = new List<NamedVariableCollection.IView>();
+            var precursors = new List<VariablePrecursor>();
             precursors.Add(gfxProperty<short>("Min cam distance", 0x14));
             precursors.Add(gfxProperty<short>("Max cam distance", 0x16));
-            precursors.Add(gfxProperty<uint>("Pointer 1", 0x18, WatchVariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 1", 0x18, VariableSubclass.Address));
 
             return precursors;
         }
@@ -474,25 +476,25 @@ namespace STROOP.Tabs.GfxTab
             get { return "Master list"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            var precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Pointer 0", 0x14, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 1", 0x18, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 2", 0x1C, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 3", 0x20, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 4", 0x24, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 5", 0x28, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 6", 0x2C, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 7", 0x30, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 8", 0x34, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 9", 0x3C, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 10", 0x40, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 11", 0x44, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 12", 0x48, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 13", 0x4C, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 14", 0x50, WatchVariableSubclass.Address));
-            precursors.Add(gfxProperty<uint>("Pointer 15", 0x54, WatchVariableSubclass.Address));
+            var precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Pointer 0", 0x14, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 1", 0x18, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 2", 0x1C, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 3", 0x20, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 4", 0x24, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 5", 0x28, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 6", 0x2C, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 7", 0x30, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 8", 0x34, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 9", 0x3C, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 10", 0x40, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 11", 0x44, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 12", 0x48, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 13", 0x4C, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 14", 0x50, VariableSubclass.Address));
+            precursors.Add(gfxProperty<uint>("Pointer 15", 0x54, VariableSubclass.Address));
             return precursors;
         }
     }
@@ -513,9 +515,9 @@ namespace STROOP.Tabs.GfxTab
             get { return "Screenspace"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            var precursors = new List<NamedVariableCollection.IView>();
+            var precursors = new List<VariablePrecursor>();
             precursors.Add(gfxProperty<float>("??? 0x14", 0x14));
             precursors.Add(gfxProperty<uint>("??? 0x18", 0x18));
             return precursors;
@@ -529,9 +531,9 @@ namespace STROOP.Tabs.GfxTab
             get { return "Root"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
             precursors.Add(gfxProperty<short>("Some short", 0x14));
             precursors.Add(gfxProperty<short>("Screen xoffset", 0x16));
             precursors.Add(gfxProperty<short>("Screen yoffset", 0x18));
@@ -548,10 +550,10 @@ namespace STROOP.Tabs.GfxTab
             get { return "Display List"; }
         }
 
-        public override IEnumerable<NamedVariableCollection.IView> GetTypeSpecificVariables()
+        public override IEnumerable<VariablePrecursor> GetTypeSpecificVariables()
         {
-            List<NamedVariableCollection.IView> precursors = new List<NamedVariableCollection.IView>();
-            precursors.Add(gfxProperty<uint>("Segmented address", 0x14, WatchVariableSubclass.Address));
+            List<VariablePrecursor> precursors = new List<VariablePrecursor>();
+            precursors.Add(gfxProperty<uint>("Segmented address", 0x14, VariableSubclass.Address));
             return precursors;
         }
     }

@@ -29,16 +29,10 @@ namespace STROOP.Structs
                 // Left clicking while holding a key
                 "Click on a variable while holding Z to zero that variable.",
                 "Click on a variable while holding Escape to delete that variable.",
-                "Click on a variable while holding -/+ to decrement/increment that variable.",
                 "Click on a variable while holding Alt to enable custom functionality for that variable, i.e. fixing its address, renaming, deleting.",
                 "Click on a variable while holding Backtick to add that variable to the Var Hack tab, so that it can be displayed on screen.",
                 "Click on a variable while holding H to highlight that variable.",
-                "Click on a variable while holding L to lock that variable.",
-                "Click on a variable while holding S to add that variable to the Custom tab.",
-                "Click on a variable while holding M to add that variable to the Memory tab.",
                 "Click on a variable while holding P to add that variable to any tab of your choice.",
-                "Click on a variable while holding D to toggle display as hex.",
-                "Click on a variable while holding R to rename that variable.",
                 "Click on a variable while holding C to open a controller for that variable.",
                 "Click on a variable while holding Q to give that variable a custom background color.",
                 "Click on a variable while holding O to give that variable the last custom color as its background color.",
@@ -48,8 +42,6 @@ namespace STROOP.Structs
                 "Click on a variable while holding a number to highlight that variable with different colors.",
                 "Click on a variable while holding Shift and a number to give that variable different background colors.",
 
-                "Click on an object slot while holding Alt to mark that slot. Then it will have a black border to help distinguish it.",
-                "Click on an object slot while holding Ctrl to toggle whether that slot is selected. You can use this to select multiple slots at once.",
                 "Click on an object slot while holding Shift to select all slots from the one currently selected to the one you clicked on.",
 
                 "When entering values for certain variables, hold Ctrl to toggle the behavior. For example, setting \"HDist Obj to Mario\" usually moves Mario, but holding Ctrl will move the object instead.",

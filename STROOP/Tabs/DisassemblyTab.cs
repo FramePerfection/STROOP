@@ -1,10 +1,12 @@
-﻿using System;
+﻿using STROOP.Core;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using STROOP.Utilities;
 using System.Drawing;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {

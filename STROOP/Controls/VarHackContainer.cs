@@ -5,6 +5,7 @@ using STROOP.Structs;
 using STROOP.Utilities;
 using System.Xml.Linq;
 using STROOP.Structs.Configurations;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Controls
 {

@@ -8,6 +8,8 @@ using OpenTK;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
 using STROOP.Models;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -124,11 +126,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         Vector4 baseColor;
                         if (!individualTriangleColors.TryGetValue(tri.Address, out baseColor))
                             if (useRandomColors)
-                                baseColor = ColorUtilities.GetRandomColor((int)tri.Address);
+                                baseColor = OpenTKUtilities.GetRandomColor((int)tri.Address);
                             else
                                 baseColor = regularBaseColor;
 
-                        double uphillAngle = WatchVariableSpecialUtilities.GetTriangleUphillAngle(tri);
+                        double uphillAngle = VariableSpecialUtilities.GetTriangleUphillAngle(tri);
                         double pushAngle = MoreMath.ReverseAngle(uphillAngle);
 
                         float d = Size / (tri.XProjection ? tri.NormX : tri.NormZ);
@@ -168,8 +170,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
-                Vector4 color = ColorUtilities.ColorToVec4(Color, OpacityByte),
-                    outlineColor = ColorUtilities.ColorToVec4(OutlineColor);
+                Vector4 color = OpenTKUtilities.ColorToVec4(Color, OpacityByte),
+                    outlineColor = OpenTKUtilities.ColorToVec4(OutlineColor);
                 foreach ((float x1, float z1, float x2, float z2, bool xProjection, double pushAngle) in topDownWallData)
                 {
                     float angle = (float)MoreMath.AngleTo_Radians(x1, z1, x2, z2);

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using STROOP.Core.Variables;
-using STROOP.Controls.VariablePanel;
+using STROOP.Core.Utilities;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Forms
 {
@@ -17,21 +18,21 @@ namespace STROOP.Forms
         private static readonly Color COLOR_PURPLE = Color.FromArgb(200, 190, 230);
 
         private readonly List<string> _varNames;
-        private readonly List<WatchVariableWrapper> _watchVarWrappers;
+        private readonly List<IWinFormsVariableCell> _cells;
         private readonly List<DescribedMemoryState> _variableMemoryStates;
 
-        public VariableControllerForm(string varName, WatchVariableWrapper watchVarWrapper) :
-            this(new List<string>() { varName }, new List<WatchVariableWrapper>() { watchVarWrapper })
+        public VariableControllerForm(string varName, IWinFormsVariableCell watchVarCell) :
+            this([varName], [watchVarCell])
         {
         }
 
-        public VariableControllerForm(List<string> varNames, List<WatchVariableWrapper> watchVarWrappers)
+        public VariableControllerForm(List<string> varNames, List<IWinFormsVariableCell> cells)
         {
             _varNames = varNames;
-            _watchVarWrappers = watchVarWrappers;
+            _cells = cells;
 
-            // TODO: Create and correctly use own DescribedMemoryState?
-            _variableMemoryStates = _watchVarWrappers.ConvertAndRemoveNull(x => (x._view as NamedVariableCollection.IMemoryDescriptorView)?.describedMemoryState);
+            // TODO: Copy described memory states rather than referencing the same thing?
+            _variableMemoryStates = _cells.ConvertAndRemoveNull(cell => cell.memory);
 
             InitializeComponent();
             FormManager.AddForm(this);
@@ -75,25 +76,14 @@ namespace STROOP.Forms
 
             _checkBoxFixAddress.Click += (s, e) => ToggleFixedAddress();
 
-            // TODO: work out locking feature
-            //_checkBoxLock.Click += (s, e) =>
-            //{
-            //    List<bool> lockedBools = new List<bool>();
-            //    for (int i = 0; i < _watchVarWrappers.Count; i++)
-            //        lockedBools.Add(_watchVarWrappers[i]._view.locked);
-            //    bool anyLocked = lockedBools.Any(b => b);
-            //    for (int i = 0; i < _watchVarWrappers.Count; i++)
-            //        _watchVarWrappers[i].ToggleLocked(!anyLocked, _fixedAddressLists[i]);
-            //};
-
             UpdateFixedCheckState();
         }
 
         private string GetValues()
         {
             List<object> values = new List<object>();
-            for (int i = 0; i < _watchVarWrappers.Count; i++)
-                values.Add(_watchVarWrappers[i].GetValueText());
+            for (int i = 0; i < _cells.Count; i++)
+                values.Add(_cells[i].GetValueText());
             return String.Join(",", values);
         }
 
@@ -104,8 +94,8 @@ namespace STROOP.Forms
 
             using (Config.Stream.Suspend())
             {
-                for (int i = 0; i < _watchVarWrappers.Count; i++)
-                    _watchVarWrappers[i].TrySetValue(values[i % values.Count]);
+                for (int i = 0; i < _cells.Count; i++)
+                    _cells[i].TrySetValue(values[i % values.Count]);
             }
         }
 
@@ -133,11 +123,6 @@ namespace STROOP.Forms
         public void UpdateForm()
         {
             _textBoxCurrentValue.Text = GetValues();
-            List<bool> lockedBools = new List<bool>();
-            // TODO: work out locking feature
-            //for (int i = 0; i < _watchVarWrappers.Count; i++)
-            //    lockedBools.Add(_watchVarWrappers[i]._view.locked);
-            _checkBoxLock.CheckState = BoolUtilities.GetCheckState(lockedBools);
         }
 
         public void ToggleFixedAddress()

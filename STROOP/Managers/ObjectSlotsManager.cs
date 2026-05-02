@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STROOP.Core.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,6 +8,9 @@ using STROOP.Utilities;
 using System.Drawing;
 using STROOP.Structs.Configurations;
 using STROOP.Models;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 using System.Collections.ObjectModel;
 
 namespace STROOP.Managers
@@ -46,6 +50,23 @@ namespace STROOP.Managers
             Ceiling,
             Closest
         };
+
+        [InitializeBaseAddress]
+        static void InitializeBaseAddress()
+        {
+            VariableUtilities.baseAddressGetters[BaseAddressType.Object] = () => Config.ObjectSlotsManager.SelectedSlotsAddresses;
+            VariableUtilities.baseAddressGetters[BaseAddressType.ProcessGroup] = () =>
+                Config.ObjectSlotsManager.SelectedObjects.ConvertAll(obj => obj.CurrentProcessGroup ?? uint.MaxValue);
+
+            VariableUtilities.baseAddressGetters["Graphics"] = () =>
+                Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.BehaviorGfxOffset));
+
+            VariableUtilities.baseAddressGetters["Animation"] = () =>
+                Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.AnimationOffset));
+
+            VariableUtilities.baseAddressGetters["Waypoint"] = () =>
+                Config.ObjectSlotsManager.SelectedSlotsAddresses.ConvertAll(objAddress => Config.Stream.GetUInt32(objAddress + ObjectConfig.WaypointOffset));
+        }
 
         public uint? HoveredObjectAddress;
 
@@ -87,7 +108,7 @@ namespace STROOP.Managers
                 var objectSlot = new ObjectSlot(this, i, new Size(DefaultSlotSize, DefaultSlotSize));
                 objectSlot.Click += (sender, e) => OnSlotClick(sender, e);
                 ObjectSlots.Add(objectSlot);
-                mainForm.WatchVariablePanelObjects.Controls.Add(objectSlot);
+                mainForm.VariablePanelObjects.Controls.Add(objectSlot);
             }
 
             ;
@@ -219,9 +240,6 @@ namespace STROOP.Managers
 
             LabelMethod = (SlotLabelType)mainForm.comboBoxLabelMethod.SelectedItem;
             SortMethod = (SortMethodType)mainForm.comboBoxSortMethod.SelectedItem;
-
-            // Lock label update
-            LabelsLocked = mainForm.checkBoxObjLockLabels.Checked;
 
             // Processing sort order
             IEnumerable<ObjectDataModel> sortedObjects;

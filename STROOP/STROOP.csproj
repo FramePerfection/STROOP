@@ -13,7 +13,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="OpenTK" Version="4.9.4"/>
         <PackageReference Include="OpenTK.GLControl" Version="4.0.2"/>
-        <PackageReference Include="SharpZipLib" Version="1.4.2"/>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
         <PackageReference Include="WindowsAPICodePack" Version="8.0.9"/>
     </ItemGroup>
@@ -29,7 +28,7 @@
         <Compile Remove="Tabs\MapTab\Simulations\CorkBoxBreakerTracker.cs"/>
         <Compile Remove="Tabs\SimulationsTab\SimulationsTab.cs"/>
         <Compile Remove="Tabs\SimulationsTab\SimulationsTab.Designer.cs"/>
-        <Compile Remove="Utilities\Stream\IProcessMemory.cs"/>
+        <Compile Remove="Tabs\BruteforceTab\**\*.cs"/>
         <EmbeddedResource Remove="Forms\MapPopOutForm.resx"/>
         <EmbeddedResource Remove="Tabs\SimulationsTab\SimulationsTab.resx"/>
     </ItemGroup>
@@ -54,9 +53,6 @@
         <Compile Update="Controls\TabControlEx.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="Controls\CarretlessTextBox.cs">
-            <SubType>Component</SubType>
-        </Compile>
         <Compile Update="Controls\MainSaveTextbox.cs">
             <SubType>Component</SubType>
         </Compile>
@@ -69,7 +65,7 @@
         <Compile Update="Controls\PanelEx.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="Controls\VariablePanel\WatchVariablePanelRenderer.cs">
+        <Compile Update="Controls\VariablePanel\VariablePanel.Renderer.cs">
             <SubType>UserControl</SubType>
         </Compile>
         <Compile Update="Controls\VarHackContainer.cs">
@@ -123,7 +119,7 @@
         <Compile Update="Controls\IntPictureBox.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="Controls\VariablePanel\WatchVariableFlowLayoutPanel.cs">
+        <Compile Update="Controls\VariablePanel\VariablePanel.cs">
             <SubType>UserControl</SubType>
         </Compile>
         <Compile Update="Controls\RichTextBoxEx.cs">
@@ -290,6 +286,10 @@
         <EmbeddedResource Include="Schemas\**\*.xsd">
             <SubType>Designer</SubType>
         </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\STROOP.Core\STROOP.Core.csproj"/>
+        <ProjectReference Include="..\STROOP.Variables\STROOP.Variables.csproj" />
     </ItemGroup>
 
 </Project>

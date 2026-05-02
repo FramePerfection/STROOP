@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using STROOP.Controls.VariablePanel;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 
 namespace STROOP.Tabs.BruteforceTab.BF_Utilities
 {
@@ -25,19 +25,19 @@ namespace STROOP.Tabs.BruteforceTab.BF_Utilities
             }
         }
 
-        public static readonly Dictionary<string, Type> fallbackWrapperTypes = new Dictionary<string, Type>()
+        public static readonly Dictionary<string, WatchVariableSubclass> fallbackWrapperTypes = new Dictionary<string, WatchVariableSubclass>()
         {
-            ["u32"] = typeof(WatchVariableNumberWrapper<uint>),
-            ["s32"] = typeof(WatchVariableNumberWrapper<int>),
-            ["u16"] = typeof(WatchVariableNumberWrapper<ushort>),
-            ["s16"] = typeof(WatchVariableNumberWrapper<short>),
-            ["u8"] = typeof(WatchVariableNumberWrapper<byte>),
-            ["s8"] = typeof(WatchVariableNumberWrapper<sbyte>),
-            ["f32"] = typeof(WatchVariableNumberWrapper<float>),
-            ["f64"] = typeof(WatchVariableNumberWrapper<double>),
-            ["string"] = typeof(WatchVariableStringWrapper),
-            ["boolean"] = typeof(WatchVariableBooleanWrapper),
-            ["quarterstep"] = typeof(WatchVariableQuarterstepWrapper),
+            ["u32"] = WatchVariableSubclass.Number,
+            ["s32"] = WatchVariableSubclass.Number,
+            ["u16"] = WatchVariableSubclass.Number,
+            ["s16"] = WatchVariableSubclass.Number,
+            ["u8"] = WatchVariableSubclass.Number,
+            ["s8"] = WatchVariableSubclass.Number,
+            ["f32"] = WatchVariableSubclass.Number,
+            ["f64"] = WatchVariableSubclass.Number,
+            ["string"] = WatchVariableSubclass.String,
+            ["boolean"] = WatchVariableSubclass.Boolean,
+            // ["quarterstep"] = /* what* /,
         };
 
         public static readonly Dictionary<string, Type> backingTypes = new Dictionary<string, Type>()

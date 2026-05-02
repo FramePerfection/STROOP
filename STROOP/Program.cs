@@ -1,4 +1,5 @@
-﻿using STROOP.Forms;
+using STROOP.Core;
+using STROOP.Forms;
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -94,7 +95,7 @@ namespace STROOP
                     () => tmpMainForm = new StroopMainForm(true)
                 ),
                 ("Creating Process Stream",
-                    () => Config.Stream = new ProcessStream(tmpMainForm.OnUpdate)
+                    () => ProcessStream.Instance = new ProcessStream(tmpMainForm.OnUpdate)
                 )
             );
             mainForm = tmpMainForm;

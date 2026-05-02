@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using STROOP.Core.Variables;
+using STROOP.Variables;
 
 namespace STROOP.Structs
 {
@@ -17,7 +17,7 @@ namespace STROOP.Structs
         public Lazy<Image> TransparentImage;
         public Lazy<Image> MapImage;
         public PushHitbox PushHitbox;
-        public List<NamedVariableCollection.IView> Precursors = new List<NamedVariableCollection.IView>();
+        public List<VariablePrecursor> Precursors = new List<VariablePrecursor>();
 
         public bool MeetsCriteria(BehaviorCriteria behaviorCriteria)
         {

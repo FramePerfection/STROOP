@@ -98,7 +98,7 @@ namespace STROOP.Ttc
 
         public int GetAmplitude()
         {
-            return (int)WatchVariableSpecialUtilities.GetPendulumAmplitude(
+            return (int)VariableSpecialUtilities.GetPendulumAmplitude(
                 _accelerationDirection, _accelerationMagnitude, _angularVelocity, _angle);
         }
 
@@ -114,7 +114,7 @@ namespace STROOP.Ttc
 
         public int GetCountdown()
         {
-            return WatchVariableSpecialUtilities.GetPendulumCountdown(
+            return VariableSpecialUtilities.GetPendulumCountdown(
                 _accelerationDirection, _accelerationMagnitude, _angularVelocity, _angle, _waitingTimer);
         }
 

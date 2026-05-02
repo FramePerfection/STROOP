@@ -5,7 +5,8 @@ using System.Drawing;
 using STROOP.Utilities;
 using STROOP.Extensions;
 using STROOP.Structs.Configurations;
-using STROOP.Core.Variables;
+using STROOP.Variables;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Structs
 {
@@ -210,15 +211,8 @@ namespace STROOP.Structs
             return assoc.Name;
         }
 
-        public IEnumerable<NamedVariableCollection.IView> GetWatchVarControls(BehaviorCriteria behaviorCriteria)
-        {
-            var assoc = FindObjectAssociation(behaviorCriteria);
-
-            if (assoc == null)
-                return Array.Empty<NamedVariableCollection.IView>();
-
-            else return assoc.Precursors;
-        }
+        public IEnumerable<VariablePrecursor> GetVariablePrecursors(BehaviorCriteria behaviorCriteria)
+            => FindObjectAssociation(behaviorCriteria)?.Precursors ?? [];
 
         public uint AlignJPBehavior(uint segmented)
         {

@@ -3,9 +3,11 @@ using System.IO;
 using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Mathematics;
+using STROOP.Core;
 using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.GhostTab
 {
@@ -135,7 +137,7 @@ namespace STROOP.Tabs.GhostTab
                 buttonGhostColor.Enabled = false;
             else
             {
-                buttonGhostColor.BackColor = ColorUtilities.Vec4ToColor(ghost.hatColor);
+                buttonGhostColor.BackColor = OpenTKUtilities.Vec4ToColor(ghost.hatColor);
                 buttonGhostColor.Enabled = true;
             }
 
@@ -148,7 +150,7 @@ namespace STROOP.Tabs.GhostTab
             dlg.Color = System.Drawing.Color.Red;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                marioHatColor = ColorUtilities.ColorToVec4(dlg.Color);
+                marioHatColor = OpenTKUtilities.ColorToVec4(dlg.Color);
                 buttonMarioColor.BackColor = dlg.Color;
             }
         }
@@ -161,7 +163,7 @@ namespace STROOP.Tabs.GhostTab
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     foreach (var g in GetSelectedGhosts())
-                        g.hatColor = ColorUtilities.ColorToVec4(dlg.Color);
+                        g.hatColor = OpenTKUtilities.ColorToVec4(dlg.Color);
                     buttonGhostColor.BackColor = dlg.Color;
                 }
             }

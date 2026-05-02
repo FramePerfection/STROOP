@@ -13,6 +13,10 @@ using STROOP.Tabs.MapTab.MapObjects;
 using System.Xml.Linq;
 using OpenTK.GLControl;
 using OpenTK.Mathematics;
+using STROOP.Core;
+using STROOP.Core.Utilities;
+using STROOP.Variables.SM64MemoryLayout;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab
 {
@@ -25,6 +29,8 @@ namespace STROOP.Tabs.MapTab
 
         static XElement configNode;
         static string lastTrackerFileName = null;
+
+        static Type[] stroopTypes;
 
         [InitializeConfigParser]
         static void InitConfigParser()
@@ -42,6 +48,18 @@ namespace STROOP.Tabs.MapTab
                 Program.config.Root.Add(configNode = new XElement(XName.Get(CONFIG_NODE_NAME)));
             configNode.SetAttributeValue(XName.Get("path"), lastTrackerFileName);
             configNode.Document.Save(Program.CONFIG_FILE_NAME);
+        }
+
+        static MapTab()
+        {
+            stroopTypes = typeof(MapTab).Assembly.GetTypes();
+        }
+
+        static IEnumerable<Type> EnumerateTypes(Func<Type, bool> filter)
+        {
+            foreach (var t in stroopTypes)
+                if (filter(t))
+                    yield return t;
         }
 
         public GLControl glControlMap2D { get; private set; }
@@ -191,7 +209,7 @@ namespace STROOP.Tabs.MapTab
         void InitAddTrackerButton()
         {
             var adders = new Dictionary<string, Wrapper<(bool, ObjectDescriptionAttribute, Func<ToolStripMenuItem>)>>();
-            foreach (var type in GeneralUtilities.EnumerateTypes(_ => _.IsSubclassOf(typeof(MapObject))))
+            foreach (var type in EnumerateTypes(_ => _.IsSubclassOf(typeof(MapObject))))
             {
                 var attrArray = type.GetCustomAttributes<ObjectDescriptionAttribute>();
                 foreach (var attr in attrArray)
@@ -654,7 +672,7 @@ namespace STROOP.Tabs.MapTab
             using (new AccessScope<MapTab>(this))
             {
                 if (Form.ActiveForm != null && glControlMap2D.ClientRectangle.Contains(glControlMap2D.PointToClient(Cursor.Position)))
-                    graphics.UpdateFlyingControls(Config.Stream.lastFrameTime);
+                    graphics.UpdateFlyingControls(Config.CoreLoop.lastFrameTime);
                 if (!graphics.IsMouseDown(0))
                 {
                     var newCursor = graphics.mapCursorPosition;

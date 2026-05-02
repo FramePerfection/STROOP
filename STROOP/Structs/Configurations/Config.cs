@@ -1,4 +1,5 @@
-﻿using STROOP.Managers;
+﻿using STROOP.Core;
+using STROOP.Managers;
 using STROOP.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,9 @@ namespace STROOP.Structs.Configurations
     {
         public static uint RamSize => 0x800000;
 
+        public static ProcessStream Stream => ProcessStream.Instance;
+        public static CoreLoop CoreLoop = new CoreLoop();
         public static List<Emulator> Emulators = new List<Emulator>();
-        public static ProcessStream Stream;
         public static FileImageGui FileImageGui = new FileImageGui();
         public static ObjectAssociations ObjectAssociations;
         public static StroopMainForm StroopMainForm => AccessScope<StroopMainForm>.content;

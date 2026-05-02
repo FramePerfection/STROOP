@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
+using STROOP.Core;
 using System.Drawing;
 using STROOP.Utilities;
 

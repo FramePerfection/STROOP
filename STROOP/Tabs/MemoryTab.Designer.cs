@@ -53,7 +53,7 @@
             this.splitContainerMemoryControlsDisplays = new STROOP.BetterSplitContainer();
             this.richTextBoxMemoryAddresses = new STROOP.Controls.RichTextBoxEx();
             this.richTextBoxMemoryValues = new STROOP.Controls.RichTextBoxEx();
-            this.watchVariablePanelMemory = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelMemory = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMemory)).BeginInit();
             this.splitContainerMemory.Panel1.SuspendLayout();
             this.splitContainerMemory.Panel2.SuspendLayout();
@@ -87,7 +87,7 @@
             // 
             // splitContainerMemory.Panel2
             // 
-            this.splitContainerMemory.Panel2.Controls.Add(this.watchVariablePanelMemory);
+            this.splitContainerMemory.Panel2.Controls.Add(this._variablePanelMemory);
             this.splitContainerMemory.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerMemory.Panel2MinSize = 0;
             this.splitContainerMemory.Size = new System.Drawing.Size(915, 463);
@@ -384,15 +384,15 @@
             // 
             // watchVariablePanelMemory
             // 
-            this.watchVariablePanelMemory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._variablePanelMemory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.watchVariablePanelMemory.DataPath = "Config/ObjectData.xml";
-            this.watchVariablePanelMemory.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelMemory.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelMemory.Name = "watchVariablePanelMemory";
-            this.watchVariablePanelMemory.Size = new System.Drawing.Size(168, 457);
-            this.watchVariablePanelMemory.TabIndex = 7;
+            this._variablePanelMemory.DataPath = "Config/ObjectData.xml";
+            this._variablePanelMemory.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelMemory.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelMemory.Name = "_variablePanelMemory";
+            this._variablePanelMemory.Size = new System.Drawing.Size(168, 457);
+            this._variablePanelMemory.TabIndex = 7;
             // 
             // MemoryTab
             // 
@@ -442,6 +442,6 @@
         private BetterSplitContainer splitContainerMemoryControlsDisplays;
         private Controls.RichTextBoxEx richTextBoxMemoryAddresses;
         private Controls.RichTextBoxEx richTextBoxMemoryValues;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelMemory;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelMemory;
     }
 }

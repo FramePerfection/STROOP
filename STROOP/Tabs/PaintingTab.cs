@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using STROOP.Core;
+using System.Collections.Generic;
 using STROOP.Structs;
 using STROOP.Utilities;
+using STROOP.Variables;
+using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs
 {
@@ -9,10 +12,10 @@ namespace STROOP.Tabs
         [InitializeBaseAddress]
         static void InitBaseAddresses()
         {
-            WatchVariableUtilities.baseAddressGetters["Painting"] = () =>
+            VariableUtilities.baseAddressGetters["Painting"] = () =>
             {
                 uint? paintingAddress = AccessScope<StroopMainForm>.content.GetTab<PaintingTab>().GetPaintingAddress();
-                return paintingAddress != null ? new List<uint>() { paintingAddress.Value } : WatchVariableUtilities.BaseAddressListEmpty;
+                return paintingAddress != null ? new List<uint>() { paintingAddress.Value } : VariableUtilities.BaseAddressListEmpty;
             };
         }
 

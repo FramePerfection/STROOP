@@ -105,7 +105,7 @@
             this.labelObjSlotPos = new System.Windows.Forms.Label();
             this.labelObjAdd = new System.Windows.Forms.Label();
             this.labelObjSlotInd = new System.Windows.Forms.Label();
-            this.watchVariablePanelObject = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelObject = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerObject)).BeginInit();
             this.splitContainerObject.Panel1.SuspendLayout();
             this.splitContainerObject.Panel2.SuspendLayout();
@@ -148,7 +148,7 @@
             // 
             // splitContainerObject.Panel2
             // 
-            this.splitContainerObject.Panel2.Controls.Add(this.watchVariablePanelObject);
+            this.splitContainerObject.Panel2.Controls.Add(this._variablePanelObject);
             this.splitContainerObject.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerObject.Panel2MinSize = 0;
             this.splitContainerObject.Size = new System.Drawing.Size(915, 463);
@@ -990,13 +990,13 @@
             // 
             // watchVariablePanelObject
             // 
-            this.watchVariablePanelObject.DataPath = "Config/ObjectData.xml";
-            this.watchVariablePanelObject.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.watchVariablePanelObject.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelObject.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelObject.Name = "watchVariablePanelObject";
-            this.watchVariablePanelObject.Size = new System.Drawing.Size(691, 457);
-            this.watchVariablePanelObject.TabIndex = 3;
+            this._variablePanelObject.DataPath = "Config/ObjectData.xml";
+            this._variablePanelObject.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanelObject.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelObject.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelObject.Name = "_variablePanelObject";
+            this._variablePanelObject.Size = new System.Drawing.Size(691, 457);
+            this._variablePanelObject.TabIndex = 3;
             // 
             // ObjectTab
             // 
@@ -1103,6 +1103,6 @@
         private System.Windows.Forms.Label labelObjSlotPos;
         private System.Windows.Forms.Label labelObjAdd;
         private System.Windows.Forms.Label labelObjSlotInd;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelObject;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelObject;
     }
 }

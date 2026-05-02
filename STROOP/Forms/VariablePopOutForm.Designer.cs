@@ -30,24 +30,24 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VariablePopOutForm));
-            this._watchVariablePanel = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanel = new STROOP.Controls.VariablePanel.VariablePanel();
             this.SuspendLayout();
             // 
             // _watchVariablePanel
             // 
-            this._watchVariablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._watchVariablePanel.Location = new System.Drawing.Point(2, 2);
-            this._watchVariablePanel.Margin = new System.Windows.Forms.Padding(0);
-            this._watchVariablePanel.Name = "_watchVariablePanel";
-            this._watchVariablePanel.Size = new System.Drawing.Size(280, 170);
-            this._watchVariablePanel.TabIndex = 3;
+            this._variablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._variablePanel.Location = new System.Drawing.Point(2, 2);
+            this._variablePanel.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanel.Name = "_variablePanel";
+            this._variablePanel.Size = new System.Drawing.Size(280, 170);
+            this._variablePanel.TabIndex = 3;
             // 
             // VariablePopOutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 174);
-            this.Controls.Add(this._watchVariablePanel);
+            this.Controls.Add(this._variablePanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(10000, 10000);
@@ -62,6 +62,6 @@
 
         #endregion
 
-        private STROOP.Controls.VariablePanel.WatchVariablePanel _watchVariablePanel;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanel;
     }
 }

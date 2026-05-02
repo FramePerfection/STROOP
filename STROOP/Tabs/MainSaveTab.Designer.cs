@@ -122,7 +122,7 @@
             this.radioButtonMainSaveStructMainSaveSaved = new System.Windows.Forms.RadioButton();
             this.radioButtonMainSaveStructMainSave = new System.Windows.Forms.RadioButton();
             this.buttonMainSaveSave = new System.Windows.Forms.Button();
-            this.watchVariablePanelMainSave = new STROOP.Controls.VariablePanel.WatchVariablePanel();
+            this._variablePanelMainSave = new STROOP.Controls.VariablePanel.VariablePanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMainSave)).BeginInit();
             this.splitContainerMainSave.Panel1.SuspendLayout();
             this.splitContainerMainSave.Panel2.SuspendLayout();
@@ -156,7 +156,7 @@
             // 
             // splitContainerMainSave.Panel2
             // 
-            this.splitContainerMainSave.Panel2.Controls.Add(this.watchVariablePanelMainSave);
+            this.splitContainerMainSave.Panel2.Controls.Add(this._variablePanelMainSave);
             this.splitContainerMainSave.Panel2.Padding = new System.Windows.Forms.Padding(2);
             this.splitContainerMainSave.Panel2MinSize = 0;
             this.splitContainerMainSave.Size = new System.Drawing.Size(915, 463);
@@ -1509,15 +1509,15 @@
             // 
             // watchVariablePanelMainSave
             // 
-            this.watchVariablePanelMainSave.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._variablePanelMainSave.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.watchVariablePanelMainSave.DataPath = "Config/MainSaveData.xml";
-            this.watchVariablePanelMainSave.Location = new System.Drawing.Point(2, 2);
-            this.watchVariablePanelMainSave.Margin = new System.Windows.Forms.Padding(0);
-            this.watchVariablePanelMainSave.Name = "watchVariablePanelMainSave";
-            this.watchVariablePanelMainSave.Size = new System.Drawing.Size(479, 457);
-            this.watchVariablePanelMainSave.TabIndex = 2;
+            this._variablePanelMainSave.DataPath = "Config/MainSaveData.xml";
+            this._variablePanelMainSave.Location = new System.Drawing.Point(2, 2);
+            this._variablePanelMainSave.Margin = new System.Windows.Forms.Padding(0);
+            this._variablePanelMainSave.Name = "_variablePanelMainSave";
+            this._variablePanelMainSave.Size = new System.Drawing.Size(479, 457);
+            this._variablePanelMainSave.TabIndex = 2;
             // 
             // MainSaveTab
             // 
@@ -1637,6 +1637,6 @@
         private System.Windows.Forms.RadioButton radioButtonMainSaveStructMainSaveSaved;
         private System.Windows.Forms.RadioButton radioButtonMainSaveStructMainSave;
         private System.Windows.Forms.Button buttonMainSaveSave;
-        private STROOP.Controls.VariablePanel.WatchVariablePanel watchVariablePanelMainSave;
+        private STROOP.Controls.VariablePanel.VariablePanel _variablePanelMainSave;
     }
 }
