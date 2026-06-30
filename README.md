@@ -46,13 +46,13 @@ This refactor is ongoing and has diverged severely from the main repository in o
 
 Features from the main branch are partially missing or work in different ways.
 
-I hope to eventually get STROOP back onto a single track again, whether that be the main branch or this fork remains to be seen however. If you are capable and willing to take a heavy load, I'd invite you to discuss details with me on how that should happen on this barebones [Discord](https://discord.gg/QdcwCgXn) server (will adjust as the needs arise).
+I hope to eventually get STROOP back onto a single track again, whether that be the main branch or this fork remains to be seen however. If you are capable and willing to take a heavy load, I'd invite you to discuss details with me on how that should happen on this barebones [Discord] server (will adjust as the needs arise).
 
 ## Contributing
 
 I'd love to develop this version of STROOP into something that everyone involved with SM64 TASing and beyond can get great value from.<br>
 If you are a user of this STROOP version in any capacity, all of your suggestions for improvements will be appreciated (and ideally eventually implemented).<br>
-You may submit your feedback either via an [issue](../../issues) or just speak your mind in this barebones [Discord](https://discord.gg/YHgau6tg2d) server.
+You may submit your feedback either via an [issue](../../issues) or just speak your mind in this barebones [Discord] server.
 
 If you choose to contribute code via a [pull request](../../pulls), please make an effort to keep your changes free of noise, especially regarding code formatting.<br>
 While I do not enforce any specific style and do not intend to do so, the result of `dotnet format` should be taken as a baseline.
@@ -60,3 +60,5 @@ While I do not enforce any specific style and do not intend to do so, the result
 These line breaks usually don't facilitate readability at all, and the never-ending war about the "optimal maximum line length" makes it so the noise from added or removed line breaks remains constant in every pull request when different developers with different settings work on the same files.<br>
 Particularly, JetBrains Rider has a setting to `Wrap long lines` in the `Editor->Code Style->C#` section, **which I have turned off to prevent it from introducing meaningless line breaks.**<br>
 If you feel the need to break long lines for better readability, please do so manually with intent.
+
+[Discord]: https://discord.gg/FAEACwrqEr
