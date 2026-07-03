@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using OpenTK.GLControl;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using STROOP.Controls;
 using STROOP.Core;
 using STROOP.Extensions;
@@ -216,9 +217,19 @@ namespace STROOP.Tabs.MapTab
 
         public readonly KeyboardControls keyboardControls;
 
-        Func<OpenTK.Windowing.Common.IGraphicsContext> getContext;
+        Func<IGraphicsContext> getContext;
 
-        public MapGraphics(MapTab mapTab, GLControl glControl, Func<OpenTK.Windowing.Common.IGraphicsContext> getContext = null)
+        /// <summary>
+        /// The OpenGL context that hosts all resources necessary to render a complete map image,
+        /// and is capable of rendering to the main window's Map tab.
+        /// <para>
+        /// Popout windows' <see cref="MapPopout.graphics"/> instances will share with this context,
+        /// but blit to their own framebuffer before presenting.
+        /// </para>
+        /// </summary>
+        IGraphicsContext hostGlContext => getContext != null ? getContext() : glControl.Context;
+
+        public MapGraphics(MapTab mapTab, GLControl glControl, Func<IGraphicsContext> getContext = null)
         {
             this.mapTab = mapTab;
             this.glControl = glControl;
@@ -294,8 +305,8 @@ namespace STROOP.Tabs.MapTab
                 if (glControl.Width * glControl.Height > 0)
                     using (new AccessScope<MapTab>(mapTab))
                     {
-                        // These surfaces live in the render context (the main map's, for popouts).
-                        (getContext != null ? getContext() : glControl.Context).MakeCurrent();
+                        // These surfaces must live in the host context, recreate them there.
+                        hostGlContext.MakeCurrent();
                         DeleteMainSurfaces();
                         transparencyRenderer.SetDimensions(glControl.Width, glControl.Height);
                         InitMainSurfaces();
@@ -372,9 +383,7 @@ namespace STROOP.Tabs.MapTab
 
         private void OnPaint()
         {
-            // Everything is rendered in the "render context": our own context for the main map, or the
-            // main map's shared context for popouts. Make it current before any GL call (incl. GL init).
-            (getContext != null ? getContext() : glControl.Context).MakeCurrent();
+            hostGlContext.MakeCurrent();
 
             PerformGLInit();
 
