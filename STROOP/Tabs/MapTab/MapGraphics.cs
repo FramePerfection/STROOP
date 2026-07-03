@@ -76,6 +76,10 @@ namespace STROOP.Tabs.MapTab
 
         int mainFrameBuffer, mainColorBuffer, mainDepthBuffer;
 
+        // Only used when rendering into a foreign (shared) context - see OnPaint. This FBO lives in
+        // THIS control's own context and wraps the shared color texture so we can blit it to our window.
+        int presentFrameBuffer;
+
         public class CachedCollisionStructure
         {
             readonly TriangleClassification filter;
@@ -290,6 +294,8 @@ namespace STROOP.Tabs.MapTab
                 if (glControl.Width * glControl.Height > 0)
                     using (new AccessScope<MapTab>(mapTab))
                     {
+                        // These surfaces live in the render context (the main map's, for popouts).
+                        (getContext != null ? getContext() : glControl.Context).MakeCurrent();
                         DeleteMainSurfaces();
                         transparencyRenderer.SetDimensions(glControl.Width, glControl.Height);
                         InitMainSurfaces();
@@ -358,6 +364,10 @@ namespace STROOP.Tabs.MapTab
 
         private void OnPaint()
         {
+            // Everything is rendered in the "render context": our own context for the main map, or the
+            // main map's shared context for popouts. Make it current before any GL call (incl. GL init).
+            (getContext != null ? getContext() : glControl.Context).MakeCurrent();
+
             PerformGLInit();
 
             if (Config.Stream == null || rendererCollection == null)
@@ -370,7 +380,6 @@ namespace STROOP.Tabs.MapTab
                 if (glControl.Cursor != cursor)
                     glControl.Cursor = cursor;
 
-                (getContext != null ? getContext() : glControl.Context).MakeCurrent();
                 UpdateMapView();
 
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, mainFrameBuffer);
@@ -409,11 +418,30 @@ namespace STROOP.Tabs.MapTab
                     foreach (var action in layer)
                         action.Invoke();
 
-                GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-                GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, mainFrameBuffer);
-                GL.BlitFramebuffer(0, 0, glControl.Width, glControl.Height, 0, 0, glControl.Width, glControl.Height, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
-
-                glControl.SwapBuffers();
+                if (getContext == null)
+                {
+                    // Main map: render context == our own context. Blit our FBO to our window directly.
+                    GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+                    GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, mainFrameBuffer);
+                    GL.BlitFramebuffer(0, 0, glControl.Width, glControl.Height, 0, 0, glControl.Width, glControl.Height, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+                    glControl.SwapBuffers();
+                }
+                else
+                {
+                    // Popout: we rendered in the shared (main) context. Present into OUR own context/window
+                    // by blitting the shared color texture (valid via GLControl.SharedContext) through a
+                    // present-FBO that lives in our context. This is the fix for issue #39: the old code
+                    // blitted into the main window and swapped our never-rendered buffer.
+                    GL.Flush();
+                    glControl.MakeCurrent();
+                    if (presentFrameBuffer == 0)
+                        presentFrameBuffer = GL.GenFramebuffer();
+                    GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, presentFrameBuffer);
+                    GL.FramebufferTexture(FramebufferTarget.ReadFramebuffer, FramebufferAttachment.ColorAttachment0, mainColorBuffer, 0);
+                    GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+                    GL.BlitFramebuffer(0, 0, glControl.Width, glControl.Height, 0, 0, glControl.Width, glControl.Height, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+                    glControl.SwapBuffers();
+                }
             }
         }
 
