@@ -1,5 +1,5 @@
-﻿# .github/workflows/release-merge-build.yml
-name: Release Merge Build
+﻿# .github/workflows/build-release.yml
+name: Release Build
 
 on:
   push:
