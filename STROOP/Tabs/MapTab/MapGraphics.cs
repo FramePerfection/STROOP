@@ -310,6 +310,7 @@ namespace STROOP.Tabs.MapTab
                         DeleteMainSurfaces();
                         transparencyRenderer.SetDimensions(glControl.Width, glControl.Height);
                         InitMainSurfaces();
+                        InitOrUpdatePresentFrameBuffer();
                     }
             };
 
@@ -323,6 +324,7 @@ namespace STROOP.Tabs.MapTab
                 GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
 
                 InitMainSurfaces();
+                InitOrUpdatePresentFrameBuffer();
             });
 
             rendererCollection = getRenderers();
@@ -363,6 +365,20 @@ namespace STROOP.Tabs.MapTab
             FramebufferErrorCode error;
             if ((error = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer)) != FramebufferErrorCode.FramebufferComplete)
                 throw null;
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        }
+
+        void InitOrUpdatePresentFrameBuffer()
+        {
+            // Only needed for Map popouts
+            if (getContext == null) return;
+
+            glControl.MakeCurrent();
+            if (presentFrameBuffer == 0)
+                presentFrameBuffer = GL.GenFramebuffer();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, presentFrameBuffer);
+            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, mainColorBuffer, 0);
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
@@ -445,16 +461,13 @@ namespace STROOP.Tabs.MapTab
                 }
                 else
                 {
-                    // Popout: we rendered in the shared (main) context. Present into OUR own context/window
+                    // Popout: We rendered in the host context. Present into OUR own context/window
                     // by blitting the shared color texture (valid via GLControl.SharedContext) through a
                     // present-FBO that lives in our context. This is the fix for issue #39: the old code
                     // blitted into the main window and swapped our never-rendered buffer.
                     GL.Flush();
                     glControl.MakeCurrent();
-                    if (presentFrameBuffer == 0)
-                        presentFrameBuffer = GL.GenFramebuffer();
                     GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, presentFrameBuffer);
-                    GL.FramebufferTexture(FramebufferTarget.ReadFramebuffer, FramebufferAttachment.ColorAttachment0, mainColorBuffer, 0);
                     GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
                     GL.BlitFramebuffer(0, 0, glControl.Width, glControl.Height, 0, 0, glControl.Width, glControl.Height, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
                     glControl.SwapBuffers();
