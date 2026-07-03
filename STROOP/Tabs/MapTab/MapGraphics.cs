@@ -358,6 +358,14 @@ namespace STROOP.Tabs.MapTab
 
         public void CleanUp()
         {
+            if (getContext != null)
+            {
+                // The presentFrameBuffer is created specifically and exclusively in the "popout" context of the glControl this instance shall render to.
+                // Temporarily switch contexts to free the name of the framebuffer as early as possible.
+                glControl.Context!.MakeCurrent();
+                GL.DeleteFramebuffer(presentFrameBuffer);
+                getContext().MakeCurrent();
+            }
             transparencyRenderer.CleanUp();
             DeleteMainSurfaces();
         }

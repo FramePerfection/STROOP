@@ -1,22 +1,17 @@
-﻿using OpenTK;
-using System;
+﻿using System;
 using System.Windows.Forms;
 using OpenTK.GLControl;
 using STROOP.Core;
-using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab
 {
     public partial class MapPopout : Form
     {
-        // Kept so we can make the main map's (render) context current when cleaning up on close.
-        readonly MapTab tab;
         GLControl glControl;
         MapGraphics graphics;
 
         public MapPopout(MapTab tab)
         {
-            this.tab = tab;
             InitializeComponent();
             ClientSize = tab.graphics.glControl.ClientRectangle.Size;
             // Own GL context, but sharing resources with the main map's context so we can present the
@@ -46,10 +41,7 @@ namespace STROOP.Tabs.MapTab
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            // The render surfaces live in the main map's context; delete them there.
-            tab.graphics.glControl.Context.MakeCurrent();
             graphics.CleanUp();
-            // Disposing our control tears down our own context (and its present-FBO).
             glControl.Dispose();
         }
     }
