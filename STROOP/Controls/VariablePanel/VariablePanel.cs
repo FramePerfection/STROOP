@@ -34,8 +34,6 @@ namespace STROOP.Controls.VariablePanel
             tab.UpdateHexDisplay();
         }
 
-        private static int numDummies = 0;
-
         public readonly Func<List<IWinFormsVariableCell>> GetSelectedVars;
 
         public Func<IEnumerable<(string name, SpecialFuncVariables generateVariables)>> getSpecialFuncVariables = null;
@@ -411,19 +409,16 @@ namespace STROOP.Controls.VariablePanel
 
         private static CustomVariable CreateDummyVariable<T>() where T : struct, IConvertible
         {
-            throw new NotImplementedException();
-            // T capturedValue = default(T);
-            //
-            // return new CustomVariableView<T>(VariableUtilities.GetWrapperType(typeof(T)))
-            // {
-            //     Name = $"Dummy {++numDummies} {StringUtilities.Capitalize(typeof(T).Name)}",
-            //     _getterFunction = () => capturedValue.Yield(),
-            //     _setterFunction = (T value) =>
-            //     {
-            //         capturedValue = value;
-            //         return true.Yield();
-            //     }
-            // };
+            T capturedValue = default(T);
+            return new CustomVariable<T>("Number")
+            {
+                getter = () => capturedValue.Yield(),
+                setter = value =>
+                {
+                    capturedValue = value;
+                    return true.Yield();
+                },
+            };
         }
 
         private ToolStripMenuItem CreateFilterItem(string varGroup)
