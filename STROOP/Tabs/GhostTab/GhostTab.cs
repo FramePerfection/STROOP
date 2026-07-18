@@ -18,7 +18,12 @@ namespace STROOP.Tabs.GhostTab
 {
     public partial class GhostTab : STROOPTab
     {
-        const uint bufferBaseAddress = 0x80409B00;
+        // Base of the ghost hack's extended-RAM region. MUST match GhostBaseHi in ghost_loop.asm
+        // (and the rebuilt .hck inject addresses + area_update_objects hook). Relocate this out of a
+        // ROM hack's way to let the ghost hack coexist with it - see issue #4 (Usamune collision).
+        const uint GHOST_REGION_BASE = 0x80600000;
+
+        const uint bufferBaseAddress = GHOST_REGION_BASE + 0x9B00u;
 
         static IEnumerable<uint> GetActiveGhostIndices()
         {
@@ -85,7 +90,7 @@ namespace STROOP.Tabs.GhostTab
             int numGhosts = Math.Max(1, ghostArr.Length);
             if (updateGhostData)
             {
-                Config.Stream.SetValue((byte)numGhosts, 0x80407FFF);
+                Config.Stream.SetValue((byte)numGhosts, GHOST_REGION_BASE + 0x7FFFu);
                 WriteMarioColorToStream();
             }
 
@@ -165,7 +170,7 @@ namespace STROOP.Tabs.GhostTab
 
                     WriteGhostColorToStream(ghostIndex, ghostArr);
 
-                    var ptr = Config.Stream.GetUInt32((uint)(0x80407ff8 - ghostIndex * 0x68));
+                    var ptr = Config.Stream.GetUInt32((uint)(GHOST_REGION_BASE + 0x7FF8u - ghostIndex * 0x68));
                     Config.Stream.SetValue((byte)(ghostTransparent ? 1 : 0), ptr + 0x61);
                     lastGlobalTimer = globalTimer;
                 }
@@ -248,16 +253,16 @@ namespace STROOP.Tabs.GhostTab
             if (ghostHack?.Name != expectedHackName)
                 ghostHack = new RomHack($"Resources/Hacks/GhostHack{RomVersionConfig.Version}.hck", expectedHackName);
 
-            var ghostPointer = Config.Stream.GetInt32(0x80407FF8);
+            var ghostPointer = Config.Stream.GetInt32(GHOST_REGION_BASE + 0x7FF8u);
             bool ghostsActive = (ghostPointer & 0xFF000000) == 0x80000000;
-            bool shouldDisable = Config.Stream.GetByte(0x80407FFC) == 0xFF;
+            bool shouldDisable = Config.Stream.GetByte(GHOST_REGION_BASE + 0x7FFCu) == 0xFF;
             if (shouldDisable)
             {
                 labelHackActiveState.Text = "Disabling Ghost hack...\nInside a level, frame advance\nthen save state and load state.\nNot doing so will crash.\n(Not on Pure Interpreter)";
                 if (!ghostsActive)
                 {
                     ghostHack.ClearPayload();
-                    Config.Stream.SetValue((byte)0, 0x80407FFC);
+                    Config.Stream.SetValue((byte)0, GHOST_REGION_BASE + 0x7FFCu);
                 }
                 else
                     return true;
@@ -345,13 +350,13 @@ namespace STROOP.Tabs.GhostTab
             if (Config.Stream.GetInt32(0x80000000) != 0)
             {
                 ghostHack.LoadPayload();
-                Config.Stream.WriteRam(new byte[4], 0x80407FFC, EndiannessType.Little);
-                Config.Stream.WriteRam(new byte[0x70], 0x80407F90, EndiannessType.Little);
+                Config.Stream.WriteRam(new byte[4], GHOST_REGION_BASE + 0x7FFCu, EndiannessType.Little);
+                Config.Stream.WriteRam(new byte[0x70], GHOST_REGION_BASE + 0x7F90u, EndiannessType.Little);
 
                 EnableColoredHats();
 
                 //Tell ROM Hacks to suck it and get rid of the 01010101 pattern
-                Config.Stream.WriteRam(new byte[0x1000], 0x80408000 - 0x1000, EndiannessType.Big);
+                Config.Stream.WriteRam(new byte[0x1000], GHOST_REGION_BASE + 0x7000u, EndiannessType.Big);
             }
         }
 
@@ -366,8 +371,8 @@ If the game is not running in ""Pure Interpreter"" mode, FOLLOW THE STEPS EXACTL
 Are you sure you want to continue?";
             if (MessageBox.Show(txt, "You should not have to do this.", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                Config.Stream.SetValue((byte)0, 0x80407FFF);
-                Config.Stream.SetValue((byte)0xFF, 0x80407FFC);
+                Config.Stream.SetValue((byte)0, GHOST_REGION_BASE + 0x7FFFu);
+                Config.Stream.SetValue((byte)0xFF, GHOST_REGION_BASE + 0x7FFCu);
             }
         }
 
