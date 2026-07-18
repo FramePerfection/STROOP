@@ -8,12 +8,17 @@ RegPointerToCurrentGhost equ s1 ; Pointer to the currently processed ghost node
 RegProcessedGhostCount equ s0   ; Iteration counter for loops that process all ghosts
 
 ; hardcoded offsets
-ExtendedRAMStartHi equ 0x8040          ; The Hi part of the address pointing to the start of extended RAM
+GhostBaseHi equ 0x8060                  ; Relocatable base (Hi halfword) of the ghost hack's extended-RAM region.
+                                        ; Change this ONE value (and the matching GHOST_REGION_BASE in GhostTab.cs, the
+                                        ; code inject addresses, and the area_update_objects hook) to move the whole hack
+                                        ; out of a ROM hack's way - see issue #4 (Usamune collision).
+                                        ; Keep it 0x10-aligned so the animation region stays 0x10_0000 above the base.
+ExtendedRAMStartHi equ GhostBaseHi     ; The Hi part of the address pointing to the start of extended RAM
 NumRequestedGhosts equ 0x7FFF          ; Offset from extended RAM start to the byte indicating the number of ghosts to display. This value is written by STROOP.
 PointerToFirstGhost equ 0x7FF8         ; Offset from extended RAM start to the 4 byte pointer to the first ghost node
 NegativeGhostStructSize equ 0xFF98     ; The negative size of a single ghost node, used to iterate ghosts like a reversed array
 AnimationBufferSize equ 0x4000         ; The number of bytes reserved for animation data for each ghost
-FirstAnimationBufferAddrHi equ 0x8050  ; The Hi part of the address pointing to the animation buffer used by the first ghost
+FirstAnimationBufferAddrHi equ GhostBaseHi + 0x10  ; The Hi part of the address pointing to the animation buffer used by the first ghost (0x10_0000 above the base)
 InitializedGhostsFlag equ 0x40         ; A custom bit flag that can be set on the Mario object, indicating whether the ghost hack is active
 
 .n64
@@ -107,7 +112,7 @@ andi t0, t0, 0x7F
 sll t0, t0, 0x5
 sll t1, RegProcessedGhostCount, 0xC
 addu t0, t0, t1
-lui at, 0x8041
+lui at, GhostBaseHi + 1                 ; base+1: the addiu below sign-extends 0x9B00 (-> 0xFFFF9B00), so lui uses the NEXT Hi halfword to land on base_addr + 0x9B00 (e.g. 0x8041 + 0x9B00-as-negative = 0x80409B00)
 addu t0, t0, at
 addiu t0, t0, 0x9B00
 

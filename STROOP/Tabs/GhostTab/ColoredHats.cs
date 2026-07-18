@@ -36,8 +36,8 @@ namespace STROOP.Tabs.GhostTab
         const uint S_SEGMENT_TABLE_OFFSET_JP = 0x8033a090;
         const uint S_SEGMENT_TABLE_OFFSET_US = 0x8033b400;
 
-        const uint COLORED_HATS_CODE_TARGET_ADDR = 0x80408200;
-        const uint COLORED_HATS_LIGHTS_ADDR = 0x80408300;
+        const uint COLORED_HATS_CODE_TARGET_ADDR = GHOST_REGION_BASE + 0x8200u;
+        const uint COLORED_HATS_LIGHTS_ADDR = GHOST_REGION_BASE + 0x8300u;
 
         private static void EnableColoredHats()
         {

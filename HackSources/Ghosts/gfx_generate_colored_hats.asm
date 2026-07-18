@@ -32,7 +32,7 @@ lui at, 0x0388
 ori at, at, 0x0010
 sw at, 0x18 (v0)
 sw at, 0x0 (v0)
-lui t0, 0x8040
+lui t0, GhostBaseHi                     ; colored-hats "lights" buffer at base + 0x8300 (GhostBaseHi comes from ghost_loop.asm, included first; mirrors COLORED_HATS_LIGHTS_ADDR in C#)
 ori t0, t0, 0x8300
 lw t1, 0x20 (sp)
 sll t1, t1, 0x5
