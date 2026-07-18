@@ -34,8 +34,6 @@ namespace STROOP.Controls.VariablePanel
             tab.UpdateHexDisplay();
         }
 
-        private static int numDummies = 0;
-
         public readonly Func<List<IWinFormsVariableCell>> GetSelectedVars;
 
         public Func<IEnumerable<(string name, SpecialFuncVariables generateVariables)>> getSpecialFuncVariables = null;
