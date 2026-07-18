@@ -27,7 +27,10 @@ namespace STROOP.Structs
             => cells.OfType<INumberVariableCell>().Where(x => x is not IVariableCellData<string>);
 
         static double GetNumberValue(this INumberVariableCell cell)
-            => (double)(Convert.ChangeType(cell.CombineValues().value, TypeCode.Double) ?? double.NaN);
+        {
+            var cellValue = cell.CombineValues().value;
+            return cellValue == null ? double.NaN : (double)(Convert.ChangeType(cellValue, TypeCode.Double));
+        }
 
         static bool SetValue(this INumberVariableCell cell, double value)
             => cell.TrySetValue(value.ToString(CultureInfo.InvariantCulture));
