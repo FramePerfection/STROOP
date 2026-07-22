@@ -3,7 +3,7 @@ US:
 8027B188: 0C 18 20 00
 
 JP:
-8027ABD8: 0C 10 20 00
+8027ABD8: 0C 18 20 00
 
 <--- Disables low resolution Mario entirely --->
 US:

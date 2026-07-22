@@ -20,7 +20,7 @@ gMarioStatesLo equ 0x9e00
 alloc_display_list equ 0x8027897c
 
 
-.create "./build/JP_80408000_ghost_loop.bin", 0x00000000
+.create "./build/JP_80608000_ghost_loop.bin", 0x00000000
 .include "./ghost_loop.asm"
 .Close
 
@@ -37,6 +37,6 @@ alloc_display_list equ 0x8027897c
 .include "./avoid_holp_desyncs.asm"
 .close
 
-.create "./build/JP_80408200_gfx_generate_colored_hats.bin", 0x00000000
+.create "./build/JP_80608200_gfx_generate_colored_hats.bin", 0x00000000
 .include "./gfx_generate_colored_hats.asm"
 .close

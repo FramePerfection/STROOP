@@ -455,7 +455,7 @@
             this.textBoxPoolAddr2.Name = "textBoxPoolAddr2";
             this.textBoxPoolAddr2.Size = new System.Drawing.Size(69, 20);
             this.textBoxPoolAddr2.TabIndex = 2;
-            this.textBoxPoolAddr2.Text = "80700000";
+            this.textBoxPoolAddr2.Text = "80500000";
             // 
             // textBoxPoolAddr1
             // 
@@ -463,7 +463,7 @@
             this.textBoxPoolAddr1.Name = "textBoxPoolAddr1";
             this.textBoxPoolAddr1.Size = new System.Drawing.Size(69, 20);
             this.textBoxPoolAddr1.TabIndex = 2;
-            this.textBoxPoolAddr1.Text = "80600000";
+            this.textBoxPoolAddr1.Text = "80400000";
             // 
             // labelPoolSize
             // 

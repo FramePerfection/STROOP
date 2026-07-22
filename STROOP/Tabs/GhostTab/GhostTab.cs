@@ -18,10 +18,15 @@ namespace STROOP.Tabs.GhostTab
 {
     public partial class GhostTab : STROOPTab
     {
-        // Base of the ghost hack's extended-RAM region. MUST match GhostBaseHi in ghost_loop.asm
-        // (and the rebuilt .hck inject addresses + area_update_objects hook). Relocate this out of a
-        // ROM hack's way to let the ghost hack coexist with it - see issue #4 (Usamune collision).
+        // Base of the ghost hack's extended-RAM region. Must match GhostBaseHi in ghost_loop.asm
+        // and the inject addresses + hook bytes in Resources/Hacks/GhostHack*.hck.
         const uint GHOST_REGION_BASE = 0x80600000;
+
+        const uint GHOST_CODE_ADDR = GHOST_REGION_BASE + 0x8000u;
+        // These offsets mirror NumRequestedGhosts / PointerToFirstGhost in ghost_loop.asm.
+        const uint NUM_GHOSTS_ADDR = GHOST_REGION_BASE + 0x7FFFu;
+        const uint FIRST_GHOST_POINTER_ADDR = GHOST_REGION_BASE + 0x7FF8u;
+        const uint DISABLE_REQUEST_ADDR = GHOST_REGION_BASE + 0x7FFCu;
 
         const uint bufferBaseAddress = GHOST_REGION_BASE + 0x9B00u;
 
@@ -90,7 +95,7 @@ namespace STROOP.Tabs.GhostTab
             int numGhosts = Math.Max(1, ghostArr.Length);
             if (updateGhostData)
             {
-                Config.Stream.SetValue((byte)numGhosts, GHOST_REGION_BASE + 0x7FFFu);
+                Config.Stream.SetValue((byte)numGhosts, NUM_GHOSTS_ADDR);
                 WriteMarioColorToStream();
             }
 
@@ -170,7 +175,7 @@ namespace STROOP.Tabs.GhostTab
 
                     WriteGhostColorToStream(ghostIndex, ghostArr);
 
-                    var ptr = Config.Stream.GetUInt32((uint)(GHOST_REGION_BASE + 0x7FF8u - ghostIndex * 0x68));
+                    var ptr = Config.Stream.GetUInt32((uint)(FIRST_GHOST_POINTER_ADDR - ghostIndex * 0x68));
                     Config.Stream.SetValue((byte)(ghostTransparent ? 1 : 0), ptr + 0x61);
                     lastGlobalTimer = globalTimer;
                 }
@@ -253,16 +258,16 @@ namespace STROOP.Tabs.GhostTab
             if (ghostHack?.Name != expectedHackName)
                 ghostHack = new RomHack($"Resources/Hacks/GhostHack{RomVersionConfig.Version}.hck", expectedHackName);
 
-            var ghostPointer = Config.Stream.GetInt32(GHOST_REGION_BASE + 0x7FF8u);
+            var ghostPointer = Config.Stream.GetInt32(FIRST_GHOST_POINTER_ADDR);
             bool ghostsActive = (ghostPointer & 0xFF000000) == 0x80000000;
-            bool shouldDisable = Config.Stream.GetByte(GHOST_REGION_BASE + 0x7FFCu) == 0xFF;
+            bool shouldDisable = Config.Stream.GetByte(DISABLE_REQUEST_ADDR) == 0xFF;
             if (shouldDisable)
             {
                 labelHackActiveState.Text = "Disabling Ghost hack...\nInside a level, frame advance\nthen save state and load state.\nNot doing so will crash.\n(Not on Pure Interpreter)";
                 if (!ghostsActive)
                 {
                     ghostHack.ClearPayload();
-                    Config.Stream.SetValue((byte)0, GHOST_REGION_BASE + 0x7FFCu);
+                    Config.Stream.SetValue((byte)0, DISABLE_REQUEST_ADDR);
                 }
                 else
                     return true;
@@ -350,13 +355,13 @@ namespace STROOP.Tabs.GhostTab
             if (Config.Stream.GetInt32(0x80000000) != 0)
             {
                 ghostHack.LoadPayload();
-                Config.Stream.WriteRam(new byte[4], GHOST_REGION_BASE + 0x7FFCu, EndiannessType.Little);
+                Config.Stream.WriteRam(new byte[4], DISABLE_REQUEST_ADDR, EndiannessType.Little);
                 Config.Stream.WriteRam(new byte[0x70], GHOST_REGION_BASE + 0x7F90u, EndiannessType.Little);
 
                 EnableColoredHats();
 
                 //Tell ROM Hacks to suck it and get rid of the 01010101 pattern
-                Config.Stream.WriteRam(new byte[0x1000], GHOST_REGION_BASE + 0x7000u, EndiannessType.Big);
+                Config.Stream.WriteRam(new byte[0x1000], GHOST_CODE_ADDR - 0x1000u, EndiannessType.Big);
             }
         }
 
@@ -371,8 +376,8 @@ If the game is not running in ""Pure Interpreter"" mode, FOLLOW THE STEPS EXACTL
 Are you sure you want to continue?";
             if (MessageBox.Show(txt, "You should not have to do this.", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                Config.Stream.SetValue((byte)0, GHOST_REGION_BASE + 0x7FFFu);
-                Config.Stream.SetValue((byte)0xFF, GHOST_REGION_BASE + 0x7FFCu);
+                Config.Stream.SetValue((byte)0, NUM_GHOSTS_ADDR);
+                Config.Stream.SetValue((byte)0xFF, DISABLE_REQUEST_ADDR);
             }
         }
 
