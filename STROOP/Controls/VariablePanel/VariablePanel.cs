@@ -410,16 +410,15 @@ namespace STROOP.Controls.VariablePanel
         private static CustomVariable CreateDummyVariable<T>() where T : struct, IConvertible
         {
             T capturedValue = default(T);
-
-            var variable = new CustomVariable<T>("Number");
-            variable.getter = () => capturedValue.Yield();
-            variable.setter = value =>
+            return new CustomVariable<T>("Number")
             {
-                capturedValue = value;
-                return true.Yield();
+                getter = () => capturedValue.Yield(),
+                setter = value =>
+                {
+                    capturedValue = value;
+                    return true.Yield();
+                },
             };
-
-            return variable;
         }
 
         private ToolStripMenuItem CreateFilterItem(string varGroup)
