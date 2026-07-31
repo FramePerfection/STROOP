@@ -24,7 +24,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                         * Matrix4.CreateScale((quad.xMax - quad.xMin) * 0.5f, 1, (quad.zMax - quad.zMin) * 0.5f)
                                         * Matrix4.CreateTranslation((quad.xMin + quad.xMax) * 0.5f, quad.y, (quad.zMin + quad.zMax) * 0.5f);
                     graphics.circleRenderer.AddInstance(
-                        graphics.view.mode != MapView.ViewMode.TopDown,
+                        graphics.viewMode != MapGraphics.ViewMode.TopDown,
                         transform,
                         OutlineWidth,
                         color,

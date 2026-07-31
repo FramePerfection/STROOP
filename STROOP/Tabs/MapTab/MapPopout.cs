@@ -28,7 +28,7 @@ namespace STROOP.Tabs.MapTab
             graphics = new MapGraphics(tab, glControl, () => tab.graphics.glControl.Context);
             graphics.MapViewAngleValue = tab.graphics.MapViewAngleValue;
             graphics.MapViewScaleValue = tab.graphics.MapViewScaleValue;
-            graphics.view.position = tab.graphics.view.position;
+            graphics.currentView.position = tab.graphics.currentView.position;
             Shown += (_, __) =>
             {
                 using (new AccessScope<MapTab>(tab))

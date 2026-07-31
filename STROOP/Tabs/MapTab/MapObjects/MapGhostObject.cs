@@ -26,7 +26,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 foreach (var pa in positionAngleProvider())
                     if (pa is GhostTab.Ghost.GhostPositionAngle a)
                     {
-                        var transparent = graphics.view.mode == MapView.ViewMode.ThreeDimensional;
+                        var transparent = graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional;
                         var alpha = hoverData.currentPositionAngle == a ? ObjectUtilities.HoverAlpha() : 1;
                         var angle = Rotates ? (float)a.Angle : 0x8000 - graphics.MapViewAngleValue;
 

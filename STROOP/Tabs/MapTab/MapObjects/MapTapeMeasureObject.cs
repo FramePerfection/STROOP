@@ -125,8 +125,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             OutlineColor = Color.Orange;
             OutlineWidth = 3;
-            a = new Vector3(currentMapTab.graphics.view.position.X - 50, 0, currentMapTab.graphics.view.position.Z);
-            b = new Vector3(currentMapTab.graphics.view.position.X + 50, 0, currentMapTab.graphics.view.position.Z);
+            a = new Vector3(currentMapTab.graphics.currentView.position.X - 50, 0, currentMapTab.graphics.currentView.position.Z);
+            b = new Vector3(currentMapTab.graphics.currentView.position.X + 50, 0, currentMapTab.graphics.currentView.position.Z);
             hoverData = new TapeHoverData(this);
             for (int mask = 1; mask <= 8; mask++)
             {
@@ -230,7 +230,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             float magicConst = 15;
             Vector3 _a = aProvider?.Invoke() ?? a;
             Vector3 _b = bProvider?.Invoke() ?? b;
-            if (graphics.view.mode == MapView.ViewMode.TopDown)
+            if (graphics.viewMode == MapGraphics.ViewMode.TopDown)
             {
                 var rad = (magicConst / graphics.MapViewScaleValue);
                 if (graphics.HoverTopDown(_a, rad))
@@ -246,9 +246,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     return hoverData;
                 }
             }
-            else if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+            else if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
             {
-                bool prioritizeA = (_a - graphics.view.position).LengthSquared < (_b - graphics.view.position).LengthSquared;
+                bool prioritizeA = (_a - graphics.currentView.position).LengthSquared < (_b - graphics.currentView.position).LengthSquared;
                 bool hoverA = graphics.Hover3D(_a, magicConst * Get3DIconScale(graphics, _a.X, _a.Y, _a.Z));
                 bool hoverB = graphics.Hover3D(_b, magicConst * Get3DIconScale(graphics, _b.X, _b.Y, _b.Z));
                 if (hoverA && (!hoverB || prioritizeA))

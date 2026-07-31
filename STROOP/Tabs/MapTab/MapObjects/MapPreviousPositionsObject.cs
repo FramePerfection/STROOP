@@ -75,7 +75,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 foreach (var dataPoint in data)
                     DrawIcon(
                         graphics,
-                        graphics.view.mode == MapView.ViewMode.ThreeDimensional,
+                        graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
                         dataPoint.x, dataPoint.y, dataPoint.z, dataPoint.angle,
                         dataPoint.tex.Value,
                         new Vector4(1));

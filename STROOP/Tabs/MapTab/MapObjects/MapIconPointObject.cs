@@ -17,7 +17,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             {
                 foreach (var a in positionAngleProvider())
                     DrawIcon(graphics,
-                        graphics.view.mode == MapView.ViewMode.ThreeDimensional,
+                        graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
                         (float)a.X, (float)a.Y, (float)a.Z,
                         Rotates ? (float)a.Angle : 0x8000 - graphics.MapViewAngleValue,
                         GetInternalImage()?.Value,
@@ -38,7 +38,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             {
                 hoverData.currentPositionAngle = null;
                 foreach (var a in positionAngleProvider())
-                    if (graphics.view.mode == MapView.ViewMode.TopDown)
+                    if (graphics.viewMode == MapGraphics.ViewMode.TopDown)
                     {
                         if (graphics.HoverTopDown(new Vector3((float)a.X, cursorPos.Y, (float)a.Z), radius))
                         {
@@ -46,7 +46,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             break;
                         }
                     }
-                    else if (graphics.view.mode == MapView.ViewMode.Orthogonal)
+                    else if (graphics.viewMode == MapGraphics.ViewMode.Orthogonal)
                     {
                         if (graphics.HoverOrthogonal(a.position, radius))
                         {
@@ -54,12 +54,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             break;
                         }
                     }
-                    else if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+                    else if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
                     {
                         var rad = Size * Get3DIconScale(graphics, (float)a.X, (float)a.Y, (float)a.Z);
                         if (graphics.Hover3D(a.position, rad))
                         {
-                            var newDist = (a.position - graphics.view.position).LengthSquared;
+                            var newDist = (a.position - graphics.currentView.position).LengthSquared;
                             if (closestDist > newDist)
                             {
                                 hoverData.currentPositionAngle = a;

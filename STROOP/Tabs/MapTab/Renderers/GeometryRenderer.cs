@@ -227,7 +227,7 @@ namespace STROOP.Tabs.MapTab.Renderers
         public override void SetDrawCalls(MapGraphics graphics)
         {
             instances.Clear();
-            if (graphics.view.drawCylinderOutlines)
+            if (graphics.drawCylinderOutlines)
                 graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffersRedirect].Add(() =>
                 {
                     foreach (var instance in instances)

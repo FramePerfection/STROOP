@@ -57,8 +57,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 var alignPositionItem = new ToolStripMenuItem("Align with view");
                 alignPositionItem.Click += (_, __) =>
                 {
-                    currentKeyFrame.position = tab.graphics.view.position;
-                    currentKeyFrame.targetPoint.position = tab.graphics.view.position + tab.graphics.view.ComputeViewDirection() * 400;
+                    currentKeyFrame.position = tab.graphics.currentView.position;
+                    currentKeyFrame.targetPoint.position = tab.graphics.currentView.position + tab.graphics.currentView.ComputeViewDirection() * 400;
                 };
 
                 var waitForItem = new ToolStripMenuItem("Wait for... (adjust timings)");
@@ -211,18 +211,18 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 foreach (var a in keyFrames)
                 {
                     DrawIcon(graphics,
-                        graphics.view.mode == MapView.ViewMode.ThreeDimensional,
+                        graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
                         (float)a.X, (float)a.Y, (float)a.Z,
                         Rotates ? (float)a.Angle : 0x8000 - graphics.MapViewAngleValue,
                         GetInternalImage()?.Value,
                         new Vector4(1, 1, 1, actualHoverData.currentKeyFrame == a ? ObjectUtilities.HoverAlpha() : 1));
 
                     float desiredDiameter = Size * 2;
-                    if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+                    if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
                         desiredDiameter *= Get3DIconScale(graphics, (float)a.targetPoint.X, (float)a.targetPoint.Y, (float)a.targetPoint.Z);
 
                     graphics.circleRenderer.AddInstance(
-                        graphics.view.mode == MapView.ViewMode.ThreeDimensional,
+                        graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
                         graphics.BillboardMatrix * Matrix4.CreateScale(desiredDiameter) * Matrix4.CreateTranslation(a.targetPoint.position),
                         1,
                         new Vector4(0.5f, 0.5f, 0.5f, 0.5f),
@@ -245,8 +245,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
             itemAddKeyframe.Click += (_, __) =>
             {
                 var f = new KeyFrame();
-                f.position = targetTracker.mapTab.graphics.view.position;
-                f.targetPoint.position = targetTracker.mapTab.graphics.view.position + targetTracker.mapTab.graphics.view.ComputeViewDirection() * 400;
+                f.position = targetTracker.mapTab.graphics.currentView.position;
+                f.targetPoint.position = targetTracker.mapTab.graphics.currentView.position + targetTracker.mapTab.graphics.currentView.ComputeViewDirection() * 400;
                 keyFrames.Add(f);
             };
             _contextMenuStrip.Items.Add(itemAddKeyframe);

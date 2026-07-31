@@ -143,7 +143,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         new Vector4(Color.R / 255f, Color.G / 255f, Color.B / 255f, OpacityByte / 255f),
                         new Vector4(OutlineColor.R / 255f, OutlineColor.G / 255f, OutlineColor.B / 255f, OutlineColor.A / 255f),
                         OutlineWidth,
-                        graphics.view.mode != MapView.ViewMode.TopDown);
+                        graphics.viewMode != MapGraphics.ViewMode.TopDown);
                 }
             });
         }
