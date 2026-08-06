@@ -13,6 +13,7 @@ using STROOP.Structs;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab.Views;
 using STROOP.Utilities;
+using System.Linq;
 
 namespace STROOP.Tabs.MapTab
 {
@@ -164,9 +165,9 @@ namespace STROOP.Tabs.MapTab
             ViewMode.ThreeDimensional => view3D,
         };
 
-        public readonly ViewTopDown viewTopDown = new();
-        public readonly ViewOrthogonal viewOrthogonal = new();
-        public readonly View3D view3D = new();
+        public ViewTopDown viewTopDown;
+        public ViewOrthogonal viewOrthogonal;
+        public View3D view3D;
 
         public float MapViewRadius => (float)MoreMath.GetHypotenuse(glControl.Width / 2, glControl.Height / 2) / MapViewScaleValue;
 
@@ -247,6 +248,9 @@ namespace STROOP.Tabs.MapTab
             this.mapTab = mapTab;
             this.glControl = glControl;
             this.getContext = getContext;
+            view3D = mapTab.views3D.First();
+            viewTopDown = mapTab.viewsTopDown.First();
+            viewOrthogonal = mapTab.viewsOrthogonal.First();
 
             glControl.MouseDown += (_, _) => glControl.Focus();
             keyboardControls = new(glControl);

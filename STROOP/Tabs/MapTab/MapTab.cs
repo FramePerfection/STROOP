@@ -6,8 +6,6 @@ using STROOP.Structs;
 using STROOP.Utilities;
 using System.Windows.Forms;
 using System.Drawing;
-using OpenTK;
-using OpenTK.Graphics;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab.MapObjects;
 using System.Xml.Linq;
@@ -86,6 +84,10 @@ namespace STROOP.Tabs.MapTab
         HashSet<uint> trackedAddresses = new HashSet<uint>();
 
         public override HashSet<uint> selection => _selection;
+
+        public List<ViewTopDown> viewsTopDown = [new() { name = "Mario" }];
+        public List<ViewOrthogonal> viewsOrthogonal = [new() { name = "Mario" }];
+        public List<View3D> views3D = [new() { name = "Mario" }];
 
         public MapTab()
         {
@@ -170,7 +172,6 @@ namespace STROOP.Tabs.MapTab
         public MapLayout GetMapLayout(object mapLayoutChoice = null) =>
             (mapLayoutChoice ?? comboBoxMapOptionsLevel.SelectedItem) as MapLayout ?? MapAssociations.GetBestMap();
 
-
         bool displayingExtendedBoundaries = false;
         bool needsGeometryRefresh, _needsGeometryRefreshInternal;
         public bool NeedsGeometryRefresh() => needsGeometryRefresh;
@@ -249,7 +250,7 @@ namespace STROOP.Tabs.MapTab
                                 toolStripItem.Click += (sender, e) => addNewTracker();
                                 return toolStripItem;
                             }
-                    ));
+                        ));
                 }
             }
 
@@ -500,6 +501,7 @@ namespace STROOP.Tabs.MapTab
 
         void ShowRightClickMenu()
         {
+            contextMenu?.Dispose();
             contextMenu = new ContextMenuStrip();
             var onClickPosition = graphics.mapCursorPosition;
             var copyPositionItem = new ToolStripMenuItem("Copy Cursor Position");
@@ -533,7 +535,51 @@ namespace STROOP.Tabs.MapTab
             };
             contextMenu.Items.Add(openPopoutItem);
 
+            AddViewContextMenuItems(contextMenu, graphics);
+
             contextMenu.Show(Cursor.Position);
+        }
+
+        public void AddViewContextMenuItems(ContextMenuStrip contextMenu, MapGraphics mapGraphics)
+        {
+            contextMenu.Items.Add(new ToolStripSeparator());
+            var rootItem = new ToolStripMenuItem("View");
+            foreach (var (mode, list, field) in (IEnumerable<(MapGraphics.ViewMode, IEnumerable<ViewBase>, FieldInfo)>)
+                     [
+                         (MapGraphics.ViewMode.TopDown, viewsTopDown, typeof(MapGraphics).GetField(nameof(MapGraphics.viewTopDown))),
+                         (MapGraphics.ViewMode.Orthogonal, viewsOrthogonal, typeof(MapGraphics).GetField(nameof(MapGraphics.viewOrthogonal))),
+                         (MapGraphics.ViewMode.ThreeDimensional, views3D, typeof(MapGraphics).GetField(nameof(MapGraphics.view3D))),
+                     ])
+            {
+                var modeItem = new ToolStripMenuItem(mode.ToString());
+                modeItem.Click += (_, _) => mapGraphics.viewMode = mode;
+                var currentView = (ViewBase)field.GetValue(mapGraphics);
+                foreach (var view in list)
+                {
+                    var viewItem = new ToolStripMenuItem(view.name) { Checked = currentView == view };
+                    viewItem.Click += (_, _) =>
+                    {
+                        mapGraphics.viewMode = mode;
+                        field.SetValue(mapGraphics, view);
+                    };
+                    modeItem.DropDownItems.Add(viewItem);
+                }
+
+                var newItem = new ToolStripMenuItem("add ...");
+                newItem.Click += (_, _) =>
+                {
+                    var newView = (ViewBase)Activator.CreateInstance(field.FieldType);
+                    foreach (var newField in field.FieldType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        newField.SetValue(newView, newField.GetValue(currentView));
+                    newView.name = DialogUtilities.GetStringFromDialog("Custom", "Enter a Name") ?? "<unnamed>";
+                    field.SetValue(mapGraphics, newView);
+                    mapGraphics.viewMode = mode;
+                    list.GetType().GetMethod(nameof(IList<int>.Add)).Invoke(list, [newView]);
+                };
+                modeItem.DropDownItems.Add(newItem);
+                rootItem.DropDownItems.Add(modeItem);
+            }
+            contextMenu.Items.Add(rootItem);
         }
 
         private void LoadDefaultTrackers()

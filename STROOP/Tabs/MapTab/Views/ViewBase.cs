@@ -11,6 +11,8 @@ public interface PivotingView
 
 public abstract class ViewBase
 {
+    public string name = "Custom";
+
     // TODO: consider what this is (ab)used for
     public Vector3 position;
 
