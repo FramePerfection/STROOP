@@ -503,19 +503,6 @@ namespace STROOP.Tabs.MapTab
         {
             contextMenu?.Dispose();
             contextMenu = new ContextMenuStrip();
-            var onClickPosition = graphics.mapCursorPosition;
-            var copyPositionItem = new ToolStripMenuItem("Copy Cursor Position");
-            copyPositionItem.Click += (e, args) => CopyUtilities.CopyPosition(onClickPosition);
-            contextMenu.Items.Add(copyPositionItem);
-            contextMenu.Items.Add(new ToolStripSeparator());
-
-            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
-            {
-                var pivotPositionItem = new ToolStripMenuItem("Pivot This Position");
-                pivotPositionItem.Click += (_, _) => (graphics.currentView as PivotingView)?.Pivot(PositionAngle.Custom(onClickPosition));
-                contextMenu.Items.Add(pivotPositionItem);
-                contextMenu.Items.Add(new ToolStripSeparator());
-            }
 
             foreach (var a in hoverData)
                 a.AddContextMenuItems(this, contextMenu);
@@ -535,6 +522,8 @@ namespace STROOP.Tabs.MapTab
             };
             contextMenu.Items.Add(openPopoutItem);
 
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             AddViewContextMenuItems(contextMenu, graphics);
 
             contextMenu.Show(Cursor.Position);
@@ -542,7 +531,19 @@ namespace STROOP.Tabs.MapTab
 
         public void AddViewContextMenuItems(ContextMenuStrip contextMenu, MapGraphics mapGraphics)
         {
-            contextMenu.Items.Add(new ToolStripSeparator());
+            var onClickPosition = graphics.mapCursorPosition;
+            var copyPositionItem = new ToolStripMenuItem("Copy Cursor Position");
+            copyPositionItem.Click += (e, args) => CopyUtilities.CopyPosition(onClickPosition);
+            contextMenu.Items.Add(copyPositionItem);
+
+            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+            {
+                var pivotPositionItem = new ToolStripMenuItem("Pivot This Position");
+                pivotPositionItem.Click += (_, _) => (graphics.currentView as PivotingView)?.Pivot(PositionAngle.Custom(onClickPosition));
+                contextMenu.Items.Add(pivotPositionItem);
+                contextMenu.Items.Add(new ToolStripSeparator());
+            }
+
             var rootItem = new ToolStripMenuItem("View");
             foreach (var (mode, list, field) in (IEnumerable<(MapGraphics.ViewMode, IEnumerable<ViewBase>, FieldInfo)>)
                      [
