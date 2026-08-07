@@ -14,6 +14,7 @@ using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab.Views;
 using STROOP.Utilities;
 using System.Linq;
+using System.Reflection;
 
 namespace STROOP.Tabs.MapTab
 {
@@ -56,6 +57,9 @@ namespace STROOP.Tabs.MapTab
             projectedPos.Y = (1 - projectedPos.Y) * glControl.Height / 2;
             return (projectedPos.Xy - mousePosition2D).LengthSquared < (radius * radius);
         }
+
+        public bool IsContextMenuOpen() => contextMenu != null && contextMenu.Visible;
+        ContextMenuStrip contextMenu;
 
         public readonly List<Action>[] drawLayers;
 
@@ -676,12 +680,37 @@ namespace STROOP.Tabs.MapTab
 
             using (new AccessScope<MapTab>(mapTab))
             {
-                mapTab.UpdateHover();
+                UpdateHover();
                 foreach (var data in mapTab.hoverData)
                     if (e.Button == MouseButtons.Left)
                         data.LeftClick(mapCursorPosition);
                     else if (e.Button == MouseButtons.Right)
                         data.RightClick(mapCursorPosition);
+            }
+        }
+
+        public void UpdateHover()
+        {
+            using (new AccessScope<MapTab>(mapTab))
+            {
+                if (!IsMouseDown(0))
+                {
+                    var newCursor = mapCursorPosition;
+                    mapTab.hoverData.Clear();
+                    foreach (var tracker in mapTab.flowLayoutPanelMapTrackers.EnumerateTrackers())
+                        if (tracker.IsVisible)
+                        {
+                            var newHover = tracker.mapObject.GetHoverData(this, ref newCursor);
+                            if (fixCursorPlane)
+                            {
+                                cursorViewPlaneDist = Vector3.Dot(currentView.ComputeViewDirection(), newCursor - currentView.position);
+                                UpdateCursor();
+                            }
+
+                            if (newHover != null)
+                                mapTab.hoverData.Add(newHover);
+                        }
+                }
             }
         }
 
@@ -887,6 +916,78 @@ namespace STROOP.Tabs.MapTab
                 float movement = (float)frameTime * (keyboardControls.IsShiftDown() ? 100 : 2000);
                 currentView.position += (right * relativeMovement.X + up * relativeMovement.Y + forwards * relativeMovement.Z) * movement;
             }
+        }
+
+        public void RecreateContextMenu(Action<ContextMenuStrip> addAdditionalItems = null)
+        {
+            contextMenu?.Dispose();
+            contextMenu = new ContextMenuStrip();
+
+            foreach (var a in mapTab.hoverData)
+                a.AddContextMenuItems(mapTab, contextMenu);
+
+            if (mapTab.hoverData.Count > 0)
+                contextMenu.Items.Add(new ToolStripSeparator());
+
+            AddViewContextMenuItems(contextMenu);
+
+            addAdditionalItems?.Invoke(contextMenu);
+
+            contextMenu.Show(Cursor.Position);
+        }
+
+        public void AddViewContextMenuItems(ContextMenuStrip contextMenu)
+        {
+            var onClickPosition = mapCursorPosition;
+            var copyPositionItem = new ToolStripMenuItem("Copy Cursor Position");
+            copyPositionItem.Click += (_, _) => CopyUtilities.CopyPosition(onClickPosition);
+            contextMenu.Items.Add(copyPositionItem);
+
+            if (viewMode == ViewMode.ThreeDimensional)
+            {
+                var pivotPositionItem = new ToolStripMenuItem("Pivot This Position");
+                pivotPositionItem.Click += (_, _) => (currentView as PivotingView)?.Pivot(PositionAngle.Custom(onClickPosition));
+                contextMenu.Items.Add(pivotPositionItem);
+                contextMenu.Items.Add(new ToolStripSeparator());
+            }
+
+            var rootItem = new ToolStripMenuItem("View");
+            foreach (var (mode, list, field) in (IEnumerable<(ViewMode, IEnumerable<ViewBase>, FieldInfo)>)
+                     [
+                         (ViewMode.TopDown, mapTab.viewsTopDown, typeof(MapGraphics).GetField(nameof(viewTopDown))),
+                         (ViewMode.Orthogonal, mapTab.viewsOrthogonal, typeof(MapGraphics).GetField(nameof(viewOrthogonal))),
+                         (ViewMode.ThreeDimensional, mapTab.views3D, typeof(MapGraphics).GetField(nameof(view3D))),
+                     ])
+            {
+                var modeItem = new ToolStripMenuItem(mode.ToString());
+                modeItem.Click += (_, _) => viewMode = mode;
+                var currentView = (ViewBase)field.GetValue(this);
+                foreach (var view in list)
+                {
+                    var viewItem = new ToolStripMenuItem(view.name) { Checked = currentView == view };
+                    viewItem.Click += (_, _) =>
+                    {
+                        viewMode = mode;
+                        field.SetValue(this, view);
+                    };
+                    modeItem.DropDownItems.Add(viewItem);
+                }
+
+                var newItem = new ToolStripMenuItem("add ...");
+                newItem.Click += (_, _) =>
+                {
+                    var newView = (ViewBase)Activator.CreateInstance(field.FieldType);
+                    foreach (var newField in field.FieldType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        newField.SetValue(newView, newField.GetValue(currentView));
+                    newView.name = DialogUtilities.GetStringFromDialog("Custom", "Enter a Name") ?? "<unnamed>";
+                    field.SetValue(this, newView);
+                    viewMode = mode;
+                    list.GetType().GetMethod(nameof(IList<int>.Add)).Invoke(list, [newView]);
+                };
+                modeItem.DropDownItems.Add(newItem);
+                rootItem.DropDownItems.Add(modeItem);
+            }
+            contextMenu.Items.Add(rootItem);
         }
     }
 }

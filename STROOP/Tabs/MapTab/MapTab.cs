@@ -492,95 +492,19 @@ namespace STROOP.Tabs.MapTab
             glControlMap2D.MouseDown += (sender, e) =>
             {
                 if (e.Button == MouseButtons.Right)
-                    ShowRightClickMenu();
-            };
-        }
-
-        bool IsContextMenuOpen() => contextMenu != null && contextMenu.Visible;
-        ContextMenuStrip contextMenu;
-
-        void ShowRightClickMenu()
-        {
-            contextMenu?.Dispose();
-            contextMenu = new ContextMenuStrip();
-
-            foreach (var a in hoverData)
-                a.AddContextMenuItems(this, contextMenu);
-
-            if (hoverData.Count > 0)
-            {
-                contextMenu.Items.Add(new ToolStripSeparator());
-            }
-
-            var openPopoutItem = new ToolStripMenuItem("Open Popout");
-            openPopoutItem.Click += (e, args) =>
-            {
-                var popout = new MapPopout(this) { Owner = FindForm() };
-                popout.Show();
-                popout.FormClosed += (_, __) => popouts.Remove(popout);
-                popouts.Add(popout);
-            };
-            contextMenu.Items.Add(openPopoutItem);
-
-            contextMenu.Items.Add(new ToolStripSeparator());
-
-            AddViewContextMenuItems(contextMenu, graphics);
-
-            contextMenu.Show(Cursor.Position);
-        }
-
-        public void AddViewContextMenuItems(ContextMenuStrip contextMenu, MapGraphics mapGraphics)
-        {
-            var onClickPosition = graphics.mapCursorPosition;
-            var copyPositionItem = new ToolStripMenuItem("Copy Cursor Position");
-            copyPositionItem.Click += (e, args) => CopyUtilities.CopyPosition(onClickPosition);
-            contextMenu.Items.Add(copyPositionItem);
-
-            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
-            {
-                var pivotPositionItem = new ToolStripMenuItem("Pivot This Position");
-                pivotPositionItem.Click += (_, _) => (graphics.currentView as PivotingView)?.Pivot(PositionAngle.Custom(onClickPosition));
-                contextMenu.Items.Add(pivotPositionItem);
-                contextMenu.Items.Add(new ToolStripSeparator());
-            }
-
-            var rootItem = new ToolStripMenuItem("View");
-            foreach (var (mode, list, field) in (IEnumerable<(MapGraphics.ViewMode, IEnumerable<ViewBase>, FieldInfo)>)
-                     [
-                         (MapGraphics.ViewMode.TopDown, viewsTopDown, typeof(MapGraphics).GetField(nameof(MapGraphics.viewTopDown))),
-                         (MapGraphics.ViewMode.Orthogonal, viewsOrthogonal, typeof(MapGraphics).GetField(nameof(MapGraphics.viewOrthogonal))),
-                         (MapGraphics.ViewMode.ThreeDimensional, views3D, typeof(MapGraphics).GetField(nameof(MapGraphics.view3D))),
-                     ])
-            {
-                var modeItem = new ToolStripMenuItem(mode.ToString());
-                modeItem.Click += (_, _) => mapGraphics.viewMode = mode;
-                var currentView = (ViewBase)field.GetValue(mapGraphics);
-                foreach (var view in list)
-                {
-                    var viewItem = new ToolStripMenuItem(view.name) { Checked = currentView == view };
-                    viewItem.Click += (_, _) =>
+                    graphics.RecreateContextMenu(contextMenu =>
                     {
-                        mapGraphics.viewMode = mode;
-                        field.SetValue(mapGraphics, view);
-                    };
-                    modeItem.DropDownItems.Add(viewItem);
-                }
-
-                var newItem = new ToolStripMenuItem("add ...");
-                newItem.Click += (_, _) =>
-                {
-                    var newView = (ViewBase)Activator.CreateInstance(field.FieldType);
-                    foreach (var newField in field.FieldType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-                        newField.SetValue(newView, newField.GetValue(currentView));
-                    newView.name = DialogUtilities.GetStringFromDialog("Custom", "Enter a Name") ?? "<unnamed>";
-                    field.SetValue(mapGraphics, newView);
-                    mapGraphics.viewMode = mode;
-                    list.GetType().GetMethod(nameof(IList<int>.Add)).Invoke(list, [newView]);
-                };
-                modeItem.DropDownItems.Add(newItem);
-                rootItem.DropDownItems.Add(modeItem);
-            }
-            contextMenu.Items.Add(rootItem);
+                        var openPopoutItem = new ToolStripMenuItem("Open Popout");
+                        openPopoutItem.Click += (_, _) =>
+                        {
+                            var popout = new MapPopout(this) { Owner = FindForm() };
+                            popout.Show();
+                            popout.FormClosed += (_, __) => popouts.Remove(popout);
+                            popouts.Add(popout);
+                        };
+                        contextMenu.Items.Add(openPopoutItem);
+                    });
+            };
         }
 
         private void LoadDefaultTrackers()
@@ -711,36 +635,6 @@ namespace STROOP.Tabs.MapTab
             };
         }
 
-        public void UpdateHover()
-        {
-            using (new AccessScope<MapTab>(this))
-            {
-                if (Form.ActiveForm != null)
-                    foreach (var g in popouts.Select(x => x.graphics).Append(graphics))
-                        if (g.glControl.ClientRectangle.Contains(g.glControl.PointToClient(Cursor.Position)))
-                            g.UpdateFlyingControls(Config.CoreLoop.lastFrameTime);
-
-                if (!graphics.IsMouseDown(0))
-                {
-                    var newCursor = graphics.mapCursorPosition;
-                    hoverData.Clear();
-                    foreach (var tracker in flowLayoutPanelMapTrackers.EnumerateTrackers())
-                        if (tracker.IsVisible)
-                        {
-                            var newHover = tracker.mapObject.GetHoverData(graphics, ref newCursor);
-                            if (graphics.fixCursorPlane)
-                            {
-                                graphics.cursorViewPlaneDist = Vector3.Dot(graphics.currentView.ComputeViewDirection(), (newCursor - graphics.currentView.position));
-                                graphics.UpdateCursor();
-                            }
-
-                            if (newHover != null)
-                                hoverData.Add(newHover);
-                        }
-                }
-            }
-        }
-
         public override void Update(bool active)
         {
             if (!_isLoaded2D) return;
@@ -767,8 +661,14 @@ namespace STROOP.Tabs.MapTab
                 RequireGeometryUpdate();
             }
 
-            if (!IsContextMenuOpen())
-                UpdateHover();
+            if (Form.ActiveForm != null)
+                foreach (var g in popouts.Select(x => x.graphics).Append(graphics))
+                    if (!g.IsContextMenuOpen() && g.glControl.ClientRectangle.Contains(g.glControl.PointToClient(Cursor.Position)))
+                    {
+                        g.UpdateFlyingControls(Config.CoreLoop.lastFrameTime);
+                        g.UpdateHover();
+                    }
+
             using (new AccessScope<MapTab>(this))
             {
                 flowLayoutPanelMapTrackers.UpdateControl();

@@ -40,19 +40,8 @@ namespace STROOP.Tabs.MapTab
             glControl.MouseDown += (sender, e) =>
             {
                 if (e.Button == MouseButtons.Right)
-                    ShowRightClickMenu();
+                    graphics.RecreateContextMenu();
             };
-        }
-
-        ContextMenuStrip contextMenu;
-        void ShowRightClickMenu()
-        {
-            contextMenu?.Dispose();
-            contextMenu = new ContextMenuStrip();
-
-            mapTab.AddViewContextMenuItems(contextMenu, graphics);
-
-            contextMenu.Show(Cursor.Position);
         }
 
         public void Redraw() => glControl.Invalidate();
