@@ -2,14 +2,13 @@
 using System.Windows.Forms;
 using OpenTK.GLControl;
 using STROOP.Core;
-using STROOP.Utilities;
 
 namespace STROOP.Tabs.MapTab
 {
     public partial class MapPopout : Form
     {
         GLControl glControl;
-        MapGraphics graphics;
+        public readonly MapGraphics graphics;
         MapTab mapTab;
 
         public MapPopout(MapTab mapTab)

@@ -715,8 +715,11 @@ namespace STROOP.Tabs.MapTab
         {
             using (new AccessScope<MapTab>(this))
             {
-                if (Form.ActiveForm != null && glControlMap2D.ClientRectangle.Contains(glControlMap2D.PointToClient(Cursor.Position)))
-                    graphics.UpdateFlyingControls(Config.CoreLoop.lastFrameTime);
+                if (Form.ActiveForm != null)
+                    foreach (var g in popouts.Select(x => x.graphics).Append(graphics))
+                        if (g.glControl.ClientRectangle.Contains(g.glControl.PointToClient(Cursor.Position)))
+                            g.UpdateFlyingControls(Config.CoreLoop.lastFrameTime);
+
                 if (!graphics.IsMouseDown(0))
                 {
                     var newCursor = graphics.mapCursorPosition;
