@@ -13,13 +13,17 @@ using STROOP.Core.Utilities;
 using STROOP.Variables;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
+using System.Globalization;
 
 namespace STROOP.Tabs.GhostTab
 {
     public partial class GhostTab : STROOPTab
     {
         /// <summary> The variable part to move the ghost loop and colored hats code with. </summary>
-        ushort EXTENDED_RAM_UPPER_PART = 0x8045; // originally 0x8040
+        ushort EXTENDED_RAM_UPPER_PART =>
+            ushort.TryParse(txtRAMOffsetBase.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : (ushort)0x8040;
 
         const uint GHOST_LOOP_CODE_OFFSET = 0x8000u;
         const uint HACK_FILE_BASE_OFFSET = 0x80400000;
@@ -287,6 +291,8 @@ namespace STROOP.Tabs.GhostTab
             bool enabled = ghostHack.Status != RomHack.EnabledStatus.Disabled;
             labelHackActiveState.Text = (ghostsActive && enabled) ? "Ghost hack is enabled." : (enabled ? "Ghost hack is enabled\nbut not running.\nInside a level,\nsave state and load state,\nthen frame advance." : "Ghost hack is disabled.");
             buttonDisableGhostHack.Enabled = enabled;
+            lblRAMOffsetBase.Visible = !enabled;
+            txtRAMOffsetBase.Visible = !enabled;
 
             return true;
         }
