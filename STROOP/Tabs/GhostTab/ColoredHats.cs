@@ -38,7 +38,7 @@ namespace STROOP.Tabs.GhostTab
 
         Vector4 marioHatColor = new Vector4(1, 0, 0, 1);
 
-        uint COLORED_HATS_LIGHTS_ADDR => GHOST_REGION_BASE + 0x8300u;
+        uint COLORED_HATS_LIGHTS_ADDR => ghostRegionBase + 0x8300u;
 
         private void EnableColoredHats()
         {
@@ -69,7 +69,7 @@ namespace STROOP.Tabs.GhostTab
                         var foundPointer = Config.Stream.GetUInt32(addr + 0x14);
                         if (Array.IndexOf(originalDisplayListPointers, foundPointer) != -1)
                         {
-                            Config.Stream.SetValue(GHOST_REGION_BASE + COLORED_HATS_CODE_OFFSET, addr + 0x14);
+                            Config.Stream.SetValue(ghostRegionBase + COLORED_HATS_CODE_OFFSET, addr + 0x14);
                             Config.Stream.SetValue((ushort)0x12A, addr);
                         }
                     }

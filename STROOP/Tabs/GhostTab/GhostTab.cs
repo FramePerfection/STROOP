@@ -19,18 +19,9 @@ namespace STROOP.Tabs.GhostTab
 {
     public partial class GhostTab : STROOPTab
     {
-        /// <summary> The variable part to move the ghost loop and colored hats code with. </summary>
-        ushort EXTENDED_RAM_UPPER_PART =>
-            ushort.TryParse(txtRAMOffsetBase.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var parsed)
-                ? parsed
-                : (ushort)0x8040;
 
         const uint GHOST_LOOP_CODE_OFFSET = 0x8000u;
         const uint HACK_FILE_BASE_OFFSET = 0x80400000;
-
-        // Base of the ghost hack's extended-RAM region. Must match GhostBaseHi in ghost_loop.asm
-        // and the inject addresses + hook bytes in Resources/Hacks/GhostHack*.hck.
-        uint GHOST_REGION_BASE => (uint)EXTENDED_RAM_UPPER_PART << 0x10;
 
         // These numbers are the 4 byte words, in order, as exported into "DynamicOffsets.bin".
         const uint FirstAnimationBufferAddrHi_LUI_1 = 0x50;
@@ -38,12 +29,20 @@ namespace STROOP.Tabs.GhostTab
         const uint COLORED_HATS_GhostBaseHi_LUI = 0x70;
         static readonly uint[] GhostBaseHi_LUI = [0x44, 0x78, 0x170];
 
-        // These offsets mirror NumRequestedGhosts / PointerToFirstGhost in ghost_loop.asm.
-        uint NUM_GHOSTS_ADDR => GHOST_REGION_BASE + 0x7FFFu;
-        uint FIRST_GHOST_POINTER_ADDR => GHOST_REGION_BASE + 0x7FF8u;
-        uint DISABLE_REQUEST_ADDR => GHOST_REGION_BASE + 0x7FFCu;
+        /// <summary> The variable part to move the ghost loop and colored hats code with. </summary>
+        ushort ghostHackBaseHi =>
+            ushort.TryParse(txtRAMOffsetBase.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : (ushort)0x8040;
 
-        uint bufferBaseAddress => GHOST_REGION_BASE + 0x9B00u;
+        uint ghostRegionBase => (uint)ghostHackBaseHi << 0x10;
+
+        // These offsets mirror NumRequestedGhosts / PointerToFirstGhost in ghost_loop.asm.
+        uint numGhostsAddr => ghostRegionBase + 0x7FFFu;
+        uint firstGhostPointerAddr => ghostRegionBase + 0x7FF8u;
+        uint disableRequestAddr => ghostRegionBase + 0x7FFCu;
+
+        uint bufferBaseAddress => ghostRegionBase + 0x9B00u;
 
         static IEnumerable<uint> GetActiveGhostIndices()
         {
@@ -109,7 +108,7 @@ namespace STROOP.Tabs.GhostTab
             int numGhosts = Math.Max(1, ghostArr.Length);
             if (updateGhostData)
             {
-                Config.Stream.SetValue((byte)numGhosts, NUM_GHOSTS_ADDR);
+                Config.Stream.SetValue((byte)numGhosts, numGhostsAddr);
                 WriteMarioColorToStream();
             }
 
@@ -189,7 +188,7 @@ namespace STROOP.Tabs.GhostTab
 
                     WriteGhostColorToStream(ghostIndex, ghostArr);
 
-                    var ptr = Config.Stream.GetUInt32((uint)(FIRST_GHOST_POINTER_ADDR - ghostIndex * 0x68));
+                    var ptr = Config.Stream.GetUInt32((uint)(firstGhostPointerAddr - ghostIndex * 0x68));
                     Config.Stream.SetValue((byte)(ghostTransparent ? 1 : 0), ptr + 0x61);
                     lastGlobalTimer = globalTimer;
                 }
@@ -272,16 +271,16 @@ namespace STROOP.Tabs.GhostTab
             if (ghostHack?.Name != expectedHackName)
                 ghostHack = new RomHack($"Resources/Hacks/GhostHack{RomVersionConfig.Version}.hck", expectedHackName);
 
-            var ghostPointer = Config.Stream.GetInt32(FIRST_GHOST_POINTER_ADDR);
+            var ghostPointer = Config.Stream.GetInt32(firstGhostPointerAddr);
             bool ghostsActive = (ghostPointer & 0xFF000000) == 0x80000000;
-            bool shouldDisable = Config.Stream.GetByte(DISABLE_REQUEST_ADDR) == 0xFF;
+            bool shouldDisable = Config.Stream.GetByte(disableRequestAddr) == 0xFF;
             if (shouldDisable)
             {
                 labelHackActiveState.Text = "Disabling Ghost hack...\nInside a level, frame advance\nthen save state and load state.\nNot doing so will crash.\n(Not on Pure Interpreter)";
                 if (!ghostsActive)
                 {
                     ghostHack.ClearPayload();
-                    Config.Stream.SetValue((byte)0, DISABLE_REQUEST_ADDR);
+                    Config.Stream.SetValue((byte)0, disableRequestAddr);
                 }
                 else
                     return true;
@@ -372,11 +371,11 @@ namespace STROOP.Tabs.GhostTab
             {
                 ghostHack.LoadPayload(new()
                 {
-                    [HACK_FILE_BASE_OFFSET + GHOST_LOOP_CODE_OFFSET] = GHOST_REGION_BASE + GHOST_LOOP_CODE_OFFSET,
-                    [HACK_FILE_BASE_OFFSET + COLORED_HATS_CODE_OFFSET] = GHOST_REGION_BASE + COLORED_HATS_CODE_OFFSET,
+                    [HACK_FILE_BASE_OFFSET + GHOST_LOOP_CODE_OFFSET] = ghostRegionBase + GHOST_LOOP_CODE_OFFSET,
+                    [HACK_FILE_BASE_OFFSET + COLORED_HATS_CODE_OFFSET] = ghostRegionBase + COLORED_HATS_CODE_OFFSET,
                 });
-                Config.Stream.WriteRam(new byte[4], DISABLE_REQUEST_ADDR, EndiannessType.Little);
-                Config.Stream.WriteRam(new byte[0x70], GHOST_REGION_BASE + 0x7F90u, EndiannessType.Little);
+                Config.Stream.WriteRam(new byte[4], disableRequestAddr, EndiannessType.Little);
+                Config.Stream.WriteRam(new byte[0x70], ghostRegionBase + 0x7F90u, EndiannessType.Little);
 
                 EnableColoredHats();
 
@@ -384,17 +383,17 @@ namespace STROOP.Tabs.GhostTab
                 Config.Stream.WriteRam(new byte[0x1000], HACK_FILE_BASE_OFFSET + GHOST_LOOP_CODE_OFFSET - 0x1000u, EndiannessType.Big);
 
                 // Modify code for moving parts
-                ushort luiGhostBaseValue = EXTENDED_RAM_UPPER_PART;
+                ushort luiGhostBaseValue = ghostHackBaseHi;
                 ushort luiFirstAnimationValue = (ushort)(luiGhostBaseValue + 0x10);
 
-                ApplyLui((ushort)(luiGhostBaseValue + 1), GHOST_REGION_BASE + GHOST_LOOP_CODE_OFFSET + GhostBaseHi_LUI_PLUS_1);
+                ApplyLui((ushort)(luiGhostBaseValue + 1), ghostRegionBase + GHOST_LOOP_CODE_OFFSET + GhostBaseHi_LUI_PLUS_1);
                 foreach (var offset in GhostBaseHi_LUI)
-                    ApplyLui(luiGhostBaseValue, GHOST_REGION_BASE + GHOST_LOOP_CODE_OFFSET + offset);
-                ApplyLui(luiFirstAnimationValue, GHOST_REGION_BASE + GHOST_LOOP_CODE_OFFSET + FirstAnimationBufferAddrHi_LUI_1);
+                    ApplyLui(luiGhostBaseValue, ghostRegionBase + GHOST_LOOP_CODE_OFFSET + offset);
+                ApplyLui(luiFirstAnimationValue, ghostRegionBase + GHOST_LOOP_CODE_OFFSET + FirstAnimationBufferAddrHi_LUI_1);
 
-                ApplyLui(luiGhostBaseValue, GHOST_REGION_BASE + COLORED_HATS_CODE_OFFSET + COLORED_HATS_GhostBaseHi_LUI);
+                ApplyLui(luiGhostBaseValue, ghostRegionBase + COLORED_HATS_CODE_OFFSET + COLORED_HATS_GhostBaseHi_LUI);
 
-                var jalTarget = 0x00FFFFFF & (GHOST_REGION_BASE + GHOST_LOOP_CODE_OFFSET);
+                var jalTarget = 0x00FFFFFF & (ghostRegionBase + GHOST_LOOP_CODE_OFFSET);
                 var hookPoint = RomVersionConfig.Version == RomVersion.JP ? 0x8027ABD8 : 0x8027B188;
                 Config.Stream.SetValue((uint)((0x0C << 0x18) | (jalTarget / 4)), hookPoint);
 
@@ -414,8 +413,8 @@ If the game is not running in ""Pure Interpreter"" mode, FOLLOW THE STEPS EXACTL
 Are you sure you want to continue?";
             if (MessageBox.Show(txt, "You should not have to do this.", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                Config.Stream.SetValue((byte)0, NUM_GHOSTS_ADDR);
-                Config.Stream.SetValue((byte)0xFF, DISABLE_REQUEST_ADDR);
+                Config.Stream.SetValue((byte)0, numGhostsAddr);
+                Config.Stream.SetValue((byte)0xFF, disableRequestAddr);
             }
         }
 
