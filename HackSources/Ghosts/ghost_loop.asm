@@ -13,7 +13,7 @@ NumRequestedGhosts equ 0x7FFF          ; Offset from extended RAM start to the b
 PointerToFirstGhost equ 0x7FF8         ; Offset from extended RAM start to the 4 byte pointer to the first ghost node
 NegativeGhostStructSize equ 0xFF98     ; The negative size of a single ghost node, used to iterate ghosts like a reversed array
 AnimationBufferSize equ 0x4000         ; The number of bytes reserved for animation data for each ghost
-FirstAnimationBufferAddrHi equ 0x8050  ; The Hi part of the address pointing to the animation buffer used by the first ghost
+FirstAnimationBufferAddrHi equ GhostBaseHi + 0x10  ; The Hi part of the address pointing to the animation buffer used by the first ghost
 InitializedGhostsFlag equ 0x40         ; A custom bit flag that can be set on the Mario object, indicating whether the ghost hack is active
 
 .n64
@@ -112,7 +112,7 @@ sll t1, RegProcessedGhostCount, 0xC
 addu t0, t0, t1
 
 GhostBaseHi_LUI_PLUS_1:
-lui at, GhostBaseHi + 1
+lui at, GhostBaseHi + 1 ; +1 because the addiu 0x9B00 below sign-extends; the pair lands at base + 0x9B00
 addu t0, t0, at
 addiu t0, t0, 0x9B00
 
@@ -126,30 +126,40 @@ sw t1, 0x24 (RegCurrentGhost)
 lw t1, 0x08 (t0)
 sw t1, 0x28 (RegCurrentGhost)
 
-; angles (TODO: store angles as s16 in file?)
-lw t1, 0x10 (t0)
+; angles
+lh t1, 0x10 (t0)
 sh t1, 0x1A (RegCurrentGhost)
-lw t1, 0x14 (t0)
+lh t1, 0x12 (t0)
 sh t1, 0x1C (RegCurrentGhost)
-lw t1, 0x18 (t0)
+lh t1, 0x14 (t0)
 sh t1, 0x1E (RegCurrentGhost)
 
+lw t1, 0x18 (t0) ; "graphics" in STROOP
+lw t3, 0x0C (t0) ; "animation" in STROOP
+bnez t1, @TREAT_AS_OBJECT
+lh t2, 0x16 (t0) ; animation frame
 ; do the hacky thing with Mario animations
 lui t8, 0x8037
 sw RegCurrentGhost, 0x0580 (t8)
 sw RegAnimationBuffer, 0x05C0 (t8)
-lh t1, 0x1C (t0)
-sh t1, 0x38 (SP)
+sh t2, 0x38 (SP)
 ori a0, t8, 0x04F8
 sh r0, 0x38 (RegCurrentGhost)
 sw r0, 0x05BC (t8)
 jal set_mario_animation
 lw a1, 0xC (t0)
-lh t1, 0x38 (SP)
-sh t1, 0x40 (RegCurrentGhost)
+lh t2, 0x38 (SP)
+lui t1, 0x800F
+ori t1, t1, 0x0860
+beq r0, r0, @COMMON_SETTERS
+addiu RegAnimationBuffer, RegAnimationBuffer, AnimationBufferSize
+@TREAT_AS_OBJECT:
+sw t3, 0x3C (RegCurrentGhost)
+@COMMON_SETTERS:
+sw t1, 0x14 (RegCurrentGhost)
+sh t2, 0x40 (RegCurrentGhost)
 
 ; move on to next ghost
-addiu RegAnimationBuffer, RegAnimationBuffer, AnimationBufferSize
 addiu RegPointerToCurrentGhost, RegPointerToCurrentGhost, NegativeGhostStructSize
 addiu RegProcessedGhostCount, RegProcessedGhostCount, 0x1
 

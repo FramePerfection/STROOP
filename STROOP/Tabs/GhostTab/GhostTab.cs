@@ -27,7 +27,7 @@ namespace STROOP.Tabs.GhostTab
         const uint FirstAnimationBufferAddrHi_LUI_1 = 0x50;
         const uint GhostBaseHi_LUI_PLUS_1 = 0xF8;
         const uint COLORED_HATS_GhostBaseHi_LUI = 0x70;
-        static readonly uint[] GhostBaseHi_LUI = [0x44, 0x78, 0x170];
+        static readonly uint[] GhostBaseHi_LUI = [0x44, 0x78, 0x190];
 
         /// <summary> The variable part to move the ghost loop and colored hats code with. </summary>
         ushort ghostHackBaseHi =>
@@ -124,22 +124,33 @@ namespace STROOP.Tabs.GhostTab
                         int i = (tm + globalTimer) & 0x7F;
                         GhostFrame newFrame = default(GhostFrame);
                         var index = globalTimer + tm - ghost.playbackBaseFrame;
-                        if (index >= 0 && ghost.playbackFrames.TryGetValue((uint)index, out newFrame))
-                            ghost.lastValidPlaybackFrame = newFrame;
+                        if (index >= 0 && ghost.frames.TryGetValue((uint)index, out newFrame))
+                            ghost.lastValidPlaybackFrame = new(
+                                newFrame,
+                                ghost.animationSwitches.TryGetValue((uint)index, out var value)
+                                    ? value
+                                    : ghost.lastValidPlaybackFrame.animation == 0
+                                        ? ghost.animationSwitches.OrderBy(x => x.Key).FirstOrDefault().Value
+                                        : ghost.lastValidPlaybackFrame.animation
+                            );
 
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.position.X), 0, buffer, i * 0x20 + 0x00, 4);
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.position.Y), 0, buffer, i * 0x20 + 0x04, 4);
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.position.Z), 0, buffer, i * 0x20 + 0x08, 4);
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.animationIndex), 0, buffer, i * 0x20 + 0x0C, 2);
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.oPitch), 0, buffer, i * 0x20 + 0x10, 4);
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.oYaw), 0, buffer, i * 0x20 + 0x14, 4);
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.oRoll), 0, buffer, i * 0x20 + 0x18, 4);
-                        Array.Copy(BitConverter.GetBytes(ghost.lastValidPlaybackFrame.animationFrame), 0, buffer, i * 0x20 + 0x1E, 2);
+                        (var frame, var animation) = ghost.lastValidPlaybackFrame;
+                        animation = animation == 0 ? (uint)frame.animationIndex : animation;
+
+                        Array.Copy(BitConverter.GetBytes(frame.position.X), 0, buffer, i * 0x20 + 0x00, 4);
+                        Array.Copy(BitConverter.GetBytes(frame.position.Y), 0, buffer, i * 0x20 + 0x04, 4);
+                        Array.Copy(BitConverter.GetBytes(frame.position.Z), 0, buffer, i * 0x20 + 0x08, 4);
+                        Array.Copy(BitConverter.GetBytes(ghost.nonMarioGraphics != 0 ? animation : frame.animationIndex), 0, buffer, i * 0x20 + 0x0C, 4);
+                        Array.Copy(BitConverter.GetBytes(frame.oPitch), 0, buffer, i * 0x20 + 0x12, 2);
+                        Array.Copy(BitConverter.GetBytes(frame.oYaw), 0, buffer, i * 0x20 + 0x10, 2);
+                        Array.Copy(BitConverter.GetBytes(frame.oRoll), 0, buffer, i * 0x20 + 0x16, 2);
+                        Array.Copy(BitConverter.GetBytes(ghost.nonMarioGraphics), 0, buffer, i * 0x20 + 0x18, 4);
+                        Array.Copy(BitConverter.GetBytes(frame.animationFrame), 0, buffer, i * 0x20 + 0x14, 2);
                     }
 
                     GhostFrame currentFrame;
                     var idx = (globalTimer - 1) - ghost.playbackBaseFrame;
-                    if (idx >= 0 && ghost.playbackFrames.TryGetValue((uint)idx, out currentFrame))
+                    if (idx >= 0 && ghost.frames.TryGetValue((uint)idx, out currentFrame))
                     {
                         ghost.positionAngle.SetGlobalTimer((uint)idx);
                         ghost.currentFrame = currentFrame;
@@ -175,10 +186,11 @@ namespace STROOP.Tabs.GhostTab
                         Array.Copy(BitConverter.GetBytes(yTargetPosition + ghostIndex * 500 / numGhosts), 0, buffer, i * 0x20 + 0x04, 4);
                         Array.Copy(BitConverter.GetBytes(z), 0, buffer, i * 0x20 + 0x08, 4);
                         Array.Copy(BitConverter.GetBytes((ushort)0x2A), 0, buffer, i * 0x20 + 0x0C, 2);
-                        Array.Copy(BitConverter.GetBytes((uint)0), 0, buffer, i * 0x20 + 0x10, 4);
-                        Array.Copy(BitConverter.GetBytes((uint)(f * ushort.MaxValue + 0x8000)), 0, buffer, i * 0x20 + 0x14, 4);
-                        Array.Copy(BitConverter.GetBytes(0xE800 + barrelRoll), 0, buffer, i * 0x20 + 0x18, 4);
-                        Array.Copy(BitConverter.GetBytes((ushort)0), 0, buffer, i * 0x20 + 0x1E, 2);
+                        Array.Copy(BitConverter.GetBytes((ushort)0), 0, buffer, i * 0x20 + 0x12, 2);
+                        Array.Copy(BitConverter.GetBytes((ushort)(f * ushort.MaxValue + 0x8000)), 0, buffer, i * 0x20 + 0x10, 2);
+                        Array.Copy(BitConverter.GetBytes((ushort)(0xE800 + barrelRoll)), 0, buffer, i * 0x20 + 0x16, 2);
+                        Array.Copy(BitConverter.GetBytes(0), 0, buffer, i * 0x20 + 0x18, 4);
+                        Array.Copy(BitConverter.GetBytes((ushort)(globalTimer % 32)), 0, buffer, i * 0x20 + 0x14, 2);
                     }
                 }
 
@@ -290,8 +302,6 @@ namespace STROOP.Tabs.GhostTab
             bool enabled = ghostHack.Status != RomHack.EnabledStatus.Disabled;
             labelHackActiveState.Text = (ghostsActive && enabled) ? "Ghost hack is enabled." : (enabled ? "Ghost hack is enabled\nbut not running.\nInside a level,\nsave state and load state,\nthen frame advance." : "Ghost hack is disabled.");
             buttonDisableGhostHack.Enabled = enabled;
-            lblRAMOffsetBase.Visible = !enabled;
-            txtRAMOffsetBase.Visible = !enabled;
 
             return true;
         }
@@ -340,21 +350,9 @@ namespace STROOP.Tabs.GhostTab
                             }
                         );
 
-                foreach (var fn in ghostFileNames)
-                    using (var wr = new BinaryWriter(new FileStream(fn.Item2, FileMode.Create)))
-                    {
-                        int missedFrameCount = 0;
-                        uint lastFrame = 0;
-                        wr.Write(fn.Item1.originalPlaybackBaseFrame);
-                        wr.Write(fn.Item1.playbackFrames.Count);
-                        foreach (var frame in fn.Item1.playbackFrames)
-                        {
-                            missedFrameCount += (int)(frame.Key - lastFrame - 1);
-                            lastFrame = frame.Key;
-                            wr.Write(frame.Key);
-                            frame.Value.WriteTo(wr);
-                        }
-                    }
+                foreach (var (ghost, fileName) in ghostFileNames)
+                    using (var wr = new BinaryWriter(new FileStream(fileName, FileMode.Create)))
+                        ghost.ToFile(wr);
             }
         }
 
