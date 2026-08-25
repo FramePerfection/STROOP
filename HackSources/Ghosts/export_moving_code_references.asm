@@ -1,4 +1,4 @@
-﻿.create "./build/DynamicOffsts.bin", 0x00000000
+﻿.create "./build/DynamicOffsets.bin", 0x00000000
 .word orga(FirstAnimationBufferAddrHi_LUI_1)
 .word orga(GhostBaseHi_LUI_PLUS_1)
 .word orga(GhostBaseHi_LUI_1)
