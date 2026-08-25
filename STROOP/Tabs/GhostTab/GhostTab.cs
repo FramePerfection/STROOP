@@ -380,7 +380,7 @@ namespace STROOP.Tabs.GhostTab
                 EnableColoredHats();
 
                 //Tell ROM Hacks to suck it and get rid of the 01010101 pattern
-                Config.Stream.WriteRam(new byte[0x1000], HACK_FILE_BASE_OFFSET + GHOST_LOOP_CODE_OFFSET - 0x1000u, EndiannessType.Big);
+                Config.Stream.WriteRam(new byte[0x1000], ghostRegionBase + GHOST_LOOP_CODE_OFFSET - 0x1000u, EndiannessType.Big);
 
                 // Modify code for moving parts
                 ushort luiGhostBaseValue = ghostHackBaseHi;
