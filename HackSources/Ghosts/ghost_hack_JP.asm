@@ -40,3 +40,5 @@ alloc_display_list equ 0x8027897c
 .create "./build/JP_80408200_gfx_generate_colored_hats.bin", 0x00000000
 .include "./gfx_generate_colored_hats.asm"
 .close
+
+.include "./export_moving_code_references.asm"

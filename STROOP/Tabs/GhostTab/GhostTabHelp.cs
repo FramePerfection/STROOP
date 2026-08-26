@@ -47,7 +47,7 @@ Always make sure your runs work from a clean savestate.
         private void buttonTutorialNotes_Click(object sender, EventArgs e)
         {
             Forms.InfoForm frm = new Forms.InfoForm();
-            frm.Size = new System.Drawing.Size(900, 400);
+            frm.Size = new System.Drawing.Size(900, 570);
             frm.SetText("Ghost Help",
                 "Notes",
                 @"The ghost hack works on the US and JP versions of Super Mario 64 (and therefore also on numerous ROM hacks).
@@ -58,6 +58,9 @@ While in most cases the use of the ghost hack is unproblematic, there are severa
 Always verify that your runs work without the hack.
 
 Rendering too many ghosts at once can cause a game crash. This number is usually somewhere around 15 to 18, but can be increased by moving the game's Gfx pool. See ""Moving the GFX pool"" for details.
+
+For Usamune ROMs (and perhaps other ROMs as well), you will need to change the ""RAM offset base"" to a higher value (e.g. 8060) before enabling the hack, in order to not conflict with the ROM hack's own memory allocations.
+(Reasonable values are between 8040 and 8060 for this hack due to its own memory requirements.)
 
 Disabling the ghost hack via the 'Disable Ghost hack' button may have unintended side effects, including crashing the game.
 Try to keep a savestate around that doesn't have the hack enabled instead.

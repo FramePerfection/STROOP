@@ -15,6 +15,8 @@ namespace STROOP.Tabs.GhostTab
     {
         // <--- static utility and information --->
 
+        const uint COLORED_HATS_CODE_OFFSET = 0x8200u;
+
         private static int defaultGhostColorCounter = 1;
 
         private static readonly Vector4[] DefaultGhostColors = new[]
@@ -29,17 +31,16 @@ namespace STROOP.Tabs.GhostTab
             new Vector4(0.2f, 0.2f, 0.2f, 1),
         };
 
-        Vector4 marioHatColor = new Vector4(1, 0, 0, 1);
-
         const uint VANILLA_BANK_04_OFFSET_US = 0x0007EC20;
         const uint VANILLA_BANK_04_OFFSET_JP = 0x0007BDC0;
         const uint S_SEGMENT_TABLE_OFFSET_JP = 0x8033a090;
         const uint S_SEGMENT_TABLE_OFFSET_US = 0x8033b400;
 
-        const uint COLORED_HATS_CODE_TARGET_ADDR = 0x80408200;
-        const uint COLORED_HATS_LIGHTS_ADDR = 0x80408300;
+        Vector4 marioHatColor = new Vector4(1, 0, 0, 1);
 
-        private static void EnableColoredHats()
+        uint COLORED_HATS_LIGHTS_ADDR => ghostRegionBase + 0x8300u;
+
+        private void EnableColoredHats()
         {
             using (Config.Stream.Suspend())
             {
@@ -68,7 +69,7 @@ namespace STROOP.Tabs.GhostTab
                         var foundPointer = Config.Stream.GetUInt32(addr + 0x14);
                         if (Array.IndexOf(originalDisplayListPointers, foundPointer) != -1)
                         {
-                            Config.Stream.SetValue(COLORED_HATS_CODE_TARGET_ADDR, addr + 0x14);
+                            Config.Stream.SetValue(ghostRegionBase + COLORED_HATS_CODE_OFFSET, addr + 0x14);
                             Config.Stream.SetValue((ushort)0x12A, addr);
                         }
                     }

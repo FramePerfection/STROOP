@@ -8,7 +8,7 @@ RegPointerToCurrentGhost equ s1 ; Pointer to the currently processed ghost node
 RegProcessedGhostCount equ s0   ; Iteration counter for loops that process all ghosts
 
 ; hardcoded offsets
-ExtendedRAMStartHi equ 0x8040          ; The Hi part of the address pointing to the start of extended RAM
+GhostBaseHi equ 0x8040                 ; The Hi part of the address pointing to the start of extended RAM
 NumRequestedGhosts equ 0x7FFF          ; Offset from extended RAM start to the byte indicating the number of ghosts to display. This value is written by STROOP.
 PointerToFirstGhost equ 0x7FF8         ; Offset from extended RAM start to the 4 byte pointer to the first ghost node
 NegativeGhostStructSize equ 0xFF98     ; The negative size of a single ghost node, used to iterate ghosts like a reversed array
@@ -22,7 +22,7 @@ addiu SP, SP, 0xFFC0
 ; return early if there's no Mario object
 lui t0, MarioObjectAddrHi
 lw t0, MarioObjectAddrLo (t0)
-beq r0, t0, @@EARLY_RETURN
+beq r0, t0, @EARLY_RETURN
 
 ; push static registers to stack
 sw ra, 0x34 (SP)
@@ -36,20 +36,22 @@ sw RegProcessedGhostCount, 0x20 (SP)
 or RegMarioObject, r0, t0
 lh t0, 0x2 (RegMarioObject)
 andi t1, t0, InitializedGhostsFlag
-bnez t1, @@SKIP_INIT
+bnez t1, @SKIP_INIT
 
 ; set initialized flag on Mario object
 ori t1, t0, InitializedGhostsFlag
 sh t1, 0x2 (RegMarioObject)
-beq r0, r0, @@RETURN
+beq r0, r0, @RETURN
 
 ; clean up (this can cause failure?)
-lui RegPointerToCurrentGhost, ExtendedRAMStartHi
-beq r0, r0, @@CLEAN_UP_EARLY
+GhostBaseHi_LUI_2:
+lui RegPointerToCurrentGhost, GhostBaseHi
+beq r0, r0, @CLEAN_UP_EARLY
 ori RegPointerToCurrentGhost, RegPointerToCurrentGhost, PointerToFirstGhost
-@@SKIP_INIT:
+@SKIP_INIT:
 
 ; set up dummy Mario struct
+FirstAnimationBufferAddrHi_LUI_1:
 lui RegAnimationBuffer, FirstAnimationBufferAddrHi
 lui t8, 0x8037
 ori at, r0, 0xBD
@@ -61,17 +63,18 @@ sw at, 0x5B8 (t8)
 
 ; clean up if no ghosts are requested
 or RegProcessedGhostCount, r0, r0
-lui at, ExtendedRAMStartHi
+GhostBaseHi_LUI_3:
+lui at, GhostBaseHi
 ori RegPointerToCurrentGhost, at, PointerToFirstGhost
 lb at, NumRequestedGhosts (at)
-beq r0, at, @@CLEAN_UP_EARLY
+beq r0, at, @CLEAN_UP_EARLY
 nop
 
-@@ITERATE_GHOSTS:
+@ITERATE_GHOSTS:
 
 ; skip initialization if ghost already exists
 lw t0, 0x0 (RegPointerToCurrentGhost)
-bnez t0, @@GHOST_EXISTS
+bnez t0, @GHOST_EXISTS
 
 ; create a new ghost object graph node
 or a0, r0, r0
@@ -91,7 +94,7 @@ lw a0, 0xC (RegMarioObject)
 jal 0x8037C044
 or a1, v0, r0
 
-@@GHOST_EXISTS:
+@GHOST_EXISTS:
 
 ; copy Mario's area and animation ID into the ghost node
 lw RegCurrentGhost, 0x0 (RegPointerToCurrentGhost)
@@ -107,7 +110,9 @@ andi t0, t0, 0x7F
 sll t0, t0, 0x5
 sll t1, RegProcessedGhostCount, 0xC
 addu t0, t0, t1
-lui at, 0x8041
+
+GhostBaseHi_LUI_PLUS_1:
+lui at, GhostBaseHi + 1
 addu t0, t0, at
 addiu t0, t0, 0x9B00
 
@@ -147,25 +152,27 @@ sh t1, 0x40 (RegCurrentGhost)
 addiu RegAnimationBuffer, RegAnimationBuffer, AnimationBufferSize
 addiu RegPointerToCurrentGhost, RegPointerToCurrentGhost, NegativeGhostStructSize
 addiu RegProcessedGhostCount, RegProcessedGhostCount, 0x1
-lui at, ExtendedRAMStartHi
+
+GhostBaseHi_LUI_4:
+lui at, GhostBaseHi
 lb at, NumRequestedGhosts (at)
 sltu t0, RegProcessedGhostCount, at
-bnez t0, @@ITERATE_GHOSTS
+bnez t0, @ITERATE_GHOSTS
 sb RegProcessedGhostCount, 0x60 (RegCurrentGhost)
 
 ; delete leftover ghosts
 lw RegCurrentGhost, 0x0 (RegPointerToCurrentGhost)
-beq RegCurrentGhost, r0, @@RETURN
+beq RegCurrentGhost, r0, @RETURN
 or a0, r0, RegCurrentGhost
-@@CLEAN_UP_LOOP:
+@CLEAN_UP_LOOP:
 jal 0x8037C0BC
 sw r0, 0x0 (RegPointerToCurrentGhost)
-@@CLEAN_UP_EARLY:
+@CLEAN_UP_EARLY:
 lw a0, 0x0 (RegPointerToCurrentGhost)
-bnez a0, @@CLEAN_UP_LOOP
+bnez a0, @CLEAN_UP_LOOP
 addiu RegPointerToCurrentGhost, RegPointerToCurrentGhost, NegativeGhostStructSize
 
-@@RETURN:
+@RETURN:
 
 ; pop static registers from stack
 lw ra, 0x34 (SP)
@@ -175,6 +182,6 @@ lw RegCurrentGhost, 0x28 (SP)
 lw RegPointerToCurrentGhost, 0x24 (SP)
 lw RegProcessedGhostCount, 0x20 (SP)
 
-@@EARLY_RETURN:
+@EARLY_RETURN:
 jr ra
 addiu SP, SP, 0x40
