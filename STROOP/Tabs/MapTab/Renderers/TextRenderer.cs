@@ -127,7 +127,7 @@ namespace STROOP.Tabs.MapTab.Renderers
             });
         }
 
-        public void AddText(string text, Vector3 position, Color color, StringAlignment alignment, Font font = null)
+        public void AddText(string text, Vector3 position, Color color, StringAlignment alignment, Font font = null, StringAlignment lineAlignment = StringAlignment.Near)
         {
             var graphics = AccessScope<MapTab>.content.graphics;
             var ssp = Vector4.TransformRow(new Vector4(position.X, position.Y, position.Z, 1.0f), graphics.ViewMatrix);
@@ -142,7 +142,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                 value = text,
                 brush = GetBrush(color),
                 font = font ?? Fonts.medium,
-                format = new StringFormat() { Alignment = alignment },
+                format = new StringFormat() { Alignment = alignment, LineAlignment = lineAlignment },
                 position = new PointF((screenspacePoint.X + 1) * targetImage.Width / 2f, (-screenspacePoint.Y + 1) * targetImage.Height / 2f),
             });
         }

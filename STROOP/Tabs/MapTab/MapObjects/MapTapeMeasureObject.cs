@@ -16,7 +16,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     }
 
     [ObjectDescription("Tape Measure", "Custom")]
-    public class MapTapeMeasureObject : MapLineObject
+    public class MapTapeMeasureObject : MapObject
     {
         class TapeHoverData : IHoverData
         {
@@ -104,6 +104,19 @@ namespace STROOP.Tabs.MapTab.MapObjects
             }
         }
 
+        // display options for the following in order: x, y, xy, z, xz, yz, xyz
+        static (Color color, bool[] farAlignment)[] textDisplay =
+        [
+            (Color.FromArgb(255, 100, 100), [false, false, false]),
+            (Color.LightGreen, [false, true, false]),
+            (Color.Yellow, [true, false, false]),
+            (Color.LightBlue, [false, false, false]),
+            (Color.Pink, [false, true, false]),
+            (Color.Cyan, [true, true, false]),
+            (Color.LightGray, [true, true, false]),
+        ];
+
+
         Vector3 a, b;
 
         Func<Vector3> aProvider, bProvider;
@@ -136,13 +149,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public override string GetName() => "Tape Measure";
 
-        protected override List<Vector3> GetVertices(MapGraphics graphics) =>
-            new List<Vector3>(new[] { aProvider?.Invoke() ?? a, bProvider?.Invoke() ?? b });
-
-        protected override void Draw3D(MapGraphics graphics)
+        protected override void DrawTopDown(MapGraphics graphics)
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
+                var verticalTextAlignmentIndex = (int)graphics.viewMode;
                 Vector3 _a = aProvider?.Invoke() ?? a;
                 Vector3 _b = bProvider?.Invoke() ?? b;
                 List<Vector3> ends = new List<Vector3>();
@@ -158,20 +169,19 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     new Vector3(1, float.NaN, float.NaN),
                     new Vector3(1, float.NaN, 1),
                 });
-                Color[] colors = new[] { Color.FromArgb(255, 100, 100), Color.LightGreen, Color.Yellow, Color.LightBlue, Color.Pink, Color.Cyan, Color.LightGray };
 
                 foreach (var end in ends)
                 {
                     string nameString = "";
                     var p1 = _a;
                     var p2 = _b;
-                    int colorIndex = 0;
+                    int displayIndex = 0;
                     if (!float.IsNaN(end.X))
                         p1.X = p2.X = end.X == 0 ? p1.X : p2.X;
                     else
                     {
                         nameString += "x";
-                        colorIndex |= 1;
+                        displayIndex |= 1;
                     }
 
                     if (!float.IsNaN(end.Y))
@@ -179,7 +189,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     else
                     {
                         nameString += "y";
-                        colorIndex |= 2;
+                        displayIndex |= 2;
                     }
 
                     if (!float.IsNaN(end.Z))
@@ -187,15 +197,23 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     else
                     {
                         nameString += "z";
-                        colorIndex |= 4;
+                        displayIndex |= 4;
                     }
 
-                    var lineColor = colors[colorIndex - 1];
-                    graphics.lineRenderer.Add(p1, p2, OpenTKUtilities.ColorToVec4(lineColor), OutlineWidth);
-                    graphics.textRenderer.AddText($"{nameString}: {(p1 - p2).Length}", (p1 + p2) * 0.5f, lineColor, StringAlignment.Far);
+                    var t = textDisplay[displayIndex - 1];
+                    graphics.lineRenderer.Add(p1, p2, OpenTKUtilities.ColorToVec4(t.color), OutlineWidth);
+                    graphics.textRenderer.AddText(
+                        $"{nameString}: {(p1 - p2).Length}",
+                        (p1 + p2) * 0.5f, t.color,
+                        StringAlignment.Far,
+                        lineAlignment: t.farAlignment[verticalTextAlignmentIndex] ? StringAlignment.Far : StringAlignment.Near
+                    );
                 }
             });
         }
+
+        protected override void DrawOrthogonal(MapGraphics graphics)
+            => DrawTopDown(graphics);
 
         public override IHoverData GetHoverData(MapGraphics graphics, ref Vector3 position)
         {
