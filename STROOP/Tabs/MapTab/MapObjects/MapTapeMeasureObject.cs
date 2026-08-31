@@ -40,13 +40,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 parent.targetTracker.textBoxSize.Text = (parent.Size = (parent.a - parent.b).Length).ToString();
             }
 
-            public void SetLookAt(Vector3 lookAt)
-            {
-            }
+            public void SetLookAt(Vector3 lookAt) { }
 
-            public void LeftClick(Vector3 position)
-            {
-            }
+            public void LeftClick(Vector3 position) { }
 
             public void RightClick(Vector3 position)
             {
@@ -116,6 +112,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             (Color.LightGray, [true, true, false]),
         ];
 
+        ToolStripMenuItem[] itemsShownMeasurements = new ToolStripMenuItem[8];
 
         Vector3 a, b;
 
@@ -131,6 +128,14 @@ namespace STROOP.Tabs.MapTab.MapObjects
             a = new Vector3(currentMapTab.graphics.view.position.X - 50, 0, currentMapTab.graphics.view.position.Z);
             b = new Vector3(currentMapTab.graphics.view.position.X + 50, 0, currentMapTab.graphics.view.position.Z);
             hoverData = new TapeHoverData(this);
+            for (int mask = 1; mask <= 8; mask++)
+            {
+                var item = new ToolStripMenuItem($"Show {((mask & 1) != 0 ? "x" : "")}{((mask & 2) != 0 ? "y" : "")}{((mask & 4) != 0 ? "z" : "")}");
+                item.Click += (_, __) => item.Checked = !item.Checked;
+                itemsShownMeasurements[mask - 1] = item;
+            }
+            foreach (int index in new [] { 0, 1, 3, 4 })
+                itemsShownMeasurements[index].Checked = true;
         }
 
         MapTracker targetTracker;
@@ -142,6 +147,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             var _contextMenuStrip = base.GetContextMenuStrip(targetTracker);
             _contextMenuStrip.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Enable dragging")?.PerformClick();
+            _contextMenuStrip.Items.Add(new ToolStripSeparator());
+            _contextMenuStrip.Items.AddRange(itemsShownMeasurements);
             return _contextMenuStrip;
         }
 
@@ -200,14 +207,17 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         displayIndex |= 4;
                     }
 
-                    var t = textDisplay[displayIndex - 1];
-                    graphics.lineRenderer.Add(p1, p2, OpenTKUtilities.ColorToVec4(t.color), OutlineWidth);
-                    graphics.textRenderer.AddText(
-                        $"{nameString}: {(p1 - p2).Length}",
-                        (p1 + p2) * 0.5f, t.color,
-                        StringAlignment.Far,
-                        lineAlignment: t.farAlignment[verticalTextAlignmentIndex] ? StringAlignment.Far : StringAlignment.Near
-                    );
+                    if (itemsShownMeasurements[--displayIndex].Checked)
+                    {
+                        var t = textDisplay[displayIndex];
+                        graphics.lineRenderer.Add(p1, p2, OpenTKUtilities.ColorToVec4(t.color), OutlineWidth);
+                        graphics.textRenderer.AddText(
+                            $"{nameString}: {(p1 - p2).Length}",
+                            (p1 + p2) * 0.5f, t.color,
+                            StringAlignment.Far,
+                            lineAlignment: t.farAlignment[verticalTextAlignmentIndex] ? StringAlignment.Far : StringAlignment.Near
+                        );
+                    }
                 }
             });
         }
