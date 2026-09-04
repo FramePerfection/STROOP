@@ -22,7 +22,7 @@ If this updated feature set doesn't suit your needs, you can of course still get
   As of the current build, STROOP has the following system requirements:
   * Windows 11 / Windows 10 / Windows 8.1 / Windows 8 / Windows 7 64-bit or 32-bit
   * OpenGL 3.2 or greater
-  * [.NET 8.0 Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) or higher
+  * [.NET 10.0 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) or higher
   * [Mupen](https://mupen64.com/) is recommended for TASing. (Nemu64 and some other emulators may work, but that's a bit of a shot in the dark)
   * 64 Marios (Must be super)
   * Marios must be American, Japanese or PAL
@@ -30,7 +30,7 @@ If this updated feature set doesn't suit your needs, you can of course still get
 ## Building
 
 Requirements:
-  * A [dotnet 8.0 (or higher) SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) in any capacity
+  * A [dotnet 10.0 (or higher) SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) in any capacity
   * An internet connection for the [NuGet](https://nuget.org) package dependencies, such as OpenTK.
 
 A simple `dotnet build` in the repository root directory will create a debug build.<br>

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <TargetFramework>net10.0-windows7.0</TargetFramework>
         <OutputType>WinExe</OutputType>
         <UseWindowsForms>true</UseWindowsForms>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -291,5 +291,7 @@
         <ProjectReference Include="..\STROOP.Core\STROOP.Core.csproj"/>
         <ProjectReference Include="..\STROOP.Variables\STROOP.Variables.csproj" />
     </ItemGroup>
-
+    <PropertyGroup>
+        <NoWarn>$(NoWarn);WFO1000</NoWarn>
+    </PropertyGroup>
 </Project>
