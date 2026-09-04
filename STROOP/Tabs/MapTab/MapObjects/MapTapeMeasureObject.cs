@@ -16,7 +16,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
     }
 
     [ObjectDescription("Tape Measure", "Custom")]
-    public class MapTapeMeasureObject : MapLineObject
+    public class MapTapeMeasureObject : MapObject
     {
         class TapeHoverData : IHoverData
         {
@@ -40,13 +40,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 parent.targetTracker.textBoxSize.Text = (parent.Size = (parent.a - parent.b).Length).ToString();
             }
 
-            public void SetLookAt(Vector3 lookAt)
-            {
-            }
+            public void SetLookAt(Vector3 lookAt) { }
 
-            public void LeftClick(Vector3 position)
-            {
-            }
+            public void LeftClick(Vector3 position) { }
 
             public void RightClick(Vector3 position)
             {
@@ -104,6 +100,20 @@ namespace STROOP.Tabs.MapTab.MapObjects
             }
         }
 
+        // display options for the following in order: x, y, xy, z, xz, yz, xyz
+        static (Color color, bool[] farAlignment)[] textDisplay =
+        [
+            (Color.FromArgb(255, 100, 100), [false, false, false]),
+            (Color.LightGreen, [false, true, false]),
+            (Color.Yellow, [true, false, false]),
+            (Color.LightBlue, [false, false, false]),
+            (Color.Pink, [false, true, false]),
+            (Color.Cyan, [true, true, false]),
+            (Color.LightGray, [true, true, false]),
+        ];
+
+        ToolStripMenuItem[] itemsShownMeasurements = new ToolStripMenuItem[8];
+
         Vector3 a, b;
 
         Func<Vector3> aProvider, bProvider;
@@ -115,9 +125,17 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             OutlineColor = Color.Orange;
             OutlineWidth = 3;
-            a = new Vector3(currentMapTab.graphics.view.position.X - 50, 0, currentMapTab.graphics.view.position.Z);
-            b = new Vector3(currentMapTab.graphics.view.position.X + 50, 0, currentMapTab.graphics.view.position.Z);
+            a = new Vector3(currentMapTab.graphics.currentView.position.X - 50, 0, currentMapTab.graphics.currentView.position.Z);
+            b = new Vector3(currentMapTab.graphics.currentView.position.X + 50, 0, currentMapTab.graphics.currentView.position.Z);
             hoverData = new TapeHoverData(this);
+            for (int mask = 1; mask <= 8; mask++)
+            {
+                var item = new ToolStripMenuItem($"Show {((mask & 1) != 0 ? "x" : "")}{((mask & 2) != 0 ? "y" : "")}{((mask & 4) != 0 ? "z" : "")}");
+                item.Click += (_, __) => item.Checked = !item.Checked;
+                itemsShownMeasurements[mask - 1] = item;
+            }
+            foreach (int index in new [] { 0, 1, 3, 4 })
+                itemsShownMeasurements[index].Checked = true;
         }
 
         MapTracker targetTracker;
@@ -129,6 +147,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             var _contextMenuStrip = base.GetContextMenuStrip(targetTracker);
             _contextMenuStrip.Items.Cast<ToolStripItem>().FirstOrDefault(x => x.Text == "Enable dragging")?.PerformClick();
+            _contextMenuStrip.Items.Add(new ToolStripSeparator());
+            _contextMenuStrip.Items.AddRange(itemsShownMeasurements);
             return _contextMenuStrip;
         }
 
@@ -136,13 +156,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public override string GetName() => "Tape Measure";
 
-        protected override List<Vector3> GetVertices(MapGraphics graphics) =>
-            new List<Vector3>(new[] { aProvider?.Invoke() ?? a, bProvider?.Invoke() ?? b });
-
-        protected override void Draw3D(MapGraphics graphics)
+        protected override void DrawTopDown(MapGraphics graphics)
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
+                var verticalTextAlignmentIndex = (int)graphics.viewMode;
                 Vector3 _a = aProvider?.Invoke() ?? a;
                 Vector3 _b = bProvider?.Invoke() ?? b;
                 List<Vector3> ends = new List<Vector3>();
@@ -158,20 +176,19 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     new Vector3(1, float.NaN, float.NaN),
                     new Vector3(1, float.NaN, 1),
                 });
-                Color[] colors = new[] { Color.FromArgb(255, 100, 100), Color.LightGreen, Color.Yellow, Color.LightBlue, Color.Pink, Color.Cyan, Color.LightGray };
 
                 foreach (var end in ends)
                 {
                     string nameString = "";
                     var p1 = _a;
                     var p2 = _b;
-                    int colorIndex = 0;
+                    int displayIndex = 0;
                     if (!float.IsNaN(end.X))
                         p1.X = p2.X = end.X == 0 ? p1.X : p2.X;
                     else
                     {
                         nameString += "x";
-                        colorIndex |= 1;
+                        displayIndex |= 1;
                     }
 
                     if (!float.IsNaN(end.Y))
@@ -179,7 +196,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     else
                     {
                         nameString += "y";
-                        colorIndex |= 2;
+                        displayIndex |= 2;
                     }
 
                     if (!float.IsNaN(end.Z))
@@ -187,22 +204,33 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     else
                     {
                         nameString += "z";
-                        colorIndex |= 4;
+                        displayIndex |= 4;
                     }
 
-                    var lineColor = colors[colorIndex - 1];
-                    graphics.lineRenderer.Add(p1, p2, OpenTKUtilities.ColorToVec4(lineColor), OutlineWidth);
-                    graphics.textRenderer.AddText($"{nameString}: {(p1 - p2).Length}", (p1 + p2) * 0.5f, lineColor, StringAlignment.Far);
+                    if (itemsShownMeasurements[--displayIndex].Checked)
+                    {
+                        var t = textDisplay[displayIndex];
+                        graphics.lineRenderer.Add(p1, p2, OpenTKUtilities.ColorToVec4(t.color), OutlineWidth);
+                        graphics.textRenderer.AddText(
+                            $"{nameString}: {(p1 - p2).Length}",
+                            (p1 + p2) * 0.5f, t.color,
+                            StringAlignment.Far,
+                            lineAlignment: t.farAlignment[verticalTextAlignmentIndex] ? StringAlignment.Far : StringAlignment.Near
+                        );
+                    }
                 }
             });
         }
+
+        protected override void DrawOrthogonal(MapGraphics graphics)
+            => DrawTopDown(graphics);
 
         public override IHoverData GetHoverData(MapGraphics graphics, ref Vector3 position)
         {
             float magicConst = 15;
             Vector3 _a = aProvider?.Invoke() ?? a;
             Vector3 _b = bProvider?.Invoke() ?? b;
-            if (graphics.view.mode == MapView.ViewMode.TopDown)
+            if (graphics.viewMode == MapGraphics.ViewMode.TopDown)
             {
                 var rad = (magicConst / graphics.MapViewScaleValue);
                 if (graphics.HoverTopDown(_a, rad))
@@ -218,9 +246,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     return hoverData;
                 }
             }
-            else if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+            else if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
             {
-                bool prioritizeA = (_a - graphics.view.position).LengthSquared < (_b - graphics.view.position).LengthSquared;
+                bool prioritizeA = (_a - graphics.currentView.position).LengthSquared < (_b - graphics.currentView.position).LengthSquared;
                 bool hoverA = graphics.Hover3D(_a, magicConst * Get3DIconScale(graphics, _a.X, _a.Y, _a.Z));
                 bool hoverB = graphics.Hover3D(_b, magicConst * Get3DIconScale(graphics, _b.X, _b.Y, _b.Z));
                 if (hoverA && (!hoverB || prioritizeA))

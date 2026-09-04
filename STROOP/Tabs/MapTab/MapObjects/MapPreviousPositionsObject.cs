@@ -6,8 +6,6 @@ using STROOP.Structs.Configurations;
 using STROOP.Structs;
 using System.Windows.Forms;
 using OpenTK.Mathematics;
-using STROOP.Core;
-using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
@@ -15,10 +13,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("Previous Positions", "Movement")]
     public class MapPreviousPositionsObject : MapObject
     {
-        public struct DataPoint((float x, float y, float z, ushort angle, ushort _) srcData, Lazy<Image> tex)
+        public class DataPoint((float x, float y, float z, ushort angle, ushort _) srcData, Lazy<Image> tex)
         {
             public float x = srcData.x, y = srcData.y, z = srcData.z, angle = srcData.angle;
             public Lazy<Image> tex = tex;
+            public int? earlyQs = null;
 
             public bool ExactMatch(DataPoint other)
                 => x == other.x && y == other.y && z == other.z && angle == other.angle;
@@ -47,7 +46,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
         uint numFramesToShow = 16;
 
         ToolStripMenuItem itemSkipIdenticalPoints = new ToolStripMenuItem("Skip identical points");
-        bool skipIdenticalPoints {get => itemSkipIdenticalPoints.Checked; set => itemSkipIdenticalPoints.Checked = value; }
+        bool skipIdenticalPoints { get => itemSkipIdenticalPoints.Checked; set => itemSkipIdenticalPoints.Checked = value; }
+
+        ToolStripMenuItem itemShowTruncatedQsIndicators = new ToolStripMenuItem("Highlight < 4/4 quarter-steps");
+        bool showTruncatedQsIndicators { get => itemShowTruncatedQsIndicators.Checked; set => itemShowTruncatedQsIndicators.Checked = value; }
 
         public MapPreviousPositionsObject()
             : base()
@@ -73,12 +75,22 @@ namespace STROOP.Tabs.MapTab.MapObjects
             {
                 var data = GetData();
                 foreach (var dataPoint in data)
+                {
                     DrawIcon(
                         graphics,
-                        graphics.view.mode == MapView.ViewMode.ThreeDimensional,
+                        graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
                         dataPoint.x, dataPoint.y, dataPoint.z, dataPoint.angle,
                         dataPoint.tex.Value,
                         new Vector4(1));
+                    if (showTruncatedQsIndicators && dataPoint.earlyQs != null)
+                        graphics.textRenderer.AddText(
+                            $"{dataPoint.earlyQs.Value}/4",
+                            new(dataPoint.x, dataPoint.y, dataPoint.z),
+                            Color.Red,
+                            StringAlignment.Center,
+                            Renderers.TextRenderer.Fonts.large
+                            );
+                }
 
                 if (OutlineWidth != 0)
                 {
@@ -133,7 +145,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 {
                     int baseIndex = numBaseFrames + i * 4;
                     if (qsData[baseIndex].gtLo != (ushort)expectedGt)
+                    {
+                        allResults[^1].earlyQs = i;
                         break;
+                    }
 
                     for (int k = 0; k < 4; k++)
                     {
@@ -185,10 +200,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             skipIdenticalPoints = true;
             itemSkipIdenticalPoints.Click += (sender, e) => skipIdenticalPoints = !skipIdenticalPoints;
+            itemShowTruncatedQsIndicators.Click += (sender, e) => showTruncatedQsIndicators = !showTruncatedQsIndicators;
 
             _contextMenuStrip = new ContextMenuStrip();
             _contextMenuStrip.Items.Add(itemShowEachPoint);
             _contextMenuStrip.Items.Add(itemSkipIdenticalPoints);
+            _contextMenuStrip.Items.Add(itemShowTruncatedQsIndicators);
             _contextMenuStrip.Items.Add(itemSetNumFrames);
 
             return _contextMenuStrip;

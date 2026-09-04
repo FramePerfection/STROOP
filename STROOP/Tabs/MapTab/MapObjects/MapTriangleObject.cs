@@ -61,7 +61,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 {
                     if (triangle != null)
                     {
-                        if (tab.graphics.view.mode == MapView.ViewMode.TopDown)
+                        if (tab.graphics.viewMode == MapGraphics.ViewMode.TopDown)
                         {
                             float y = triangle.IsWall() ? mapCursorOnRightClick.Y : (float)triangle.GetHeightOnTriangle(mapCursorOnRightClick.X, mapCursorOnRightClick.Z);
                             CopyUtilities.CopyPosition(new Vector3(mapCursorOnRightClick.X, y, mapCursorOnRightClick.Z));
@@ -164,7 +164,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public override IHoverData GetHoverData(MapGraphics graphics, ref Vector3 position)
         {
-            if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
             {
                 if (graphics.hoverTriangle != null && _bufferedTris.Any(_ => _.Address == graphics.hoverTriangle.Address))
                 {
@@ -231,7 +231,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 var baseColor = new Vector4(Color.R / 255f, Color.G / 255f, Color.B / 255f, OpacityByte / 255f);
                 foreach (var tri in GetTrianglesWithinDist())
                 {
-                    if (graphics.view.displayOrthoLevelGeometry)
+                    if (graphics.viewOrthogonal.displayOrthoLevelGeometry)
                         graphics.triangleRenderer.Add(
                             tri.p1,
                             tri.p2,
@@ -265,7 +265,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     baseColor.W = OpacityByte / 255f;
                     var projectionColor = new Vector4(baseColor.Xyz, _projectionAlphaMultiplier * baseColor.W);
 
-                    if (!graphics.view.display3DLevelGeometry)
+                    if (!graphics.view3D.display3DLevelGeometry)
                         graphics.triangleRenderer.Add(
                             tri.p1,
                             tri.p2,

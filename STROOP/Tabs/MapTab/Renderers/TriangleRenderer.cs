@@ -137,7 +137,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                     return;
 
                 WriteDataToBuffer();
-                if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+                if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
                 {
                     GL.Enable(EnableCap.DepthTest);
                     GL.DepthFunc(DepthFunction.Lequal);

@@ -64,7 +64,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 var outlineColor = OpenTKUtilities.ColorToVec4(OutlineColor);
                 foreach (var transform in _ellipseTransforms)
                     graphics.circleRenderer.AddInstance(
-                        graphics.view.mode != MapView.ViewMode.TopDown,
+                        graphics.viewMode != MapGraphics.ViewMode.TopDown,
                         transform,
                         OutlineWidth,
                         color,

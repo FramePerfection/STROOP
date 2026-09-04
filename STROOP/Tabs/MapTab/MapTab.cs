@@ -6,8 +6,6 @@ using STROOP.Structs;
 using STROOP.Utilities;
 using System.Windows.Forms;
 using System.Drawing;
-using OpenTK;
-using OpenTK.Graphics;
 using STROOP.Structs.Configurations;
 using STROOP.Tabs.MapTab.MapObjects;
 using System.Xml.Linq;
@@ -15,6 +13,7 @@ using OpenTK.GLControl;
 using OpenTK.Mathematics;
 using STROOP.Core;
 using STROOP.Core.Utilities;
+using STROOP.Tabs.MapTab.Views;
 using STROOP.Variables.SM64MemoryLayout;
 using STROOP.Variables.Utilities;
 
@@ -85,6 +84,10 @@ namespace STROOP.Tabs.MapTab
         HashSet<uint> trackedAddresses = new HashSet<uint>();
 
         public override HashSet<uint> selection => _selection;
+
+        public List<ViewTopDown> viewsTopDown = [new() { name = "Mario" }];
+        public List<ViewOrthogonal> viewsOrthogonal = [new() { name = "Mario" }];
+        public List<View3D> views3D = [new() { name = "Mario" }];
 
         public MapTab()
         {
@@ -169,7 +172,6 @@ namespace STROOP.Tabs.MapTab
         public MapLayout GetMapLayout(object mapLayoutChoice = null) =>
             (mapLayoutChoice ?? comboBoxMapOptionsLevel.SelectedItem) as MapLayout ?? MapAssociations.GetBestMap();
 
-
         bool displayingExtendedBoundaries = false;
         bool needsGeometryRefresh, _needsGeometryRefreshInternal;
         public bool NeedsGeometryRefresh() => needsGeometryRefresh;
@@ -248,7 +250,7 @@ namespace STROOP.Tabs.MapTab
                                 toolStripItem.Click += (sender, e) => addNewTracker();
                                 return toolStripItem;
                             }
-                    ));
+                        ));
                 }
             }
 
@@ -490,53 +492,19 @@ namespace STROOP.Tabs.MapTab
             glControlMap2D.MouseDown += (sender, e) =>
             {
                 if (e.Button == MouseButtons.Right)
-                    ShowRightClickMenu();
+                    graphics.RecreateContextMenu(contextMenu =>
+                    {
+                        var openPopoutItem = new ToolStripMenuItem("Open Popout");
+                        openPopoutItem.Click += (_, _) =>
+                        {
+                            var popout = new MapPopout(this) { Owner = FindForm() };
+                            popout.Show();
+                            popout.FormClosed += (_, __) => popouts.Remove(popout);
+                            popouts.Add(popout);
+                        };
+                        contextMenu.Items.Add(openPopoutItem);
+                    });
             };
-        }
-
-        bool IsContextMenuOpen() => contextMenu != null && contextMenu.Visible;
-        ContextMenuStrip contextMenu;
-
-        void ShowRightClickMenu()
-        {
-            contextMenu = new ContextMenuStrip();
-            var onClickPosition = graphics.mapCursorPosition;
-            var copyPositionItem = new ToolStripMenuItem("Copy Cursor Position");
-            copyPositionItem.Click += (e, args) => CopyUtilities.CopyPosition(onClickPosition);
-            contextMenu.Items.Add(copyPositionItem);
-            contextMenu.Items.Add(new ToolStripSeparator());
-
-            if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
-            {
-                var pivotPositionItem = new ToolStripMenuItem("Pivot This Position");
-                pivotPositionItem.Click += (e, args) =>
-                {
-                    graphics.view.camera3DMode = MapView.Camera3DMode.FocusOnPositionAngle;
-                    graphics.view.focusPositionAngle = PositionAngle.Custom(onClickPosition);
-                };
-                contextMenu.Items.Add(pivotPositionItem);
-                contextMenu.Items.Add(new ToolStripSeparator());
-            }
-
-            foreach (var a in hoverData)
-                a.AddContextMenuItems(this, contextMenu);
-
-            if (hoverData.Count > 0)
-            {
-                contextMenu.Items.Add(new ToolStripSeparator());
-            }
-
-            var openPopoutItem = new ToolStripMenuItem("Open Popout");
-            openPopoutItem.Click += (e, args) =>
-            {
-                var popout = new MapPopout(this) { Owner = FindForm() };
-                popout.Show();
-                popout.FormClosed += (_, __) => popouts.Remove(popout);
-                popouts.Add(popout);
-            };
-            contextMenu.Items.Add(openPopoutItem);
-
-            contextMenu.Show(Cursor.Position);
         }
 
         private void LoadDefaultTrackers()
@@ -584,18 +552,18 @@ namespace STROOP.Tabs.MapTab
                     itemRefreshLevelGeometry.Click += (__, ___) => RequireGeometryUpdate();
                     ctx.Items.Add(itemRefreshLevelGeometry);
 
-                    if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+                    if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
                     {
                         ctx.Items.Add(new ToolStripSeparator());
 
                         var itemDisplayLevelGeometry = new ToolStripMenuItem("Display Level Geometry");
-                        itemDisplayLevelGeometry.Checked = graphics.view.display3DLevelGeometry;
-                        itemDisplayLevelGeometry.Click += (__, ___) => itemDisplayLevelGeometry.Checked = graphics.view.display3DLevelGeometry = !graphics.view.display3DLevelGeometry;
+                        itemDisplayLevelGeometry.Checked = graphics.view3D.display3DLevelGeometry;
+                        itemDisplayLevelGeometry.Click += (__, ___) => itemDisplayLevelGeometry.Checked = graphics.view3D.display3DLevelGeometry = !graphics.view3D.display3DLevelGeometry;
                         ctx.Items.Add(itemDisplayLevelGeometry);
 
                         var itemDisplayCylinderOutlines = new ToolStripMenuItem("Draw Cylinder Outlines");
-                        itemDisplayCylinderOutlines.Checked = graphics.view.drawCylinderOutlines;
-                        itemDisplayCylinderOutlines.Click += (__, ___) => itemDisplayCylinderOutlines.Checked = graphics.view.drawCylinderOutlines = !graphics.view.drawCylinderOutlines;
+                        itemDisplayCylinderOutlines.Checked = graphics.drawCylinderOutlines;
+                        itemDisplayCylinderOutlines.Click += (__, ___) => itemDisplayCylinderOutlines.Checked = graphics.drawCylinderOutlines = !graphics.drawCylinderOutlines;
                         ctx.Items.Add(itemDisplayCylinderOutlines);
 
                         ctx.Items.Add(new ToolStripSeparator());
@@ -603,23 +571,23 @@ namespace STROOP.Tabs.MapTab
                         var itemCameraModeInGame = new ToolStripMenuItem("In-Game View");
                         var itemCameraModePivot = new ToolStripMenuItem("Pivot");
                         var itemCameraModeFree = new ToolStripMenuItem("Free");
-                        itemCameraModeInGame.Checked = graphics.view.camera3DMode == MapView.Camera3DMode.InGame;
-                        itemCameraModePivot.Checked = graphics.view.camera3DMode == MapView.Camera3DMode.FocusOnPositionAngle;
-                        itemCameraModeFree.Checked = graphics.view.camera3DMode == MapView.Camera3DMode.Free;
+                        itemCameraModeInGame.Checked = graphics.view3D.camera3DMode == View3D.Camera3DMode.InGame;
+                        itemCameraModePivot.Checked = graphics.view3D.camera3DMode == View3D.Camera3DMode.FocusOnPositionAngle;
+                        itemCameraModeFree.Checked = graphics.view3D.camera3DMode == View3D.Camera3DMode.Free;
 
                         itemCameraModeInGame.Click += (__, ___) =>
                         {
-                            graphics.view.camera3DMode = MapView.Camera3DMode.InGame;
+                            graphics.view3D.camera3DMode = View3D.Camera3DMode.InGame;
                             itemCameraModePivot.Checked = itemCameraModeFree.Checked = !(itemCameraModeInGame.Checked = true);
                         };
                         itemCameraModePivot.Click += (__, ___) =>
                         {
-                            graphics.view.camera3DMode = MapView.Camera3DMode.FocusOnPositionAngle;
+                            graphics.view3D.camera3DMode = View3D.Camera3DMode.FocusOnPositionAngle;
                             itemCameraModeInGame.Checked = itemCameraModeFree.Checked = !(itemCameraModePivot.Checked = true);
                         };
                         itemCameraModeFree.Click += (__, ___) =>
                         {
-                            graphics.view.camera3DMode = MapView.Camera3DMode.Free;
+                            graphics.view3D.camera3DMode = View3D.Camera3DMode.Free;
                             itemCameraModeInGame.Checked = itemCameraModePivot.Checked = !(itemCameraModeInGame.Checked = true);
                         };
                         ctx.Items.Add(itemCameraModeInGame);
@@ -634,64 +602,37 @@ namespace STROOP.Tabs.MapTab
                         ctx.Items.Add(itemFollowInGame);
                     }
 
-                    if (graphics.view.mode == MapView.ViewMode.Orthogonal)
+                    if (graphics.viewMode == MapGraphics.ViewMode.Orthogonal)
                     {
                         ctx.Items.Add(new ToolStripSeparator());
 
                         var itemDisplayLevelGeometry = new ToolStripMenuItem("Display Triangle Tracker Geometry");
-                        itemDisplayLevelGeometry.Checked = graphics.view.displayOrthoLevelGeometry;
-                        itemDisplayLevelGeometry.Click += (__, ___) => itemDisplayLevelGeometry.Checked = graphics.view.displayOrthoLevelGeometry = !graphics.view.displayOrthoLevelGeometry;
+                        itemDisplayLevelGeometry.Checked = graphics.viewOrthogonal.displayOrthoLevelGeometry;
+                        itemDisplayLevelGeometry.Click += (__, ___) => itemDisplayLevelGeometry.Checked = graphics.viewOrthogonal.displayOrthoLevelGeometry = !graphics.viewOrthogonal.displayOrthoLevelGeometry;
                         ctx.Items.Add(itemDisplayLevelGeometry);
 
                         var itemSetRelativeNearPlane = new ToolStripMenuItem("Set Relative Near Plane");
                         itemSetRelativeNearPlane.Click += (__, ___) =>
-                            graphics.view.orthoRelativeNearPlane = (float)DialogUtilities.GetDoubleFromDialog(0, labelText: "Enter relative near plane value.");
+                            graphics.viewOrthogonal.orthoRelativeNearPlane = (float)DialogUtilities.GetDoubleFromDialog(0, labelText: "Enter relative near plane value.");
                         ctx.Items.Add(itemSetRelativeNearPlane);
 
                         var itemClearRelativeNearPlane = new ToolStripMenuItem("Clear Relative Near Plane");
-                        itemClearRelativeNearPlane.Click += (__, ___) => graphics.view.orthoRelativeNearPlane = float.NaN;
+                        itemClearRelativeNearPlane.Click += (__, ___) => graphics.viewOrthogonal.orthoRelativeNearPlane = float.NaN;
                         ctx.Items.Add(itemClearRelativeNearPlane);
 
                         var itemSetRelativeFarPlane = new ToolStripMenuItem("Set Relative Far Plane");
                         itemSetRelativeFarPlane.Click += (__, ___) =>
-                            graphics.view.orthoRelativeFarPlane = (float)DialogUtilities.GetDoubleFromDialog(0, labelText: "Enter relative far plane value.");
+                            graphics.viewOrthogonal.orthoRelativeFarPlane = (float)DialogUtilities.GetDoubleFromDialog(0, labelText: "Enter relative far plane value.");
                         ctx.Items.Add(itemSetRelativeFarPlane);
 
                         var itemClearRelativeFarPlane = new ToolStripMenuItem("Clear Relative Far Plane");
-                        itemClearRelativeFarPlane.Click += (__, ___) => graphics.view.orthoRelativeFarPlane = float.NaN;
+                        itemClearRelativeFarPlane.Click += (__, ___) => graphics.viewOrthogonal.orthoRelativeFarPlane = float.NaN;
                         ctx.Items.Add(itemClearRelativeFarPlane);
                     }
 
                     ctx.Show(Cursor.Position);
                 }
             };
-        }
-
-        public void UpdateHover()
-        {
-            using (new AccessScope<MapTab>(this))
-            {
-                if (Form.ActiveForm != null && glControlMap2D.ClientRectangle.Contains(glControlMap2D.PointToClient(Cursor.Position)))
-                    graphics.UpdateFlyingControls(Config.CoreLoop.lastFrameTime);
-                if (!graphics.IsMouseDown(0))
-                {
-                    var newCursor = graphics.mapCursorPosition;
-                    hoverData.Clear();
-                    foreach (var tracker in flowLayoutPanelMapTrackers.EnumerateTrackers())
-                        if (tracker.IsVisible)
-                        {
-                            var newHover = tracker.mapObject.GetHoverData(graphics, ref newCursor);
-                            if (graphics.fixCursorPlane)
-                            {
-                                graphics.cursorViewPlaneDist = Vector3.Dot(graphics.view.ComputeViewDirection(), (newCursor - graphics.view.position));
-                                graphics.UpdateCursor();
-                            }
-
-                            if (newHover != null)
-                                hoverData.Add(newHover);
-                        }
-                }
-            }
         }
 
         public override void Update(bool active)
@@ -720,8 +661,14 @@ namespace STROOP.Tabs.MapTab
                 RequireGeometryUpdate();
             }
 
-            if (!IsContextMenuOpen())
-                UpdateHover();
+            if (Form.ActiveForm != null)
+                foreach (var g in popouts.Select(x => x.graphics).Append(graphics))
+                    if (!g.IsContextMenuOpen() && g.glControl.ClientRectangle.Contains(g.glControl.PointToClient(Cursor.Position)))
+                    {
+                        g.UpdateFlyingControls(Config.CoreLoop.lastFrameTime);
+                        g.UpdateHover();
+                    }
+
             using (new AccessScope<MapTab>(this))
             {
                 flowLayoutPanelMapTrackers.UpdateControl();
@@ -742,13 +689,13 @@ namespace STROOP.Tabs.MapTab
                     }
                 }
 
-                if (graphics.view.mode == MapView.ViewMode.ThreeDimensional && makeInGameCameraFollow)
+                if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional && makeInGameCameraFollow)
                 {
                     Config.Stream.SetValue(3, CamHackConfig.StructAddress + CamHackConfig.CameraModeOffset);
-                    Config.Stream.SetValue(graphics.view.position.X, CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
-                    Config.Stream.SetValue(graphics.view.position.Y, CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
-                    Config.Stream.SetValue(graphics.view.position.Z, CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
-                    var target = graphics.view.position + graphics.view.ComputeViewDirection();
+                    Config.Stream.SetValue(graphics.currentView.position.X, CamHackConfig.StructAddress + CamHackConfig.CameraXOffset);
+                    Config.Stream.SetValue(graphics.currentView.position.Y, CamHackConfig.StructAddress + CamHackConfig.CameraYOffset);
+                    Config.Stream.SetValue(graphics.currentView.position.Z, CamHackConfig.StructAddress + CamHackConfig.CameraZOffset);
+                    var target = graphics.currentView.position + graphics.currentView.ComputeViewDirection();
                     Config.Stream.SetValue(target.X, CamHackConfig.StructAddress + CamHackConfig.FocusXOffset);
                     Config.Stream.SetValue(target.Y, CamHackConfig.StructAddress + CamHackConfig.FocusYOffset);
                     Config.Stream.SetValue(target.Z, CamHackConfig.StructAddress + CamHackConfig.FocusZOffset);
@@ -979,7 +926,7 @@ namespace STROOP.Tabs.MapTab
 
         private void comboBoxViewMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            graphics.view.mode = (MapView.ViewMode)comboBoxViewMode.SelectedIndex;
+            graphics.viewMode = (MapGraphics.ViewMode)comboBoxViewMode.SelectedIndex;
         }
     }
 }

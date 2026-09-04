@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using OpenTK.Mathematics;
 using STROOP.Core;
+using STROOP.Tabs.MapTab.Views;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -22,13 +23,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 this.parent = parent;
             }
 
-            public virtual void LeftClick(Vector3 position)
-            {
-            }
+            public virtual void LeftClick(Vector3 position) { }
 
-            public virtual void RightClick(Vector3 position)
-            {
-            }
+            public virtual void RightClick(Vector3 position) { }
 
             public virtual DragMask CanDrag() => parent.dragMask;
 
@@ -45,11 +42,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 SetPosition(newPosition);
             }
 
-            public virtual void Pivot(MapTab tab)
-            {
-                tab.graphics.view.camera3DMode = MapView.Camera3DMode.FocusOnPositionAngle;
-                tab.graphics.view.focusPositionAngle = PositionAngle.Custom(GetPosition(), 0);
-            }
+            protected virtual void Pivot(MapTab tab)
+                => (tab.graphics.currentView as PivotingView)?.Pivot(PositionAngle.Custom(GetPosition(), 0));
 
             public virtual void AddContextMenuItems(MapTab tab, ContextMenuStrip menu)
             {
@@ -114,7 +108,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 );
                 myItem.DropDownItems.Add(makeReferencePointItem);
 
-                if (tab.graphics.view.mode != MapView.ViewMode.TopDown)
+                if (tab.graphics.viewMode != MapGraphics.ViewMode.TopDown)
                 {
                     var pivotItem = new ToolStripMenuItem("Make Pivot Point");
                     pivotItem.Click += (_, __) => Pivot(tab);
@@ -129,9 +123,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             public PositionAngle currentPositionAngle;
 
-            public MapObjectHoverData(MapObject parent) : base(parent)
-            {
-            }
+            public MapObjectHoverData(MapObject parent) : base(parent) { }
 
             protected override void SetPosition(Vector3 position)
             {
@@ -144,11 +136,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             protected override Vector3 GetPosition() => currentPositionAngle?.position ?? Vector3.Zero;
 
-            public override void Pivot(MapTab tab)
+            protected override void Pivot(MapTab tab)
             {
                 if (currentPositionAngle == null)
                     return;
-                tab.graphics.view.Pivot(currentPositionAngle);
+                (tab.graphics.currentView as PivotingView)?.Pivot(currentPositionAngle);
             }
 
             public override string ToString() => currentPositionAngle.ToString();
