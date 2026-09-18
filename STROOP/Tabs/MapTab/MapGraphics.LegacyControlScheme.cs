@@ -77,7 +77,7 @@ namespace STROOP.Tabs.MapTab
             if (!isMainMap)
                 return;
 
-            if (view.mode == MapView.ViewMode.ThreeDimensional)
+            if (viewMode == ViewMode.ThreeDimensional)
                 return;
 
             if (mapTab.radioButtonMapControllersCenterBestFit.Checked)
@@ -93,14 +93,14 @@ namespace STROOP.Tabs.MapTab
             {
                 case MapCenter.BestFit:
                     RectangleF rectangle = MapViewScaleWasCourseDefault ? mapTab.GetMapLayout().Coordinates : MAX_COURSE_SIZE;
-                    view.position.X = rectangle.X + rectangle.Width / 2;
-                    view.position.Z = rectangle.Y + rectangle.Height / 2;
+                    currentView.position.X = rectangle.X + rectangle.Width / 2;
+                    currentView.position.Z = rectangle.Y + rectangle.Height / 2;
                     break;
                 case MapCenter.Origin:
-                    view.position = new Vector3(0.5f);
+                    currentView.position = new Vector3(0.5f);
                     break;
                 case MapCenter.Mario:
-                    view.position = new Vector3(Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.XOffset),
+                    currentView.position = new Vector3(Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.XOffset),
                         Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset),
                         Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.ZOffset));
                     break;
@@ -109,7 +109,7 @@ namespace STROOP.Tabs.MapTab
                         mapTab.textBoxMapControllersCenterCustom.LastSubmittedText);
                     if (posAngle != null)
                     {
-                        view.position = posAngle.position;
+                        currentView.position = posAngle.position;
                         break;
                     }
 
@@ -117,28 +117,28 @@ namespace STROOP.Tabs.MapTab
                         mapTab.textBoxMapControllersCenterCustom.LastSubmittedText, replaceComma: false);
                     if (stringValues.Count >= 3)
                     {
-                        view.position.X = ParsingUtilities.ParseFloatNullable(stringValues[0]) ?? 0;
-                        view.position.Y = ParsingUtilities.ParseFloatNullable(stringValues[1]) ?? 0;
-                        view.position.Z = ParsingUtilities.ParseFloatNullable(stringValues[2]) ?? 0;
+                        currentView.position.X = ParsingUtilities.ParseFloatNullable(stringValues[0]) ?? 0;
+                        currentView.position.Y = ParsingUtilities.ParseFloatNullable(stringValues[1]) ?? 0;
+                        currentView.position.Z = ParsingUtilities.ParseFloatNullable(stringValues[2]) ?? 0;
                     }
                     else if (stringValues.Count >= 2)
                     {
-                        view.position.X = ParsingUtilities.ParseFloatNullable(stringValues[0]) ?? 0;
-                        view.position.Z = ParsingUtilities.ParseFloatNullable(stringValues[1]) ?? 0;
+                        currentView.position.X = ParsingUtilities.ParseFloatNullable(stringValues[0]) ?? 0;
+                        currentView.position.Z = ParsingUtilities.ParseFloatNullable(stringValues[1]) ?? 0;
                     }
                     else if (stringValues.Count == 1)
                     {
-                        view.position = new Vector3(ParsingUtilities.ParseFloatNullable(stringValues[0]) ?? 0);
+                        currentView.position = new Vector3(ParsingUtilities.ParseFloatNullable(stringValues[0]) ?? 0);
                     }
                     else
-                        view.position = new Vector3();
+                        currentView.position = new Vector3();
 
                     break;
             }
 
             if (MapViewCenter != MapCenter.Custom)
             {
-                mapTab.textBoxMapControllersCenterCustom.SubmitTextLoosely($"{view.position.X}; {view.position.Y}; {view.position.Z}");
+                mapTab.textBoxMapControllersCenterCustom.SubmitTextLoosely($"{currentView.position.X}; {currentView.position.Y}; {currentView.position.Z}");
             }
         }
 
@@ -243,9 +243,9 @@ namespace STROOP.Tabs.MapTab
             (float xOffsetRotated, float zOffsetRotated) = ((float, float))MoreMath.RotatePointAboutPointAnAngularDistance(
                 xOffset, zOffset, 0, 0, MapViewAngleValue);
             float multiplier = MapViewCenterChangeByPixels ? 1 / MapViewScaleValue : 1;
-            float newCenterXValue = view.position.X + xOffsetRotated * multiplier;
-            float newCenterZValue = view.position.Z + zOffsetRotated * multiplier;
-            mapTab.textBoxMapControllersCenterCustom.SubmitText($"{newCenterXValue}; {view.position.Y}; {newCenterZValue}");
+            float newCenterXValue = currentView.position.X + xOffsetRotated * multiplier;
+            float newCenterZValue = currentView.position.Z + zOffsetRotated * multiplier;
+            mapTab.textBoxMapControllersCenterCustom.SubmitText($"{newCenterXValue}; {currentView.position.Y}; {newCenterZValue}");
         }
 
         public void ChangeAngle(int sign, object value)

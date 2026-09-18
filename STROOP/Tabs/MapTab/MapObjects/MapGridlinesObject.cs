@@ -22,7 +22,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             var c = base.GetColor(graphics);
             float maxSize = 4 * OutlineWidth;
-            if (graphics.view.mode == MapView.ViewMode.TopDown && graphics.pixelsPerUnit.Y < maxSize / Size)
+            if (graphics.viewMode == MapGraphics.ViewMode.TopDown && graphics.pixelsPerUnit.Y < maxSize / Size)
                 c.W *= (graphics.pixelsPerUnit.Y * Size - 2) / (maxSize - 2);
             return c;
         }
@@ -88,7 +88,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 graphics.mapCursorPosition,
                 _hExpanse,
                 _vExpanse,
-                graphics.view.mode == MapView.ViewMode.ThreeDimensional ? 1 : float.NaN,
+                graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional ? 1 : float.NaN,
                 _verticalLineDistance);
             return vertices;
         }
@@ -111,7 +111,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             float hExpanse = horizontalExpanse * Size;
             float vExpanse = verticalExpanse * Size;
 
-            if (graphics.view.mode == MapView.ViewMode.TopDown)
+            if (graphics.viewMode == MapGraphics.ViewMode.TopDown)
             {
                 if (graphics.pixelsPerUnit.X < 2 / Size || graphics.pixelsPerUnit.Y < 2 / Size)
                     return;

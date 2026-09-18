@@ -8,31 +8,39 @@ namespace STROOP.Tabs.MapTab
     public partial class MapPopout : Form
     {
         GLControl glControl;
-        MapGraphics graphics;
+        public readonly MapGraphics graphics;
+        MapTab mapTab;
 
-        public MapPopout(MapTab tab)
+        public MapPopout(MapTab mapTab)
         {
+            this.mapTab = mapTab;
             InitializeComponent();
-            ClientSize = tab.graphics.glControl.ClientRectangle.Size;
+            ClientSize = mapTab.graphics.glControl.ClientRectangle.Size;
             // Own GL context, but sharing resources with the main map's context so we can present the
             // shared color texture the main context renders into. See issue #39.
             glControl = new GLControl()
             {
                 APIVersion = new Version(3, 3),
-                SharedContext = tab.graphics.glControl,
+                SharedContext = mapTab.graphics.glControl,
             };
             glControl.Bounds = ClientRectangle;
             glControl.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
             Controls.Add(glControl);
             // Render in the main map's (shared) context; present into our own context (handled in MapGraphics).
-            graphics = new MapGraphics(tab, glControl, () => tab.graphics.glControl.Context);
-            graphics.MapViewAngleValue = tab.graphics.MapViewAngleValue;
-            graphics.MapViewScaleValue = tab.graphics.MapViewScaleValue;
-            graphics.view.position = tab.graphics.view.position;
+            graphics = new MapGraphics(mapTab, glControl, () => mapTab.graphics.glControl.Context);
+            graphics.MapViewAngleValue = mapTab.graphics.MapViewAngleValue;
+            graphics.MapViewScaleValue = mapTab.graphics.MapViewScaleValue;
+            graphics.currentView.position = mapTab.graphics.currentView.position;
             Shown += (_, __) =>
             {
-                using (new AccessScope<MapTab>(tab))
-                    graphics.Load(() => tab.graphics.rendererCollection);
+                using (new AccessScope<MapTab>(mapTab))
+                    graphics.Load(() => mapTab.graphics.rendererCollection);
+            };
+
+            glControl.MouseDown += (sender, e) =>
+            {
+                if (e.Button == MouseButtons.Right)
+                    graphics.RecreateContextMenu();
             };
         }
 

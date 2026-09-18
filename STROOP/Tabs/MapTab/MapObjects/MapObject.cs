@@ -187,7 +187,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             this.creationParameters = creationParameters;
         }
 
-        public static float Get3DIconScale(MapGraphics graphics, float x, float y, float z) => (0.5f * (float)Math.Tan(1) * (new Vector3(x, y, z) - graphics.view.position).Length) / graphics.glControl.Height;
+        public static float Get3DIconScale(MapGraphics graphics, float x, float y, float z) => (0.5f * (float)Math.Tan(1) * (new Vector3(x, y, z) - graphics.currentView.position).Length) / graphics.glControl.Height;
 
         public void DrawIcon(
             MapGraphics graphics,
@@ -198,7 +198,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             DrawIcon(
                 graphics,
                 sortTransparent,
-                x, y, z, graphics.view.mode != MapView.ViewMode.TopDown ? 0x8000 : angle,
+                x, y, z, graphics.viewMode != MapGraphics.ViewMode.TopDown ? 0x8000 : angle,
                 Size,
                 image,
                 color);
@@ -214,7 +214,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             if (image == null)
                 return;
             float desiredDiameter = size * 2;
-            if (graphics.view.mode == MapView.ViewMode.ThreeDimensional)
+            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
                 desiredDiameter *= Get3DIconScale(graphics, x, y, z);
             else if (!graphics.MapViewScaleIconSizes)
                 desiredDiameter /= graphics.MapViewScaleValue;
@@ -234,15 +234,15 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public void Draw(MapGraphics graphics)
         {
-            switch (graphics.view.mode)
+            switch (graphics.viewMode)
             {
-                case MapView.ViewMode.TopDown:
+                case MapGraphics.ViewMode.TopDown:
                     DrawTopDown(graphics);
                     break;
-                case MapView.ViewMode.Orthogonal:
+                case MapGraphics.ViewMode.Orthogonal:
                     DrawOrthogonal(graphics);
                     break;
-                case MapView.ViewMode.ThreeDimensional:
+                case MapGraphics.ViewMode.ThreeDimensional:
                     Draw3D(graphics);
                     break;
             }

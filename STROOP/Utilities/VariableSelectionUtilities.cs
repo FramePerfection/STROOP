@@ -241,8 +241,8 @@ namespace STROOP.Structs
                 {
                     var x1 = values[0];
                     var y1 = values[1];
-                    var x2 = values[3];
-                    var y2 = values[4];
+                    var x2 = values[2];
+                    var y2 = values[3];
                     var min = values.Min(x => x.Length);
                     var result = new List<double>(min);
                     for (int i = 0; i < min; i++)

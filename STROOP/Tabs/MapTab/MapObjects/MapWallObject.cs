@@ -46,7 +46,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public override IHoverData GetHoverData(MapGraphics graphics, ref Vector3 position)
         {
-            if (graphics.view.mode == MapView.ViewMode.TopDown)
+            if (graphics.viewMode == MapGraphics.ViewMode.TopDown)
                 foreach (var tri in GetTrianglesWithinDist())
                 {
                     var dat = MapUtilities.Get2DWallDataFromTri(tri);

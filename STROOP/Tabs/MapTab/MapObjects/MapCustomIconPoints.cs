@@ -64,9 +64,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             if (mapTab == null)
                 return;
-            var newPointPos = mapTab.graphics.view.position;
-            if (mapTab.graphics.view.mode == MapView.ViewMode.ThreeDimensional)
-                newPointPos += mapTab.graphics.view.ComputeViewDirection() * 50;
+            var newPointPos = mapTab.graphics.currentView.position;
+            if (mapTab.graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+                newPointPos += mapTab.graphics.currentView.ComputeViewDirection() * 50;
             positionAngles.Add(PositionAngle.Custom(newPointPos));
         }
 
