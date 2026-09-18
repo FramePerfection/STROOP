@@ -7,13 +7,17 @@ namespace STROOP.Tabs.GhostTab
         private void buttonTutorialRecord_Click(object sender, EventArgs e)
         {
             Forms.InfoForm frm = new Forms.InfoForm();
-            frm.Size = new System.Drawing.Size(850, 250);
+            frm.Size = new System.Drawing.Size(900, 350);
             frm.SetText("Ghost Help",
                 "How to record ghosts",
                 @"To record a ghost use the 'recordghost.lua' script.
 This script should be located next to your STROOP executable. (You can move it to a different location though.)
 When you press 'Start', a new recording will begin at the current frame.
 Hitting 'Stop' will save the ghost to 'tmp.ghost' at the location of the script file.
+
+A similar method is to record through SM64LuaRedux, whose latest version also supports rudimentary ghosts of objects.
+Note that some objects may crash or cause unwanted behavior.
+
 You can then load this file into STROOP to play it back later, or store it somewhere else.
 You can also use a File Watcher to automatically load in the last recorded ghost (see ""Using File Watchers"").");
             frm.ShowDialog();
