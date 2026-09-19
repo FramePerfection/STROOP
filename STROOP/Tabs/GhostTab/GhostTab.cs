@@ -137,9 +137,14 @@ namespace STROOP.Tabs.GhostTab
                         (var frame, var animation) = ghost.lastValidPlaybackFrame;
                         animation = animation == 0 ? (uint)frame.animationIndex : animation;
 
-                        Array.Copy(BitConverter.GetBytes(frame.position.X), 0, buffer, i * 0x20 + 0x00, 4);
-                        Array.Copy(BitConverter.GetBytes(frame.position.Y), 0, buffer, i * 0x20 + 0x04, 4);
-                        Array.Copy(BitConverter.GetBytes(frame.position.Z), 0, buffer, i * 0x20 + 0x08, 4);
+                        const short FAR = 30_000;
+                        var position = ghost.frames.ContainsKey((uint)(globalTimer - ghost.playbackBaseFrame - 1))
+                            ? frame.position
+                            : new Vector3(FAR, FAR, FAR);
+
+                        Array.Copy(BitConverter.GetBytes(position.X), 0, buffer, i * 0x20 + 0x00, 4);
+                        Array.Copy(BitConverter.GetBytes(position.Y), 0, buffer, i * 0x20 + 0x04, 4);
+                        Array.Copy(BitConverter.GetBytes(position.Z), 0, buffer, i * 0x20 + 0x08, 4);
                         Array.Copy(BitConverter.GetBytes(ghost.nonMarioGraphics != 0 ? animation : frame.animationIndex), 0, buffer, i * 0x20 + 0x0C, 4);
                         Array.Copy(BitConverter.GetBytes(frame.oPitch), 0, buffer, i * 0x20 + 0x12, 2);
                         Array.Copy(BitConverter.GetBytes(frame.oYaw), 0, buffer, i * 0x20 + 0x10, 2);
@@ -209,9 +214,7 @@ namespace STROOP.Tabs.GhostTab
 
         IEnumerable<Ghost> GetSelectedGhosts()
         {
-            var lst = listBoxGhosts.SelectedItems.ConvertAndRemoveNull(_ => _ as Ghost);
-            lst.Sort((a, b) => a.transparent && !b.transparent ? 1 : (a.transparent == b.transparent ? 0 : -1));
-            return lst;
+            return listBoxGhosts.SelectedItems.OfType<Ghost>();
         }
 
         void AddGhost(string name, Ghost newGhost)
