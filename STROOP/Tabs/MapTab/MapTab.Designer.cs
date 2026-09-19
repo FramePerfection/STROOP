@@ -1150,7 +1150,7 @@
         internal System.Windows.Forms.Label labelMapDataMapSubName;
         internal System.Windows.Forms.Label labelMapDataMapName;
         internal System.Windows.Forms.Label labelMapDataPuCoordinates;
-        private Tabs.MapTab.MapTrackerFlowLayoutPanel flowLayoutPanelMapTrackers;
+        internal Tabs.MapTab.MapTrackerFlowLayoutPanel flowLayoutPanelMapTrackers;
         private System.Windows.Forms.ComboBox comboBoxViewMode;
         internal System.Windows.Forms.ComboBox comboBoxMapOptionsLevel;
         internal System.Windows.Forms.Label labelViewMode;

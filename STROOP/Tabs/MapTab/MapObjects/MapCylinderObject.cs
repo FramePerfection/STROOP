@@ -27,7 +27,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 var color = new Vector4(Color.R / 255.0f, Color.G / 255.0f, Color.B / 255.0f, (float)Opacity);
                 foreach (var dim in Get3DDimensions())
                 {
-                    var dist = (graphics.view.focusPositionAngle.position.Xz - new Vector2(dim.centerX, dim.centerZ)).Length;
+                    var dist = (graphics.viewOrthogonal.focusPositionAngle.position.Xz - new Vector2(dim.centerX, dim.centerZ)).Length;
                     dist /= dim.radius;
                     var scale = System.Math.Sqrt(1 - dist * dist);
                     if (!double.IsNaN(scale))

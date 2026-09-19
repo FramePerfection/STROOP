@@ -7,13 +7,17 @@ namespace STROOP.Tabs.GhostTab
         private void buttonTutorialRecord_Click(object sender, EventArgs e)
         {
             Forms.InfoForm frm = new Forms.InfoForm();
-            frm.Size = new System.Drawing.Size(850, 250);
+            frm.Size = new System.Drawing.Size(900, 350);
             frm.SetText("Ghost Help",
                 "How to record ghosts",
                 @"To record a ghost use the 'recordghost.lua' script.
 This script should be located next to your STROOP executable. (You can move it to a different location though.)
 When you press 'Start', a new recording will begin at the current frame.
 Hitting 'Stop' will save the ghost to 'tmp.ghost' at the location of the script file.
+
+A similar method is to record through SM64LuaRedux, whose latest version also supports rudimentary ghosts of objects.
+Note that some objects may crash or cause unwanted behavior.
+
 You can then load this file into STROOP to play it back later, or store it somewhere else.
 You can also use a File Watcher to automatically load in the last recorded ghost (see ""Using File Watchers"").");
             frm.ShowDialog();
@@ -47,7 +51,7 @@ Always make sure your runs work from a clean savestate.
         private void buttonTutorialNotes_Click(object sender, EventArgs e)
         {
             Forms.InfoForm frm = new Forms.InfoForm();
-            frm.Size = new System.Drawing.Size(900, 400);
+            frm.Size = new System.Drawing.Size(900, 570);
             frm.SetText("Ghost Help",
                 "Notes",
                 @"The ghost hack works on the US and JP versions of Super Mario 64 (and therefore also on numerous ROM hacks).
@@ -58,6 +62,9 @@ While in most cases the use of the ghost hack is unproblematic, there are severa
 Always verify that your runs work without the hack.
 
 Rendering too many ghosts at once can cause a game crash. This number is usually somewhere around 15 to 18, but can be increased by moving the game's Gfx pool. See ""Moving the GFX pool"" for details.
+
+For Usamune ROMs (and perhaps other ROMs as well), you will need to change the ""RAM offset base"" to a higher value (e.g. 8060) before enabling the hack, in order to not conflict with the ROM hack's own memory allocations.
+(Reasonable values are between 8040 and 8060 for this hack due to its own memory requirements.)
 
 Disabling the ghost hack via the 'Disable Ghost hack' button may have unintended side effects, including crashing the game.
 Try to keep a savestate around that doesn't have the hack enabled instead.

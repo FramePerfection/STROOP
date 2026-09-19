@@ -106,7 +106,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                         * Matrix4.CreateScale(0.5f)
                                         * Matrix4.CreateTranslation(x + offset.x + 0.5f, vs[x, z], z + offset.z + 0.5f);
                     graphics.circleRenderer.AddInstance(
-                        graphics.view.mode != MapView.ViewMode.TopDown,
+                        graphics.viewMode != MapGraphics.ViewMode.TopDown,
                         transform,
                         OutlineWidth,
                         color,
@@ -148,7 +148,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                                                                 * Matrix4.CreateTranslation(x + offset.x + 1, (high + low) * 0.5f, z + offset.z + 0.5f);
                         if (low != high)
                             graphics.circleRenderer.AddInstance(
-                                graphics.view.mode != MapView.ViewMode.TopDown,
+                                graphics.viewMode != MapGraphics.ViewMode.TopDown,
                                 transform,
                                 OutlineWidth,
                                 colorX,
@@ -163,7 +163,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                     * Matrix4.CreateTranslation(x + offset.x + 0.5f, (high + low) * 0.5f, z + offset.z + 1);
                         if (low != high)
                             graphics.circleRenderer.AddInstance(
-                                graphics.view.mode != MapView.ViewMode.TopDown,
+                                graphics.viewMode != MapGraphics.ViewMode.TopDown,
                                 transform,
                                 OutlineWidth,
                                 colorX,

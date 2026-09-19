@@ -26,7 +26,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 {
                     var transform = graphics.BillboardMatrix * Matrix4.CreateScale(dim.radius) * Matrix4.CreateTranslation(dim.centerX, 0, dim.centerZ);
                     graphics.circleRenderer.AddInstance(
-                        graphics.view.mode != MapView.ViewMode.TopDown,
+                        graphics.viewMode != MapGraphics.ViewMode.TopDown,
                         transform,
                         OutlineWidth,
                         color,
