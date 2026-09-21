@@ -6,6 +6,9 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <ApplicationIcon>icon.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <UseAppHost>true</UseAppHost>
     </PropertyGroup>
 
     <!--  Package references -->
