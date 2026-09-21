@@ -1,4 +1,4 @@
-using STROOP.Core;
+﻿using STROOP.Core;
 using STROOP.Forms;
 using System;
 using System.Drawing;
@@ -38,6 +38,7 @@ namespace STROOP
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetColorMode(SystemColorMode.System);
 
             StroopMainForm mainForm;
             Initialize(out mainForm);

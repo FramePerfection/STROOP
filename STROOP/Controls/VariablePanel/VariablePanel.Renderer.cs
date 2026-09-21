@@ -192,6 +192,12 @@ partial class VariablePanel
             bufferedGraphics.Render(e.Graphics);
         }
 
+        public static Brush ForegroundBrushForBackground(Color background)
+        {
+            int yiq = ((background.R * 299) + (background.G * 587) + (background.B * 114)) / 1000;
+            return yiq >= 128 ? Brushes.Black : Brushes.White;
+        }
+
         public void Draw()
         {
             //Return if not focused and recently enough refreshed to save CPU
@@ -335,7 +341,8 @@ partial class VariablePanel
                     else
                         ctrlData.nameTextOffset = 0;
 
-                    g.DrawString(cell.control.VarName, varNameFont, cell.control.IsSelected ? Brushes.White : Brushes.Black, txtPoint);
+                    var backgroundColor = cell.control.IsSelected ? Color.Blue : cell.control.currentColor;
+                    g.DrawString(cell.control.VarName, varNameFont, ForegroundBrushForBackground(backgroundColor), txtPoint);
                 }
 
                 ResetIterators();
@@ -363,7 +370,8 @@ partial class VariablePanel
                     else
                     {
                         var txtPoint = new Point((x + 1) * elementWidth - elementMarginLeftRight, yCoord + elementMarginTopBottom);
-                        g.DrawString(cell.GetValueText(), Font, cell.control.IsSelected ? Brushes.White : Brushes.Black, txtPoint, rightAlignFormat);
+                        var backgroundColor = cell.control.IsSelected ? Color.Blue : cell.control.currentColor;
+                        g.DrawString(cell.GetValueText(), Font, ForegroundBrushForBackground(backgroundColor), txtPoint, rightAlignFormat);
                     }
 
                     DrawFixImage(cell, x * elementWidth + elementNameWidth, yCoord);
@@ -448,7 +456,10 @@ partial class VariablePanel
                             elementNameWidth,
                             elementHeight));
                     var txtPoint = new Point((int)ctrlData.positionWhileMoving.X + elementMarginLeftRight, yCoord + elementMarginTopBottom);
-                    g.DrawString(cell.control.VarName, varNameFont, Brushes.Black, txtPoint);
+
+                    var backgroundColor = cell.control.currentColor;
+                    var foregroundBrush = ForegroundBrushForBackground(backgroundColor);
+                    g.DrawString(cell.control.VarName, varNameFont, foregroundBrush, txtPoint);
 
                     var valueX = (int)ctrlData.positionWhileMoving.X + elementNameWidth;
                     g.Clip = new Region(
@@ -458,7 +469,7 @@ partial class VariablePanel
                             elementValueWidth,
                             elementHeight));
                     txtPoint = new Point((int)ctrlData.positionWhileMoving.X + elementWidth - elementMarginLeftRight, yCoord + elementMarginTopBottom);
-                    g.DrawString(cell.GetValueText(), Font, Brushes.Black, txtPoint, rightAlignFormat);
+                    g.DrawString(cell.GetValueText(), Font, foregroundBrush, txtPoint, rightAlignFormat);
                     DrawFixImage(cell, valueX, yCoord);
 
                     g.ResetClip();
