@@ -24,3 +24,6 @@ SendMessage
 GetAsyncKeyState
 GetSystemMetrics
 SYSTEM_METRICS_INDEX
+
+timeBeginPeriod
+timeEndPeriod

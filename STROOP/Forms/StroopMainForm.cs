@@ -26,7 +26,7 @@ namespace STROOP
     public partial class StroopMainForm : Form
     {
         // STROOP VERSION NAME
-        const string _version = "Refactor 0.7.2";
+        const string _version = "Refactor 0.8.0";
 
         public event Action Updating;
 

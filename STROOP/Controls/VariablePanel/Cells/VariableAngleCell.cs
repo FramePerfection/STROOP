@@ -6,6 +6,7 @@ namespace STROOP.Controls.VariablePanel.Cells;
 
 public class VariableAngleCell<TNumber>(VariableNumberCell<TNumber> baseCell)
     : VariableAngleCell<WinFormsVariablePanelUiContext, TNumber>(baseCell)
+    , INumberVariableCell
     where TNumber : struct, IConvertible
 {
     protected override bool DisplayAsUnsigned() => SavedSettingsConfig.DisplayYawAnglesAsUnsigned;

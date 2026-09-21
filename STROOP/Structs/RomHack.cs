@@ -76,7 +76,7 @@ namespace STROOP.Structs
             } while (nextEnd != -1);
         }
 
-        public void LoadPayload()
+        public void LoadPayload(Dictionary<uint, uint> destinationRemap = null)
         {
             bool success = true;
 
@@ -85,10 +85,11 @@ namespace STROOP.Structs
 
             using (Config.Stream.Suspend())
             {
-                foreach (var (address, data) in _payload)
+                foreach (var (originalAddress, data) in _payload)
                 {
-                    // Hacks are entered as big endian; we need to swap the address endianess before writing 
-                    var fixedAddress = EndiannessUtilities.SwapAddressEndianness(address, data.Length);
+                    var effectiveAddress = destinationRemap?.GetValueOrDefault(originalAddress, originalAddress) ?? originalAddress;
+                    // Hacks are entered as big endian; we need to swap the address endianess before writing
+                    var fixedAddress = EndiannessUtilities.SwapAddressEndianness(effectiveAddress, data.Length);
 
                     // Read original memory before replacing
                     _originalMemory.Add(new Tuple<uint, byte[]>(fixedAddress, Config.Stream.ReadRam((UIntPtr)fixedAddress, data.Length, EndiannessType.Big)));

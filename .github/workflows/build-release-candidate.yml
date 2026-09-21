@@ -1,0 +1,57 @@
+﻿# .github/workflows/build-release-candidate.yml
+name: Release Candidate Build
+
+on:
+    push:
+        branches:
+            - release-*
+
+jobs:
+    release-build:
+        runs-on: windows-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup .NET SDK
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: '8.0.x'
+
+            - name: Restore dependencies
+              run: dotnet restore
+
+            - name: Build solution (Release)
+              run: dotnet build ./STROOP.sln -c Release -o ./artifacts --no-restore
+
+            - name: Determine release branch name and short commit
+              id: meta
+              shell: bash
+              run: |
+                  # Get branch name from ref (refs/heads/release-...)
+                  BRANCH_REF="${GITHUB_REF#refs/heads/}"
+                  # sanitize branch for filenames: replace slashes with -
+                  BRANCH_NAME="${BRANCH_REF//\//-}"
+                  SHORT_SHA="${GITHUB_SHA::7}"
+                  echo "branch=${BRANCH_NAME}" >> "$GITHUB_OUTPUT"
+                  echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+
+            - name: Write release metadata file
+              run: |
+                  echo "branch=${{ steps.meta.outputs.branch }}" > ./artifacts/release-info.txt
+                  echo "commit=${{ steps.meta.outputs.short_sha }}" >> ./artifacts/release-info.txt
+                  echo "built_at=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> ./artifacts/release-info.txt
+              shell: bash
+
+            - name: Prepare artifact filename
+              id: filename
+              shell: bash
+              run: |
+                  TARGET="release-build-${{ steps.meta.outputs.branch }}-${{ steps.meta.outputs.short_sha }}"
+                  echo "name=${TARGET}" >> "$GITHUB_OUTPUT"
+
+            - name: Upload release build artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ steps.filename.outputs.name }}
+                  path: ./artifacts

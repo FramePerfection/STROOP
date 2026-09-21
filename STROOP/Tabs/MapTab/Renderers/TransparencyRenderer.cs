@@ -157,7 +157,7 @@ namespace STROOP.Tabs.MapTab.Renderers
 
         public override void SetDrawCalls(MapGraphics graphics)
         {
-            if (graphics.view.mode != MapView.ViewMode.TopDown)
+            if (graphics.viewMode != MapGraphics.ViewMode.TopDown)
                 graphics.drawLayers[(int)MapGraphics.DrawLayers.Transparency].Add(() =>
                 {
                     var error = GL.GetError();

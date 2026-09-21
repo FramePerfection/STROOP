@@ -83,7 +83,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 List<(float x, float y, float z, float angle, Lazy<Image> tex, float alpha)> data = GetData();
                 data.Reverse();
                 foreach (var d in data)
-                    DrawIcon(graphics, graphics.view.mode != MapView.ViewMode.TopDown, d.x, d.y, d.z, d.angle, d.tex.Value, new Vector4(1, 1, 1, d.alpha));
+                    DrawIcon(graphics, graphics.viewMode != MapGraphics.ViewMode.TopDown, d.x, d.y, d.z, d.angle, d.tex.Value, new Vector4(1, 1, 1, d.alpha));
             });
         }
 

@@ -35,16 +35,21 @@ namespace STROOP.Tabs.GhostTab
             public void SetGlobalTimer(uint globalTimer)
             {
                 GhostFrame newFrame;
-                if (g.playbackFrames.TryGetValue(globalTimer, out newFrame))
+                if (g.frames.TryGetValue(globalTimer, out newFrame))
                     currentFrame = newFrame;
             }
 
             public override Vector4 GetArrowColor(Vector4 baseColor) => color;
         }
 
+        public record struct PlaybackFrame(GhostFrame frame, uint animation);
+
+        const uint OBJECT_EXTRA_MAGIC = 0x4F424A54;
+
         public uint playbackBaseFrame = 0;
-        public Dictionary<uint, GhostFrame> playbackFrames = new Dictionary<uint, GhostFrame>();
-        public GhostFrame lastValidPlaybackFrame, currentFrame;
+        public Dictionary<uint, GhostFrame> frames = new Dictionary<uint, GhostFrame>();
+        public PlaybackFrame lastValidPlaybackFrame;
+        public GhostFrame currentFrame;
         public uint originalPlaybackBaseFrame { get; private set; }
         public uint maxFrame { get; private set; }
         public uint numFrames => maxFrame + 1;
@@ -53,15 +58,19 @@ namespace STROOP.Tabs.GhostTab
         public GhostPositionAngle positionAngle { get; private set; }
         public bool transparent = true;
 
+        /// <summary> The graphics pointer to pass to the hack - 0 is interpreted as "Mario" by the hack. </summary>
+        public uint nonMarioGraphics = 0;
+        public Dictionary<uint, uint> animationSwitches = new();
+
         public Ghost()
         {
             positionAngle = new GhostPositionAngle(this);
         }
 
-        public Ghost(uint playbackBaseFrame, Dictionary<uint, GhostFrame> playbackFrames)
+        public Ghost(uint playbackBaseFrame, Dictionary<uint, GhostFrame> frames)
         {
             this.playbackBaseFrame = originalPlaybackBaseFrame = playbackBaseFrame;
-            this.playbackFrames = playbackFrames;
+            this.frames = frames;
         }
 
         public static Ghost FromFile(BinaryReader reader)
@@ -75,8 +84,20 @@ namespace STROOP.Tabs.GhostTab
                 {
                     var index = reader.ReadUInt32();
                     var frame = GhostFrame.ReadFrom(reader);
-                    result.playbackFrames[index] = frame;
+                    result.frames[index] = frame;
                     result.maxFrame = Math.Max(result.maxFrame, index);
+                }
+
+                if (reader.BaseStream.Position > reader.BaseStream.Length - 4 || reader.ReadUInt32() != OBJECT_EXTRA_MAGIC)
+                    return result;
+
+                result.nonMarioGraphics = reader.ReadUInt32();
+                var numAnimationSwitches = reader.ReadUInt32();
+                for (int i = 0; i < numAnimationSwitches; i++)
+                {
+                    var key = reader.ReadUInt32();
+                    var value = reader.ReadUInt32();
+                    result.animationSwitches[key] = value;
                 }
             }
             catch (IOException)
@@ -85,6 +106,24 @@ namespace STROOP.Tabs.GhostTab
             }
 
             return result;
+        }
+        public void ToFile(BinaryWriter wr)
+        {
+            wr.Write(originalPlaybackBaseFrame);
+            wr.Write(frames.Count);
+            foreach (var frame in frames)
+            {
+                wr.Write(frame.Key);
+                frame.Value.WriteTo(wr);
+            }
+
+            wr.Write(OBJECT_EXTRA_MAGIC);
+            wr.Write(animationSwitches.Count);
+            foreach (var kvp in animationSwitches)
+            {
+                wr.Write(kvp.Key);
+                wr.Write(kvp.Value);
+            }
         }
 
         public override string ToString()
