@@ -149,8 +149,8 @@ sw r0, 0x05BC (t8)
 jal set_mario_animation
 lw a1, 0xC (t0)
 lh t2, 0x38 (SP)
-lui t1, 0x800F
-ori t1, t1, 0x0860
+lw t1, 0x14 (RegMarioObject)
+nop
 beq r0, r0, @COMMON_SETTERS
 addiu RegAnimationBuffer, RegAnimationBuffer, AnimationBufferSize
 @TREAT_AS_OBJECT:
