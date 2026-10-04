@@ -27,6 +27,10 @@ If this updated feature set doesn't suit your needs, you can of course still get
   * 64 Marios (Must be super)
   * Marios must be American, Japanese or PAL
 
+  STROOP can run under Wine, but requires additional setup:
+
+  * The "Microsoft Sans Serif" font must be installed (`winetricks micross`)
+
 ## Building
 
 Requirements:

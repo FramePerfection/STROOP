@@ -2,6 +2,7 @@ using STROOP.Core;
 using STROOP.Forms;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using STROOP.Structs;
@@ -31,6 +32,8 @@ namespace STROOP
         [STAThread]
         static void Main()
         {
+            Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
             // This is necessary to keep the scale of controls in check after migrating from .NET Framework WinForms to .NET8 WinForms LOL
             Application.SetDefaultFont(new Font(new FontFamily("Microsoft Sans Serif"), 8.25F));
 
