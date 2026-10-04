@@ -35,6 +35,7 @@ Requirements:
 
 A simple `dotnet build` in the repository root directory will create a debug build.<br>
 A `Release` configuration is also present for non-debugging purposes and is used for the binary releases in this repository.
+Cross-compiling with a Windows target on other platforms is supported.
 
 ## Status
 
