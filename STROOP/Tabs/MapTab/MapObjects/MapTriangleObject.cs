@@ -265,7 +265,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     baseColor.W = OpacityByte / 255f;
                     var projectionColor = new Vector4(baseColor.Xyz, _projectionAlphaMultiplier * baseColor.W);
 
-                    if (!graphics.view3D.display3DLevelGeometry)
+                    if (!graphics.Draw3DCollisionGeometry || tri.AssociatedObject != 0)
                         graphics.triangleRenderer.Add(
                             tri.p1,
                             tri.p2,

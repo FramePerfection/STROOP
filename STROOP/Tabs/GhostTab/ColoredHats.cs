@@ -40,6 +40,21 @@ namespace STROOP.Tabs.GhostTab
 
         uint COLORED_HATS_LIGHTS_ADDR => ghostRegionBase + 0x8300u;
 
+        public uint ColoredHatsGeneratorAddress => ghostRegionBase + COLORED_HATS_CODE_OFFSET;
+
+        public uint ColoredHatsLightsAddress => COLORED_HATS_LIGHTS_ADDR;
+
+        public bool ColoredHatsInstalled =>
+            Config.Stream.GetUInt32(ColoredHatsGeneratorAddress) == 0x27BDFFC0
+            && Config.Stream.GetUInt32(ColoredHatsGeneratorAddress + 4) == 0xAFBF0014
+            && Config.Stream.GetUInt32(ColoredHatsGeneratorAddress + 8) == 0x3C090401;
+
+        public bool GhostHackInstalled =>
+            Config.Stream.GetUInt32(ghostRegionBase + GHOST_LOOP_CODE_OFFSET) == 0x27BDFFC0
+            && Config.Stream.GetUInt32(ghostRegionBase + GHOST_LOOP_CODE_OFFSET + 4) == 0x3C088036;
+
+        public bool GhostsDrawnInGame => GhostHackInstalled && Config.Stream.GetByte(numGhostsAddr) > 0;
+
         private void EnableColoredHats()
         {
             using (Config.Stream.Suspend())

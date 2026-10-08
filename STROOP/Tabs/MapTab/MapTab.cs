@@ -157,7 +157,7 @@ namespace STROOP.Tabs.MapTab
                 graphics.Load(() => new Renderers.RendererCollection());
                 InitializeControls();
 
-                comboBoxViewMode.SelectedIndex = 0;
+                comboBoxViewMode.SelectedIndex = (int)MapGraphics.ViewMode.ThreeDimensional;
                 if (!System.IO.File.Exists(DEFAULT_TRACKER_FILE))
                     flowLayoutPanelMapTrackers.Controls.Clear();
                 else
@@ -175,6 +175,18 @@ namespace STROOP.Tabs.MapTab
         bool displayingExtendedBoundaries = false;
         bool needsGeometryRefresh, _needsGeometryRefreshInternal;
         public bool NeedsGeometryRefresh() => needsGeometryRefresh;
+
+        MapLevelModelObject levelModelObject;
+
+        public bool IsMapVisible { get; private set; } = true;
+
+        public bool IsLevelModelShown => levelModelObject != null
+                                         && levelModelObject.showModel
+                                         && levelModelObject.Model is { IsEmpty: false }
+                                         && !(comboBoxMapOptionsLevel.SelectedItem is MapLayout);
+
+        public bool AreObjectModelsShown(MapGraphics graphics) =>
+            graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional && IsLevelModelShown && levelModelObject.showObjects;
         public void RequireGeometryUpdate() => _needsGeometryRefreshInternal = true;
 
 
@@ -360,7 +372,7 @@ namespace STROOP.Tabs.MapTab
             checkBoxMapOptionsTrackMario.Checked = true;
 
             // FlowLayoutPanel
-            flowLayoutPanelMapTrackers.Initialize(new MapCurrentMapObject(), new MapCurrentBackgroundObject());
+            flowLayoutPanelMapTrackers.Initialize(levelModelObject = new MapLevelModelObject(), new MapCurrentBackgroundObject());
 
             // ComboBox for Level
             List<MapLayout> mapLayouts = MapAssociations.GetAllMaps();
@@ -552,11 +564,39 @@ namespace STROOP.Tabs.MapTab
                     itemRefreshLevelGeometry.Click += (__, ___) => RequireGeometryUpdate();
                     ctx.Items.Add(itemRefreshLevelGeometry);
 
+                    var itemLevelModel = new ToolStripMenuItem("Level Model");
+                    var itemShowLevelModel = new ToolStripMenuItem("Show Textured Level Model") { Checked = levelModelObject.showModel };
+                    itemShowLevelModel.Click += (__, ___) => itemShowLevelModel.Checked = levelModelObject.showModel = !levelModelObject.showModel;
+                    var itemShowObjects = new ToolStripMenuItem("Show Mario and Objects") { Checked = levelModelObject.showObjects };
+                    itemShowObjects.Click += (__, ___) => itemShowObjects.Checked = levelModelObject.showObjects = !levelModelObject.showObjects;
+                    var itemShowWater = new ToolStripMenuItem("Show Water") { Checked = levelModelObject.showWater };
+                    itemShowWater.Click += (__, ___) => itemShowWater.Checked = levelModelObject.showWater = !levelModelObject.showWater;
+                    var itemShowSky = new ToolStripMenuItem("Show Sky (3D)") { Checked = levelModelObject.showSky };
+                    itemShowSky.Click += (__, ___) => itemShowSky.Checked = levelModelObject.showSky = !levelModelObject.showSky;
+                    var itemCullFaces = new ToolStripMenuItem("Cull Back Faces (like the game)") { Checked = levelModelObject.cullFaces };
+                    itemCullFaces.Click += (__, ___) => itemCullFaces.Checked = levelModelObject.cullFaces = !levelModelObject.cullFaces;
+                    var itemHideAboveMario = new ToolStripMenuItem("Hide Geometry Above Mario") { Checked = levelModelObject.hideAboveMario };
+                    itemHideAboveMario.Click += (__, ___) => itemHideAboveMario.Checked = levelModelObject.hideAboveMario = !levelModelObject.hideAboveMario;
+                    var itemHideAboveMarioOffset = new ToolStripMenuItem("Set Height Above Mario...");
+                    itemHideAboveMarioOffset.Click += (__, ___) =>
+                        levelModelObject.hideAboveMarioOffset = (float)DialogUtilities.GetDoubleFromDialog(
+                            levelModelObject.hideAboveMarioOffset,
+                            levelModelObject.hideAboveMarioOffset.ToString(),
+                            "Hide the level model above Mario's height plus:");
+                    itemLevelModel.DropDownItems.Add(itemShowLevelModel);
+                    itemLevelModel.DropDownItems.Add(itemShowObjects);
+                    itemLevelModel.DropDownItems.Add(itemShowWater);
+                    itemLevelModel.DropDownItems.Add(itemShowSky);
+                    itemLevelModel.DropDownItems.Add(itemCullFaces);
+                    itemLevelModel.DropDownItems.Add(itemHideAboveMario);
+                    itemLevelModel.DropDownItems.Add(itemHideAboveMarioOffset);
+                    ctx.Items.Add(itemLevelModel);
+
                     if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
                     {
                         ctx.Items.Add(new ToolStripSeparator());
 
-                        var itemDisplayLevelGeometry = new ToolStripMenuItem("Display Level Geometry");
+                        var itemDisplayLevelGeometry = new ToolStripMenuItem("Display Collision Geometry");
                         itemDisplayLevelGeometry.Checked = graphics.view3D.display3DLevelGeometry;
                         itemDisplayLevelGeometry.Click += (__, ___) => itemDisplayLevelGeometry.Checked = graphics.view3D.display3DLevelGeometry = !graphics.view3D.display3DLevelGeometry;
                         ctx.Items.Add(itemDisplayLevelGeometry);
@@ -654,7 +694,11 @@ namespace STROOP.Tabs.MapTab
                     }
             }
 
-            graphics.UpdateCursor();
+            active |= popouts.Count > 0;
+            IsMapVisible = active;
+
+            if (active)
+                graphics.UpdateCursor();
             if (displayingExtendedBoundaries != SavedSettingsConfig.UseExtendedLevelBoundaries)
             {
                 displayingExtendedBoundaries = SavedSettingsConfig.UseExtendedLevelBoundaries;
@@ -673,7 +717,6 @@ namespace STROOP.Tabs.MapTab
             {
                 flowLayoutPanelMapTrackers.UpdateControl();
 
-                active |= popouts.Count > 0;
                 if (active)
                 {
                     base.Update(active);

@@ -11,12 +11,16 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
         }
 
+        protected virtual bool IsGameObject => false;
+
         protected override void DrawTopDown(MapGraphics graphics)
         {
+            bool onlyHovered = IsGameObject && currentMapTab.AreObjectModelsShown(graphics);
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
                 foreach (var a in positionAngleProvider())
-                    DrawIcon(graphics,
+                    if (!onlyHovered || hoverData.currentPositionAngle == a)
+                        DrawIcon(graphics,
                         graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
                         (float)a.X, (float)a.Y, (float)a.Z,
                         Rotates ? (float)a.Angle : 0x8000 - graphics.MapViewAngleValue,

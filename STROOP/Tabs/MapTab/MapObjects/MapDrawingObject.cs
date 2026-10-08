@@ -5,6 +5,7 @@ using STROOP.Structs.Configurations;
 using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Mathematics;
+using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
@@ -14,10 +15,19 @@ namespace STROOP.Tabs.MapTab.MapObjects
         class Drawing : IHoverData
         {
             MapDrawingObject parent;
+            readonly bool cursorHasHeight;
 
-            public Drawing(MapDrawingObject target)
+            public Drawing(MapDrawingObject target, MapGraphics graphics)
             {
                 this.parent = target;
+                cursorHasHeight = graphics.viewMode != MapGraphics.ViewMode.TopDown;
+            }
+
+            static Vector3 WithHeight(Vector3 position, bool hasHeight)
+            {
+                if (!hasHeight)
+                    position.Y = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
+                return position;
             }
 
             public void AddContextMenuItems(MapTab tab, ContextMenuStrip menu)
@@ -37,7 +47,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             public void DragTo(Vector3 newPosition, bool setY)
             {
-                Vector3 currentVertex = newPosition;
+                Vector3 currentVertex = WithHeight(newPosition, setY);
                 if (currentVertex != parent._lastVertex)
                 {
                     parent._vertices.Add(parent._lastVertex);
@@ -53,7 +63,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             public void LeftClick(Vector3 position)
             {
-                parent._lastVertex = position;
+                parent._lastVertex = WithHeight(position, cursorHasHeight);
             }
 
             public void RightClick(Vector3 position)
@@ -105,6 +115,6 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public void ClearDrawing() => _vertices.Clear();
 
-        public override IHoverData GetHoverData(MapGraphics graphics, ref Vector3 position) => drawingEnabled ? new Drawing(this) : null;
+        public override IHoverData GetHoverData(MapGraphics graphics, ref Vector3 position) => drawingEnabled ? new Drawing(this, graphics) : null;
     }
 }
