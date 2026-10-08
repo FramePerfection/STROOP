@@ -10,7 +10,7 @@ using STROOP.Variables.Utilities;
 
 namespace STROOP.Tabs.MapTab.MapObjects
 {
-    [ObjectDescription("Unit Gridlines", "Grid", nameof(CreateCustom))]
+    [ObjectDescription("Unit Gridlines", "Grid", nameof(CreateUnits))]
     [ObjectDescription("Custom Gridlines", "Grid", nameof(CreateCustom))]
     public class MapGridlinesObject : MapLineObject
     {
@@ -131,16 +131,16 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
             float minY, maxY;
             bool is3DGrid = !float.IsNaN(verticalMultiplier);
+            float verticalIncrement = is3DGrid ? increment * verticalMultiplier : float.PositiveInfinity;
             if (!is3DGrid)
                 minY = maxY = positionAngle.Y;
             else
             {
-                float verticalIncrement = increment * verticalMultiplier;
                 minY = (int)((positionAngle.Y - vExpanse) / verticalIncrement - 1) * verticalIncrement;
                 maxY = (int)((positionAngle.Y + vExpanse) / verticalIncrement + 1) * verticalIncrement;
             }
 
-            for (float y = minY; y <= maxY; y += verticalMultiplier)
+            for (float y = minY; y <= maxY; y += verticalIncrement)
             {
                 for (var x = viewXMin; x <= viewXMax; x += increment)
                 {

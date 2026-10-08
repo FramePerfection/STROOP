@@ -21,10 +21,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         protected override void DrawTopDown(MapGraphics graphics)
         {
+            bool onlyHovered = currentMapTab.AreObjectModelsShown(graphics)
+                               && Config.StroopMainForm.GetTab<GhostTab.GhostTab>().GhostsDrawnInGame;
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
                 foreach (var pa in positionAngleProvider())
-                    if (pa is GhostTab.Ghost.GhostPositionAngle a)
+                    if (pa is GhostTab.Ghost.GhostPositionAngle a && (!onlyHovered || hoverData.currentPositionAngle == a))
                     {
                         var transparent = graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional;
                         var alpha = hoverData.currentPositionAngle == a ? ObjectUtilities.HoverAlpha() : 1;

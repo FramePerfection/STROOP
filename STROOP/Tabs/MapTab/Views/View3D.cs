@@ -13,10 +13,12 @@ public class View3D : ViewBase, PivotingView
     }
 
     public Camera3DMode camera3DMode = Camera3DMode.FocusOnPositionAngle;
-    public float camera3DDistanceController = 50;
-    public bool display3DLevelGeometry = true;
+    public float camera3DDistanceController = 75;
+    public bool display3DLevelGeometry = false;
 
     public PositionAngle focusPositionAngle { get; set; } = PositionAngle.Mario;
+
+    public View3D() => pitch = 0.6f;
 
     void PivotingView.Pivot(PositionAngle pivotPoint)
     {

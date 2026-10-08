@@ -410,6 +410,13 @@ public class ProcessStream : IDisposable
         }
     }
 
+    public void CopyCachedRam(byte[] destination)
+    {
+        var ram = _ram;
+        lock (ram)
+            Buffer.BlockCopy(ram, 0, destination, 0, Math.Min(ram.Length, destination.Length));
+    }
+
     public bool GetAllRam(out byte[] allRam)
     {
         allRam = new byte[MAX_RAM_SIZE];

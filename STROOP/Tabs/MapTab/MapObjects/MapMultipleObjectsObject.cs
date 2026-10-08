@@ -76,14 +76,18 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public override string GetName() => PositionAngle.NameOfMultiple(positionAngleProvider(), $"All {_objName}");
 
+        protected override bool IsGameObject => true;
+
         protected override void DrawTopDown(MapGraphics graphics)
         {
+            bool onlyHovered = currentMapTab.AreObjectModelsShown(graphics);
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
                 List<(float x, float y, float z, float angle, Lazy<Image> tex, float alpha)> data = GetData();
                 data.Reverse();
                 foreach (var d in data)
-                    DrawIcon(graphics, graphics.viewMode != MapGraphics.ViewMode.TopDown, d.x, d.y, d.z, d.angle, d.tex.Value, new Vector4(1, 1, 1, d.alpha));
+                    if (!onlyHovered || d.alpha != 1)
+                        DrawIcon(graphics, graphics.viewMode != MapGraphics.ViewMode.TopDown, d.x, d.y, d.z, d.angle, d.tex.Value, new Vector4(1, 1, 1, d.alpha));
             });
         }
 

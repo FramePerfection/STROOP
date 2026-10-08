@@ -17,6 +17,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public override Lazy<Image> GetInternalImage() => Config.ObjectAssociations.MarioMapImage;
 
+        protected override bool IsGameObject => true;
+
         public override void InitSubTrackerContextMenuStrip(MapTab mapTab, ContextMenuStrip targetStrip)
         {
             base.InitSubTrackerContextMenuStrip(mapTab, targetStrip);

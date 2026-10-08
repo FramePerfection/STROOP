@@ -269,6 +269,8 @@ namespace STROOP.Tabs.MapTab
 
         List<Models.TriangleDataModel> levelTrianglesFor3DMap;
 
+        public bool Draw3DCollisionGeometry => view3D.display3DLevelGeometry || !mapTab.IsLevelModelShown;
+
         Control previouslyActiveControl;
 
         Control GetActiveLeafControl(ContainerControl root)
@@ -457,7 +459,7 @@ namespace STROOP.Tabs.MapTab
                     GL.ClearDepth(1);
                     GL.Clear(ClearBufferMask.DepthBufferBit);
 
-                    if (view3D.display3DLevelGeometry)
+                    if (Draw3DCollisionGeometry)
                         drawLayers[(int)DrawLayers.FillBuffers].Insert(0, () =>
                         {
                             foreach (var t in levelTrianglesFor3DMap)

@@ -31,20 +31,20 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
-                List<(float centerX, float centerZ, float radius, float angle, float angleRadius)> dimenstionList = GetDimensions();
-                foreach ((float centerX, float centerZ, float radius, float angle, float angleRadius) in dimenstionList)
+                var dimenstionList = GetDimensions();
+                foreach ((float centerX, float centerY, float centerZ, float radius, float angle, float angleRadius) in dimenstionList)
                 {
                     var pfft = MoreMath.AngleUnitsToRadians(angle - angleRadius);
                     var pfft2 = MoreMath.AngleUnitsToRadians(angle + angleRadius);
                     graphics.lineRenderer.Add(
-                        new Vector3(centerX, 0, centerZ),
-                        new Vector3(centerX + (float)Math.Sin(pfft) * radius, 0, centerZ + (float)Math.Cos(pfft) * radius),
+                        new Vector3(centerX, centerY, centerZ),
+                        new Vector3(centerX + (float)Math.Sin(pfft) * radius, centerY, centerZ + (float)Math.Cos(pfft) * radius),
                         OpenTKUtilities.ColorToVec4(OutlineColor),
                         OutlineWidth);
 
                     graphics.lineRenderer.Add(
-                        new Vector3(centerX, 0, centerZ),
-                        new Vector3(centerX + (float)Math.Sin(pfft2) * radius, 0, centerZ + (float)Math.Cos(pfft2) * radius),
+                        new Vector3(centerX, centerY, centerZ),
+                        new Vector3(centerX + (float)Math.Sin(pfft2) * radius, centerY, centerZ + (float)Math.Cos(pfft2) * radius),
                         OpenTKUtilities.ColorToVec4(OutlineColor),
                         OutlineWidth);
                 }
@@ -53,13 +53,13 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
 
-        protected List<(float centerX, float centerZ, float radius, float angle, float angleRadius)> GetDimensions()
+        protected List<(float centerX, float centerY, float centerZ, float radius, float angle, float angleRadius)> GetDimensions()
         {
-            var lst = new List<(float centerX, float centerZ, float radius, float angle, float angleRadius)>();
+            var lst = new List<(float centerX, float centerY, float centerZ, float radius, float angle, float angleRadius)>();
             foreach (var _posAngle in positionAngleProvider())
             {
                 (double x, double y, double z, double angle) = _posAngle.GetValues();
-                lst.Add(((float)x, (float)z, Size, (float)angle, _angleRadius));
+                lst.Add(((float)x, (float)y, (float)z, Size, (float)angle, _angleRadius));
             }
 
             return lst;
