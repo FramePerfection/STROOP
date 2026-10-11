@@ -766,9 +766,7 @@
             // 
             // watchVariablePanelMario
             // 
-            this._variablePanelMario.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this._variablePanelMario.Dock = System.Windows.Forms.DockStyle.Fill;
             this._variablePanelMario.DataPath = "Config/MarioData.xml";
             this._variablePanelMario.Location = new System.Drawing.Point(2, 2);
             this._variablePanelMario.Margin = new System.Windows.Forms.Padding(0);
