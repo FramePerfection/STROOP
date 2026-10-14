@@ -12,6 +12,7 @@ uniform float alphaCutoff;
 uniform bool opaque;
 uniform float maxY;
 uniform vec3 fogColor;
+uniform bool recolorRed;
 
 layout(location=0) out vec4 color;
 
@@ -29,6 +30,8 @@ void main()
 
 	if (c.a < alphaCutoff)
 		discard;
+	if (recolorRed && c.r > 0.15 && c.r > 1.5 * c.g && c.r > 1.5 * c.b)
+		c.rg = c.gr;
 	c.rgb = mix(c.rgb, fogColor, fs_fog);
 	if (opaque)
 		c.a = 1;

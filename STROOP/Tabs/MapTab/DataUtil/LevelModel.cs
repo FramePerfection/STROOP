@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OpenTK.Mathematics;
 
 namespace STROOP.Tabs.MapTab.DataUtil
@@ -20,7 +21,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
             public bool ghostHack;
 
-            public uint geoSwitchMarioCapEffect, geoMirrorMarioSetAlpha, bodyStates;
+            public uint geoSwitchMarioCapEffect, geoSwitchMarioCapOnOff, geoMirrorMarioSetAlpha, bodyStates;
 
             public uint geoUpdateLayerTransparency;
 
@@ -49,6 +50,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     geoPaintingDraw = S("geo_painting_draw"),
                     paintingGroups = S("sPaintingGroups"),
                     geoSwitchMarioCapEffect = S("geo_switch_mario_cap_effect"),
+                    geoSwitchMarioCapOnOff = S("geo_switch_mario_cap_on_off"),
                     geoMirrorMarioSetAlpha = S("geo_mirror_mario_set_alpha"),
                     bodyStates = S("gBodyStates"),
                     geoUpdateLayerTransparency = S("geo_update_layer_transparency"),
@@ -97,12 +99,19 @@ namespace STROOP.Tabs.MapTab.DataUtil
             public Vector3 anchor, anchorScale;
 
             public bool frame;
+
+            public bool cap;
         }
 
         public readonly MeshStore store = new MeshStore();
         public readonly TextureSet textures = new TextureSet();
         public Mesh level = new Mesh();
         public readonly List<Instance> instances = new List<Instance>();
+
+        public readonly List<Instance> marioInstances = new List<Instance>();
+        public Vector3 marioModelPosition;
+
+        public int marioInstancesStart = -1;
         public readonly List<Shadow> shadows = new List<Shadow>();
 
         public Texture skybox;
@@ -122,6 +131,71 @@ namespace STROOP.Tabs.MapTab.DataUtil
         const int GN_SHADOW = 0x028, GN_OBJPARENT = 0x029, GN_GENLIST = 0x12A, GN_BG = 0x12C, GN_HELD = 0x12E;
 
         const int GRAPH_RENDER_ACTIVE = 0x01, GRAPH_RENDER_BILLBOARD = 0x04, GRAPH_RENDER_INVISIBLE = 0x10;
+
+        sealed class GraphScheme
+        {
+            public static readonly GraphScheme Vanilla = new GraphScheme(null, null, 0x20);
+
+            const int HACKER_ROOT = 20, HACKER_MASTER_LIST = 2, MASTER_LIST_HEADER = 0x14;
+
+            static readonly int[] HackerTypes =
+            {
+                GN_ORTHO, GN_PERSPECTIVE, 0x004, GN_LOD, GN_SWITCH, GN_CAMERA, GN_TRANSROT, GN_TRANS, GN_ROT, GN_OBJECT,
+                GN_ANIMPART, GN_BILLBOARD, GN_DL, GN_SCALE, GN_SHADOW, GN_OBJPARENT, GN_GENLIST, GN_BG, GN_HELD, 0x02F,
+                GN_ROOT, 0x00A,
+            };
+
+            static readonly int[] HackerLayers = { 0, 1, 3, 2, 4, 6, 5, 7 };
+            static readonly int[] HackerSilhouetteLayers = { 0, 1, 3, 2, 4, 4, 1, 4, 1, 4, 6, 5, 7 };
+
+            readonly int[] types, layers;
+            public readonly uint perspectiveNear;
+
+            GraphScheme(int[] types, int[] layers, uint perspectiveNear)
+            {
+                this.types = types;
+                this.layers = layers;
+                this.perspectiveNear = perspectiveNear;
+            }
+
+            public bool EmulatorAutoLod => types != null;
+
+            public int Type(int raw) => types == null ? raw : raw >= 0 && raw < types.Length ? types[raw] : -1;
+
+            public int Layer(int raw) => layers == null ? raw : raw < layers.Length ? layers[raw] : LAYER_OPAQUE;
+
+            public static GraphScheme Detect(Rdram ram, uint root)
+            {
+                if (ram.U16(root) != HACKER_ROOT)
+                    return Vanilla;
+                int layerCount = 8;
+                foreach (uint c in Children(ram, root))
+                    if (ram.U16(c) == HACKER_MASTER_LIST)
+                    {
+                        long size = (long)ram.U32(c + 0x10) - c;
+                        if (size == MASTER_LIST_HEADER + 8 * HackerSilhouetteLayers.Length)
+                            layerCount = HackerSilhouetteLayers.Length;
+                        break;
+                    }
+
+                return new GraphScheme(HackerTypes, layerCount == 8 ? HackerLayers : HackerSilhouetteLayers, 0x1C);
+            }
+        }
+
+        GraphScheme scheme = GraphScheme.Vanilla;
+
+        int NodeType(Rdram ram, uint n) => scheme.Type(ram.U16(n));
+
+        Microcode ucode = Microcode.F3D;
+
+        F3D NewF3D(Rdram ram, MeshBuilder builder) => new F3D(ram, textures, builder) { ucode = ucode };
+
+        F3D.State DefaultState(Rdram ram)
+        {
+            var f3d = NewF3D(ram, new MeshBuilder());
+            f3d.combine1 = F3D.COMBINE_SHADE_W1;
+            return f3d.Save();
+        }
 
         uint rootNode, cameraNode, objectGroup, mirrorParent, envFxNode;
 
@@ -188,13 +262,15 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 return model;
             model.rootNode = root;
             model.addresses = addresses;
+            model.scheme = GraphScheme.Detect(ram, root);
 
             var dls = new List<(uint dl, int layer, Matrix4 m)>();
             model.CollectDisplayLists(ram, root, Matrix4.Identity, 0, dls);
             model.displayListCount = dls.Count;
+            model.ucode = F3D.Detect(ram, dls.Select(d => d.dl));
 
             var builder = new MeshBuilder();
-            var f3d = new F3D(ram, model.textures, builder);
+            var f3d = model.NewF3D(ram, builder);
             foreach (var (dl, layer, m) in dls)
             {
                 f3d.geo = F3D.GEO_INIT;
@@ -223,12 +299,23 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
         readonly List<(uint parameter, Matrix4 m)> paintingNodes = new List<(uint, Matrix4)>();
 
+        public bool TryGetGameCamera(Rdram ram, out Vector3 position, out Vector3 focus)
+        {
+            position = focus = Vector3.Zero;
+            if (!Rdram.IsPointer(cameraNode))
+                return false;
+            position = new Vector3(ram.F32(cameraNode + 0x1C), ram.F32(cameraNode + 0x20), ram.F32(cameraNode + 0x24));
+            focus = new Vector3(ram.F32(cameraNode + 0x28), ram.F32(cameraNode + 0x2C), ram.F32(cameraNode + 0x30));
+            bool Finite(Vector3 v) => float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z);
+            return Finite(position) && Finite(focus) && (focus - position).LengthSquared > 1e-4f;
+        }
+
         public void UpdateLevelGeometry(Rdram ram, GameAddresses addresses)
         {
             this.addresses = addresses;
             levelInstances.Clear();
             frameStore.length = 0;
-            defaultState ??= new F3D(ram, textures, new MeshBuilder()) { combine1 = F3D.COMBINE_SHADE_W1 }.Save();
+            defaultState ??= DefaultState(ram);
             foreach (var (parameter, m) in paintingNodes)
                 EmitPainting(ram, parameter, m);
         }
@@ -265,7 +352,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             if (!objectMeshes.TryGetValue(key, out var entry))
             {
                 var builder = new MeshBuilder();
-                var f3d = new F3D(ram, textures, builder);
+                var f3d = NewF3D(ram, builder);
                 f3d.Load(defaultState);
                 f3d.Run(dl, layer, Matrix4.Identity);
                 objectMeshes[key] = entry = (store.Add(builder), null);
@@ -342,20 +429,25 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 normal[i, 2] = Component(n.Z);
             }
 
+            uint rippleDl = ram.U32(painting + 0x68), textureMaps = ram.U32(painting + 0x5C), textureArray = ram.U32(painting + 0x60);
+            if (rippleDl == 0 || textureMaps == 0 || textureArray == 0)
+                return;
+
             var builder = new MeshBuilder();
-            var f3d = new F3D(ram, textures, builder);
+            var f3d = NewF3D(ram, builder);
             f3d.Load(defaultState);
             f3d.Run(beginEnd[0], layer, transform);
-            f3d.Run(ram.U32(painting + 0x68), layer, transform);
+            f3d.Run(rippleDl, layer, transform);
 
             int images = envMapped ? 1 : Math.Clamp((int)(sbyte)ram.U8(painting + 0x02), 0, 16);
-            uint textureMaps = ram.U32(painting + 0x5C), textureArray = ram.U32(painting + 0x60);
             int width = ram.S16(painting + 0x64), height = ram.S16(painting + 0x66);
             byte alpha = ram.U8(painting + 0x6D);
             var vertices = new byte[3 * 16];
             for (int image = 0; image < images; image++)
             {
                 uint map = ram.U32(textureMaps + 4 * (uint)image);
+                if (map == 0)
+                    continue;
                 f3d.Command(0xFD000000 | 2 << 19, ram.U32(textureArray + 4 * (uint)image), layer, transform);
                 f3d.Command(0xF5000000 | 2 << 19, 0x07000000, layer, transform);
                 f3d.Command(0xF3000000, 0x07000000 | (uint)Math.Clamp(width * height - 1, 0, 4095) << 12, layer, transform);
@@ -396,7 +488,8 @@ namespace STROOP.Tabs.MapTab.DataUtil
             return ram.S16(addresses.hudDisplay + 4) >= 10 && flags.HasValue && (flags.Value & SAVE_FLAG_HAVE_WING_CAP) == 0;
         }
 
-        public static int StaticStateKey(Rdram ram, GameAddresses addresses) => CastleLightVisible(ram, addresses) ? 1 : 0;
+        public static int StaticStateKey(Rdram ram, GameAddresses addresses) =>
+            addresses.geoExecInsideCastleLight != 0 && CastleLightVisible(ram, addresses) ? 1 : 0;
 
         static uint FindSegmentedConstant(Rdram ram, uint function, int segment)
         {
@@ -404,22 +497,38 @@ namespace STROOP.Tabs.MapTab.DataUtil
             return constants.Count > 0 ? constants[0] : 0;
         }
 
+        const uint JR_RA = 0x03E00008;
+
+        static int WrittenRegister(uint i)
+        {
+            int op = (int)(i >> 26);
+            if (op == 0x00)
+                return (int)(i >> 11) & 31;
+            if (op == 0x03)
+                return 31;
+            if ((op >= 0x08 && op <= 0x0F) || (op >= 0x20 && op <= 0x27))
+                return (int)(i >> 16) & 31;
+            return 0;
+        }
+
         static uint FindFirstHalfwordLoad(Rdram ram, uint function)
         {
             if (!Rdram.IsPointer(function))
                 return 0;
             var upper = new uint?[32];
-            for (uint pc = function; pc < function + 4 * 512; pc += 4)
+            uint end = function + 4 * 512;
+            for (uint pc = function; pc < end; pc += 4)
             {
                 uint i = ram.U32(pc);
                 int op = (int)(i >> 26), rs = (int)(i >> 21) & 31, rt = (int)(i >> 16) & 31;
                 uint imm = i & 0xFFFF;
+                if ((op == 0x21 || op == 0x25) && upper[rs].HasValue)
+                    return upper[rs].Value + (uint)(short)imm;
+                upper[WrittenRegister(i)] = null;
                 if (op == 0x0F)
                     upper[rt] = (imm >> 8) == 0x80 ? imm << 16 : null;
-                else if ((op == 0x21 || op == 0x25) && upper[rs].HasValue)
-                    return upper[rs].Value + (uint)(short)imm;
-                else if (i == 0x03E00008)
-                    break;
+                else if (i == JR_RA)
+                    end = pc + 8;
             }
 
             return 0;
@@ -431,21 +540,24 @@ namespace STROOP.Tabs.MapTab.DataUtil
             if (!Rdram.IsPointer(function))
                 return found;
             var upper = new uint?[32];
-            for (uint pc = function; pc < function + 4 * 512; pc += 4)
+            uint end = function + 4 * 512;
+            for (uint pc = function; pc < end; pc += 4)
             {
                 uint i = ram.U32(pc);
                 int op = (int)(i >> 26), rs = (int)(i >> 21) & 31, rt = (int)(i >> 16) & 31;
                 uint imm = i & 0xFFFF;
-                if (op == 0x0F)
-                    upper[rt] = (imm >> 8) == segment ? imm << 16 : null;
-                else if ((op == 0x09 || op == 0x0D) && upper[rs].HasValue)
+                if ((op == 0x09 || op == 0x0D) && upper[rs].HasValue)
                 {
                     uint value = op == 0x09 ? upper[rs].Value + (uint)(short)imm : upper[rs].Value | imm;
                     if (found.Count == 0 || found[found.Count - 1] != value)
                         found.Add(value);
                 }
-                else if (i == 0x03E00008)
-                    break;
+
+                upper[WrittenRegister(i)] = null;
+                if (op == 0x0F)
+                    upper[rt] = (imm >> 8) == segment ? imm << 16 : null;
+                else if (i == JR_RA)
+                    end = pc + 8;
             }
 
             return found;
@@ -501,6 +613,8 @@ namespace STROOP.Tabs.MapTab.DataUtil
         void EmitMovtex(Rdram ram, F3D f3d, uint node, Matrix4 m)
         {
             uint function = ram.U32(node + 0x14), parameter = ram.U32(node + 0x18);
+            if (addresses.movtexIdToTexture == 0)
+                return;
             if (function == addresses.geoMovtexDrawWaterRegions)
                 EmitWaterRegions(ram, f3d, parameter, m);
             else if (function == addresses.geoMovtexDrawNoColor)
@@ -671,7 +785,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 uint n = stack.Pop();
                 if (!Rdram.IsPointer(n) || !seen.Add(n))
                     continue;
-                if (ram.U16(n) == GN_BG)
+                if (NodeType(ram, n) == GN_BG)
                 {
                     uint function = ram.U32(n + 0x14), background = ram.U32(n + 0x1C);
                     if (function == 0)
@@ -718,14 +832,14 @@ namespace STROOP.Tabs.MapTab.DataUtil
         {
             if (depth > 40)
                 return;
-            int t = ram.U16(n);
+            int t = NodeType(ram, n);
             ushort flags = ram.U16(n + 2);
             if ((flags & GRAPH_RENDER_ACTIVE) == 0)
                 return;
             if (t == GN_CAMERA)
                 cameraNode = n;
             if (t == GN_PERSPECTIVE)
-                perspectivePlanes = new Vector2(ram.S16(n + 0x20), ram.S16(n + 0x22));
+                perspectivePlanes = new Vector2(ram.U16(n + scheme.perspectiveNear), ram.U16(n + scheme.perspectiveNear + 2));
             if (t == GN_OBJPARENT)
                 objectGroup = ram.U32(n + 0x14);
             if (t == GN_GENLIST && addresses.geoPaintingDraw != 0 && ram.U32(n + 0x14) == addresses.geoPaintingDraw)
@@ -745,7 +859,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             }
             if (t == GN_OBJPARENT || t == GN_GENLIST || t == GN_BG || t == GN_HELD || t == GN_OBJECT || t == GN_SHADOW || t == GN_ORTHO)
                 return;
-            int layer = (flags >> 8) & 0xFF;
+            int layer = scheme.Layer((flags >> 8) & 0xFF);
             uint dl = 0;
             switch (t)
             {
@@ -795,7 +909,12 @@ namespace STROOP.Tabs.MapTab.DataUtil
         }
 
         AnimState anim;
-        Vector3 gameCamera;
+        Vector3 gameCamera, gameCameraForward;
+
+        float LodDistance(Vector3 position) =>
+            scheme.EmulatorAutoLod ? 50
+            : gameCameraForward != Vector3.Zero ? Vector3.Dot(position - gameCamera, gameCameraForward)
+            : (position - gameCamera).Length;
         byte areaIndex;
         int nodeBudget;
         GameAddresses addresses;
@@ -813,7 +932,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 return;
             this.addresses = addresses;
             this.roomCulledObjects = roomCulledObjects;
-            defaultState ??= new F3D(ram, textures, new MeshBuilder()) { combine1 = F3D.COMBINE_SHADE_W1 }.Save();
+            defaultState ??= DefaultState(ram);
             for (int i = 0; i < layerStates.Length; i++)
                 layerStates[i] = defaultState;
             marioObject = ram.U32(addresses.marioObjectPointer);
@@ -821,10 +940,23 @@ namespace STROOP.Tabs.MapTab.DataUtil
             gameCamera = Rdram.IsPointer(cameraNode)
                 ? new Vector3(ram.F32(cameraNode + 0x1C), ram.F32(cameraNode + 0x20), ram.F32(cameraNode + 0x24))
                 : Vector3.Zero;
+            var focus = Rdram.IsPointer(cameraNode)
+                ? new Vector3(ram.F32(cameraNode + 0x28), ram.F32(cameraNode + 0x2C), ram.F32(cameraNode + 0x30))
+                : Vector3.Zero;
+            gameCameraForward = (focus - gameCamera).LengthSquared > 0 ? (focus - gameCamera).Normalized() : Vector3.Zero;
+            marioInstances.Clear();
+            marioInstancesStart = -1;
             foreach (uint obj in Children(ram, objectGroup))
             {
                 nodeBudget = 4096;
+                int first = instances.Count;
                 DrawObject(ram, obj);
+                if (obj == marioObject)
+                {
+                    marioInstances.AddRange(instances.GetRange(first, instances.Count - first));
+                    marioInstancesStart = first;
+                    marioModelPosition = new Vector3(ram.F32(obj + 0x20), ram.F32(obj + 0x24), ram.F32(obj + 0x28));
+                }
             }
 
             if (envFxNode != 0)
@@ -841,7 +973,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
         void DrawObject(Rdram ram, uint n)
         {
-            if (ram.U16(n) != GN_OBJECT)
+            if (NodeType(ram, n) != GN_OBJECT)
                 return;
             ushort flags = ram.U16(n + 2);
             if ((flags & GRAPH_RENDER_INVISIBLE) != 0)
@@ -996,7 +1128,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             if (!objectMeshes.TryGetValue(key, out var entry))
             {
                 var builder = new MeshBuilder();
-                var f3d = new F3D(ram, textures, builder);
+                var f3d = NewF3D(ram, builder);
                 f3d.Load(incoming);
                 f3d.Run(dl, layer, Matrix4.Identity);
                 objectMeshes[key] = entry = (store.Add(builder), f3d.Save());
@@ -1004,18 +1136,21 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
             layerStates[slot] = entry.state;
             if (entry.mesh.triangleCount > 0)
-                instances.Add(new Instance { mesh = entry.mesh, matrix = frame.matrix, billboard = frame.billboard, anchor = frame.anchor, anchorScale = frame.anchorScale });
+                instances.Add(new Instance { mesh = entry.mesh, matrix = frame.matrix, billboard = frame.billboard, anchor = frame.anchor, anchorScale = frame.anchorScale, cap = inCap });
         }
+
+        bool inCap;
 
         void DrawNode(Rdram ram, uint n, Frame frame, int depth)
         {
             if (depth > 64 || --nodeBudget < 0)
                 return;
-            int t = ram.U16(n);
+            int t = NodeType(ram, n);
             ushort flags = ram.U16(n + 2);
-            if ((flags & GRAPH_RENDER_ACTIVE) == 0)
+            bool active = IsMario && !IsGhost && capWings.Contains(n) ? wingsShown : (flags & GRAPH_RENDER_ACTIVE) != 0;
+            if (!active)
                 return;
-            int layer = (flags >> 8) & 0xFF;
+            int layer = scheme.Layer((flags >> 8) & 0xFF);
             uint dl = 0;
             switch (t)
             {
@@ -1056,6 +1191,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 case GN_SWITCH:
                     int selected = ram.S16(n + 0x1E), i = 0;
                     uint switchFunction = ram.U32(n + 0x14);
+                    bool capSwitch = false;
                     if (addresses.geoSwitchAnimState != 0 && switchFunction == addresses.geoSwitchAnimState)
                     {
                         selected = ram.S32(currentObject + 0xF0);
@@ -1064,15 +1200,23 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     }
                     else if (addresses.geoSwitchMarioCapEffect != 0 && switchFunction == addresses.geoSwitchMarioCapEffect)
                         selected = MarioCapEffect(ram);
+                    else if (IsCapSwitch(ram, n, switchFunction))
+                    {
+                        selected = CapSwitchCase(ram, n);
+                        capSwitch = true;
+                    }
 
                     uint selectedChild = ram.U32(n + 0x10);
                     for (i = 0; Rdram.IsPointer(selectedChild) && selected > i && i < 256; i++)
                         selectedChild = ram.U32(selectedChild + 0x08);
+                    bool wasInCap = inCap;
+                    inCap |= capSwitch;
                     if (Rdram.IsPointer(selectedChild))
                         DrawNode(ram, selectedChild, frame, depth + 1);
+                    inCap = wasInCap;
                     return;
                 case GN_LOD:
-                    float distance = (frame.WorldPosition - gameCamera).Length;
+                    float distance = LodDistance(frame.WorldPosition);
                     if (!(ram.S16(n + 0x14) <= distance && distance < ram.S16(n + 0x16)))
                         return;
                     break;
@@ -1123,8 +1267,41 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
         bool IsGhost => addresses.ghostHack && !IsMario;
 
+        uint BodyState(Rdram ram) =>
+            addresses.bodyStates != 0 ? addresses.bodyStates
+            : addresses.marioState != 0 ? ram.U32(addresses.marioState + 0x98)
+            : 0;
+
         int MarioCapEffect(Rdram ram) =>
-            IsGhost ? (sbyte)ram.U8(currentObject + 0x61) : ram.U16(addresses.bodyStates + 8) >> 8;
+            IsGhost ? (sbyte)ram.U8(currentObject + 0x61) : ram.U16(BodyState(ram) + 8) >> 8;
+
+        const int MARIO_HAS_DEFAULT_CAP_OFF = 1, MARIO_HAS_WING_CAP_ON = 2;
+
+        readonly HashSet<uint> capWings = new HashSet<uint>();
+        bool wingsShown;
+
+        bool IsCapSwitch(Rdram ram, uint n, uint function)
+        {
+            if (!IsMario || IsGhost)
+                return false;
+            if (addresses.geoSwitchMarioCapOnOff != 0)
+                return function == addresses.geoSwitchMarioCapOnOff;
+            for (uint s = ram.U32(n + 0x08), i = 0; s != n && Rdram.IsPointer(s) && i < 64; s = ram.U32(s + 0x08), i++)
+                if (NodeType(ram, s) == GN_TRANSROT)
+                    return true;
+            return false;
+        }
+
+        int CapSwitchCase(Rdram ram, uint n)
+        {
+            uint bodyState = BodyState(ram);
+            int capState = Rdram.IsPointer(bodyState) ? (sbyte)ram.U8(bodyState + 4) : 0;
+            wingsShown = (capState & MARIO_HAS_WING_CAP_ON) != 0;
+            for (uint s = ram.U32(n + 0x08), i = 0; s != n && Rdram.IsPointer(s) && i < 64; s = ram.U32(s + 0x08), i++)
+                if (NodeType(ram, s) == GN_TRANSROT)
+                    capWings.Add(s);
+            return capState & MARIO_HAS_DEFAULT_CAP_OFF;
+        }
 
         readonly Dictionary<(int state, int alpha), F3D.State> alphaStates = new Dictionary<(int, int), F3D.State>();
 
@@ -1135,7 +1312,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 alpha = (sbyte)ram.U8(currentObject + 0x61) != 0 ? 0x7F : 0xFF;
             else
             {
-                int modelState = ram.U16(addresses.bodyStates + 8);
+                int modelState = ram.U16(BodyState(ram) + 8);
                 alpha = (modelState & 0x100) != 0 ? modelState & 0xFF : 0xFF;
             }
 
@@ -1148,7 +1325,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             var key = (layerStates[slot].Hash, alpha);
             if (!alphaStates.TryGetValue(key, out var state))
             {
-                var f3d = new F3D(ram, textures, new MeshBuilder());
+                var f3d = NewF3D(ram, new MeshBuilder());
                 f3d.Load(layerStates[slot]);
                 f3d.SetEnvColor(255, 255, 255, (byte)alpha);
                 alphaStates[key] = state = f3d.Save();
@@ -1167,13 +1344,18 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
         void EmitEnvFx(Rdram ram)
         {
+            if (addresses.envFxMode == 0 || addresses.envFxBuffer == 0)
+                return;
             int mode = (sbyte)ram.U8(addresses.envFxMode);
             uint buffer = ram.U32(addresses.envFxBuffer);
             if (mode == 0 || !Rdram.IsPointer(buffer) || (ram.U16(envFxNode + 2) & GRAPH_RENDER_ACTIVE) == 0)
                 return;
 
             bool bubbles = mode >= ENVFX_BUBBLE_START;
-            int count = bubbles ? ram.S32(addresses.bubbleParticleMaxCount) : ram.S16(addresses.snowParticleCount);
+            uint countAddress = bubbles ? addresses.bubbleParticleMaxCount : addresses.snowParticleCount;
+            if (countAddress == 0)
+                return;
+            int count = bubbles ? ram.S32(countAddress) : ram.S16(countAddress);
             count = Math.Clamp((count + 4) / 5 * 5, 0, 200);
             for (int i = 0; i < count; i++)
             {
@@ -1234,7 +1416,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             }
 
             var builder = new MeshBuilder();
-            var f3d = new F3D(ram, textures, builder);
+            var f3d = NewF3D(ram, builder);
             f3d.Load(defaultState);
             f3d.Run(begin, layer, Matrix4.Identity);
             if (texture != 0)
@@ -1279,7 +1461,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 }
 
                 var builder = new MeshBuilder();
-                var f3d = new F3D(ram, textures, builder);
+                var f3d = NewF3D(ram, builder);
                 f3d.Load(defaultState);
                 f3d.Run(begin, LAYER_OPAQUE, Matrix4.Identity);
                 f3d.LoadVertices(vertices, 12, 0, Matrix4.Identity);
@@ -1301,7 +1483,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             if (!objectMeshes.TryGetValue(key, out var entry))
             {
                 var builder = new MeshBuilder();
-                var f3d = new F3D(ram, textures, builder);
+                var f3d = NewF3D(ram, builder);
                 f3d.Load(defaultState);
                 EmitMovtex(ram, f3d, n, Matrix4.Identity);
                 objectMeshes[key] = entry = (store.Add(builder), null);
@@ -1317,7 +1499,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             var key = (layerStates[slot].Hash, -1);
             if (!alphaStates.TryGetValue(key, out var state))
             {
-                var f3d = new F3D(ram, textures, new MeshBuilder());
+                var f3d = NewF3D(ram, new MeshBuilder());
                 f3d.Load(layerStates[slot]);
                 f3d.Command(0xB6000000, 0x00020000, slot, Matrix4.Identity);
                 alphaStates[key] = state = f3d.Save();
@@ -1338,7 +1520,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             if (!objectMeshes.TryGetValue(key, out var entry))
             {
                 var builder = new MeshBuilder();
-                var f3d = new F3D(ram, textures, builder);
+                var f3d = NewF3D(ram, builder);
                 f3d.Load(incoming);
                 f3d.MoveMemLight(0x88, lights);
                 f3d.MoveMemLight(0x86, lights + 8);

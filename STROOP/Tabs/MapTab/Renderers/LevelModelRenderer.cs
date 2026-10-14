@@ -20,7 +20,7 @@ namespace STROOP.Tabs.MapTab.Renderers
         byte[] dynamicVertices = new byte[MeshStore.VertexSize * 1024];
         int dynamicLength;
 
-        int uniform_viewRotation, uniform_uvTransform, uniform_texGen, uniform_fogEnabled, uniform_fogFactors, uniform_fogPlanes, uniform_fogColor;
+        int uniform_recolorRed, uniform_viewRotation, uniform_uvTransform, uniform_texGen, uniform_fogEnabled, uniform_fogFactors, uniform_fogPlanes, uniform_fogColor;
         int uniform_viewProjection, uniform_model, uniform_tex, uniform_useTexture, uniform_decal, uniform_alphaCutoff, uniform_opaque, uniform_maxY;
 
         int skyShader, skyVao, skyTexture;
@@ -57,6 +57,7 @@ namespace STROOP.Tabs.MapTab.Renderers
             uniform_opaque = GL.GetUniformLocation(shader, "opaque");
             uniform_maxY = GL.GetUniformLocation(shader, "maxY");
             uniform_uvTransform = GL.GetUniformLocation(shader, "uvTransform");
+            uniform_recolorRed = GL.GetUniformLocation(shader, "recolorRed");
             uniform_texGen = GL.GetUniformLocation(shader, "texGen");
             uniform_fogEnabled = GL.GetUniformLocation(shader, "fogEnabled");
             uniform_fogFactors = GL.GetUniformLocation(shader, "fogFactors");
@@ -348,10 +349,30 @@ namespace STROOP.Tabs.MapTab.Renderers
 
         static int Phase(Batch batch) => batch.layer >= LAYER_TRANSPARENT ? 2 : batch.layer == LAYER_ALPHA ? 1 : 0;
 
-        void DrawInstances(List<LevelModel.Instance> instances, int phase, bool cull, in Matrix4 billboardRotation)
+        static readonly Vector3[] NoOffset = { Vector3.Zero };
+
+        const float MARIO_HEIGHT = 160;
+
+        static float MarioScale(MapGraphics graphics, Vector3 position, float minPixels)
         {
-            foreach (var instance in instances)
+            if (minPixels <= 0 || graphics.viewMode != MapGraphics.ViewMode.ThreeDimensional)
+                return 1;
+            float distance = (position - graphics.currentView.position).Length;
+            float pixels = MARIO_HEIGHT * graphics.glControl.Height / (2 * (float)Math.Tan(0.5) * Math.Max(distance, 1));
+            return Math.Max(1, minPixels / pixels);
+        }
+
+        void DrawInstances(List<LevelModel.Instance> instances, int phase, bool cull, in Matrix4 billboardRotation, Vector3 offset = default,
+            bool recolorCap = false, int skipStart = -1, int skipCount = 0, Vector3 scaleCenter = default, float scale = 1)
+        {
+            var translation = Matrix4.CreateTranslation(offset);
+            if (scale != 1)
+                translation *= Matrix4.CreateTranslation(-scaleCenter) * Matrix4.CreateScale(scale) * Matrix4.CreateTranslation(scaleCenter);
+            for (int index = 0; index < instances.Count; index++)
             {
+                if (index >= skipStart && index < skipStart + skipCount)
+                    continue;
+                var instance = instances[index];
                 bool modelSet = false;
                 foreach (var batch in instance.mesh.batches)
                 {
@@ -359,10 +380,11 @@ namespace STROOP.Tabs.MapTab.Renderers
                         continue;
                     if (!modelSet)
                     {
+                        GL.Uniform1(uniform_recolorRed, recolorCap && instance.cap ? 1 : 0);
                         GL.BindVertexArray(instance.frame ? frameVao : vao);
-                        SetModel(instance.billboard
+                        SetModel((instance.billboard
                             ? instance.matrix * Matrix4.CreateScale(instance.anchorScale) * billboardRotation * Matrix4.CreateTranslation(instance.anchor)
-                            : instance.matrix);
+                            : instance.matrix) * translation);
                         modelSet = true;
                     }
 
@@ -375,7 +397,8 @@ namespace STROOP.Tabs.MapTab.Renderers
         }
 
         public void Draw(MapGraphics graphics, LevelModel model, float maxY, bool cull, bool drawObjects,
-            IReadOnlyList<(int y, int xMin, int xMax, int zMin, int zMax)> waters, bool drawSky, bool drawFog = false)
+            IReadOnlyList<(int y, int xMin, int xMax, int zMin, int zMax)> waters, bool drawSky, bool drawFog = false,
+            IReadOnlyList<Vector3> marioCopies = null, IReadOnlyList<Vector3> levelCopies = null, float marioMinPixels = 0)
         {
             if (shader == 0)
                 Init();
@@ -392,6 +415,7 @@ namespace STROOP.Tabs.MapTab.Renderers
                 DrawSky(graphics, model);
 
             GL.UseProgram(shader);
+            GL.Uniform1(uniform_recolorRed, 0);
             ResetState();
             ResetFogState();
             drawing = model;
@@ -420,14 +444,29 @@ namespace STROOP.Tabs.MapTab.Renderers
             GL.BindVertexArray(vao);
             for (int phase = 0; phase < 3; phase++)
             {
-                SetModel(Matrix4.Identity);
-                foreach (var batch in model.level.batches)
-                    if (Phase(batch) == phase)
-                        DrawBatch(batch, cull);
+                foreach (var levelOffset in levelCopies ?? NoOffset)
+                {
+                    SetModel(Matrix4.CreateTranslation(levelOffset));
+                    foreach (var batch in model.level.batches)
+                        if (Phase(batch) == phase)
+                            DrawBatch(batch, cull);
 
-                DrawInstances(model.levelInstances, phase, cull, billboardRotation);
+                    DrawInstances(model.levelInstances, phase, cull, billboardRotation, levelOffset);
+                }
+
                 if (drawObjects)
-                    DrawInstances(model.instances, phase, cull, billboardRotation);
+                {
+                    int marioCount = model.marioInstancesStart >= 0 ? model.marioInstances.Count : 0;
+                    DrawInstances(model.instances, phase, cull, billboardRotation, skipStart: model.marioInstancesStart, skipCount: marioCount);
+                    if (marioCount > 0)
+                        DrawInstances(model.marioInstances, phase, cull, billboardRotation,
+                            scaleCenter: model.marioModelPosition, scale: MarioScale(graphics, model.marioModelPosition, marioMinPixels));
+                    if (marioCopies != null)
+                        foreach (var position in marioCopies)
+                            DrawInstances(model.marioInstances, phase, cull, billboardRotation, position - model.marioModelPosition, true,
+                                scaleCenter: position, scale: MarioScale(graphics, position, marioMinPixels));
+                    GL.Uniform1(uniform_recolorRed, 0);
+                }
             }
 
             if (dynamicVertexCount > 0)

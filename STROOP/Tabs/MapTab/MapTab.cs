@@ -199,6 +199,17 @@ namespace STROOP.Tabs.MapTab
 
         public List<(float x, float z)> GetPuCenters(MapGraphics graphics)
         {
+            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+            {
+                var camera = graphics.currentView.position;
+                int puX = (int)Math.Round(camera.X / 65536), puZ = (int)Math.Round(camera.Z / 65536);
+                var around = new List<(float x, float z)>();
+                for (int x = puX - 1; x <= puX + 1; x++)
+                    for (int z = puZ - 1; z <= puZ + 1; z++)
+                        around.Add((x * 65536f, z * 65536f));
+                return around;
+            }
+
             int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
             int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
             int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
@@ -486,6 +497,7 @@ namespace STROOP.Tabs.MapTab
             textBoxMapControllersAngleCustom.AddEnterAction(() => radioButtonMapControllersAngleCustom.Checked = true);
 
             checkBoxMapOptionsEnablePuView.Click += (sender, e) => graphics.MapViewEnablePuView = checkBoxMapOptionsEnablePuView.Checked;
+            InitGameCameraCheckBox();
             checkBoxMapOptionsScaleIconSizes.Click += (sender, e) => graphics.MapViewScaleIconSizes = checkBoxMapOptionsScaleIconSizes.Checked;
             checkBoxMapControllersCenterChangeByPixels.Click += (sender, e) => graphics.MapViewCenterChangeByPixels = checkBoxMapControllersCenterChangeByPixels.Checked;
 
@@ -575,6 +587,8 @@ namespace STROOP.Tabs.MapTab
                     itemShowSky.Click += (__, ___) => itemShowSky.Checked = levelModelObject.showSky = !levelModelObject.showSky;
                     var itemShowFog = new ToolStripMenuItem("Show Fog (3D)") { Checked = levelModelObject.showFog };
                     itemShowFog.Click += (__, ___) => itemShowFog.Checked = levelModelObject.showFog = !levelModelObject.showFog;
+                    var itemKeepMarioVisible = new ToolStripMenuItem("Keep Mario Visible From Afar (3D)") { Checked = levelModelObject.keepMarioVisible };
+                    itemKeepMarioVisible.Click += (__, ___) => itemKeepMarioVisible.Checked = levelModelObject.keepMarioVisible = !levelModelObject.keepMarioVisible;
                     var itemCullFaces = new ToolStripMenuItem("Cull Back Faces (like the game)") { Checked = levelModelObject.cullFaces };
                     itemCullFaces.Click += (__, ___) => itemCullFaces.Checked = levelModelObject.cullFaces = !levelModelObject.cullFaces;
                     var itemHideAboveMario = new ToolStripMenuItem("Hide Geometry Above Mario") { Checked = levelModelObject.hideAboveMario };
@@ -590,6 +604,7 @@ namespace STROOP.Tabs.MapTab
                     itemLevelModel.DropDownItems.Add(itemShowWater);
                     itemLevelModel.DropDownItems.Add(itemShowSky);
                     itemLevelModel.DropDownItems.Add(itemShowFog);
+                    itemLevelModel.DropDownItems.Add(itemKeepMarioVisible);
                     itemLevelModel.DropDownItems.Add(itemCullFaces);
                     itemLevelModel.DropDownItems.Add(itemHideAboveMario);
                     itemLevelModel.DropDownItems.Add(itemHideAboveMarioOffset);
@@ -631,7 +646,7 @@ namespace STROOP.Tabs.MapTab
                         itemCameraModeFree.Click += (__, ___) =>
                         {
                             graphics.view3D.camera3DMode = View3D.Camera3DMode.Free;
-                            itemCameraModeInGame.Checked = itemCameraModePivot.Checked = !(itemCameraModeInGame.Checked = true);
+                            itemCameraModeInGame.Checked = itemCameraModePivot.Checked = !(itemCameraModeFree.Checked = true);
                         };
                         ctx.Items.Add(itemCameraModeInGame);
                         ctx.Items.Add(itemCameraModePivot);
@@ -678,8 +693,40 @@ namespace STROOP.Tabs.MapTab
             };
         }
 
+        System.Windows.Forms.CheckBox checkBoxMapOptionsGameCamera;
+
+        void InitGameCameraCheckBox()
+        {
+            checkBoxMapOptionsGameCamera = new System.Windows.Forms.CheckBox
+            {
+                Text = "Game Cam (3D)",
+                AutoSize = true,
+                Location = new System.Drawing.Point(checkBoxMapOptionsEnablePuView.Right + 4, checkBoxMapOptionsEnablePuView.Top),
+                UseVisualStyleBackColor = true,
+            };
+            checkBoxMapOptionsGameCamera.Click += (sender, e) =>
+            {
+                if (checkBoxMapOptionsGameCamera.Checked)
+                {
+                    comboBoxViewMode.SelectedIndex = (int)MapGraphics.ViewMode.ThreeDimensional;
+                    graphics.viewMode = MapGraphics.ViewMode.ThreeDimensional;
+                    graphics.view3D.camera3DMode = View3D.Camera3DMode.InGame;
+                }
+                else
+                    graphics.view3D.camera3DMode = View3D.Camera3DMode.FocusOnPositionAngle;
+            };
+            tabPageMapOptions.Controls.Add(checkBoxMapOptionsGameCamera);
+        }
+
         public override void Update(bool active)
         {
+            if (checkBoxMapOptionsGameCamera != null && graphics?.view3D != null)
+            {
+                bool onGameCamera = graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional && graphics.view3D.camera3DMode == View3D.Camera3DMode.InGame;
+                if (checkBoxMapOptionsGameCamera.Checked != onGameCamera)
+                    checkBoxMapOptionsGameCamera.Checked = onGameCamera;
+            }
+
             if (!_isLoaded2D) return;
 
             semaphoreTrackers.Clear();
@@ -747,7 +794,9 @@ namespace STROOP.Tabs.MapTab
                     Config.Stream.SetValue(target.Z, CamHackConfig.StructAddress + CamHackConfig.FocusZOffset);
                 }
 
-                int numLevelTriangles = Config.Stream.GetInt32(TriangleConfig.LevelTriangleCountAddress);
+                bool triangleCountKnown = MappingConfig.IsMapped(RomVersionConfig.SwitchOnly(
+                    TriangleConfig.LevelTriangleCountAddressUS, TriangleConfig.LevelTriangleCountAddressJP, TriangleConfig.LevelTriangleCountAddressSH));
+                int numLevelTriangles = triangleCountKnown ? Config.Stream.GetInt32(TriangleConfig.LevelTriangleCountAddress) : _numLevelTriangles;
                 if (numLevelTriangles != _numLevelTriangles)
                 {
                     RequireGeometryUpdate();
