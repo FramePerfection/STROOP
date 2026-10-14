@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Mathematics;
@@ -52,7 +52,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             if (img == null)
                 return;
             var flat = new Matrix4(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-            float y = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
+            float y = Config.Stream?.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) ?? 0;
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
                 renderer.texture = GraphicsUtil.TextureFromImage(img.Value);

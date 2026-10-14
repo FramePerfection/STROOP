@@ -25,6 +25,10 @@ namespace STROOP.Tabs.MapTab.DataUtil
         public bool decal;
         public CullMode cull;
         public int first, count;
+
+        public int uvAnimation = -1;
+        public int texGen;
+        public ulong fog;
     }
 
     public class Mesh
@@ -43,7 +47,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
         public Mesh Add(MeshBuilder builder)
         {
             var mesh = new Mesh { triangleCount = builder.triangleCount };
-            var keys = new List<(int texture, int layer, bool decal, CullMode cull)>(builder.meshes.Keys);
+            var keys = new List<(int texture, int layer, bool decal, CullMode cull, int uvAnimation, int texGen, ulong fog)>(builder.meshes.Keys);
             keys.Sort((a, b) => a.layer != b.layer ? a.layer.CompareTo(b.layer) : a.texture.CompareTo(b.texture));
             foreach (var key in keys)
             {
@@ -57,6 +61,9 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     layer = key.layer,
                     decal = key.decal,
                     cull = key.cull,
+                    uvAnimation = key.uvAnimation,
+                    texGen = key.texGen,
+                    fog = key.fog,
                     first = length / VertexSize,
                     count = vertices.Count / VertexSize,
                 });
@@ -69,7 +76,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
     public class MeshBuilder
     {
-        public readonly Dictionary<(int texture, int layer, bool decal, CullMode cull), List<byte>> meshes = new Dictionary<(int, int, bool, CullMode), List<byte>>();
+        public readonly Dictionary<(int texture, int layer, bool decal, CullMode cull, int uvAnimation, int texGen, ulong fog), List<byte>> meshes = new Dictionary<(int, int, bool, CullMode, int, int, ulong), List<byte>>();
         public int triangleCount;
     }
 
@@ -204,9 +211,10 @@ namespace STROOP.Tabs.MapTab.DataUtil
         const int G_CLEARGEOMETRYMODE = 0xB6, G_SETGEOMETRYMODE = 0xB7, G_ENDDL = 0xB8, G_SETOTHERMODE_H = 0xBA;
         const int G_TEXTURE = 0xBB, G_MOVEWORD = 0xBC, G_TRI1 = 0xBF;
         const int G_LOADTLUT = 0xF0, G_SETTILESIZE = 0xF2, G_LOADBLOCK = 0xF3, G_LOADTILE = 0xF4, G_SETTILE = 0xF5;
-        const int G_SETPRIMCOLOR = 0xFA, G_SETENVCOLOR = 0xFB, G_SETCOMBINE = 0xFC, G_SETTIMG = 0xFD;
+        const int G_SETFOGCOLOR = 0xF8, G_SETPRIMCOLOR = 0xFA, G_SETENVCOLOR = 0xFB, G_SETCOMBINE = 0xFC, G_SETTIMG = 0xFD;
+        const uint G_TEXTURE_GEN = 0x00040000, G_TEXTURE_GEN_LINEAR = 0x00080000, G_FOG = 0x00010000;
         const uint G_LIGHTING = 0x00020000, G_CULL_FRONT = 0x00001000, G_CULL_BACK = 0x00002000;
-        const int G_MW_NUMLIGHT = 0x02;
+        const int G_MW_NUMLIGHT = 0x02, G_MW_FOG = 0x08;
 
         public const uint GEO_INIT = 0x00000004 | 0x00000200 | G_CULL_BACK | G_LIGHTING;
 
@@ -235,6 +243,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
         readonly MeshBuilder output;
 
         public uint geo = GEO_INIT;
+        public int uvAnimation = -1;
         bool texOn;
         double texScaleS = 1, texScaleT = 1;
         readonly Tile[] tiles = new Tile[8];
@@ -244,6 +253,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
         int tlutType;
         byte[] prim = { 255, 255, 255, 255 }, env = { 255, 255, 255, 255 };
         public uint combine0, combine1;
+        uint fogColor, fogFactors;
         readonly Dictionary<int, (byte r, byte g, byte b, sbyte dx, sbyte dy, sbyte dz)> lights = new Dictionary<int, (byte, byte, byte, sbyte, sbyte, sbyte)>();
         int numLights = 1;
         readonly Vtx?[] vbuf = new Vtx?[16];
@@ -260,7 +270,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
         public sealed class State
         {
-            internal uint geo, timgAddr, combine0, combine1;
+            internal uint geo, timgAddr, combine0, combine1, fogColor, fogFactors;
             internal bool texOn;
             internal double texScaleS, texScaleT;
             internal Tile[] tiles;
@@ -282,6 +292,8 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     h.Add(timgAddr);
                     h.Add(combine0);
                     h.Add(combine1);
+                    h.Add(fogColor);
+                    h.Add(fogFactors);
                     h.Add(texOn);
                     h.Add(texScaleS);
                     h.Add(texScaleT);
@@ -312,7 +324,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             l.Sort((a, b) => a.Key.CompareTo(b.Key));
             return new State
             {
-                geo = geo, timgAddr = timgAddr, combine0 = combine0, combine1 = combine1, texOn = texOn,
+                geo = geo, timgAddr = timgAddr, combine0 = combine0, combine1 = combine1, fogColor = fogColor, fogFactors = fogFactors, texOn = texOn,
                 texScaleS = texScaleS, texScaleT = texScaleT, tiles = t, tmemSrc = tmem.ToArray(), tlut = tlut,
                 tlutType = tlutType, numLights = numLights, prim = (byte[])prim.Clone(), env = (byte[])env.Clone(),
                 lights = l.ToArray(),
@@ -325,6 +337,8 @@ namespace STROOP.Tabs.MapTab.DataUtil
             timgAddr = s.timgAddr;
             combine0 = s.combine0;
             combine1 = s.combine1;
+            fogColor = s.fogColor;
+            fogFactors = s.fogFactors;
             texOn = s.texOn;
             texScaleS = s.texScaleS;
             texScaleT = s.texScaleT;
@@ -438,6 +452,13 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 t.cms | (t.masks == 0 ? 2 : 0), t.cmt | (t.maskt == 0 ? 2 : 0));
         }
 
+        public Vector2 TexCoordScale()
+        {
+            var t = tiles[0];
+            int w = ((t.lrs - t.uls) >> 2) + 1, h = ((t.lrt - t.ult) >> 2) + 1;
+            return w > 0 && h > 0 ? new Vector2((float)(texScaleS / (32.0 * w)), (float)(texScaleT / (32.0 * h))) : Vector2.Zero;
+        }
+
         void LoadVertices(uint addr, int n, int v0, in Matrix4 m)
         {
             uint p = ram.Phys(addr);
@@ -447,20 +468,34 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     return;
                 for (uint k = 0; k < 16; k++)
                     raw[k] = ram.U8Phys(p + k);
-                var pos = new Vector3((short)(raw[0] << 8 | raw[1]), (short)(raw[2] << 8 | raw[3]), (short)(raw[4] << 8 | raw[5]));
-                var world = Vector3.TransformPosition(pos, m);
-                var v = new Vtx
-                {
-                    x = world.X,
-                    y = world.Y,
-                    z = world.Z,
-                    s = (short)(raw[8] << 8 | raw[9]),
-                    t = (short)(raw[10] << 8 | raw[11]),
-                };
-                Shade(ref v, m);
-                if (v0 + i < 16)
-                    vbuf[v0 + i] = v;
+                StoreVertex(v0 + i, m);
             }
+        }
+
+        public void LoadVertices(byte[] vertices, int n, int v0, in Matrix4 m)
+        {
+            for (int i = 0; i < n && (i + 1) * 16 <= vertices.Length; i++)
+            {
+                Buffer.BlockCopy(vertices, i * 16, raw, 0, 16);
+                StoreVertex(v0 + i, m);
+            }
+        }
+
+        void StoreVertex(int index, in Matrix4 m)
+        {
+            var pos = new Vector3((short)(raw[0] << 8 | raw[1]), (short)(raw[2] << 8 | raw[3]), (short)(raw[4] << 8 | raw[5]));
+            var world = Vector3.TransformPosition(pos, m);
+            var v = new Vtx
+            {
+                x = world.X,
+                y = world.Y,
+                z = world.Z,
+                s = (short)(raw[8] << 8 | raw[9]),
+                t = (short)(raw[10] << 8 | raw[11]),
+            };
+            Shade(ref v, m);
+            if (index < 16)
+                vbuf[index] = v;
         }
 
         void Triangle(int i0, int i1, int i2, int layer)
@@ -478,7 +513,9 @@ namespace STROOP.Tabs.MapTab.DataUtil
             int src = ColorSource(out bool usesTex);
             int texture = GetTexture(usesTex, out int w, out int h, out int uls, out int ult);
             bool decal = texture >= 0 && Decal();
-            var key = (texture, layer, decal, cull);
+            int texGen = texture >= 0 && (geo & G_TEXTURE_GEN) != 0 ? (geo & G_TEXTURE_GEN_LINEAR) != 0 ? 2 : 1 : 0;
+            ulong fog = (geo & G_FOG) != 0 ? (ulong)fogColor << 32 | fogFactors : 0;
+            var key = (texture, layer, decal, cull, uvAnimation, texGen, fog);
             if (!output.meshes.TryGetValue(key, out var mesh))
                 output.meshes[key] = mesh = new List<byte>(MeshStore.VertexSize * 3 * 32);
 
@@ -491,19 +528,19 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 ov = ult / (4.0f * h);
             }
 
-            Vertex(mesh, vbuf[i0].Value, texture, fu, fv, ou, ov, src);
-            Vertex(mesh, vbuf[i1].Value, texture, fu, fv, ou, ov, src);
-            Vertex(mesh, vbuf[i2].Value, texture, fu, fv, ou, ov, src);
+            Vertex(mesh, vbuf[i0].Value, texture, fu, fv, ou, ov, src, texGen != 0);
+            Vertex(mesh, vbuf[i1].Value, texture, fu, fv, ou, ov, src, texGen != 0);
+            Vertex(mesh, vbuf[i2].Value, texture, fu, fv, ou, ov, src, texGen != 0);
             output.triangleCount++;
         }
 
-        void Vertex(List<byte> mesh, in Vtx v, int texture, float fu, float fv, float ou, float ov, int src)
+        void Vertex(List<byte> mesh, in Vtx v, int texture, float fu, float fv, float ou, float ov, int src, bool texGen)
         {
             AddFloat(mesh, v.x);
             AddFloat(mesh, v.y);
             AddFloat(mesh, v.z);
-            AddFloat(mesh, texture >= 0 ? v.s * fu - ou : 0);
-            AddFloat(mesh, texture >= 0 ? v.t * fv - ov : 0);
+            AddFloat(mesh, texture < 0 ? 0 : texGen ? 32768 * fu : v.s * fu - ou);
+            AddFloat(mesh, texture < 0 ? 0 : texGen ? 32768 * fv : v.t * fv - ov);
             switch (src)
             {
                 case 1:
@@ -528,14 +565,14 @@ namespace STROOP.Tabs.MapTab.DataUtil
 
             mesh[mesh.Count - 1] = AlphaSource(v.a);
 
-            bool lit = src == 1 && v.lit;
+            bool lit = src == 1 && v.lit, normal = lit || (texGen && v.lit);
             mesh.Add(lit ? v.ar : (byte)0);
             mesh.Add(lit ? v.ag : (byte)0);
             mesh.Add(lit ? v.ab : (byte)0);
             mesh.Add(lit ? (byte)255 : (byte)0);
-            mesh.Add((byte)(lit ? v.nx : 0));
-            mesh.Add((byte)(lit ? v.ny : 0));
-            mesh.Add((byte)(lit ? v.nz : 0));
+            mesh.Add((byte)(normal ? v.nx : 0));
+            mesh.Add((byte)(normal ? v.ny : 0));
+            mesh.Add((byte)(normal ? v.nz : 0));
             mesh.Add(0);
             mesh.Add((byte)(lit ? v.lx : 0));
             mesh.Add((byte)(lit ? v.ly : 0));
@@ -571,88 +608,100 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 if (!ram.Ok(ram.Phys(pc), 8))
                     return;
                 uint w0 = ram.U32(pc), w1 = ram.U32(pc + 4);
-                int op = (int)(w0 >> 24);
                 pc += 8;
-                switch (op)
-                {
-                    case G_ENDDL:
-                        return;
-                    case G_DL:
-                        if (depth < 16)
-                            Run(w1, layer, m, depth + 1);
-                        if (((w0 >> 16) & 0xFF) != 0)
-                            return;
-                        break;
-                    case G_VTX:
-                        LoadVertices(w1, (int)((w0 >> 20) & 15) + 1, (int)(w0 >> 16) & 15, m);
-                        break;
-                    case G_TRI1:
-                        Triangle((int)((w1 >> 16) & 0xFF) / 10, (int)((w1 >> 8) & 0xFF) / 10, (int)(w1 & 0xFF) / 10, layer);
-                        break;
-                    case G_SETGEOMETRYMODE:
-                        geo |= w1;
-                        break;
-                    case G_CLEARGEOMETRYMODE:
-                        geo &= ~w1;
-                        break;
-                    case G_TEXTURE:
-                        texOn = (w0 & 0xFF) != 0;
-                        uint s = (w1 >> 16) & 0xFFFF, t = w1 & 0xFFFF;
-                        texScaleS = s == 0xFFFF ? (s + 1) / 65536.0 : s / 65536.0;
-                        texScaleT = t == 0xFFFF ? (t + 1) / 65536.0 : t / 65536.0;
-                        break;
-                    case G_MOVEMEM:
-                        MoveMemLight((int)(w0 >> 16) & 0xFF, w1);
-                        break;
-                    case G_MOVEWORD:
-                        if ((w0 & 0xFF) == G_MW_NUMLIGHT)
-                            numLights = (int)Math.Max(1, (((long)w1 - 0x80000000L) >> 5) - 1);
-                        break;
-                    case G_SETOTHERMODE_H:
-                        int shift = (int)(w0 >> 8) & 0xFF, length = (int)w0 & 0xFF;
-                        if (shift <= 14 && 14 < shift + length)
-                            tlutType = (int)(w1 >> 14) & 3;
-                        break;
-                    case G_SETTIMG:
-                        timgAddr = w1;
-                        break;
-                    case G_SETTILE:
-                        var tile = tiles[(w1 >> 24) & 7];
-                        tile.fmt = (int)(w0 >> 21) & 7;
-                        tile.siz = (int)(w0 >> 19) & 3;
-                        tile.tmem = (int)w0 & 0x1FF;
-                        tile.pal = (int)(w1 >> 20) & 15;
-                        tile.cmt = (int)(w1 >> 18) & 3;
-                        tile.cms = (int)(w1 >> 8) & 3;
-                        tile.maskt = (int)(w1 >> 14) & 15;
-                        tile.masks = (int)(w1 >> 4) & 15;
-                        break;
-                    case G_SETTILESIZE:
-                        var sizedTile = tiles[(w1 >> 24) & 7];
-                        sizedTile.uls = (int)(w0 >> 12) & 0xFFF;
-                        sizedTile.ult = (int)w0 & 0xFFF;
-                        sizedTile.lrs = (int)(w1 >> 12) & 0xFFF;
-                        sizedTile.lrt = (int)w1 & 0xFFF;
-                        break;
-                    case G_LOADBLOCK:
-                    case G_LOADTILE:
-                        tmemSrc[tiles[(w1 >> 24) & 7].tmem] = timgAddr;
-                        break;
-                    case G_LOADTLUT:
-                        tlut = timgAddr;
-                        break;
-                    case G_SETPRIMCOLOR:
-                        prim = new[] { (byte)(w1 >> 24), (byte)(w1 >> 16), (byte)(w1 >> 8), (byte)w1 };
-                        break;
-                    case G_SETENVCOLOR:
-                        env = new[] { (byte)(w1 >> 24), (byte)(w1 >> 16), (byte)(w1 >> 8), (byte)w1 };
-                        break;
-                    case G_SETCOMBINE:
-                        combine0 = w0 & 0xFFFFFF;
-                        combine1 = w1;
-                        break;
-                }
+                if (!Command(w0, w1, layer, m, depth))
+                    return;
             }
+        }
+
+        public bool Command(uint w0, uint w1, int layer, in Matrix4 m, int depth = 0)
+        {
+            switch ((int)(w0 >> 24))
+            {
+                case G_ENDDL:
+                    return false;
+                case G_DL:
+                    if (depth < 16)
+                        Run(w1, layer, m, depth + 1);
+                    if (((w0 >> 16) & 0xFF) != 0)
+                        return false;
+                    break;
+                case G_VTX:
+                    LoadVertices(w1, (int)((w0 >> 20) & 15) + 1, (int)(w0 >> 16) & 15, m);
+                    break;
+                case G_TRI1:
+                    Triangle((int)((w1 >> 16) & 0xFF) / 10, (int)((w1 >> 8) & 0xFF) / 10, (int)(w1 & 0xFF) / 10, layer);
+                    break;
+                case G_SETGEOMETRYMODE:
+                    geo |= w1;
+                    break;
+                case G_CLEARGEOMETRYMODE:
+                    geo &= ~w1;
+                    break;
+                case G_TEXTURE:
+                    texOn = (w0 & 0xFF) != 0;
+                    uint s = (w1 >> 16) & 0xFFFF, t = w1 & 0xFFFF;
+                    texScaleS = s == 0xFFFF ? (s + 1) / 65536.0 : s / 65536.0;
+                    texScaleT = t == 0xFFFF ? (t + 1) / 65536.0 : t / 65536.0;
+                    break;
+                case G_MOVEMEM:
+                    MoveMemLight((int)(w0 >> 16) & 0xFF, w1);
+                    break;
+                case G_MOVEWORD:
+                    if ((w0 & 0xFF) == G_MW_NUMLIGHT)
+                        numLights = (int)Math.Max(1, (((long)w1 - 0x80000000L) >> 5) - 1);
+                    else if ((w0 & 0xFF) == G_MW_FOG)
+                        fogFactors = w1;
+                    break;
+                case G_SETFOGCOLOR:
+                    fogColor = w1;
+                    break;
+                case G_SETOTHERMODE_H:
+                    int shift = (int)(w0 >> 8) & 0xFF, length = (int)w0 & 0xFF;
+                    if (shift <= 14 && 14 < shift + length)
+                        tlutType = (int)(w1 >> 14) & 3;
+                    break;
+                case G_SETTIMG:
+                    timgAddr = w1;
+                    break;
+                case G_SETTILE:
+                    var tile = tiles[(w1 >> 24) & 7];
+                    tile.fmt = (int)(w0 >> 21) & 7;
+                    tile.siz = (int)(w0 >> 19) & 3;
+                    tile.tmem = (int)w0 & 0x1FF;
+                    tile.pal = (int)(w1 >> 20) & 15;
+                    tile.cmt = (int)(w1 >> 18) & 3;
+                    tile.cms = (int)(w1 >> 8) & 3;
+                    tile.maskt = (int)(w1 >> 14) & 15;
+                    tile.masks = (int)(w1 >> 4) & 15;
+                    break;
+                case G_SETTILESIZE:
+                    var sizedTile = tiles[(w1 >> 24) & 7];
+                    sizedTile.uls = (int)(w0 >> 12) & 0xFFF;
+                    sizedTile.ult = (int)w0 & 0xFFF;
+                    sizedTile.lrs = (int)(w1 >> 12) & 0xFFF;
+                    sizedTile.lrt = (int)w1 & 0xFFF;
+                    break;
+                case G_LOADBLOCK:
+                case G_LOADTILE:
+                    tmemSrc[tiles[(w1 >> 24) & 7].tmem] = timgAddr;
+                    break;
+                case G_LOADTLUT:
+                    tlut = timgAddr;
+                    break;
+                case G_SETPRIMCOLOR:
+                    prim = new[] { (byte)(w1 >> 24), (byte)(w1 >> 16), (byte)(w1 >> 8), (byte)w1 };
+                    break;
+                case G_SETENVCOLOR:
+                    env = new[] { (byte)(w1 >> 24), (byte)(w1 >> 16), (byte)(w1 >> 8), (byte)w1 };
+                    break;
+                case G_SETCOMBINE:
+                    combine0 = w0 & 0xFFFFFF;
+                    combine1 = w1;
+                    break;
+            }
+
+            return true;
         }
     }
 }

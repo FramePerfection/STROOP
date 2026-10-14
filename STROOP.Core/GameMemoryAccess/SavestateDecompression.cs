@@ -6,7 +6,7 @@ public static class SavestateDecompression
 {
     static readonly byte[] Lz4Magic = { 0x04, 0x22, 0x4D, 0x18 };
 
-    public static bool IsLz4(byte[] data) => data.Length >= 4 && data.AsSpan(0, 4).SequenceEqual(Lz4Magic);
+    public static bool IsLz4(byte[] data) => data.Length >= 7 && data.AsSpan(0, 4).SequenceEqual(Lz4Magic);
 
     public static byte[] Decompress(byte[] data)
     {
@@ -73,6 +73,8 @@ public static class SavestateDecompression
 
             int offset = src[p] | src[p + 1] << 8;
             p += 2;
+            if (offset == 0)
+                break;
             int matchLength = token & 15;
             if (matchLength == 15)
             {

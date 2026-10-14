@@ -569,10 +569,12 @@ namespace STROOP.Tabs.MapTab
                     itemShowLevelModel.Click += (__, ___) => itemShowLevelModel.Checked = levelModelObject.showModel = !levelModelObject.showModel;
                     var itemShowObjects = new ToolStripMenuItem("Show Mario and Objects") { Checked = levelModelObject.showObjects };
                     itemShowObjects.Click += (__, ___) => itemShowObjects.Checked = levelModelObject.showObjects = !levelModelObject.showObjects;
-                    var itemShowWater = new ToolStripMenuItem("Show Water") { Checked = levelModelObject.showWater };
-                    itemShowWater.Click += (__, ___) => itemShowWater.Checked = levelModelObject.showWater = !levelModelObject.showWater;
+                    var itemShowWater = new ToolStripMenuItem("Show Water Boxes (collision)") { Checked = levelModelObject.showWaterBoxes };
+                    itemShowWater.Click += (__, ___) => itemShowWater.Checked = levelModelObject.showWaterBoxes = !levelModelObject.showWaterBoxes;
                     var itemShowSky = new ToolStripMenuItem("Show Sky (3D)") { Checked = levelModelObject.showSky };
                     itemShowSky.Click += (__, ___) => itemShowSky.Checked = levelModelObject.showSky = !levelModelObject.showSky;
+                    var itemShowFog = new ToolStripMenuItem("Show Fog (3D)") { Checked = levelModelObject.showFog };
+                    itemShowFog.Click += (__, ___) => itemShowFog.Checked = levelModelObject.showFog = !levelModelObject.showFog;
                     var itemCullFaces = new ToolStripMenuItem("Cull Back Faces (like the game)") { Checked = levelModelObject.cullFaces };
                     itemCullFaces.Click += (__, ___) => itemCullFaces.Checked = levelModelObject.cullFaces = !levelModelObject.cullFaces;
                     var itemHideAboveMario = new ToolStripMenuItem("Hide Geometry Above Mario") { Checked = levelModelObject.hideAboveMario };
@@ -587,6 +589,7 @@ namespace STROOP.Tabs.MapTab
                     itemLevelModel.DropDownItems.Add(itemShowObjects);
                     itemLevelModel.DropDownItems.Add(itemShowWater);
                     itemLevelModel.DropDownItems.Add(itemShowSky);
+                    itemLevelModel.DropDownItems.Add(itemShowFog);
                     itemLevelModel.DropDownItems.Add(itemCullFaces);
                     itemLevelModel.DropDownItems.Add(itemHideAboveMario);
                     itemLevelModel.DropDownItems.Add(itemHideAboveMarioOffset);

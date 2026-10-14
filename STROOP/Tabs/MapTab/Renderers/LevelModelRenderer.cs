@@ -13,14 +13,14 @@ namespace STROOP.Tabs.MapTab.Renderers
         const uint WaterColor = 0x66D57B3A;
         const int ShadowSegments = 16;
 
-        int shader, vao, buffer, dynamicVao, dynamicBuffer;
+        int shader, vao, buffer, dynamicVao, dynamicBuffer, frameVao, frameBuffer;
         int bufferCapacity, uploadedLength;
         readonly List<int> textures = new List<int>();
         LevelModel uploaded;
         byte[] dynamicVertices = new byte[MeshStore.VertexSize * 1024];
         int dynamicLength;
 
-        int uniform_viewRotation;
+        int uniform_viewRotation, uniform_uvTransform, uniform_texGen, uniform_fogEnabled, uniform_fogFactors, uniform_fogPlanes, uniform_fogColor;
         int uniform_viewProjection, uniform_model, uniform_tex, uniform_useTexture, uniform_decal, uniform_alphaCutoff, uniform_opaque, uniform_maxY;
 
         int skyShader, skyVao, skyTexture;
@@ -56,8 +56,15 @@ namespace STROOP.Tabs.MapTab.Renderers
             uniform_alphaCutoff = GL.GetUniformLocation(shader, "alphaCutoff");
             uniform_opaque = GL.GetUniformLocation(shader, "opaque");
             uniform_maxY = GL.GetUniformLocation(shader, "maxY");
+            uniform_uvTransform = GL.GetUniformLocation(shader, "uvTransform");
+            uniform_texGen = GL.GetUniformLocation(shader, "texGen");
+            uniform_fogEnabled = GL.GetUniformLocation(shader, "fogEnabled");
+            uniform_fogFactors = GL.GetUniformLocation(shader, "fogFactors");
+            uniform_fogPlanes = GL.GetUniformLocation(shader, "fogPlanes");
+            uniform_fogColor = GL.GetUniformLocation(shader, "fogColor");
             vao = CreateVertexArray(out buffer);
             dynamicVao = CreateVertexArray(out dynamicBuffer);
+            frameVao = CreateVertexArray(out frameBuffer);
 
             skyShader = GraphicsUtil.GetShaderProgram("Resources/Shaders/Skybox.vert.glsl", "Resources/Shaders/Skybox.frag.glsl");
             uniform_sky_useTexture = GL.GetUniformLocation(skyShader, "useTexture");
@@ -247,9 +254,14 @@ namespace STROOP.Tabs.MapTab.Renderers
                 GL.FrontFace(frontFace = face);
         }
 
-        int stateTransparent, stateCull, stateDecal, stateTexture, stateCutoffLayer;
+        int stateTransparent, stateCull, stateDecal, stateTexture, stateCutoffLayer, stateUvAnimation, stateTexGen;
+        ulong stateFog;
+        bool fogShown;
+        LevelModel drawing;
 
-        void ResetState() => stateTransparent = stateCull = stateDecal = stateTexture = stateCutoffLayer = int.MinValue;
+        void ResetState() => stateTransparent = stateCull = stateDecal = stateTexture = stateCutoffLayer = stateUvAnimation = stateTexGen = int.MinValue;
+
+        void ResetFogState() => stateFog = ulong.MaxValue;
 
         void DrawBatch(Batch batch, bool cull)
         {
@@ -302,18 +314,78 @@ namespace STROOP.Tabs.MapTab.Renderers
                 stateTexture = texture;
             }
 
+            if (batch.uvAnimation != stateUvAnimation)
+            {
+                var uvTransform = batch.uvAnimation >= 0 && batch.uvAnimation < drawing.uvAnimations.Count
+                    ? drawing.uvAnimations[batch.uvAnimation].transform
+                    : Matrix3.Identity;
+                GL.UniformMatrix3(uniform_uvTransform, false, ref uvTransform);
+                stateUvAnimation = batch.uvAnimation;
+            }
+
+            ulong fog = fogShown ? batch.fog : 0;
+            if (fog != stateFog)
+            {
+                GL.Uniform1(uniform_fogEnabled, fog != 0 ? 1 : 0);
+                if (fog != 0)
+                {
+                    uint color = (uint)(fog >> 32);
+                    GL.Uniform3(uniform_fogColor, (color >> 24) / 255f, ((color >> 16) & 0xFF) / 255f, ((color >> 8) & 0xFF) / 255f);
+                    GL.Uniform2(uniform_fogFactors, (float)(short)(fog >> 16), (float)(short)fog);
+                }
+
+                stateFog = fog;
+            }
+
+            if (batch.texGen != stateTexGen)
+            {
+                GL.Uniform1(uniform_texGen, batch.texGen);
+                stateTexGen = batch.texGen;
+            }
+
             GL.DrawArrays(PrimitiveType.Triangles, batch.first, batch.count);
         }
 
         static int Phase(Batch batch) => batch.layer >= LAYER_TRANSPARENT ? 2 : batch.layer == LAYER_ALPHA ? 1 : 0;
 
+        void DrawInstances(List<LevelModel.Instance> instances, int phase, bool cull, in Matrix4 billboardRotation)
+        {
+            foreach (var instance in instances)
+            {
+                bool modelSet = false;
+                foreach (var batch in instance.mesh.batches)
+                {
+                    if (Phase(batch) != phase)
+                        continue;
+                    if (!modelSet)
+                    {
+                        GL.BindVertexArray(instance.frame ? frameVao : vao);
+                        SetModel(instance.billboard
+                            ? instance.matrix * Matrix4.CreateScale(instance.anchorScale) * billboardRotation * Matrix4.CreateTranslation(instance.anchor)
+                            : instance.matrix);
+                        modelSet = true;
+                    }
+
+                    DrawBatch(batch, cull);
+                }
+
+                if (instance.frame && modelSet)
+                    GL.BindVertexArray(vao);
+            }
+        }
+
         public void Draw(MapGraphics graphics, LevelModel model, float maxY, bool cull, bool drawObjects,
-            IReadOnlyList<(int y, int xMin, int xMax, int zMin, int zMax)> waters, bool drawSky)
+            IReadOnlyList<(int y, int xMin, int xMax, int zMin, int zMax)> waters, bool drawSky, bool drawFog = false)
         {
             if (shader == 0)
                 Init();
             Upload(model);
             int dynamicVertexCount = UploadDynamic(drawObjects ? model.shadows : null, waters);
+            if (model.frameStore.length > 0)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, frameBuffer);
+                GL.BufferData(BufferTarget.ArrayBuffer, model.frameStore.length, model.frameStore.data, BufferUsageHint.StreamDraw);
+            }
 
             bool blendWasEnabled = GL.IsEnabled(EnableCap.Blend);
             if (drawSky)
@@ -321,6 +393,12 @@ namespace STROOP.Tabs.MapTab.Renderers
 
             GL.UseProgram(shader);
             ResetState();
+            ResetFogState();
+            drawing = model;
+            fogShown = drawFog;
+            var planes = model.perspectivePlanes;
+            GL.Uniform2(uniform_fogPlanes, ref planes);
+            GL.Uniform3(uniform_fogColor, 0f, 0f, 0f);
             var viewProjection = graphics.ViewMatrix;
             GL.UniformMatrix4(uniform_viewProjection, false, ref viewProjection);
             var viewRotation = Matrix3.Transpose(new Matrix3(graphics.BillboardMatrix));
@@ -347,25 +425,9 @@ namespace STROOP.Tabs.MapTab.Renderers
                     if (Phase(batch) == phase)
                         DrawBatch(batch, cull);
 
+                DrawInstances(model.levelInstances, phase, cull, billboardRotation);
                 if (drawObjects)
-                    foreach (var instance in model.instances)
-                    {
-                        bool modelSet = false;
-                        foreach (var batch in instance.mesh.batches)
-                        {
-                            if (Phase(batch) != phase)
-                                continue;
-                            if (!modelSet)
-                            {
-                                SetModel(instance.billboard
-                                    ? instance.matrix * Matrix4.CreateScale(instance.anchorScale) * billboardRotation * Matrix4.CreateTranslation(instance.anchor)
-                                    : instance.matrix);
-                                modelSet = true;
-                            }
-
-                            DrawBatch(batch, cull);
-                        }
-                    }
+                    DrawInstances(model.instances, phase, cull, billboardRotation);
             }
 
             if (dynamicVertexCount > 0)

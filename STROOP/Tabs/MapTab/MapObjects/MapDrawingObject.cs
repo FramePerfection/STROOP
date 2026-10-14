@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using STROOP.Structs.Configurations;
@@ -26,7 +26,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             static Vector3 WithHeight(Vector3 position, bool hasHeight)
             {
                 if (!hasHeight)
-                    position.Y = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
+                    position.Y = Config.Stream?.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) ?? 0;
                 return position;
             }
 

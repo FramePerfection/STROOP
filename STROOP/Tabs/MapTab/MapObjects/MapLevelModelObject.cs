@@ -25,8 +25,9 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public bool showModel = true;
         public bool showObjects = true;
-        public bool showWater = true;
+        public bool showWaterBoxes = false;
         public bool showSky = true;
+        public bool showFog = false;
         public bool cullFaces = true;
         public bool hideAboveMario = false;
         public float hideAboveMarioOffset = 200;
@@ -51,6 +52,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
             hash.Add(Rdram.IsPointer(area) ? ram.U32(area + 4) : 0);
             hash.Add(ram.S32(TriangleConfig.LevelTriangleCountAddress));
             hash.Add(ram.U32(Config.ObjectAssociations.SegmentTable + 4 * 7));
+            uint waters = ram.U32(MiscConfig.WaterPointerAddress);
+            if (Rdram.IsPointer(waters))
+                for (uint i = 0, count = (uint)Math.Clamp((int)ram.S16(waters), 0, 64); i < count; i++)
+                    hash.Add(ram.S16(waters + 12 + 12 * i));
+            hash.Add(LevelModel.StaticStateKey(ram, GetGameAddresses()));
             return hash.ToHashCode();
         }
 
@@ -84,6 +90,17 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 Rebuild();
             }
 
+            if (model != null)
+                try
+                {
+                    model.UpdateLevelGeometry(ram, GetGameAddresses());
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Paintings could not be drawn: {e}");
+                    model.levelInstances.Clear();
+                }
+
             if (model != null && showObjects)
                 try
                 {
@@ -95,7 +112,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     model.instances.Clear();
                 }
 
-            waters = showWater ? WaterUtilities.GetWaterLevels() : null;
+            model?.UpdateTextureAnimations(ram);
+            waters = showWaterBoxes ? WaterUtilities.GetWaterLevels() : null;
         }
 
         readonly HashSet<uint> doors = new HashSet<uint>();
@@ -113,9 +131,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         static LevelModel.GameAddresses GetGameAddresses()
         {
-            var addresses = RomVersionConfig.Version == RomVersion.US
-                ? LevelModel.GameAddresses.US(MarioObjectConfig.PointerAddress, MarioConfig.StructAddress)
-                : new LevelModel.GameAddresses { marioObjectPointer = MarioObjectConfig.PointerAddress, marioState = MarioConfig.StructAddress };
+            var addresses = LevelModel.GameAddresses.FromSymbols(MappingConfig.GetSymbolAddress, MarioObjectConfig.PointerAddress, MarioConfig.StructAddress);
             if (RomVersionConfig.Version == RomVersion.US)
             {
                 var ghostTab = Config.StroopMainForm.GetTab<GhostTab.GhostTab>();
@@ -149,7 +165,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
         {
             if (!hideAboveMario)
                 return float.PositiveInfinity;
-            return Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) + hideAboveMarioOffset;
+            return (Config.Stream?.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) ?? 0) + hideAboveMarioOffset;
         }
 
         void DrawModel(MapGraphics graphics)
@@ -160,7 +176,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
             graphics.drawLayers[(int)MapGraphics.DrawLayers.Background].Add(() =>
             {
                 renderer.Draw(graphics, drawnModel, maxY, cullFaces, showObjects, drawnWaters,
-                    showSky && graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional);
+                    showSky && graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
+                    showFog && graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional);
                 if (graphics.viewMode != MapGraphics.ViewMode.ThreeDimensional)
                 {
                     GL.Clear(ClearBufferMask.DepthBufferBit);

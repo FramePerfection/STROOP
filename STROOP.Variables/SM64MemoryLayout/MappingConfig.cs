@@ -1,4 +1,4 @@
-﻿using STROOP.Core;
+using STROOP.Core;
 using STROOP.Core.Utilities;
 using System.Globalization;
 
@@ -60,6 +60,19 @@ public static class MappingConfig
     {
         mappingCurrent = null;
         mappingCurrentReversed = null;
+    }
+
+    public static uint? GetSymbolAddress(string name)
+    {
+        if (mappingCurrentReversed != null && mappingCurrentReversed.TryGetValue(name, out uint mapped))
+            return mapped;
+        var versionMapping = RomVersionConfig.Version switch
+        {
+            RomVersion.US => mappingUSReversed,
+            RomVersion.JP => mappingJPReversed,
+            _ => null,
+        };
+        return versionMapping != null && versionMapping.TryGetValue(name, out uint address) ? address : null;
     }
 
     public static uint HandleMapping(uint address)

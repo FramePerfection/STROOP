@@ -10,17 +10,38 @@ layout (location = 5) in vec3 vs_lightDir;
 uniform mat4 viewProjection;
 uniform mat4 model;
 uniform mat3 viewRotation;
+uniform mat3 uvTransform = mat3(1.0);
+uniform int texGen;
+uniform int fogEnabled;
+uniform vec2 fogFactors;
+uniform vec2 fogPlanes;
 
 out vec2 fs_texCoord;
 out vec4 fs_color;
 out float fs_worldY;
+out float fs_fog;
 
 void main()
 {
 	vec4 world = model * vec4(vs_position, 1);
 	gl_Position = viewProjection * world;
-	fs_texCoord = vs_texCoord;
+	vec2 uv = vs_texCoord;
+	if (texGen != 0)
+	{
+		vec3 n = viewRotation * (mat3(model) * vs_normal);
+		vec2 d = length(n) > 0.0 ? n.xy / length(n) : vec2(0.0);
+		uv *= texGen == 2 ? acos(clamp(-d, -1.0, 1.0)) / 3.14159265 : (d + 1.0) * 0.5;
+	}
+	fs_texCoord = (uvTransform * vec3(uv, 1)).xy;
 	fs_worldY = world.y;
+
+	fs_fog = 0.0;
+	if (fogEnabled != 0)
+	{
+		float n = fogPlanes.x, f = fogPlanes.y, d = max(gl_Position.w, n);
+		float z = (f + n) / (f - n) - 2.0 * f * n / ((f - n) * d);
+		fs_fog = clamp((z * fogFactors.x + fogFactors.y) / 256.0, 0.0, 1.0);
+	}
 
 	vec4 color = vs_color;
 	if (vs_ambient.a > 0.5)

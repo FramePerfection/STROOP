@@ -3,6 +3,7 @@
 in vec2 fs_texCoord;
 in vec4 fs_color;
 in float fs_worldY;
+in float fs_fog;
 
 uniform sampler2D tex;
 uniform bool useTexture;
@@ -10,6 +11,7 @@ uniform bool decal;
 uniform float alphaCutoff;
 uniform bool opaque;
 uniform float maxY;
+uniform vec3 fogColor;
 
 layout(location=0) out vec4 color;
 
@@ -27,6 +29,7 @@ void main()
 
 	if (c.a < alphaCutoff)
 		discard;
+	c.rgb = mix(c.rgb, fogColor, fs_fog);
 	if (opaque)
 		c.a = 1;
 	color = c;
