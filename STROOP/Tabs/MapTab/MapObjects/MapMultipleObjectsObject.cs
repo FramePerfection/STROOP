@@ -87,7 +87,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 data.Reverse();
                 foreach (var d in data)
                     if (!onlyHovered || d.alpha != 1)
+                    {
                         DrawIcon(graphics, graphics.viewMode != MapGraphics.ViewMode.TopDown, d.x, d.y, d.z, d.angle, d.tex.Value, new Vector4(1, 1, 1, d.alpha));
+                        DrawFacingLine3D(graphics, d.x, d.y, d.z, d.angle);
+                    }
             });
         }
 

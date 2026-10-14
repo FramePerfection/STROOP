@@ -82,6 +82,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         dataPoint.x, dataPoint.y, dataPoint.z, dataPoint.angle,
                         dataPoint.tex.Value,
                         new Vector4(1));
+                    DrawFacingLine3D(graphics, dataPoint.x, dataPoint.y, dataPoint.z, dataPoint.angle);
                     if (showTruncatedQsIndicators && dataPoint.earlyQs != null)
                         graphics.textRenderer.AddText(
                             $"{dataPoint.earlyQs.Value}/4",

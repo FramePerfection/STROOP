@@ -232,6 +232,21 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 graphics.objectRenderer.AddInstance(transform, textureIndex, color);
         }
 
+        protected Vector4 Get3DAccentColor(Color fallback)
+            => OpenTKUtilities.ColorToVec4(OutlineColor.ToArgb() == Color.Black.ToArgb() ? fallback : OutlineColor, OpacityByte);
+
+        protected void DrawFacingLine3D(MapGraphics graphics, float x, float y, float z, double angle)
+        {
+            if (graphics.viewMode != MapGraphics.ViewMode.ThreeDimensional || !Rotates || double.IsNaN(angle))
+                return;
+            float length = Size * Get3DIconScale(graphics, x, y, z) * 2;
+            (double endX, double endZ) = MoreMath.AddVectorToPoint(length, angle, x, z);
+            Vector3 from = new Vector3(x, y, z);
+            Vector3 to = new Vector3((float)endX, y, (float)endZ);
+            graphics.lineRenderer.Add(from, to, new Vector4(0, 0, 0, OpacityByte / 255f), 4);
+            graphics.lineRenderer.Add(from, to, Get3DAccentColor(Color.White), 2);
+        }
+
         public void Draw(MapGraphics graphics)
         {
             switch (graphics.viewMode)

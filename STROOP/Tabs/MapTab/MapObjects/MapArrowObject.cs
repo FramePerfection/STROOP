@@ -18,8 +18,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         public delegate double GetRecommendedSize(PositionAngle obj);
 
+        public delegate double GetVerticalSpeed(PositionAngle obj);
+
         public GetYaw getYaw;
         public GetRecommendedSize getRecommendedSize;
+
+        public GetVerticalSpeed getVerticalSpeed;
 
         private float _arrowHeadSideLength;
         double _yawOffset;
@@ -37,6 +41,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
             this.getRecommendedSize = getRecommendedSize;
             this.name = name;
             _arrowHeadSideLength = 100;
+
+            if (getYaw == ArrowSource.MarioMovingYaw || getYaw == ArrowSource.MarioSlidingYaw)
+                getVerticalSpeed = ArrowSource.MarioYSpeed;
+            else if (getYaw == ArrowSource.ObjectMovingYaw)
+                getVerticalSpeed = ArrowSource.ObjectYSpeed;
 
             Size = 300;
             OutlineWidth = 3;
@@ -56,6 +65,48 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         _arrowHeadSideLength,
                         posAngle.GetArrowColor(color),
                         OutlineWidth);
+            });
+        }
+
+        protected override void Draw3D(MapGraphics graphics)
+        {
+            graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
+            {
+                Vector4 color = GetColor(graphics);
+                foreach (var posAngle in positionAngleProvider())
+                {
+                    Vector3 from = new Vector3((float)posAngle.X, (float)posAngle.Y, (float)posAngle.Z);
+                    float horizontalLength = useRecommendedArrowLength ? (float)getRecommendedSize(posAngle) : Size;
+                    float verticalLength = 0;
+                    if (getVerticalSpeed != null)
+                    {
+                        float ySpeed = (float)getVerticalSpeed(posAngle);
+                        if (useRecommendedArrowLength)
+                            verticalLength = ySpeed;
+                        else
+                        {
+                            float hSpeed = Math.Abs((float)getRecommendedSize(posAngle));
+                            float speed = (float)Math.Sqrt(hSpeed * hSpeed + ySpeed * ySpeed);
+                            if (speed > 0)
+                            {
+                                horizontalLength = Size * hSpeed / speed;
+                                verticalLength = Size * ySpeed / speed;
+                            }
+                        }
+
+                        if (_yawOffset == 0x8000)
+                            verticalLength = -verticalLength;
+                    }
+
+                    (double toX, double toZ) = MoreMath.AddVectorToPoint(horizontalLength, getYaw(posAngle) + _yawOffset, from.X, from.Z);
+                    graphics.lineRenderer.AddArrow3D(
+                        from,
+                        new Vector3((float)toX, from.Y + verticalLength, (float)toZ),
+                        posAngle.GetArrowColor(color),
+                        OutlineWidth,
+                        _arrowHeadSideLength,
+                        graphics.currentView.position);
+                }
             });
         }
 
@@ -156,6 +207,10 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
 
             public static GetRecommendedSize Constant(double length) => _ => length;
+
+
+            public static GetVerticalSpeed ObjectYSpeed = posAngle => Config.Stream.GetSingle(PositionAngle.GetObjectAddress(posAngle) + ObjectConfig.YSpeedOffset);
+            public static GetVerticalSpeed MarioYSpeed = posAngle => Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YSpeedOffset);
         }
     }
 }

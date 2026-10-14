@@ -20,12 +20,15 @@ namespace STROOP.Tabs.MapTab.MapObjects
             {
                 foreach (var a in positionAngleProvider())
                     if (!onlyHovered || hoverData.currentPositionAngle == a)
+                    {
                         DrawIcon(graphics,
                         graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional,
                         (float)a.X, (float)a.Y, (float)a.Z,
                         Rotates ? (float)a.Angle : 0x8000 - graphics.MapViewAngleValue,
                         GetInternalImage()?.Value,
                         new Vector4(1, 1, 1, hoverData.currentPositionAngle == a ? ObjectUtilities.HoverAlpha() : 1));
+                        DrawFacingLine3D(graphics, (float)a.X, (float)a.Y, (float)a.Z, a.Angle);
+                    }
             });
         }
 

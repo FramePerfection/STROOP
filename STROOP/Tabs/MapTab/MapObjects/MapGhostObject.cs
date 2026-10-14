@@ -45,6 +45,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
                             angle,
                             Config.ObjectAssociations.MarioMapHatOnlyImage.Value,
                             new Vector4(a.color.X, a.color.Y, a.color.Z, alpha));
+
+                        DrawFacingLine3D(graphics, (float)a.X, (float)a.Y, (float)a.Z, a.Angle);
                     }
             });
         }
