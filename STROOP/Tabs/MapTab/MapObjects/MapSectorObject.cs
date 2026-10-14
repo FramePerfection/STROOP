@@ -53,6 +53,41 @@ namespace STROOP.Tabs.MapTab.MapObjects
 
         protected override void DrawOrthogonal(MapGraphics graphics) => DrawTopDown(graphics);
 
+        protected override void Draw3D(MapGraphics graphics)
+        {
+            graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
+            {
+                var fillColor = OpenTKUtilities.ColorToVec4(Color, OpacityByte);
+                var outlineColor = OpenTKUtilities.ColorToVec4(OutlineColor);
+                foreach ((float centerX, float centerY, float centerZ, float radius, float angle, float angleRadius) in GetDimensions())
+                {
+                    float angleSpan = Math.Min(2 * Math.Abs(angleRadius), 65536);
+                    int numSegments = Math.Max(2, (int)Math.Ceiling((NUM_POINTS_2D - 1) * angleSpan / 65536));
+                    var center = new Vector3(centerX, centerY, centerZ);
+
+                    Vector3 PointAt(int i)
+                    {
+                        double radians = MoreMath.AngleUnitsToRadians(angle - angleSpan / 2 + angleSpan * i / numSegments);
+                        return new Vector3(centerX + (float)Math.Sin(radians) * radius, centerY, centerZ + (float)Math.Cos(radians) * radius);
+                    }
+
+                    Vector3 previous = PointAt(0);
+                    if (angleSpan < 65536)
+                        graphics.lineRenderer.Add(center, previous, outlineColor, OutlineWidth);
+                    for (int i = 1; i <= numSegments; i++)
+                    {
+                        Vector3 current = PointAt(i);
+                        graphics.triangleRenderer.Add(center, previous, current, false, fillColor, outlineColor, Vector3.Zero, true);
+                        graphics.lineRenderer.Add(previous, current, outlineColor, OutlineWidth);
+                        previous = current;
+                    }
+
+                    if (angleSpan < 65536)
+                        graphics.lineRenderer.Add(center, previous, outlineColor, OutlineWidth);
+                }
+            });
+        }
+
         protected List<(float centerX, float centerY, float centerZ, float radius, float angle, float angleRadius)> GetDimensions()
         {
             var lst = new List<(float centerX, float centerY, float centerZ, float radius, float angle, float angleRadius)>();

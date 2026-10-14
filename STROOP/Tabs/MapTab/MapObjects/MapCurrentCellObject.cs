@@ -11,6 +11,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
     [ObjectDescription("Current Cell", "Current")]
     public class MapCurrentCellObject : MapQuadObject
     {
+        const float COLUMN_HALF_HEIGHT_3D = 500;
+
         public MapCurrentCellObject()
             : base()
         {
@@ -32,6 +34,14 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     ((float)xMin, (float)xMax, (float)zMin, (float)zMax,
                         Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset))
                 });
+        }
+
+        protected override List<(float xMin, float xMax, float zMin, float zMax, float yMin, float yMax)> GetBoxList3D(MapGraphics graphics)
+        {
+            var boxes = new List<(float, float, float, float, float, float)>();
+            foreach (var quad in GetQuadList())
+                boxes.Add((quad.xMin, quad.xMax, quad.zMin, quad.zMax, quad.y - COLUMN_HALF_HEIGHT_3D, quad.y + COLUMN_HALF_HEIGHT_3D));
+            return boxes;
         }
 
         public override string GetName()

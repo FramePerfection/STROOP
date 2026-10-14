@@ -40,12 +40,15 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     {
                         float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
 
-                        int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
-                        int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
-                        int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
-                        int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536;
+                        (int xMin, int xMax, int zMin, int zMax) = GetPuBounds(graphics);
 
                         var vertices = new List<Vector3>();
+                        if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+                        {
+                            MapCellGridlinesObject.AddColumnGrid3D(vertices, xMin, xMax, zMin, zMax, 65536, marioY, marioY - WALL_HALF_HEIGHT_3D, marioY + WALL_HALF_HEIGHT_3D);
+                            return vertices;
+                        }
+
                         for (int x = xMin; x <= xMax; x += 65536)
                         {
                             vertices.Add(new Vector3(x, marioY, zMin));
@@ -64,12 +67,19 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     {
                         float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
 
-                        int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536 - 32768;
-                        int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536 + 32768;
-                        int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536 - 32768;
-                        int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536 + 32768;
+                        (int xMin, int xMax, int zMin, int zMax) = GetPuBounds(graphics);
+                        xMin -= 32768;
+                        xMax += 32768;
+                        zMin -= 32768;
+                        zMax += 32768;
 
                         var vertices = new List<Vector3>();
+                        if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+                        {
+                            MapCellGridlinesObject.AddColumnGrid3D(vertices, xMin, xMax, zMin, zMax, 65536, marioY, marioY - WALL_HALF_HEIGHT_3D, marioY + WALL_HALF_HEIGHT_3D);
+                            return vertices;
+                        }
+
                         for (int x = xMin; x <= xMax; x += 65536)
                         {
                             vertices.Add(new Vector3(x, marioY, zMin));
@@ -88,10 +98,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
                     {
                         float marioY = Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
 
-                        int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
-                        int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
-                        int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
-                        int zMax = ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536;
+                        (int xMin, int xMax, int zMin, int zMax) = GetPuBounds(graphics);
 
                         List<Vector3> vertices = new List<Vector3>();
                         for (int x = xMin; x <= xMax; x += 65536)
@@ -102,6 +109,12 @@ namespace STROOP.Tabs.MapTab.MapObjects
                                 float x2 = x + 8192;
                                 float z1 = z - 8192;
                                 float z2 = z + 8192;
+
+                                if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+                                {
+                                    MapCellGridlinesObject.AddColumnGrid3D(vertices, x1, x2, z1, z2, x2 - x1, marioY, marioY - WALL_HALF_HEIGHT_3D, marioY + WALL_HALF_HEIGHT_3D);
+                                    continue;
+                                }
 
                                 vertices.Add(new Vector3(x1, marioY, z1));
                                 vertices.Add(new Vector3(x1, marioY, z2));
@@ -122,6 +135,26 @@ namespace STROOP.Tabs.MapTab.MapObjects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        const int PU_EXPANSE_3D = 3;
+        const float WALL_HALF_HEIGHT_3D = 2000;
+
+        static (int xMin, int xMax, int zMin, int zMax) GetPuBounds(MapGraphics graphics)
+        {
+            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+            {
+                Vector3 center = graphics.currentView.position;
+                int centerX = (int)Math.Round(center.X / 65536);
+                int centerZ = (int)Math.Round(center.Z / 65536);
+                return ((centerX - PU_EXPANSE_3D) * 65536, (centerX + PU_EXPANSE_3D) * 65536,
+                    (centerZ - PU_EXPANSE_3D) * 65536, (centerZ + PU_EXPANSE_3D) * 65536);
+            }
+
+            return (((((int)graphics.MapViewXMin) / 65536) - 1) * 65536,
+                ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536,
+                ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536,
+                ((((int)graphics.MapViewZMax) / 65536) + 1) * 65536);
         }
 
         public override string GetName()

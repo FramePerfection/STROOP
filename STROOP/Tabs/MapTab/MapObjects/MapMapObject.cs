@@ -1,8 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Mathematics;
+using STROOP.Structs;
 using STROOP.Structs.Configurations;
+using STROOP.Utilities;
 using STROOP.Variables.SM64MemoryLayout;
 
 namespace STROOP.Tabs.MapTab.MapObjects
@@ -52,7 +54,7 @@ namespace STROOP.Tabs.MapTab.MapObjects
             if (img == null)
                 return;
             var flat = new Matrix4(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-            float y = Config.Stream?.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset) ?? 0;
+            float y = GetPlaneY3D();
             graphics.drawLayers[(int)MapGraphics.DrawLayers.FillBuffers].Add(() =>
             {
                 renderer.texture = GraphicsUtil.TextureFromImage(img.Value);
@@ -65,6 +67,36 @@ namespace STROOP.Tabs.MapTab.MapObjects
                         new Vector4(1)
                     );
             });
+        }
+
+        MapLayout planeYLayout;
+        int planeYTriangleCount = -1;
+        float? planeY;
+
+        float GetPlaneY3D()
+        {
+            if (Config.Stream == null)
+                return 0;
+            MapLayout layout = GetMapLayout();
+            if (layout != null && layout.Y != float.MinValue && layout.Y != 0)
+                return layout.Y;
+
+            if (!MappingConfig.IsMapped(RomVersionConfig.SwitchOnly(TriangleConfig.LevelTriangleCountAddressUS, TriangleConfig.LevelTriangleCountAddressJP, TriangleConfig.LevelTriangleCountAddressSH))
+                || !MappingConfig.IsMapped(RomVersionConfig.SwitchOnly(TriangleConfig.TriangleListPointerAddressUS, TriangleConfig.TriangleListPointerAddressJP)))
+                return Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
+
+            int triangleCount = Config.Stream.GetInt32(TriangleConfig.LevelTriangleCountAddress);
+            if (!Equals(layout, planeYLayout) || triangleCount != planeYTriangleCount)
+            {
+                planeYLayout = layout;
+                planeYTriangleCount = triangleCount;
+                planeY = null;
+                foreach (var tri in TriangleUtilities.GetLevelTriangles())
+                    if (tri.Classification == TriangleClassification.Floor && (!planeY.HasValue || tri.GetMinY() < planeY.Value))
+                        planeY = tri.GetMinY();
+            }
+
+            return planeY ?? Config.Stream.GetSingle(MarioConfig.StructAddress + MarioConfig.YOffset);
         }
 
         protected List<(PointF loc, SizeF size)> GetDimensions(MapGraphics graphics)
