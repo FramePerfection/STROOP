@@ -205,16 +205,37 @@ namespace STROOP.Tabs.MapTab.DataUtil
         }
     }
 
+    public enum Microcode
+    {
+        F3D,
+        F3DEX,
+        F3DEX2,
+    }
+
     public class F3D
     {
         const int G_MOVEMEM = 0x03, G_VTX = 0x04, G_DL = 0x06;
+
+        const int EX_G_BRANCH_Z = 0xB0, EX_G_TRI2 = 0xB1, EX_G_RDPHALF_1 = 0xB4, EX_G_QUAD = 0xB5;
+
+        const int EX2_G_VTX = 0x01, EX2_G_BRANCH_Z = 0x04, EX2_G_TRI1 = 0x05, EX2_G_TRI2 = 0x06, EX2_G_QUAD = 0x07;
+        const int EX2_G_TEXTURE = 0xD7, EX2_G_GEOMETRYMODE = 0xD9, EX2_G_MOVEWORD = 0xDB, EX2_G_MOVEMEM = 0xDC;
+        const int EX2_G_DL = 0xDE, EX2_G_ENDDL = 0xDF, EX2_G_RDPHALF_1 = 0xE1, EX2_G_SETOTHERMODE_H = 0xE3;
+        const int EX2_G_MV_LIGHT = 0x0A;
+
+        const uint EX2_G_CULL_FRONT = 0x00000200, EX2_G_CULL_BACK = 0x00000400, EX2_G_SHADING_SMOOTH = 0x00200000;
+        const uint F3D_G_SHADING_SMOOTH = 0x00000200;
+        const uint SHARED_GEO_BITS = 0x00000001 | 0x00000004 | 0x00010000 | 0x00020000 | 0x00040000 | 0x00080000 | 0x00100000;
+
+        public Microcode ucode = Microcode.F3D;
+        uint rdpHalf1;
         const int G_CLEARGEOMETRYMODE = 0xB6, G_SETGEOMETRYMODE = 0xB7, G_ENDDL = 0xB8, G_SETOTHERMODE_H = 0xBA;
         const int G_TEXTURE = 0xBB, G_MOVEWORD = 0xBC, G_TRI1 = 0xBF;
         const int G_LOADTLUT = 0xF0, G_SETTILESIZE = 0xF2, G_LOADBLOCK = 0xF3, G_LOADTILE = 0xF4, G_SETTILE = 0xF5;
         const int G_SETFOGCOLOR = 0xF8, G_SETPRIMCOLOR = 0xFA, G_SETENVCOLOR = 0xFB, G_SETCOMBINE = 0xFC, G_SETTIMG = 0xFD;
         const uint G_TEXTURE_GEN = 0x00040000, G_TEXTURE_GEN_LINEAR = 0x00080000, G_FOG = 0x00010000;
         const uint G_LIGHTING = 0x00020000, G_CULL_FRONT = 0x00001000, G_CULL_BACK = 0x00002000;
-        const int G_MW_NUMLIGHT = 0x02, G_MW_FOG = 0x08;
+        const int G_MW_NUMLIGHT = 0x02, G_MW_FOG = 0x08, G_MW_LIGHTCOL = 0x0A;
 
         public const uint GEO_INIT = 0x00000004 | 0x00000200 | G_CULL_BACK | G_LIGHTING;
 
@@ -256,7 +277,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
         uint fogColor, fogFactors;
         readonly Dictionary<int, (byte r, byte g, byte b, sbyte dx, sbyte dy, sbyte dz)> lights = new Dictionary<int, (byte, byte, byte, sbyte, sbyte, sbyte)>();
         int numLights = 1;
-        readonly Vtx?[] vbuf = new Vtx?[16];
+        readonly Vtx?[] vbuf = new Vtx?[64];
         readonly byte[] raw = new byte[16];
 
         public F3D(Rdram ram, TextureSet textureSet, MeshBuilder output)
@@ -279,6 +300,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             internal int tlutType, numLights;
             internal byte[] prim, env;
             internal KeyValuePair<int, (byte, byte, byte, sbyte, sbyte, sbyte)>[] lights;
+            internal Microcode ucode;
             int hash;
 
             public int Hash
@@ -308,6 +330,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     h.Add(BitConverter.ToInt32(env));
                     foreach (var kv in lights)
                         h.Add(HashCode.Combine(kv.Key, kv.Value));
+                    h.Add((int)ucode);
                     return hash = h.ToHashCode() | 1;
                 }
             }
@@ -327,7 +350,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 geo = geo, timgAddr = timgAddr, combine0 = combine0, combine1 = combine1, fogColor = fogColor, fogFactors = fogFactors, texOn = texOn,
                 texScaleS = texScaleS, texScaleT = texScaleT, tiles = t, tmemSrc = tmem.ToArray(), tlut = tlut,
                 tlutType = tlutType, numLights = numLights, prim = (byte[])prim.Clone(), env = (byte[])env.Clone(),
-                lights = l.ToArray(),
+                lights = l.ToArray(), ucode = ucode,
             };
         }
 
@@ -355,6 +378,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
             lights.Clear();
             foreach (var kv in s.lights)
                 lights[kv.Key] = kv.Value;
+            ucode = s.ucode;
         }
 
         void Combiner(out int a0, out int b0, out int c0, out int d0)
@@ -494,13 +518,13 @@ namespace STROOP.Tabs.MapTab.DataUtil
                 t = (short)(raw[10] << 8 | raw[11]),
             };
             Shade(ref v, m);
-            if (index < 16)
+            if (index >= 0 && index < vbuf.Length)
                 vbuf[index] = v;
         }
 
         void Triangle(int i0, int i1, int i2, int layer)
         {
-            if (i0 >= 16 || i1 >= 16 || i2 >= 16 || !vbuf[i0].HasValue || !vbuf[i1].HasValue || !vbuf[i2].HasValue)
+            if (i0 >= vbuf.Length || i1 >= vbuf.Length || i2 >= vbuf.Length || !vbuf[i0].HasValue || !vbuf[i1].HasValue || !vbuf[i2].HasValue)
                 return;
             var cull = (geo & G_CULL_BACK) != 0 ? CullMode.Back : CullMode.None;
             if ((geo & G_CULL_FRONT) != 0)
@@ -595,9 +619,14 @@ namespace STROOP.Tabs.MapTab.DataUtil
         {
             if (index < 0x86 || index > 0x94 || index % 2 != 0)
                 return;
+            ReadLight((index - 0x86) / 2 + 1, address);
+        }
+
+        void ReadLight(int n, uint address)
+        {
             uint p = ram.Phys(address);
             if (ram.Ok(p, 16))
-                lights[(index - 0x86) / 2 + 1] = (ram.U8Phys(p), ram.U8Phys(p + 1), ram.U8Phys(p + 2), (sbyte)ram.U8Phys(p + 8), (sbyte)ram.U8Phys(p + 9), (sbyte)ram.U8Phys(p + 10));
+                lights[n] = (ram.U8Phys(p), ram.U8Phys(p + 1), ram.U8Phys(p + 2), (sbyte)ram.U8Phys(p + 8), (sbyte)ram.U8Phys(p + 9), (sbyte)ram.U8Phys(p + 10));
         }
 
         public void Run(uint dl, int layer, in Matrix4 m, int depth = 0)
@@ -609,29 +638,166 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     return;
                 uint w0 = ram.U32(pc), w1 = ram.U32(pc + 4);
                 pc += 8;
-                if (!Command(w0, w1, layer, m, depth))
+                if (!Command(w0, w1, ucode, layer, m, depth))
                     return;
             }
         }
 
-        public bool Command(uint w0, uint w1, int layer, in Matrix4 m, int depth = 0)
+        public bool Command(uint w0, uint w1, int layer, in Matrix4 m, int depth = 0) => CommandF3D(w0, w1, false, layer, m, depth);
+
+        public bool Command(uint w0, uint w1, Microcode microcode, int layer, in Matrix4 m, int depth = 0)
+        {
+            switch (microcode)
+            {
+                case Microcode.F3DEX2:
+                    return CommandF3DEX2(w0, w1, layer, m, depth);
+                case Microcode.F3DEX:
+                    return CommandF3D(w0, w1, true, layer, m, depth);
+                default:
+                    return CommandF3D(w0, w1, false, layer, m, depth);
+            }
+        }
+
+        bool Branch(uint dl, uint w0, int layer, in Matrix4 m, int depth)
+        {
+            if (depth < 16)
+                Run(dl, layer, m, depth + 1);
+            return ((w0 >> 16) & 0xFF) == 0;
+        }
+
+        void Triangle2x(uint w, int layer) => Triangle((int)((w >> 16) & 0xFF) / 2, (int)((w >> 8) & 0xFF) / 2, (int)(w & 0xFF) / 2, layer);
+
+        void OtherModeH(int shift, int length, uint w1)
+        {
+            if (shift <= 14 && 14 < shift + length)
+                tlutType = (int)(w1 >> 14) & 3;
+        }
+
+        static uint GeoEx2ToF3D(uint bits)
+        {
+            uint r = bits & SHARED_GEO_BITS;
+            if ((bits & EX2_G_CULL_FRONT) != 0) r |= G_CULL_FRONT;
+            if ((bits & EX2_G_CULL_BACK) != 0) r |= G_CULL_BACK;
+            if ((bits & EX2_G_SHADING_SMOOTH) != 0) r |= F3D_G_SHADING_SMOOTH;
+            return r;
+        }
+
+        bool CommandF3DEX2(uint w0, uint w1, int layer, in Matrix4 m, int depth)
+        {
+            int op = (int)(w0 >> 24);
+            if (op >= 0xE4)
+            {
+                Rdp(op, w0, w1);
+                return true;
+            }
+
+            switch (op)
+            {
+                case EX2_G_ENDDL:
+                    return false;
+                case EX2_G_DL:
+                    return Branch(w1, w0, layer, m, depth);
+                case EX2_G_BRANCH_Z:
+                    if (depth < 16)
+                        Run(rdpHalf1, layer, m, depth + 1);
+                    return false;
+                case EX2_G_RDPHALF_1:
+                    rdpHalf1 = w1;
+                    break;
+                case EX2_G_VTX:
+                    int n = (int)(w0 >> 12) & 0xFF;
+                    LoadVertices(w1, n, (int)((w0 >> 1) & 0x7F) - n, m);
+                    break;
+                case EX2_G_TRI1:
+                    Triangle2x(w0, layer);
+                    break;
+                case EX2_G_TRI2:
+                case EX2_G_QUAD:
+                    Triangle2x(w0, layer);
+                    Triangle2x(w1, layer);
+                    break;
+                case EX2_G_GEOMETRYMODE:
+                    geo = (geo & ~GeoEx2ToF3D(~w0 & 0xFFFFFF)) | GeoEx2ToF3D(w1);
+                    break;
+                case EX2_G_TEXTURE:
+                    texOn = ((w0 >> 1) & 0x7F) != 0;
+                    SetTextureScale(w1);
+                    break;
+                case EX2_G_MOVEMEM:
+                    if ((w0 & 0xFF) == EX2_G_MV_LIGHT)
+                    {
+                        int offset = (int)((w0 >> 8) & 0xFF) * 8;
+                        if (offset % 0x18 == 0 && offset >= 0x30)
+                            ReadLight(offset / 0x18 - 1, w1);
+                    }
+
+                    break;
+                case EX2_G_MOVEWORD:
+                    int index = (int)(w0 >> 16) & 0xFF;
+                    if (index == G_MW_NUMLIGHT)
+                        numLights = (int)Math.Clamp(w1 / 24, 1, 7);
+                    else if (index == G_MW_FOG)
+                        fogFactors = w1;
+                    else if (index == G_MW_LIGHTCOL)
+                    {
+                        int offset = (int)(w0 & 0xFFFF);
+                        if (offset % 0x18 == 0)
+                        {
+                            int light = offset / 0x18 + 1;
+                            var l = lights.TryGetValue(light, out var x) ? x : ((byte)255, (byte)255, (byte)255, (sbyte)0x28, (sbyte)0x28, (sbyte)0x28);
+                            lights[light] = ((byte)(w1 >> 24), (byte)(w1 >> 16), (byte)(w1 >> 8), l.Item4, l.Item5, l.Item6);
+                        }
+                    }
+
+                    break;
+                case EX2_G_SETOTHERMODE_H:
+                    int len = (int)(w0 & 0xFF) + 1;
+                    OtherModeH(32 - (int)((w0 >> 8) & 0xFF) - len, len, w1);
+                    break;
+            }
+
+            return true;
+        }
+
+        void SetTextureScale(uint w1)
+        {
+            uint s = (w1 >> 16) & 0xFFFF, t = w1 & 0xFFFF;
+            texScaleS = s == 0xFFFF ? (s + 1) / 65536.0 : s / 65536.0;
+            texScaleT = t == 0xFFFF ? (t + 1) / 65536.0 : t / 65536.0;
+        }
+
+        bool CommandF3D(uint w0, uint w1, bool ex, int layer, in Matrix4 m, int depth)
         {
             switch ((int)(w0 >> 24))
             {
                 case G_ENDDL:
                     return false;
                 case G_DL:
-                    if (depth < 16)
-                        Run(w1, layer, m, depth + 1);
-                    if (((w0 >> 16) & 0xFF) != 0)
-                        return false;
-                    break;
+                    return Branch(w1, w0, layer, m, depth);
                 case G_VTX:
-                    LoadVertices(w1, (int)((w0 >> 20) & 15) + 1, (int)(w0 >> 16) & 15, m);
+                    if (ex)
+                        LoadVertices(w1, (int)(w0 >> 10) & 0x3F, (int)((w0 >> 16) & 0xFF) / 2, m);
+                    else
+                        LoadVertices(w1, (int)((w0 >> 20) & 15) + 1, (int)(w0 >> 16) & 15, m);
                     break;
                 case G_TRI1:
-                    Triangle((int)((w1 >> 16) & 0xFF) / 10, (int)((w1 >> 8) & 0xFF) / 10, (int)(w1 & 0xFF) / 10, layer);
+                    if (ex)
+                        Triangle2x(w1, layer);
+                    else
+                        Triangle((int)((w1 >> 16) & 0xFF) / 10, (int)((w1 >> 8) & 0xFF) / 10, (int)(w1 & 0xFF) / 10, layer);
                     break;
+                case EX_G_TRI2 when ex:
+                case EX_G_QUAD when ex:
+                    Triangle2x(w0, layer);
+                    Triangle2x(w1, layer);
+                    break;
+                case EX_G_RDPHALF_1 when ex:
+                    rdpHalf1 = w1;
+                    break;
+                case EX_G_BRANCH_Z when ex:
+                    if (depth < 16)
+                        Run(rdpHalf1, layer, m, depth + 1);
+                    return false;
                 case G_SETGEOMETRYMODE:
                     geo |= w1;
                     break;
@@ -640,9 +806,7 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     break;
                 case G_TEXTURE:
                     texOn = (w0 & 0xFF) != 0;
-                    uint s = (w1 >> 16) & 0xFFFF, t = w1 & 0xFFFF;
-                    texScaleS = s == 0xFFFF ? (s + 1) / 65536.0 : s / 65536.0;
-                    texScaleT = t == 0xFFFF ? (t + 1) / 65536.0 : t / 65536.0;
+                    SetTextureScale(w1);
                     break;
                 case G_MOVEMEM:
                     MoveMemLight((int)(w0 >> 16) & 0xFF, w1);
@@ -653,13 +817,23 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     else if ((w0 & 0xFF) == G_MW_FOG)
                         fogFactors = w1;
                     break;
+                case G_SETOTHERMODE_H:
+                    OtherModeH((int)(w0 >> 8) & 0xFF, (int)w0 & 0xFF, w1);
+                    break;
+                default:
+                    Rdp((int)(w0 >> 24), w0, w1);
+                    break;
+            }
+
+            return true;
+        }
+
+        void Rdp(int op, uint w0, uint w1)
+        {
+            switch (op)
+            {
                 case G_SETFOGCOLOR:
                     fogColor = w1;
-                    break;
-                case G_SETOTHERMODE_H:
-                    int shift = (int)(w0 >> 8) & 0xFF, length = (int)w0 & 0xFF;
-                    if (shift <= 14 && 14 < shift + length)
-                        tlutType = (int)(w1 >> 14) & 3;
                     break;
                 case G_SETTIMG:
                     timgAddr = w1;
@@ -700,8 +874,49 @@ namespace STROOP.Tabs.MapTab.DataUtil
                     combine1 = w1;
                     break;
             }
+        }
 
-            return true;
+        public static Microcode Detect(Rdram ram, IEnumerable<uint> displayLists, int maxCommands = 512)
+        {
+            int f3d = 0, f3dex = 0, f3dex2 = 0;
+            foreach (uint dl in displayLists)
+            {
+                if (dl == 0)
+                    continue;
+                bool ex1 = false;
+                uint pc = dl;
+                for (int i = 0; i < maxCommands; i++, pc += 8)
+                {
+                    uint p = ram.Phys(pc);
+                    if (!ram.Ok(p, 8))
+                        break;
+                    uint w0 = ram.U32Phys(p);
+                    int op = (int)(w0 >> 24);
+                    if (w0 == 0xDF000000)
+                    {
+                        f3dex2++;
+                        break;
+                    }
+
+                    if (w0 == 0xB8000000)
+                    {
+                        if (ex1) f3dex++;
+                        else f3d++;
+                        break;
+                    }
+
+                    if (op == G_VTX && (w0 & 0xF) == 0xF && ((w0 >> 10) & 0x3F) * 16 - 1 == (w0 & 0x3FF))
+                        ex1 = true;
+                    else if (op == EX_G_TRI2)
+                        ex1 = true;
+                }
+            }
+
+            if (f3dex2 > f3d && f3dex2 > f3dex)
+                return Microcode.F3DEX2;
+            if (f3dex > f3d)
+                return Microcode.F3DEX;
+            return Microcode.F3D;
         }
     }
 }
