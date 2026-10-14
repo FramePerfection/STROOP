@@ -1,4 +1,4 @@
-using STROOP.Core;
+﻿using STROOP.Core;
 using STROOP.Core.Utilities;
 using System.Globalization;
 
@@ -8,11 +8,23 @@ public static class MappingConfig
 {
     private static readonly Dictionary<uint, string> mappingUS = GetMappingDictionary(@"Mappings/MappingUS.map");
     private static readonly Dictionary<uint, string> mappingJP = GetMappingDictionary(@"Mappings/MappingJP.map");
-    private static readonly Dictionary<string, uint> mappingUSReversed = GeneralUtilities.ReverseDictionary(mappingUS);
-    private static readonly Dictionary<string, uint> mappingJPReversed = GeneralUtilities.ReverseDictionary(mappingJP);
+    private static readonly Dictionary<string, uint> mappingUSReversed = Reverse(mappingUS);
+    private static readonly Dictionary<string, uint> mappingJPReversed = Reverse(mappingJP);
 
     private static Dictionary<uint, string> mappingCurrent = null;
     private static Dictionary<string, uint> mappingCurrentReversed = null;
+
+    public static bool IsAutoMapping { get; private set; }
+
+    public static bool HasUserMapping => mappingCurrent != null && !IsAutoMapping;
+
+    private static Dictionary<string, uint> Reverse(Dictionary<uint, string> mapping)
+    {
+        var reversed = new Dictionary<string, uint>();
+        foreach (var (address, name) in mapping)
+            reversed.TryAdd(name, address);
+        return reversed;
+    }
 
     private static List<string> ReadFileLines(string filePath)
     {
@@ -36,14 +48,14 @@ public static class MappingConfig
         foreach (string line in lines)
         {
             // splits by whitespace, see the #Remarks section of https://learn.microsoft.com/en-us/dotnet/api/system.string.split?view=net-8.0
-            string[] parts = line.Split(null);
+            string[] parts = line.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length != 2) continue;
             string part1 = parts[0];
             string part2 = parts[1];
             if (!part1.StartsWith("0x00000000")) continue;
-            string addressString = "0x" + part1.Substring(10);
-            uint address = uint.Parse(addressString, NumberStyles.HexNumber);
+            if (!uint.TryParse(part1.Substring(10), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint address))
+                continue;
             dictionary[address] = part2;
         }
 
@@ -53,19 +65,48 @@ public static class MappingConfig
     public static void OpenMapping(string fileName)
     {
         mappingCurrent = GetMappingDictionary(fileName);
-        mappingCurrentReversed = GeneralUtilities.ReverseDictionary(mappingCurrent);
+        mappingCurrentReversed = Reverse(mappingCurrent);
+        IsAutoMapping = false;
     }
 
     public static void ClearMapping()
     {
         mappingCurrent = null;
         mappingCurrentReversed = null;
+        IsAutoMapping = false;
+    }
+
+    public static void SetAutoMapping(IReadOnlyDictionary<uint, uint> vanillaToCurrent)
+    {
+        if (HasUserMapping)
+            return;
+        var current = new Dictionary<uint, string>();
+        foreach (var (vanilla, address) in vanillaToCurrent)
+            if (mappingUS.TryGetValue(vanilla, out string name))
+                current[address] = name;
+        mappingCurrent = current;
+        mappingCurrentReversed = Reverse(current);
+        IsAutoMapping = true;
+    }
+
+    public static void ClearAutoMapping()
+    {
+        if (IsAutoMapping)
+            ClearMapping();
+    }
+
+    public static bool IsMapped(uint vanillaAddress)
+    {
+        if (mappingCurrent == null)
+            return true;
+        var original = RomVersionConfig.Version == RomVersion.JP ? mappingJP : mappingUS;
+        return original.TryGetValue(vanillaAddress, out string name) && mappingCurrentReversed.ContainsKey(name);
     }
 
     public static uint? GetSymbolAddress(string name)
     {
-        if (mappingCurrentReversed != null && mappingCurrentReversed.TryGetValue(name, out uint mapped))
-            return mapped;
+        if (mappingCurrentReversed != null)
+            return mappingCurrentReversed.TryGetValue(name, out uint mapped) ? mapped : null;
         var versionMapping = RomVersionConfig.Version switch
         {
             RomVersion.US => mappingUSReversed,

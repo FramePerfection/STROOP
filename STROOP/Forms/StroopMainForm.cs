@@ -438,6 +438,8 @@ namespace STROOP
             else if (Enum.TryParse<RomVersion>(comboBoxRomVersion.SelectedItem as string ?? "", out var explicitVersion))
                 RomVersionConfig.Version = explicitVersion;
 
+            DecompHackDetector.Update();
+
             // Readonly / Read+Write
             Config.Stream.Readonly = (ReadWriteMode)comboBoxReadWriteMode.SelectedItem == ReadWriteMode.ReadOnly;
         }

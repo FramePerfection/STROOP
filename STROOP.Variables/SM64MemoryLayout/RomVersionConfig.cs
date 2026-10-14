@@ -12,6 +12,12 @@ public static class RomVersionConfig
     public static uint RomVersionTellValueSH = 0x8F250004;
     public static uint RomVersionTellValueEU = 0x0C0BD4AC;
 
+    public static bool IsKnownBuild()
+    {
+        uint tell = ProcessStream.Instance.GetUInt32(RomVersionTellAddress);
+        return tell == RomVersionTellValueUS || tell == RomVersionTellValueJP || tell == RomVersionTellValueSH || tell == RomVersionTellValueEU;
+    }
+
     public static RomVersion? GetRomVersionUsingTell()
     {
         uint tell = ProcessStream.Instance.GetUInt32(RomVersionTellAddress);
