@@ -1509,9 +1509,7 @@
             // 
             // watchVariablePanelMainSave
             // 
-            this._variablePanelMainSave.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this._variablePanelMainSave.Dock = System.Windows.Forms.DockStyle.Fill;
             this._variablePanelMainSave.DataPath = "Config/MainSaveData.xml";
             this._variablePanelMainSave.Location = new System.Drawing.Point(2, 2);
             this._variablePanelMainSave.Margin = new System.Windows.Forms.Padding(0);
