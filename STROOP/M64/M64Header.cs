@@ -156,6 +156,41 @@ namespace STROOP.M64
             }
         }
 
+        // 030 8-byte double: CPU counter factor used when recording (extended version 4+)
+        private double _cpuCf;
+
+        [CategoryAttribute("​​​​​Main"), DisplayName("CPU Counter Factor")]
+        public double CpuCf
+        {
+            get => _cpuCf;
+            set
+            {
+                _cpuCf = value;
+                NotifyChange();
+            }
+        }
+
+        // 038 8-byte double: RCP lag factor used when recording, 0 if RCP lag emulation was off (extended version 4+)
+        private double _rcpLagFactor;
+
+        [CategoryAttribute("​​​​​Main"), DisplayName("RCP Lag Factor")]
+        public double RcpLagFactor
+        {
+            get => _rcpLagFactor;
+            set
+            {
+                _rcpLagFactor = value;
+                NotifyChange();
+            }
+        }
+
+        // The loaded header, so that bytes this class doesn't model (reserved space, fields added by newer
+        // extended versions) are written back unchanged instead of zeroed
+        private byte[] _loadedBytes;
+
+        private byte[] UnmodelledBytes(int offset, int length) =>
+            _loadedBytes?.Skip(offset).Take(length).ToArray() ?? new byte[length];
+
         // 0C4 32-byte ASCII string: internal name of ROM used when recording, directly from ROM
         private string _romName;
 
@@ -516,7 +551,8 @@ namespace STROOP.M64
         {
             if (bytes.Length != M64Config.HeaderSize) throw new ArgumentOutOfRangeException();
 
-            Signature = BitConverter.ToUInt32(bytes, 0x000);
+            _loadedBytes = bytes.ToArray();
+            Signature =BitConverter.ToUInt32(bytes, 0x000);
             VersionNumber = BitConverter.ToUInt32(bytes, 0x004);
             Uid = BitConverter.ToInt32(bytes, 0x008);
             NumVis = BitConverter.ToInt32(bytes, 0x00C);
@@ -546,6 +582,8 @@ namespace STROOP.M64
             AuthorshipTag = BitConverter.ToUInt32(bytes, 0x024);
             BruteforceExtraData = BitConverter.ToUInt32(bytes, 0x028);
             NumRerecordsHi = BitConverter.ToUInt32(bytes, 0x02C);
+            CpuCf = BitConverter.ToDouble(bytes, 0x030);
+            RcpLagFactor = BitConverter.ToDouble(bytes, 0x038);
             RomName = Encoding.ASCII.GetString(bytes, 0x0C4, 32).TrimEnd('\0');
             Crc32 = BitConverter.ToUInt32(bytes, 0x0E4);
             CountryCode = BitConverter.ToUInt16(bytes, 0x0E8);
@@ -574,16 +612,18 @@ namespace STROOP.M64
             bytes.AddRange(TypeUtilities.GetBytes(ExtendedFlags));
             bytes.AddRange(TypeUtilities.GetBytes(NumInputs));
             bytes.AddRange(TypeUtilities.GetBytes((ushort)MovieStartType));
-            bytes.AddRange(new byte[2]);
+            bytes.AddRange(UnmodelledBytes(0x01E, 2));
             bytes.AddRange(TypeUtilities.GetBytes(GetControllerFlagsValue()));
             bytes.AddRange(TypeUtilities.GetBytes(AuthorshipTag));
             bytes.AddRange(TypeUtilities.GetBytes(BruteforceExtraData));
             bytes.AddRange(TypeUtilities.GetBytes(NumRerecordsHi));
-            bytes.AddRange(new byte[148]);
+            bytes.AddRange(TypeUtilities.GetBytes(CpuCf));
+            bytes.AddRange(TypeUtilities.GetBytes(RcpLagFactor));
+            bytes.AddRange(UnmodelledBytes(0x040, 132));
             bytes.AddRange(TypeUtilities.GetBytes(RomName, 32, Encoding.ASCII));
             bytes.AddRange(TypeUtilities.GetBytes(Crc32));
             bytes.AddRange(TypeUtilities.GetBytes(CountryCode));
-            bytes.AddRange(new byte[56]);
+            bytes.AddRange(UnmodelledBytes(0x0EA, 56));
             bytes.AddRange(TypeUtilities.GetBytes(VideoPlugin, 64, Encoding.ASCII));
             bytes.AddRange(TypeUtilities.GetBytes(SoundPlugin, 64, Encoding.ASCII));
             bytes.AddRange(TypeUtilities.GetBytes(InputPlugin, 64, Encoding.ASCII));
@@ -656,6 +696,9 @@ namespace STROOP.M64
             AuthorshipTag = 0;
             BruteforceExtraData = 0;
             NumRerecordsHi = 0;
+            CpuCf = 0;
+            RcpLagFactor = 0;
+            _loadedBytes = null;
             VideoPlugin = null;
             SoundPlugin = null;
             InputPlugin = null;
