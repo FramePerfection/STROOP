@@ -67,7 +67,7 @@ GhostBaseHi_LUI_3:
 lui at, GhostBaseHi
 ori RegPointerToCurrentGhost, at, PointerToFirstGhost
 lb at, NumRequestedGhosts (at)
-beq r0, at, @CLEAN_UP_EARLY
+beq r0, at, @DELETE_LEFTOVER_GHOSTS
 nop
 
 @ITERATE_GHOSTS:
@@ -170,7 +170,7 @@ sltu t0, RegProcessedGhostCount, at
 bnez t0, @ITERATE_GHOSTS
 sb RegProcessedGhostCount, 0x60 (RegCurrentGhost)
 
-; delete leftover ghosts
+@DELETE_LEFTOVER_GHOSTS:
 lw RegCurrentGhost, 0x0 (RegPointerToCurrentGhost)
 beq RegCurrentGhost, r0, @RETURN
 or a0, r0, RegCurrentGhost
