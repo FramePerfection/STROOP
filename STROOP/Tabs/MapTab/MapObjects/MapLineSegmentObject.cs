@@ -51,9 +51,11 @@ namespace STROOP.Tabs.MapTab.MapObjects
             (double startX, double startZ) = MoreMath.ExtrapolateLine2D(x2, z2, x1, z1, dist + _backwardsSize);
             (double endX, double endZ) = MoreMath.ExtrapolateLine2D(x1, z1, x2, z2, (_useFixedSize ? 0 : dist) + Size);
 
+            double startT = dist == 0 ? 0 : -_backwardsSize / dist;
+            double endT = dist == 0 ? 0 : ((_useFixedSize ? 0 : dist) + Size) / dist;
             var vertices = new List<Vector3>();
-            vertices.Add(new Vector3((float)startX, 0, (float)startZ));
-            vertices.Add(new Vector3((float)endX, 0, (float)endZ));
+            vertices.Add(new Vector3((float)startX, (float)(y1 + (y2 - y1) * startT), (float)startZ));
+            vertices.Add(new Vector3((float)endX, (float)(y1 + (y2 - y1) * endT), (float)endZ));
             return vertices;
         }
 

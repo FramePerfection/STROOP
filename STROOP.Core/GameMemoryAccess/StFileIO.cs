@@ -28,11 +28,7 @@ public class StFileIO : BaseProcessIO
 
     private void LoadMemory()
     {
-        using FileStream? fileStream = new FileStream(_path, FileMode.Open);
-        using GZipStream? gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
-        using MemoryStream unzip = new MemoryStream();
-        gzipStream.CopyTo(unzip);
-        _data = unzip.ToArray();
+        _data = SavestateDecompression.Decompress(File.ReadAllBytes(_path));
     }
 
     public void SaveMemory(string path)

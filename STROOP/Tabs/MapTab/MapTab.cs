@@ -157,7 +157,7 @@ namespace STROOP.Tabs.MapTab
                 graphics.Load(() => new Renderers.RendererCollection());
                 InitializeControls();
 
-                comboBoxViewMode.SelectedIndex = 0;
+                comboBoxViewMode.SelectedIndex = (int)MapGraphics.ViewMode.ThreeDimensional;
                 if (!System.IO.File.Exists(DEFAULT_TRACKER_FILE))
                     flowLayoutPanelMapTrackers.Controls.Clear();
                 else
@@ -175,6 +175,18 @@ namespace STROOP.Tabs.MapTab
         bool displayingExtendedBoundaries = false;
         bool needsGeometryRefresh, _needsGeometryRefreshInternal;
         public bool NeedsGeometryRefresh() => needsGeometryRefresh;
+
+        MapLevelModelObject levelModelObject;
+
+        public bool IsMapVisible { get; private set; } = true;
+
+        public bool IsLevelModelShown => levelModelObject != null
+                                         && levelModelObject.showModel
+                                         && levelModelObject.Model is { IsEmpty: false }
+                                         && !(comboBoxMapOptionsLevel.SelectedItem is MapLayout);
+
+        public bool AreObjectModelsShown(MapGraphics graphics) =>
+            graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional && IsLevelModelShown && levelModelObject.showObjects;
         public void RequireGeometryUpdate() => _needsGeometryRefreshInternal = true;
 
 
@@ -187,6 +199,17 @@ namespace STROOP.Tabs.MapTab
 
         public List<(float x, float z)> GetPuCenters(MapGraphics graphics)
         {
+            if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
+            {
+                var camera = graphics.currentView.position;
+                int puX = (int)Math.Round(camera.X / 65536), puZ = (int)Math.Round(camera.Z / 65536);
+                var around = new List<(float x, float z)>();
+                for (int x = puX - 1; x <= puX + 1; x++)
+                    for (int z = puZ - 1; z <= puZ + 1; z++)
+                        around.Add((x * 65536f, z * 65536f));
+                return around;
+            }
+
             int xMin = ((((int)graphics.MapViewXMin) / 65536) - 1) * 65536;
             int xMax = ((((int)graphics.MapViewXMax) / 65536) + 1) * 65536;
             int zMin = ((((int)graphics.MapViewZMin) / 65536) - 1) * 65536;
@@ -360,7 +383,7 @@ namespace STROOP.Tabs.MapTab
             checkBoxMapOptionsTrackMario.Checked = true;
 
             // FlowLayoutPanel
-            flowLayoutPanelMapTrackers.Initialize(new MapCurrentMapObject(), new MapCurrentBackgroundObject());
+            flowLayoutPanelMapTrackers.Initialize(levelModelObject = new MapLevelModelObject(), new MapCurrentBackgroundObject());
 
             // ComboBox for Level
             List<MapLayout> mapLayouts = MapAssociations.GetAllMaps();
@@ -474,6 +497,7 @@ namespace STROOP.Tabs.MapTab
             textBoxMapControllersAngleCustom.AddEnterAction(() => radioButtonMapControllersAngleCustom.Checked = true);
 
             checkBoxMapOptionsEnablePuView.Click += (sender, e) => graphics.MapViewEnablePuView = checkBoxMapOptionsEnablePuView.Checked;
+            InitGameCameraCheckBox();
             checkBoxMapOptionsScaleIconSizes.Click += (sender, e) => graphics.MapViewScaleIconSizes = checkBoxMapOptionsScaleIconSizes.Checked;
             checkBoxMapControllersCenterChangeByPixels.Click += (sender, e) => graphics.MapViewCenterChangeByPixels = checkBoxMapControllersCenterChangeByPixels.Checked;
 
@@ -552,11 +576,45 @@ namespace STROOP.Tabs.MapTab
                     itemRefreshLevelGeometry.Click += (__, ___) => RequireGeometryUpdate();
                     ctx.Items.Add(itemRefreshLevelGeometry);
 
+                    var itemLevelModel = new ToolStripMenuItem("Level Model");
+                    var itemShowLevelModel = new ToolStripMenuItem("Show Textured Level Model") { Checked = levelModelObject.showModel };
+                    itemShowLevelModel.Click += (__, ___) => itemShowLevelModel.Checked = levelModelObject.showModel = !levelModelObject.showModel;
+                    var itemShowObjects = new ToolStripMenuItem("Show Mario and Objects") { Checked = levelModelObject.showObjects };
+                    itemShowObjects.Click += (__, ___) => itemShowObjects.Checked = levelModelObject.showObjects = !levelModelObject.showObjects;
+                    var itemShowWater = new ToolStripMenuItem("Show Water Boxes (collision)") { Checked = levelModelObject.showWaterBoxes };
+                    itemShowWater.Click += (__, ___) => itemShowWater.Checked = levelModelObject.showWaterBoxes = !levelModelObject.showWaterBoxes;
+                    var itemShowSky = new ToolStripMenuItem("Show Sky (3D)") { Checked = levelModelObject.showSky };
+                    itemShowSky.Click += (__, ___) => itemShowSky.Checked = levelModelObject.showSky = !levelModelObject.showSky;
+                    var itemShowFog = new ToolStripMenuItem("Show Fog (3D)") { Checked = levelModelObject.showFog };
+                    itemShowFog.Click += (__, ___) => itemShowFog.Checked = levelModelObject.showFog = !levelModelObject.showFog;
+                    var itemKeepMarioVisible = new ToolStripMenuItem("Keep Mario Visible From Afar (3D)") { Checked = levelModelObject.keepMarioVisible };
+                    itemKeepMarioVisible.Click += (__, ___) => itemKeepMarioVisible.Checked = levelModelObject.keepMarioVisible = !levelModelObject.keepMarioVisible;
+                    var itemCullFaces = new ToolStripMenuItem("Cull Back Faces (like the game)") { Checked = levelModelObject.cullFaces };
+                    itemCullFaces.Click += (__, ___) => itemCullFaces.Checked = levelModelObject.cullFaces = !levelModelObject.cullFaces;
+                    var itemHideAboveMario = new ToolStripMenuItem("Hide Geometry Above Mario") { Checked = levelModelObject.hideAboveMario };
+                    itemHideAboveMario.Click += (__, ___) => itemHideAboveMario.Checked = levelModelObject.hideAboveMario = !levelModelObject.hideAboveMario;
+                    var itemHideAboveMarioOffset = new ToolStripMenuItem("Set Height Above Mario...");
+                    itemHideAboveMarioOffset.Click += (__, ___) =>
+                        levelModelObject.hideAboveMarioOffset = (float)DialogUtilities.GetDoubleFromDialog(
+                            levelModelObject.hideAboveMarioOffset,
+                            levelModelObject.hideAboveMarioOffset.ToString(),
+                            "Hide the level model above Mario's height plus:");
+                    itemLevelModel.DropDownItems.Add(itemShowLevelModel);
+                    itemLevelModel.DropDownItems.Add(itemShowObjects);
+                    itemLevelModel.DropDownItems.Add(itemShowWater);
+                    itemLevelModel.DropDownItems.Add(itemShowSky);
+                    itemLevelModel.DropDownItems.Add(itemShowFog);
+                    itemLevelModel.DropDownItems.Add(itemKeepMarioVisible);
+                    itemLevelModel.DropDownItems.Add(itemCullFaces);
+                    itemLevelModel.DropDownItems.Add(itemHideAboveMario);
+                    itemLevelModel.DropDownItems.Add(itemHideAboveMarioOffset);
+                    ctx.Items.Add(itemLevelModel);
+
                     if (graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional)
                     {
                         ctx.Items.Add(new ToolStripSeparator());
 
-                        var itemDisplayLevelGeometry = new ToolStripMenuItem("Display Level Geometry");
+                        var itemDisplayLevelGeometry = new ToolStripMenuItem("Display Collision Geometry");
                         itemDisplayLevelGeometry.Checked = graphics.view3D.display3DLevelGeometry;
                         itemDisplayLevelGeometry.Click += (__, ___) => itemDisplayLevelGeometry.Checked = graphics.view3D.display3DLevelGeometry = !graphics.view3D.display3DLevelGeometry;
                         ctx.Items.Add(itemDisplayLevelGeometry);
@@ -588,7 +646,7 @@ namespace STROOP.Tabs.MapTab
                         itemCameraModeFree.Click += (__, ___) =>
                         {
                             graphics.view3D.camera3DMode = View3D.Camera3DMode.Free;
-                            itemCameraModeInGame.Checked = itemCameraModePivot.Checked = !(itemCameraModeInGame.Checked = true);
+                            itemCameraModeInGame.Checked = itemCameraModePivot.Checked = !(itemCameraModeFree.Checked = true);
                         };
                         ctx.Items.Add(itemCameraModeInGame);
                         ctx.Items.Add(itemCameraModePivot);
@@ -635,8 +693,40 @@ namespace STROOP.Tabs.MapTab
             };
         }
 
+        System.Windows.Forms.CheckBox checkBoxMapOptionsGameCamera;
+
+        void InitGameCameraCheckBox()
+        {
+            checkBoxMapOptionsGameCamera = new System.Windows.Forms.CheckBox
+            {
+                Text = "Game Cam (3D)",
+                AutoSize = true,
+                Location = new System.Drawing.Point(checkBoxMapOptionsEnablePuView.Right + 4, checkBoxMapOptionsEnablePuView.Top),
+                UseVisualStyleBackColor = true,
+            };
+            checkBoxMapOptionsGameCamera.Click += (sender, e) =>
+            {
+                if (checkBoxMapOptionsGameCamera.Checked)
+                {
+                    comboBoxViewMode.SelectedIndex = (int)MapGraphics.ViewMode.ThreeDimensional;
+                    graphics.viewMode = MapGraphics.ViewMode.ThreeDimensional;
+                    graphics.view3D.camera3DMode = View3D.Camera3DMode.InGame;
+                }
+                else
+                    graphics.view3D.camera3DMode = View3D.Camera3DMode.FocusOnPositionAngle;
+            };
+            tabPageMapOptions.Controls.Add(checkBoxMapOptionsGameCamera);
+        }
+
         public override void Update(bool active)
         {
+            if (checkBoxMapOptionsGameCamera != null && graphics?.view3D != null)
+            {
+                bool onGameCamera = graphics.viewMode == MapGraphics.ViewMode.ThreeDimensional && graphics.view3D.camera3DMode == View3D.Camera3DMode.InGame;
+                if (checkBoxMapOptionsGameCamera.Checked != onGameCamera)
+                    checkBoxMapOptionsGameCamera.Checked = onGameCamera;
+            }
+
             if (!_isLoaded2D) return;
 
             semaphoreTrackers.Clear();
@@ -654,7 +744,11 @@ namespace STROOP.Tabs.MapTab
                     }
             }
 
-            graphics.UpdateCursor();
+            active |= popouts.Count > 0;
+            IsMapVisible = active;
+
+            if (active)
+                graphics.UpdateCursor();
             if (displayingExtendedBoundaries != SavedSettingsConfig.UseExtendedLevelBoundaries)
             {
                 displayingExtendedBoundaries = SavedSettingsConfig.UseExtendedLevelBoundaries;
@@ -673,7 +767,6 @@ namespace STROOP.Tabs.MapTab
             {
                 flowLayoutPanelMapTrackers.UpdateControl();
 
-                active |= popouts.Count > 0;
                 if (active)
                 {
                     base.Update(active);
@@ -701,7 +794,9 @@ namespace STROOP.Tabs.MapTab
                     Config.Stream.SetValue(target.Z, CamHackConfig.StructAddress + CamHackConfig.FocusZOffset);
                 }
 
-                int numLevelTriangles = Config.Stream.GetInt32(TriangleConfig.LevelTriangleCountAddress);
+                bool triangleCountKnown = MappingConfig.IsMapped(RomVersionConfig.SwitchOnly(
+                    TriangleConfig.LevelTriangleCountAddressUS, TriangleConfig.LevelTriangleCountAddressJP, TriangleConfig.LevelTriangleCountAddressSH));
+                int numLevelTriangles = triangleCountKnown ? Config.Stream.GetInt32(TriangleConfig.LevelTriangleCountAddress) : _numLevelTriangles;
                 if (numLevelTriangles != _numLevelTriangles)
                 {
                     RequireGeometryUpdate();

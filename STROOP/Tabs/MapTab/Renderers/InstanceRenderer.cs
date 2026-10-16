@@ -1,7 +1,8 @@
-﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
 using STROOP.Core;
@@ -14,7 +15,6 @@ namespace STROOP.Tabs.MapTab.Renderers
         protected List<InstanceData> instances = new List<InstanceData>();
         protected readonly int instanceSize;
         protected int maxInstances { get; private set; }
-        protected IntPtr dataPtr { get; private set; }
 
         public int uniform_viewProjection { get; private set; }
 
@@ -25,16 +25,14 @@ namespace STROOP.Tabs.MapTab.Renderers
         public InstanceRenderer()
         {
             instanceSize = Marshal.SizeOf(typeof(InstanceData));
+            if (instanceSize != Unsafe.SizeOf<InstanceData>())
+                throw new InvalidOperationException($"{typeof(InstanceData)} is not blittable");
         }
 
-        protected void WriteDataToBuffer()
+        void WriteDataToBuffer()
         {
-            IntPtr ptr = dataPtr;
-            foreach (var instance in instances)
-            {
-                Marshal.StructureToPtr(instance, ptr, false);
-                ptr = IntPtr.Add(ptr, instanceSize);
-            }
+            if (instances.Count > 0)
+                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, instanceSize * instances.Count, ref CollectionsMarshal.AsSpan(instances)[0]);
         }
 
         protected void Init(int maxExpectedInstances)
@@ -55,19 +53,12 @@ namespace STROOP.Tabs.MapTab.Renderers
 
             if (maxInstances > this.maxInstances)
             {
-                if (dataPtr != IntPtr.Zero)
-                    Marshal.FreeHGlobal(dataPtr);
-                dataPtr = Marshal.AllocHGlobal(bufferSize);
                 this.maxInstances = maxInstances;
-                if (writeData)
-                    WriteDataToBuffer();
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)bufferSize, writeData ? dataPtr : IntPtr.Zero, BufferUsageHint.StreamDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)bufferSize, IntPtr.Zero, BufferUsageHint.StreamDraw);
             }
-            else
-            {
+
+            if (writeData)
                 WriteDataToBuffer();
-                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr)(instanceSize * instances.Count), dataPtr);
-            }
         }
 
         protected void BeginDraw(MapGraphics graphics, bool updateBuffer = true)

@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using STROOP.Core;
@@ -68,6 +69,25 @@ namespace STROOP.Tabs.MapTab.Renderers
             Add(new Vector3(x, y, z), new Vector3(arrowHeadX, y, arrowHeadZ), color, thickness);
             Add(new Vector3(arrowHeadX, y, arrowHeadZ), new Vector3(pointSide1X, y, pointSide1Z), color, thickness);
             Add(new Vector3(arrowHeadX, y, arrowHeadZ), new Vector3(pointSide2X, y, pointSide2Z), color, thickness);
+        }
+
+        public void AddArrow3D(Vector3 from, Vector3 to, Vector4 color, float thickness, float headLength, Vector3 cameraPosition)
+        {
+            Add(from, to, color, thickness);
+
+            Vector3 shaft = to - from;
+            if (shaft.LengthSquared < 1e-8f)
+                return;
+            Vector3 dir = shaft.Normalized();
+            Vector3 side = Vector3.Cross(dir, cameraPosition - to);
+            if (side.LengthSquared < 1e-8f)
+                side = Vector3.Cross(dir, Math.Abs(dir.Y) < 0.99f ? Vector3.UnitY : Vector3.UnitX);
+            side.Normalize();
+
+            float component = headLength * (float)Math.Sqrt(0.5);
+            Vector3 headBase = to - dir * component;
+            Add(to, headBase + side * component, color, thickness);
+            Add(to, headBase - side * component, color, thickness);
         }
 
         public override void SetDrawCalls(MapGraphics graphics)

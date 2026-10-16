@@ -63,6 +63,14 @@ namespace STROOP.Tabs.MapTab
 
         public readonly List<Action>[] drawLayers;
 
+        public readonly List<Vector3> marioModelCopies = new List<Vector3>();
+
+        public bool marioModelAvailable { get; private set; }
+
+        bool marioModelDrawn;
+
+        public void ReportMarioModelDrawn() => marioModelDrawn = true;
+
         public Renderers.RendererCollection rendererCollection { get; private set; }
         public Renderers.SpriteRenderer objectRenderer => rendererCollection.objectRenderer;
         public Renderers.TriangleRenderer triangleRenderer => rendererCollection.triangleRenderer;
@@ -269,6 +277,8 @@ namespace STROOP.Tabs.MapTab
 
         List<Models.TriangleDataModel> levelTrianglesFor3DMap;
 
+        public bool Draw3DCollisionGeometry => view3D.display3DLevelGeometry || !mapTab.IsLevelModelShown;
+
         Control previouslyActiveControl;
 
         Control GetActiveLeafControl(ContainerControl root)
@@ -442,6 +452,9 @@ namespace STROOP.Tabs.MapTab
 
                 for (int i = 0; i < drawLayers.Length; i++)
                     drawLayers[i].Clear();
+                marioModelAvailable = marioModelDrawn;
+                marioModelDrawn = false;
+                marioModelCopies.Clear();
 
                 foreach (var renderer in rendererCollection.renderers)
                     renderer.SetDrawCalls(this);
@@ -457,7 +470,7 @@ namespace STROOP.Tabs.MapTab
                     GL.ClearDepth(1);
                     GL.Clear(ClearBufferMask.DepthBufferBit);
 
-                    if (view3D.display3DLevelGeometry)
+                    if (Draw3DCollisionGeometry)
                         drawLayers[(int)DrawLayers.FillBuffers].Insert(0, () =>
                         {
                             foreach (var t in levelTrianglesFor3DMap)
@@ -551,9 +564,21 @@ namespace STROOP.Tabs.MapTab
                     switch (view3D.camera3DMode)
                     {
                         case View3D.Camera3DMode.InGame:
-                            view3D.position = new Vector3(Models.DataModels.Camera.X, Models.DataModels.Camera.Y, Models.DataModels.Camera.Z);
-                            view3D.yaw = (float)MoreMath.AngleUnitsToRadians(Models.DataModels.Camera.FacingYaw);
-                            view3D.pitch = (float)MoreMath.AngleUnitsToRadians(-Models.DataModels.Camera.FacingPitch);
+                            if (MapObjects.MapLevelModelObject.GameCamera is (Vector3 cameraPosition, Vector3 cameraFocus))
+                            {
+                                view3D.position = cameraPosition;
+                                var look = cameraFocus - cameraPosition;
+                                view3D.yaw = (float)(Math.PI / 2 - Math.Atan2(look.Z, look.X));
+                                view3D.pitch = (float)-Math.Atan2(look.Y, Math.Sqrt(look.X * look.X + look.Z * look.Z));
+                            }
+                            else
+                            {
+                                view3D.position = new Vector3(Models.DataModels.Camera.X, Models.DataModels.Camera.Y, Models.DataModels.Camera.Z);
+                                view3D.yaw = (float)MoreMath.AngleUnitsToRadians(Models.DataModels.Camera.FacingYaw);
+                                view3D.pitch = (float)MoreMath.AngleUnitsToRadians(-Models.DataModels.Camera.FacingPitch);
+                            }
+
+                            viewDirection = currentView.ComputeViewDirection();
                             target = currentView.position + viewDirection;
                             break;
                         case View3D.Camera3DMode.FocusOnPositionAngle:
@@ -565,7 +590,13 @@ namespace STROOP.Tabs.MapTab
                     }
 
                     nearClip = Math.Max(1, Math.Min(50, (target - currentView.position).Length / 100));
-                    farClip = nearClip * 5000;
+                    farClip = Math.Max(nearClip * 5000, SceneFarDistance(currentView.position));
+                    nearClip = Math.Max(nearClip, farClip / MAX_DEPTH_RATIO);
+                    if (!float.IsFinite(nearClip) || !float.IsFinite(farClip) || nearClip >= farClip)
+                    {
+                        nearClip = 1;
+                        farClip = 5000;
+                    }
 
                     ViewMatrix = Matrix4.LookAt(currentView.position, target, new Vector3(0, 1, 0));
                     var mat = Matrix4.Invert(ViewMatrix);
@@ -580,22 +611,109 @@ namespace STROOP.Tabs.MapTab
             UpdateCursor();
         }
 
+        const float LEVEL_HALF_EXTENT = 32768, PU_SIZE = 65536, MAX_DEPTH_RATIO = 100000, MAX_FAR_DISTANCE = 1e8f;
+
+        float SceneFarDistance(Vector3 camera)
+        {
+            float FarthestCorner(Vector3 center)
+            {
+                float x = Math.Abs(camera.X - center.X) + LEVEL_HALF_EXTENT;
+                float y = Math.Abs(camera.Y - center.Y) + LEVEL_HALF_EXTENT;
+                float z = Math.Abs(camera.Z - center.Z) + LEVEL_HALF_EXTENT;
+                return (float)Math.Sqrt(x * x + y * y + z * z);
+            }
+
+            float farthest = FarthestCorner(Vector3.Zero);
+            if (MapViewEnablePuView)
+            {
+                float puX = (float)Math.Round(camera.X / PU_SIZE), puZ = (float)Math.Round(camera.Z / PU_SIZE);
+                for (int dx = -1; dx <= 1; dx++)
+                    for (int dz = -1; dz <= 1; dz++)
+                        farthest = Math.Max(farthest, FarthestCorner(new Vector3((puX + dx) * PU_SIZE, 0, (puZ + dz) * PU_SIZE)));
+            }
+
+            var mario = new Vector3(Models.DataModels.Mario.X, Models.DataModels.Mario.Y, Models.DataModels.Mario.Z);
+            if (float.IsFinite(mario.X) && float.IsFinite(mario.Y) && float.IsFinite(mario.Z))
+                farthest = Math.Max(farthest, (mario - camera).Length + 2000);
+            return float.IsFinite(farthest) ? Math.Min(farthest * 1.05f, MAX_FAR_DISTANCE) : MAX_FAR_DISTANCE;
+        }
+
         bool FindClosestIntersection(Vector3 rayOrigin, Vector3 rayDirection, out Vector3 intersection, out Models.TriangleDataModel triangle)
         {
             intersection = default(Vector3);
             triangle = default(Models.TriangleDataModel);
             Vector3 viewDirection = Vector3.Normalize(rayDirection);
             float closestDistance = float.PositiveInfinity, newDistance;
-            foreach (var t in levelTrianglesFor3DMap)
-                if (t.Intersect(rayOrigin, viewDirection, out Vector3 newIntersection, out Vector3 newNormal)
-                    && (newDistance = (newIntersection - currentView.position).LengthSquared) < closestDistance)
-                {
-                    closestDistance = newDistance;
-                    intersection = newIntersection;
-                    triangle = t;
-                }
+            UpdateLevelTriangleBounds();
+            foreach (var offset in CursorPuOffsets())
+            {
+                if (offset != Vector3.Zero && !RayHitsBox(rayOrigin - offset, viewDirection, levelTrianglesMin, levelTrianglesMax))
+                    continue;
+                foreach (var t in levelTrianglesFor3DMap)
+                    if (t.Intersect(rayOrigin - offset, viewDirection, out Vector3 newIntersection, out Vector3 newNormal)
+                        && (newDistance = (newIntersection + offset - currentView.position).LengthSquared) < closestDistance)
+                    {
+                        closestDistance = newDistance;
+                        intersection = newIntersection + offset;
+                        triangle = t;
+                    }
+            }
 
             return (closestDistance < float.PositiveInfinity);
+        }
+
+        List<Models.TriangleDataModel> levelTrianglesBoundsSource;
+        Vector3 levelTrianglesMin, levelTrianglesMax;
+
+        void UpdateLevelTriangleBounds()
+        {
+            if (ReferenceEquals(levelTrianglesBoundsSource, levelTrianglesFor3DMap))
+                return;
+            levelTrianglesBoundsSource = levelTrianglesFor3DMap;
+            levelTrianglesMin = new Vector3(float.PositiveInfinity);
+            levelTrianglesMax = new Vector3(float.NegativeInfinity);
+            foreach (var t in levelTrianglesFor3DMap)
+                foreach (var p in new[] { t.p1, t.p2, t.p3 })
+                {
+                    levelTrianglesMin = Vector3.ComponentMin(levelTrianglesMin, p);
+                    levelTrianglesMax = Vector3.ComponentMax(levelTrianglesMax, p);
+                }
+        }
+
+        static bool RayHitsBox(Vector3 origin, Vector3 direction, Vector3 min, Vector3 max)
+        {
+            float enter = 0, exit = float.PositiveInfinity;
+            for (int axis = 0; axis < 3; axis++)
+            {
+                if (Math.Abs(direction[axis]) < 1e-9f)
+                {
+                    if (origin[axis] < min[axis] || origin[axis] > max[axis])
+                        return false;
+                    continue;
+                }
+
+                float t0 = (min[axis] - origin[axis]) / direction[axis], t1 = (max[axis] - origin[axis]) / direction[axis];
+                enter = Math.Max(enter, Math.Min(t0, t1));
+                exit = Math.Min(exit, Math.Max(t0, t1));
+                if (enter > exit)
+                    return false;
+            }
+
+            return true;
+        }
+
+        IEnumerable<Vector3> CursorPuOffsets()
+        {
+            if (!MapViewEnablePuView || viewMode != ViewMode.ThreeDimensional)
+            {
+                yield return Vector3.Zero;
+                yield break;
+            }
+
+            float puX = (float)Math.Round(currentView.position.X / PU_SIZE), puZ = (float)Math.Round(currentView.position.Z / PU_SIZE);
+            for (int dx = -1; dx <= 1; dx++)
+                for (int dz = -1; dz <= 1; dz++)
+                    yield return new Vector3((puX + dx) * PU_SIZE, 0, (puZ + dz) * PU_SIZE);
         }
 
         public void UpdateCursor()
@@ -640,6 +758,7 @@ namespace STROOP.Tabs.MapTab
         private int _dragStartMouseX = 0;
         private int _dragStartMouseY = 0;
         private Vector3 _translateStartCenter = new Vector3(0);
+        private float _panUnitsPerPixel = 1;
         private Vector2 _translateStartOrthoOffset = new Vector2(2);
         private Vector3 _rotatePivot = new Vector3(0);
         private Vector3 _rotateDiff = new Vector3(0);
@@ -675,6 +794,9 @@ namespace STROOP.Tabs.MapTab
                     _dragStartMouseY = e.Y;
                     _dragStartYaw = currentView.yaw;
                     _dragStartPitch = currentView.pitch;
+                    _translateStartCenter = currentView.position;
+                    float depth = Vector3.Dot(mapCursorPosition - currentView.position, -BillboardMatrix.Row2.Xyz);
+                    _panUnitsPerPixel = 2 * (float)Math.Tan(0.5) * (depth > 1 ? depth : Math.Max(currentView.movementSpeed, 100)) / glControl.Height;
                     break;
             }
 
@@ -763,23 +885,10 @@ namespace STROOP.Tabs.MapTab
             {
                 if (viewMode == ViewMode.ThreeDimensional)
                 {
-                    int pixelDiffX = e.X - _dragStartMouseX;
-                    int pixelDiffY = e.Y - _dragStartMouseY;
-                    float mul = 10.0f / (float)Math.Log((currentView.position - _rotatePivot).Length);
-                    float diffX = pixelDiffX / (float)glControl.Width * 2 * mul;
-                    float diffY = pixelDiffY / (float)glControl.Height * 2 * mul;
-                    if (float.IsNaN(diffX) || float.IsNaN(diffY))
-                        throw null;
-                    if (view3D.camera3DMode == View3D.Camera3DMode.Free)
-                    {
-                        view3D.yaw = _dragStartYaw - diffX;
-                        view3D.pitch = Math.Max(-(float)Math.PI * 0.499f, Math.Min((float)Math.PI * 0.499f, _dragStartPitch + diffY));
-                    }
-                    else if (view3D.camera3DMode == View3D.Camera3DMode.FocusOnPositionAngle)
-                    {
-                        view3D.yaw = _dragStartYaw + diffX;
-                        view3D.pitch = Math.Max(-(float)Math.PI * 0.499f, Math.Min((float)Math.PI * 0.499f, _dragStartPitch - diffY));
-                    }
+                    view3D.camera3DMode = View3D.Camera3DMode.Free;
+                    float dx = -(e.X - _dragStartMouseX) * _panUnitsPerPixel;
+                    float dy = (e.Y - _dragStartMouseY) * _panUnitsPerPixel;
+                    currentView.position = _translateStartCenter + BillboardMatrix.Row0.Xyz * dx + BillboardMatrix.Row1.Xyz * dy;
                 }
             }
 
@@ -876,14 +985,20 @@ namespace STROOP.Tabs.MapTab
             int delta = e.Delta > 0 ? 1 : -1;
             if (viewMode == ViewMode.ThreeDimensional)
             {
+                bool fine = keyboardControls.IsCtrlDown();
                 if (view3D.camera3DMode == View3D.Camera3DMode.FocusOnPositionAngle)
-                    view3D.camera3DDistanceController = Math.Max(0.0f, Math.Min(100, view3D.camera3DDistanceController - delta));
+                {
+                    float steps = fine ? 0.3f : 1;
+                    view3D.camera3DDistanceController = Math.Max(0.0f, Math.Min(100, view3D.camera3DDistanceController - delta * steps));
+                }
                 else if (view3D.camera3DMode == View3D.Camera3DMode.Free)
                 {
                     var diff = mapCursorPosition - currentView.position;
-                    if (Vector3.Dot(diff, normalAtCursor) < 0)
-                        currentView.movementSpeed = diff.Length * 0.5f;
-                    currentView.position += Vector3.Normalize(mapCursorPosition - currentView.position) * delta * currentView.movementSpeed / 5;
+                    float distance = Math.Max(diff.Length, 50);
+                    float share = fine ? 0.03f : 0.1f;
+                    float move = delta > 0 ? distance * share : -distance * share / (1 - share);
+                    if (diff.LengthSquared > 0)
+                        currentView.position += Vector3.Normalize(diff) * move;
                 }
             }
             else

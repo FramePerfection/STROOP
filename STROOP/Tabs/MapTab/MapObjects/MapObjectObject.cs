@@ -241,6 +241,8 @@ namespace STROOP.Tabs.MapTab.MapObjects
             this.objectProvider = objectProvider;
         }
 
+        protected override bool IsGameObject => true;
+
         public override Lazy<Image> GetInternalImage()
         {
             Lazy<Image> result = null;
