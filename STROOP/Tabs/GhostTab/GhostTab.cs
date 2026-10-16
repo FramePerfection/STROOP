@@ -22,6 +22,7 @@ namespace STROOP.Tabs.GhostTab
 
         const uint GHOST_LOOP_CODE_OFFSET = 0x8000u;
         const uint HACK_FILE_BASE_OFFSET = 0x80400000;
+        const byte STROOP_HACK_SIGNATURE = 0x67;
 
         // These numbers are the 4 byte words, in order, as exported into "DynamicOffsets.bin".
         const uint FirstAnimationBufferAddrHi_LUI_1 = 0x50;
@@ -41,6 +42,7 @@ namespace STROOP.Tabs.GhostTab
         uint numGhostsAddr => ghostRegionBase + 0x7FFFu;
         uint firstGhostPointerAddr => ghostRegionBase + 0x7FF8u;
         uint disableRequestAddr => ghostRegionBase + 0x7FFCu;
+        uint hackSignatureAddr => ghostRegionBase + 0x7FFDu;
 
         uint bufferBaseAddress => ghostRegionBase + 0x9B00u;
 
@@ -303,10 +305,18 @@ namespace STROOP.Tabs.GhostTab
 
             ghostHack.UpdateEnabledStatus();
             bool enabled = ghostHack.Status != RomHack.EnabledStatus.Disabled;
-            labelHackActiveState.Text = (ghostsActive && enabled) ? "Ghost hack is enabled." : (enabled ? "Ghost hack is enabled\nbut not running.\nInside a level,\nsave state and load state,\nthen frame advance." : "Ghost hack is disabled.");
+            bool hasControl = Config.Stream.GetByte(hackSignatureAddr) == STROOP_HACK_SIGNATURE;
+            labelHackActiveState.Text = (ghostsActive && enabled)
+                ? hasControl
+                    ? "Ghost hack is enabled."
+                    : "Hack is enabled but\nSTROOP is not controlling it.\nClick Enable to\ntake back control."
+                : enabled
+                    ? "Ghost hack is enabled\nbut not running.\nInside a level,\nsave state and load state,\nthen frame advance."
+                    : "Ghost hack is disabled."
+                ;
             buttonDisableGhostHack.Enabled = enabled;
 
-            return true;
+            return hasControl;
         }
 
         private void buttonLoadGhost_Click(object sender, EventArgs e)
@@ -370,6 +380,11 @@ namespace STROOP.Tabs.GhostTab
         {
             if (Config.Stream.GetInt32(0x80000000) != 0)
             {
+                Config.Stream.SetValue(STROOP_HACK_SIGNATURE, hackSignatureAddr);
+
+                if (ghostHack.Status != RomHack.EnabledStatus.Disabled)
+                    return;
+
                 ghostHack.LoadPayload(new()
                 {
                     [HACK_FILE_BASE_OFFSET + GHOST_LOOP_CODE_OFFSET] = ghostRegionBase + GHOST_LOOP_CODE_OFFSET,
