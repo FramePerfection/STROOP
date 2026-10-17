@@ -1,0 +1,9 @@
+<Project>
+    <Target Name="DropNativeSymbols" AfterTargets="Build;Publish">
+        <ItemGroup>
+            <_NativeSymbols Include="$(OutDir)lib*.pdb;$(OutDir)runtimes\**\lib*.pdb" />
+            <_NativeSymbols Include="$(PublishDir)lib*.pdb" Condition="'$(PublishDir)' != ''" />
+        </ItemGroup>
+        <Delete Files="@(_NativeSymbols)" ContinueOnError="true" />
+    </Target>
+</Project>

@@ -1,0 +1,11 @@
+<Project>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <InvariantGlobalization>true</InvariantGlobalization>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(StroopOut)' != ''">
+        <BaseOutputPath>$(StroopOut)\$(MSBuildProjectName)\bin\</BaseOutputPath>
+    </PropertyGroup>
+</Project>
