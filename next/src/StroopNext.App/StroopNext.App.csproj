@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <UseWindowsForms>true</UseWindowsForms>
+        <RootNamespace>StroopNext.App</RootNamespace>
+        <AssemblyName>StroopNext</AssemblyName>
+        <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">$(NETCoreSdkRuntimeIdentifier)</RuntimeIdentifier>
+        <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <ApplicationIcon>..\..\..\STROOP\icon.ico</ApplicationIcon>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="OpenTK" Version="4.9.4"/>
+        <PackageReference Include="OpenTK.GLControl" Version="4.0.2"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\StroopNext.Core\StroopNext.Core.csproj"/>
+        <ProjectReference Include="..\StroopNext.Rendering\StroopNext.Rendering.csproj"/>
+        <ProjectReference Include="..\StroopNext.Platform\StroopNext.Platform.csproj"/>
+    </ItemGroup>
+</Project>
