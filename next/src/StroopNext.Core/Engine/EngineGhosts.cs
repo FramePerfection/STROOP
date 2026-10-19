@@ -38,7 +38,10 @@ public static class EngineGhosts
             string label = t?["label"]?.ToString() ?? "";
             string hit = EngineJson.IntOrNull(t?["hit"]) is int h ? $" ✓ {h} f" : "";
             if (FromReference(t, $"Engine try {list.Count + 1}: {label}{hit}", stTimer) is { } g)
+            {
+                g.Loop = true;
                 list.Add(g);
+            }
         }
         return list;
     }

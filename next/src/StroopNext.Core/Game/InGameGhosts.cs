@@ -191,7 +191,76 @@ public sealed class InGameGhosts
             return "In-game ghosts need the Expansion Pak (8 MB of RAM): enable it in the emulator's settings.";
         if (frame.Ram.U32(0x80000000) == 0)
             return "The game is not booted yet.";
+        if (BaseFor(frame) is null)
+            return "This game uses the whole Expansion Pak RAM: no room for the in-game ghosts.";
         return null;
+    }
+
+    // The ghosts take Footprint bytes from their base: code and buffers at base..base+0xAB00, the body buffers at
+    // base+0x60000. ROM hacks can use the Expansion Pak themselves (Power Star Madness and B3313 fill 0x80400000..):
+    // the ghosts then go to the first free 64 KB-aligned area instead of overwriting the game.
+    private const uint Footprint = BodyBuffers + MaxGhosts * BufferSize;
+    private static ushort? _relocated;
+
+    /// <summary>The base of installed ghosts (from the hook), else where they can be installed; null when no room.</summary>
+    public static ushort? BaseFor(GameFrame frame)
+    {
+        var ram = frame.Ram;
+        if (InstalledBaseHi(ram, frame.Version) is ushort installed)
+            return installed;
+        if (Ours(ram, frame.Version, DefaultBaseHi) || IsFree(ram, (uint)DefaultBaseHi << 16, Footprint, 0x100))
+            return DefaultBaseHi;
+        if (_relocated is ushort r && IsFree(ram, (uint)r << 16, Footprint, 0x100))
+            return r;
+        for (uint b = ExpansionRam + 0x10000; b + Footprint <= ExpansionRam + 0x400000; b += 0x10000)
+            if (IsFree(ram, b, Footprint, 4))
+            {
+                _relocated = (ushort)(b >> 16);
+                return _relocated;
+            }
+        return null;
+    }
+
+    /// <summary>The base hi of ghosts whose hook is in the game (US or JP hook site), else null.</summary>
+    public static ushort? InstalledBaseHi(RamImage ram, GameVersion? version = null)
+        => InstalledBaseHi(a => ram.IsValid(a, 4) ? ram.U32(a) : 0, version);
+
+    public static ushort? InstalledBaseHi(Func<uint, uint> u32, GameVersion? version = null)
+    {
+        foreach (var v in version is { } known ? [known] : new[] { GameVersion.US, GameVersion.JP })
+        {
+            if (HookAddress(v) is not uint hook)
+                continue;
+            uint word = u32(hook);
+            uint b = (0x80000000u | ((word & 0x03FFFFFF) << 2)) - GuardOffset;
+            if (word >> 26 == 3 && (b & 0xFFFF) == 0 && b >= ExpansionRam && b + Footprint <= ExpansionRam + 0x400000)
+                return (ushort)(b >> 16);
+        }
+        return null;
+    }
+
+    // Ghosts installed then removed leave their snapshot or code at the base: the area is still theirs.
+    private static bool Ours(RamImage ram, GameVersion? version, ushort baseHi)
+    {
+        uint b = (uint)baseHi << 16;
+        if (PatchSnapshot.Read(ram, b + SnapshotOffset, SnapshotMax) is not null)
+            return true;
+        byte[]? loop = HackFor(version!.Value).Entries.FirstOrDefault(e => e.Address == FileLoop).Bytes;
+        return loop is { Length: >= 0x40 }
+            && Enumerable.Range(0, 0x10).All(i => ram.U32(b + LoopOffset + 4 * (uint)i) == BinaryPrimitives.ReadUInt32BigEndian(loop.AsSpan(4 * i)));
+    }
+
+    // Free: no more than 64 non-zero words among those read every `stride` bytes (vanilla SM64 leaves the Expansion
+    // Pak empty; PSM and B3313 have thousands of non-zero words in their areas).
+    private static bool IsFree(RamImage ram, uint start, uint size, uint stride)
+    {
+        if (!ram.IsValid(start, (int)size))
+            return false;
+        int used = 0;
+        for (uint a = start; a < start + size; a += stride)
+            if (ram.U32(a) != 0 && ++used > (stride == 4 ? 64 : 0))
+                return false;
+        return true;
     }
 
     public InGameGhostState State(GameFrame frame)
@@ -230,15 +299,8 @@ public sealed class InGameGhosts
         foreach (var entry in HackFor(version).Entries)
         {
             uint address = entry.Address == FileLoop ? Base + LoopOffset : entry.Address == FileHats ? Base + HatsOffset : entry.Address;
-            byte[] bytes = (byte[])entry.Bytes.Clone();
-            if (entry.Address == FileLoop)
-            {
-                SetLui(bytes, 0xF8, (ushort)(BaseHi + 1));
-                foreach (int lui in new[] { 0x44, 0x78, 0x190 })
-                    SetLui(bytes, lui, BaseHi);
-                SetLui(bytes, 0x50, (ushort)(BaseHi + 0x10));
-            }
-            else if (entry.Address == FileHats)
+            byte[] bytes = entry.Address == FileLoop ? LoopCode(version) : (byte[])entry.Bytes.Clone();
+            if (entry.Address == FileHats)
                 SetLui(bytes, 0x70, BaseHi);
             if (address == HookAddress(version))
                 continue;
@@ -301,6 +363,69 @@ public sealed class InGameGhosts
         LinkBodySwitchers(frame, Write, snapshot.NewGroup());
         patch.WriteBytes(Base + SnapshotOffset, snapshot.Serialize());
         return patch;
+    }
+
+    private byte[] LoopCode(GameVersion version)
+    {
+        byte[] bytes = (byte[])HackFor(version).Entries.First(e => e.Address == FileLoop).Bytes.Clone();
+        SetLui(bytes, 0xF8, (ushort)(BaseHi + 1));
+        foreach (int lui in new[] { 0x44, 0x78, 0x190 })
+            SetLui(bytes, lui, BaseHi);
+        SetLui(bytes, 0x50, (ushort)(BaseHi + 0x10));
+        FixCleanUp(bytes);
+        return bytes;
+    }
+
+    // While removing: ghosts written with the legacy clean-up can leave nodes after an empty slot, which nothing
+    // removes. Puts the fixed clean-up in and packs those nodes from the first slot so it removes them all.
+    public RamPatch? Unstick(GameFrame frame)
+    {
+        if (frame.Version is not { } version)
+            return null;
+        var ram = frame.Ram;
+        var nodes = new List<uint>();
+        bool gap = false, packed = true;
+        for (uint i = 0; i < MaxGhosts; i++)
+        {
+            uint node = ram.U32(FirstNodePointer - i * NodeStride);
+            if (node - (Base + 0x7000) < 0x1000)
+            {
+                nodes.Add(node);
+                packed &= !gap;
+            }
+            else
+                gap = true;
+        }
+        byte[] code = LoopCode(version);
+        bool fixedCode = Enumerable.Range(0, code.Length / 4).All(i => ram.U32(Base + LoopOffset + 4 * (uint)i) == BinaryPrimitives.ReadUInt32BigEndian(code.AsSpan(4 * i)));
+        if (nodes.Count == 0 || packed && fixedCode)
+            return null;
+        var patch = new RamPatch();
+        if (!fixedCode)
+            patch.WriteBytes(Base + LoopOffset, code);
+        for (int i = 0; i < MaxGhosts; i++)
+            patch.WriteU32(FirstNodePointer - (uint)i * NodeStride, i < nodes.Count ? nodes[i] : 0);
+        return patch;
+    }
+
+    // Legacy ghost_loop.asm's clean-up reloads the slot it just cleared before stepping to the next one, so it
+    // removes one node per frame and stops: when the count drops by more than one the other nodes stay in the game,
+    // frozen, and removing never completes. Step first, then load; the two entries start one slot early.
+    internal static void FixCleanUp(byte[] loop)
+    {
+        (int Offset, uint Old, uint New)[] fix =
+        [
+            (0x4C, 0x36317FF8, 0x36318060), // ori s1, s1, PointerToFirstGhost + ghost size
+            (0x84, 0x1001004C, 0x5001004C), // beq -> beql r0, at, @CLEAN_UP_EARLY
+            (0x88, 0x00000000, 0x26310068), //   addiu s1, s1, ghost size (only when branching)
+            (0x1B8, 0x8E240000, 0x2631FF98), // @CLEAN_UP_EARLY: addiu s1, s1, -ghost size
+            (0x1BC, 0x1480FFFC, 0x8E240000), //   lw a0, 0 (s1)
+            (0x1C0, 0x2631FF98, 0x1480FFFB), //   bnez a0, @CLEAN_UP_LOOP
+        ];
+        if (loop.Length < 0x1C4 || fix.Any(f => BinaryPrimitives.ReadUInt32BigEndian(loop.AsSpan(f.Offset)) != f.Old))
+            return;
+        foreach (var f in fix)
+            BinaryPrimitives.WriteUInt32BigEndian(loop.AsSpan(f.Offset), f.New);
     }
 
     internal byte[] Guard()
@@ -474,11 +599,11 @@ public sealed class InGameGhosts
         {
             var (ghost, color) = ghosts[g];
             Array.Clear(buffer);
-            bool present = ghost.Frames.ContainsKey(unchecked(timer - ghost.PlaybackBaseFrame - 1));
+            bool present = ghost.FrameAt(timer) is not null;
             for (uint tm = 0; tm < 0x80; tm++)
             {
                 int slot = (int)((timer + tm) & 0x7F) * (int)SlotSize;
-                long index = (long)timer + tm - ghost.PlaybackBaseFrame;
+                long index = Ghost.Order(ghost.IndexAt(unchecked(timer + tm + 1)));
                 if (index >= 0 && ghost.Frames.TryGetValue((uint)index, out var newFrame))
                 {
                     uint previous = _lastValid.TryGetValue(ghost, out var last) ? last.Animation : 0;
@@ -506,7 +631,7 @@ public sealed class InGameGhosts
             Array.Clear(bodies);
             for (uint tm = 0; tm < 0x80; tm++)
             {
-                long index = (long)timer + tm - ghost.PlaybackBaseFrame;
+                long index = Ghost.Order(ghost.IndexAt(unchecked(timer + tm + 1)));
                 if (index >= 0 && ghost.Bodies.TryGetValue((uint)index, out var bodyState))
                     bodyState.AsSpan(0, Math.Min(BodyBytes, bodyState.Length)).CopyTo(bodies.AsSpan((int)(((timer + tm) & 0x7F) * SlotSize)));
             }

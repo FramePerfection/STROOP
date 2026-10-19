@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Numerics;
 using StroopNext.Game;
 using StroopNext.Map;
@@ -83,7 +84,8 @@ public class InGameGhostsTests
         Assert.Equal(0x02587FFFu, image.U32(Bank4 + 0x100));
         Assert.Null(ghosts.ColoredCaps(F(ram)));
 
-        var loop = InGameGhosts.HackFor(GameVersion.US).Entries.Single(e => e.Address == 0x80408000).Bytes;
+        var loop = (byte[])InGameGhosts.HackFor(GameVersion.US).Entries.Single(e => e.Address == 0x80408000).Bytes.Clone();
+        InGameGhosts.FixCleanUp(loop);
         byte[] LoopNow() => Enumerable.Range(0, loop.Length).Select(i => new RamImage(ram.Bytes).U8(Base + 0x8800 + (uint)i)).ToArray();
         Assert.Equal(loop, LoopNow());
 
@@ -122,6 +124,34 @@ public class InGameGhostsTests
         var small = new RamImage(booted.Bytes.AsSpan(0, N64.RamSize4MB).ToArray());
         Assert.Contains("Expansion Pak", InGameGhosts.Unavailable(Session.GameFrame.Create(small)));
         Assert.Null(new InGameGhosts().Install(Session.GameFrame.Create(small), out _));
+    }
+
+    [Fact]
+    public void A_hack_that_uses_the_expansion_pak_gets_its_ghosts_elsewhere()
+    {
+        // PSM and B3313 keep the US hook bytes but fill 0x80400000.. with their own data: the ghosts move to free RAM.
+        var ram = Booted();
+        W(ram, p =>
+        {
+            for (uint a = Base; a < Base + 0x400; a += 4)
+                p.WriteU32(a, 0x27BDFFE8);
+        });
+        Assert.Null(InGameGhosts.Unavailable(F(ram)));
+        ushort hi = InGameGhosts.BaseFor(F(ram))!.Value;
+        Assert.NotEqual(InGameGhosts.DefaultBaseHi, hi);
+        var ghosts = new InGameGhosts(hi);
+        ghosts.Install(F(ram), out _)!.ApplyTo(ram.Bytes);
+        Assert.Equal(hi, InGameGhosts.InstalledBaseHi(new RamImage(ram.Bytes)));
+        Assert.Equal(InGameGhostState.Installed, ghosts.State(F(ram)));
+        Assert.Equal(0x27BDFFE8u, new RamImage(ram.Bytes).U32(Base + 0x3FC));   // the hack's data is untouched
+
+        var full = Booted();
+        W(full, p =>
+        {
+            for (uint a = Base; a < Base + 0x400000; a += 0x80)
+                p.WriteU32(a, 0x27BDFFE8);
+        });
+        Assert.Contains("no room", InGameGhosts.Unavailable(F(full)));
     }
 
     [Fact]
@@ -183,5 +213,100 @@ public class InGameGhostsTests
         Assert.False(ghosts.ReadyToRestore(F(ram)));
         W(ram, p => p.WriteU32(Base + 0x7FF8, 0));
         Assert.True(ghosts.ReadyToRestore(F(ram)));
+    }
+
+    [Fact]
+    public void A_looping_ghost_replays_from_its_start_after_its_last_frame()
+    {
+        var ghost = new Ghost { PlaybackBaseFrame = 99, Loop = true };
+        for (uint i = 0; i < 10; i++)
+            ghost.Frames[i] = new GhostFrame(new Vector3(i, 0, 0), 0, 0, 0, 0, 0);
+        Assert.Null(ghost.FrameAt(99));
+        Assert.Equal(0, ghost.FrameAt(100)!.Value.Position.X);
+        Assert.Equal(9, ghost.FrameAt(109)!.Value.Position.X);
+        Assert.Equal(0, ghost.FrameAt(110)!.Value.Position.X);
+        Assert.Equal(3, ghost.FrameAt(123)!.Value.Position.X);
+        ghost.Loop = false;
+        Assert.Null(ghost.FrameAt(110));
+    }
+
+    // Runs the loop's clean-up (count 0, then a drop from 12 to 1) on a tiny MIPS interpreter: every node goes.
+    [Theory]
+    [InlineData(0x78u, 0)]
+    [InlineData(0x1A4u, 1)]
+    public void The_loop_clean_up_removes_every_leftover_ghost(uint start, int keep)
+    {
+        byte[] loop = (byte[])InGameGhosts.HackFor(GameVersion.US).Entries.First(e => e.Address == 0x80408000).Bytes.Clone();
+        InGameGhosts.FixCleanUp(loop);
+        var ram = new Dictionary<uint, uint>();
+        const uint first = Base + 0x7FF8;
+        for (uint i = 0; i < 12; i++)
+            ram[first - i * 0x68] = Base + 0x7000 + i * 0x10;
+        ram[Base + 0x7FFC] = (uint)keep;
+        var removed = new List<uint>();
+        var r = new uint[32];
+        r[17] = first - (uint)keep * 0x68; // s1 at the first leftover, as the loop leaves it
+        uint pc = start;
+        uint U(uint a) => ram.GetValueOrDefault(a);
+        for (int steps = 0; steps < 500 && pc < 0x1C4; steps++)
+        {
+            uint w = BinaryPrimitives.ReadUInt32BigEndian(loop.AsSpan((int)pc));
+            uint op = w >> 26, rs = (w >> 21) & 31, rt = (w >> 16) & 31;
+            short imm = (short)w;
+            uint next = pc + 4, target = pc + 4 + (uint)(imm << 2);
+            void Delay() => Exec(BinaryPrimitives.ReadUInt32BigEndian(loop.AsSpan((int)pc + 4)));
+            void Exec(uint d)
+            {
+                uint dop = d >> 26, drs = (d >> 21) & 31, drt = (d >> 16) & 31;
+                short dimm = (short)d;
+                if (d == 0) return;
+                if (dop == 0x09) r[drt] = r[drs] + (uint)dimm;
+                else if (dop == 0x0D) r[drt] = r[drs] | (ushort)dimm;
+                else if (dop == 0x0F) r[drt] = (uint)(ushort)dimm << 16;
+                else if (dop == 0x23) r[drt] = U(r[drs] + (uint)dimm);
+                else if (dop == 0x2B) ram[r[drs] + (uint)dimm] = r[drt];
+                else if (dop == 0x20) r[drt] = (uint)(sbyte)(U((r[drs] + (uint)dimm) & ~3u) >> 0);
+                else if (dop == 0x00 && (d & 0x3F) == 0x25) r[(d >> 11) & 31] = r[drs] | r[drt];
+                else throw new InvalidOperationException($"opcode {d:X8} at {pc:X}");
+                r[0] = 0;
+            }
+            switch (op)
+            {
+                case 0x04: Delay(); next = r[rs] == r[rt] ? target : pc + 8; break;
+                case 0x05: Delay(); next = r[rs] != r[rt] ? target : pc + 8; break;
+                case 0x14: next = r[rs] == r[rt] ? (Delay2(), target).target : pc + 8; break;
+                case 0x03: Delay(); removed.Add(r[4]); next = pc + 8; break;
+                default: Exec(w); break;
+            }
+            int Delay2() { Delay(); return 0; }
+            pc = next;
+        }
+        Assert.Equal(12 - keep, removed.Distinct().Count());
+        for (uint i = (uint)keep; i < 12; i++)
+            Assert.Equal(0u, U(first - i * 0x68));
+    }
+
+    [Fact]
+    public void Removing_packs_ghosts_left_after_an_empty_slot_by_the_legacy_clean_up()
+    {
+        var ram = Booted();
+        var ghosts = new InGameGhosts();
+        ghosts.Install(F(ram), out _)!.ApplyTo(ram.Bytes);
+        var legacy = InGameGhosts.HackFor(GameVersion.US).Entries.First(e => e.Address == 0x80408000).Bytes;
+        W(ram, p =>
+        {
+            p.WriteBytes(Base + 0x8800, legacy);
+            for (uint i = 2; i < 5; i++)
+                p.WriteU32(Base + 0x7FF8 - i * 0x68, Base + 0x7F94 - i * 0x68);
+        });
+        var unstick = ghosts.Unstick(F(ram));
+        Assert.NotNull(unstick);
+        unstick!.ApplyTo(ram.Bytes);
+        var image = new RamImage(ram.Bytes);
+        for (uint i = 0; i < 3; i++)
+            Assert.Equal(Base + 0x7F94 - (i + 2) * 0x68, image.U32(Base + 0x7FF8 - i * 0x68));
+        Assert.Equal(0u, image.U32(Base + 0x7FF8 - 3 * 0x68));
+        Assert.Equal(0x36318060u, image.U32(Base + 0x8800 + 0x4C));
+        Assert.Null(ghosts.Unstick(F(ram)));
     }
 }

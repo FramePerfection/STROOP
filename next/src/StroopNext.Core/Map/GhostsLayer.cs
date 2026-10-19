@@ -172,7 +172,7 @@ public sealed class GhostsLayer : MapLayer, IMapLayer3D
                 bool model = c.Scene.GameVisuals is not null && !g.IsMarker;
                 if (model && !gameDrawsGhosts
                     && c.Scene.GameVisuals!.AddVirtualGhost?.Invoke(new Graphics.VirtualGhost(now.Position, (short)now.Pitch, (short)now.Yaw, (short)now.Roll, now.AnimationIndex, (short)(now.AnimationFrame + 1),
-                        g.IsLight ? null : g.Ghost.Bodies.GetValueOrDefault(unchecked(c.Frame.GlobalTimer - 1 - g.Ghost.PlaybackBaseFrame)))) != true)
+                        g.IsLight ? null : g.Ghost.Bodies.GetValueOrDefault(g.Ghost.IndexAt(c.Frame.GlobalTimer)))) != true)
                     c.Scene.MarioModelGhosts.Add((now.Position, now.FacingYaw));
                 c.Scene.Add(new Cylinder3D(now.Position, MarioState.HitboxRadius, MarioState.HitboxHeight, g.Color.WithAlpha(model ? (g.IsLight ? 0.08 : 0.12) : 0.35)) { Hit = hit });
                 if (!model)

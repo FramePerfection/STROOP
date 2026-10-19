@@ -778,7 +778,8 @@ public sealed partial class GameSceneBuilder
     private void CollectGhostNodes()
     {
         _ghostNodes.Clear();
-        for (uint i = 0, slot = 0x80407FF8; i < 40 && _memory.IsPointer(slot); i++, slot -= 0x68)
+        uint first = ((uint)(Game.InGameGhosts.InstalledBaseHi(_memory.U32) ?? Game.InGameGhosts.DefaultBaseHi) << 16) + 0x7FF8;
+        for (uint i = 0, slot = first; i < 40 && _memory.IsPointer(slot); i++, slot -= 0x68)
         {
             uint node = _memory.U32(slot);
             if (!_memory.IsPointer(node))
@@ -788,7 +789,7 @@ public sealed partial class GameSceneBuilder
     }
 
     private bool IsGhostHackCapGenerator(uint generator)
-        => (generator & 0xFFFF) == 0x8200 && (generator >> 16) is >= 0x8040 and <= 0x8060
+        => (generator & 0xFFFF) == 0x8200 && (generator >> 16) is >= 0x8040 and <= 0x807F
         && _memory.U32(generator) == 0x27BDFFC0 && _memory.U32(generator + 8) == 0x3C090401;
 
     private void EmitGhostHackCap(uint generator, int layer, in NodeFrame frame)

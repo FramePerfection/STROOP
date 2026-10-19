@@ -22,8 +22,24 @@ public sealed class Ghost
 
     public Dictionary<uint, byte[]> Bodies { get; } = new();
 
+    // Replays from the start once the last frame is passed (the engine's short attempts), instead of vanishing.
+    public bool Loop { get; set; }
+
+    // The frame index played at this timer (negative as int before the start).
+    public uint IndexAt(uint globalTimer)
+    {
+        uint index = unchecked(globalTimer - 1 - PlaybackBaseFrame);
+        if (Loop && Frames.Count > 0 && Order(index) > 0)
+        {
+            uint length = Frames.Keys.Max(k => (uint)Math.Max(0, Order(k))) + 1;
+            if (index >= length)
+                index %= length;
+        }
+        return index;
+    }
+
     public GhostFrame? FrameAt(uint globalTimer)
-        => Frames.TryGetValue(unchecked(globalTimer - 1 - PlaybackBaseFrame), out var f) ? f : null;
+        => Frames.TryGetValue(IndexAt(globalTimer), out var f) ? f : null;
 
     public uint TimerOf(uint index) => unchecked(PlaybackBaseFrame + 1 + index);
 
