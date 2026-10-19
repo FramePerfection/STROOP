@@ -361,6 +361,19 @@ With these, every feature of legacy STROOP's Mario and Map tabs has a counterpar
   - right-click to teleport Mario (keeping his Y, or onto the floor under the cursor), center
     the map, or copy coordinates.
 - The map can be oriented north-up, camera-up or Mario-facing-up.
+- **Go to level** (right-click, 2D and 3D; needs a running emulator, US or JP game): the game
+  loads another level by itself, the way a painting does: STROOP writes the destination in
+  `sWarpDest`, then `sCurrPlayMode = PLAY_MODE_CHANGE_LEVEL` (`level_update.c`), so the level
+  script leaves the level and `init_level` spawns Mario at the area's usual warp node
+  (`LevelWarp`, `GameLevels`). All the castle, course, Bowser and secret levels are listed, with
+  their areas when there are several (areas with no spawn node, and the castle courtyard, whose
+  only nodes are the star and death exits, are not). **Go to level, then place Mario…** also
+  arms the next click in the map: once the new level is loaded it puts Mario there (the floor
+  under the cursor in 2D, the exact 3D point in 3D; Esc or the menu cancels). The act is chosen
+  in the same menu (1 by default; the act select screen is skipped on US). A course's first
+  visit shows its intro text (A to dismiss), and Bowser's arenas their dialog. It refuses while
+  the game is paused. Unknown layouts (rebuilt hacks, SH, EU) get the item greyed out with the
+  reason; a hack patched over the US ROM works if it keeps the original levels' warp nodes.
 - Every layer has its own options. The options panel is generated from the settings the
   layer declares.
 

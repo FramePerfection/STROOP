@@ -107,6 +107,12 @@ internal static class UiSnapshot
                 float W(string v) => float.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
                 if (words is ["teleport", var tx, var tz])
                     (window.Views[1] as MapModuleView)?.TeleportForTest(W(tx), W(tz));
+                if (words is ["golevel", var level, var area, .. var golevelRest] && window.Views[1] is MapModuleView levelMap)
+                    levelMap.GoToLevelForTest(int.Parse(level, System.Globalization.CultureInfo.InvariantCulture), int.Parse(area, System.Globalization.CultureInfo.InvariantCulture), golevelRest is ["place"]);
+                if (words is ["place", var px, var pz] && window.Views[1] is MapModuleView placeMap)
+                    Console.WriteLine($"place click used: {placeMap.PlaceForTest(W(px), W(pz))}");
+                if (words is ["levelmenu"] && window.Views[1] is MapModuleView menuMap)
+                    Console.WriteLine(menuMap.LevelMenuForTest());
                 if (words is ["teleport3d", var ux, var uz])
                     (window.Views[1] as MapModuleView)?.Teleport3DForTest(W(ux), W(uz));
                 if (words is ["scroll", var offset] && window.Views[1] is MapModuleView scrolled)
@@ -154,7 +160,7 @@ internal static class UiSnapshot
                     }
                 }
             }
-            string now = $"status: {window.StatusText} | {(window.Views[1] as MapModuleView)?.MarioText} | {(window.Views[1] as MapModuleView)?.InGameStatusText} | engine {(window.Views[1] as MapModuleView)?.EnginePanel?.Summary}";
+            string now = $"status: {window.StatusText} | {(window.Views[1] as MapModuleView)?.MarioText} | {(window.Views[1] as MapModuleView)?.PlacementText} | {(window.Views[1] as MapModuleView)?.InGameStatusText} | engine {(window.Views[1] as MapModuleView)?.EnginePanel?.Summary}";
             if (now != last)
             {
                 Console.WriteLine($"{DateTime.Now:HH:mm:ss.fff} {now}");

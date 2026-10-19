@@ -81,7 +81,15 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
             _hovered = null;
             _canvas.InvalidateVisual();
         };
-        _canvas.DoubleTapped += (_, _) => SetFollow(true);
+        _canvas.DoubleTapped += (_, e) => OnMapDoubleTapped(e);
+        _canvas.KeyDown += (_, e) =>
+        {
+            if (e.Key != Key.Escape || _placement is null)
+                return;
+            EndPlacement();
+            Context.ReportStatus("Placing Mario after the level loads: cancelled.");
+            e.Handled = true;
+        };
         _canvas.SizeChanged += (_, _) => Rebuild();
 
         _host.Children.Add(_canvas);
@@ -174,16 +182,49 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
     {
         if (_engine is not { } engine)
             return;
+        string? notReady = engine.PathBusy ? "The engine is already working on the path: wait, or Stop (ENGINE section)."
+            : !engine.ServerUp ? "The engine server is not running (ENGINE section)."
+            : !engine.BridgeUp ? "Not connected to Mupen yet (ENGINE section)."
+            : null;
         var item = MenuItem("Bring Mario here (engine)", async () =>
         {
             await engine.BringHereAsync(point.X, point.Y, point.Z);
         });
-        ToolTip.SetTip(item, "The engine finds the fastest way to this point, adds it to the path and Mupen plays it (ENGINE section: Back, Save movie).");
+        item.IsEnabled = notReady is null;
+        ToolTip.SetShowOnDisabled(item, true);
+        ToolTip.SetTip(item, notReady ?? "The engine finds the fastest way to this point, adds it to the path and Mupen plays it (ENGINE section: Back, Save movie).");
         int at = 0;
         menu.Items.Insert(at++, item);
         if (engine.PathParts > 0)
             menu.Items.Insert(at++, MenuItem("↶ Back one part (engine)", async () => await engine.BackAsync()));
         menu.Items.Insert(at, new Separator());
+    }
+
+    // Double-click: on an object the engine brings Mario to it; anywhere else the map follows Mario again.
+    private void OnMapDoubleTapped(Avalonia.Input.TappedEventArgs e)
+    {
+        IMapHit? hit;
+        lock (_canvas.SyncRoot)
+            hit = _scene.HitTest(_view, _canvas.ToPixels(e.GetPosition(_canvas)))?.Hit;
+        if (hit is not ObjectHit objectHit || !BringMarioTo(objectHit))
+            SetFollow(true);
+    }
+
+    // The engine brings Mario to the object; false when there is no engine (the double-click then does its usual thing).
+    private bool BringMarioTo(ObjectHit objectHit)
+    {
+        if (_engine is not { } engine)
+            return false;
+        if (engine.PathBusy || !engine.ServerUp || !engine.BridgeUp)
+        {
+            Context.ReportError(engine.PathBusy ? "The engine is already working on the path: wait, or Stop (ENGINE section)."
+                : !engine.ServerUp ? "The engine server is not running (ENGINE section)." : "Not connected to Mupen yet (ENGINE section).");
+            return true;
+        }
+        var p = objectHit.Object.Position;
+        Context.ReportStatus($"The engine looks for the way to {objectHit.Title}.");
+        _ = engine.BringHereAsync(p.X, p.Y, p.Z);
+        return true;
     }
 
     private bool Is3D => _is3D && _view3D is not null;
@@ -224,6 +265,8 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
 
     public override void OnFrame(GameFrame frame)
     {
+        UpdatePlacement(frame);
+        RefreshLevelSection();
         if (Is3D)
         {
             _view3D!.OnFrame(frame);
@@ -273,7 +316,7 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
         _viewSettings.Set(Show3D, is3D);
         if (is3D && _view3D is null)
         {
-            _view3D = new Map3DView(Context, Context.Settings.Child("view3d"), VisibleLayers3D) { ExtendMenu = (menu, hit, point) => { AddToolMenuItems(menu, point); AddTrackMenuItems(menu, hit, point); AddEngineMenuItem(menu, point); } };
+            _view3D = new Map3DView(Context, Context.Settings.Child("view3d"), VisibleLayers3D) { ExtendMenu = (menu, hit, point) => { AddToolMenuItems(menu, point); AddTrackMenuItems(menu, hit, point); AddEngineMenuItem(menu, point); }, Placing = () => PlacementArmed, PlaceAt = PlaceMario3D, ObjectDoubleClicked = BringMarioTo };
             _host.Children.Add(_view3D);
         }
         _canvas.IsVisible = !is3D;
@@ -443,8 +486,15 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
             return;
 
         IMapHit? hit;
+        Vector2 world;
         lock (_canvas.SyncRoot)
-            hit = _scene.HitTest(_view, _canvas.ToPixels(e.GetPosition(_canvas)))?.Hit;
+        {
+            var at = _canvas.ToPixels(e.GetPosition(_canvas));
+            hit = _scene.HitTest(_view, at)?.Hit;
+            world = _view.ScreenToWorld(at);
+        }
+        if (PlaceMario2D(world))
+            return;
         if (hit is ObjectHit objectHit)
         {
             if ((e.KeyModifiers & (KeyModifiers.Control | KeyModifiers.Meta)) != 0)
@@ -528,10 +578,10 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
         return item;
     }
 
-    private void Teleport(bool onFloor)
+    private bool Teleport(bool onFloor)
     {
         if (Context.CurrentFrame is not { Mario: { } mario } frame)
-            return;
+            return false;
         float x = _menuWorld.X, z = _menuWorld.Y;
         float? y = null;
         if (onFloor)
@@ -543,10 +593,10 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
             else
             {
                 Context.ReportError("No floor under that point.");
-                return;
+                return false;
             }
         }
-        Context.Apply(MarioCommands.Teleport(frame, x, y, z), $"Mario teleported to ({x:0.#}, {y?.ToString("0.#", CultureInfo.InvariantCulture) ?? "same Y"}, {z:0.#})");
+        return Context.Apply(MarioCommands.Teleport(frame, x, y, z), $"Mario teleported to ({x:0.#}, {y?.ToString("0.#", CultureInfo.InvariantCulture) ?? "same Y"}, {z:0.#})");
     }
 
     private Control BuildSidePanel()
@@ -583,13 +633,14 @@ internal sealed partial class MapModuleView : ModuleView, IDisposable
         options2D.Children.Add(zoom);
         options2D.Children.Add(new TextBlock
         {
-            Text = "Wheel: zoom · drag: pan · double-click: follow Mario\nDrag Mario to move him · click an object to select it (Ctrl/⌘: add)\nRight-click: teleport, center, copy coordinates",
+            Text = "Wheel: zoom · drag: pan · double-click: follow Mario (on an object: the engine brings Mario there)\nDrag Mario to move him · click an object to select it (Ctrl/⌘: add)\nRight-click: teleport, center, copy coordinates",
             Opacity = 0.65,
             TextWrapping = TextWrapping.Wrap,
             Margin = new Thickness(0, 2, 0, 10),
         });
         _options2D = options2D;
         panel.Children.Add(options2D);
+        panel.Children.Add(BuildLevelSection());
 
         panel.Children.Add(new TextBlock { Text = "WHERE", Classes = { "title" }, Margin = new Thickness(0, 6, 0, 0) });
         panel.Children.Add(_info);

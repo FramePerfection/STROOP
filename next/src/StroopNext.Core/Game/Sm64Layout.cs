@@ -24,6 +24,16 @@ public static class Sm64Addresses
     public static readonly Versioned<uint> BlinkState = new(0x800F0A5C, 0x800EDBDC, null, null);
     public static readonly Versioned<uint> BlinkTimer = new(0x8032DF08, 0x8032CFA8, null, null);
     public static readonly Versioned<uint> Spawn = new(0x8033B4B0, 0x8033A160, null, null);
+
+    // level_update.c: what makes the game leave the level (see LevelWarp). JP has no name for sWarpCheckpointActive.
+    public static readonly Versioned<uint> PlayMode = new(0x8033B238, 0x80339EC8, null, null);
+    public static readonly Versioned<uint> TransitionTimer = new(0x8033B23C, 0x80339ECC, null, null);
+    public static readonly Versioned<uint> TransitionUpdate = new(0x8033B240, 0x80339ED0, null, null);
+    public static readonly Versioned<uint> WarpDestination = new(0x8033B248, 0x80339ED8, null, null);
+    public static readonly Versioned<uint> CurrentAct = new(0x8033BAC8, 0x8033A758, null, null);
+    public static readonly Versioned<uint> WarpCheckpointActive = new(0x8032D944, null, null, null);
+    public static readonly Versioned<uint> LevelToCourseNum = new(0x8032DD98, 0x8032CE38, null, null);
+    public static readonly Versioned<uint> WarpBhvSpawnTable = new(0x8032DDFC, 0x8032CE9C, null, null);
     public static readonly Versioned<uint> ArctanTable = new(0x8038B000, 0x8038B000, null, null);
 }
 

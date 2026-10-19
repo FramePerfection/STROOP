@@ -69,6 +69,17 @@ internal sealed class Map3DView : UserControl
 
     public Action<ContextMenu, IMapHit?, Vector3>? ExtendMenu { get; init; }
 
+    // While Placing says so, a left click is first offered to PlaceAt as the floor point under it (else what it hits);
+    // true: the click was used.
+    public Func<bool>? Placing { get; init; }
+
+    public Func<Vector3, bool>? PlaceAt { get; init; }
+
+    // A double-click on an object is first offered here; true: it was used (else the camera looks at it).
+    public Func<ObjectHit, bool>? ObjectDoubleClicked { get; init; }
+
+    internal void SetCursor(Cursor? cursor) => _gl.Cursor = cursor;
+
     public Map3DView(ModuleContext context, SettingsScope settings, Func<IEnumerable<(IMapLayer3D, SettingsScope)>> layers)
     {
         _context = context;
@@ -99,7 +110,16 @@ internal sealed class Map3DView : UserControl
         _gl.PointerMoved += OnPointerMoved;
         _gl.PointerReleased += OnPointerReleased;
         _gl.PointerWheelChanged += OnWheel;
-        _gl.DoubleTapped += (_, e) => LookAt(Pixels(e.GetPosition(_gl)));
+        _gl.DoubleTapped += (_, e) =>
+        {
+            var at = Pixels(e.GetPosition(_gl));
+            Hit3D? hit;
+            lock (_gl.SyncRoot)
+                hit = Picking.Pick(_scene, _camera, at);
+            if (hit?.Primitive.Hit is ObjectHit objectHit && ObjectDoubleClicked?.Invoke(objectHit) == true)
+                return;
+            LookAt(at);
+        };
         _gl.PointerExited += (_, _) => { _cursor = null; SetHovered(null); };
 
         _mode.SelectedIndex = (int)settings.Get(ModeSetting);
@@ -411,12 +431,17 @@ internal sealed class Map3DView : UserControl
             lock (_gl.SyncRoot)
                 ray = _camera.ScreenRay(at);
             _menuGround = _context.CurrentFrame is { } current ? Picking.TeleportTarget(current.Surfaces, ray) : null;
-            _menuPlane = null;
-            if (_menuHit is null && _menuGround is null && _context.CurrentFrame?.Mario?.Position is { } mario
-                && MathF.Abs(ray.Direction.Y) > 1e-4f && (mario.Y - ray.Origin.Y) / ray.Direction.Y is var t && t > 0)
-                _menuPlane = ray.Origin + ray.Direction * t;
+            _menuPlane = FallbackPoint(ray);
             ShowMenu();
             return;
+        }
+        if (Placing?.Invoke() == true && PlaceAt is { } placeAt && _context.CurrentFrame is { } placing)
+        {
+            Ray ray;
+            lock (_gl.SyncRoot)
+                ray = _camera.ScreenRay(at);
+            if ((Picking.TeleportTarget(placing.Surfaces, ray) ?? hit?.Point) is { } target && placeAt(target))
+                return;
         }
         if (hit?.Primitive.Hit is ObjectHit objectHit)
         {
@@ -486,6 +511,16 @@ internal sealed class Map3DView : UserControl
     private Vector3? _menuPlane;
 
     private Vector3? MenuPoint => _menuHit?.Point ?? _menuGround ?? _menuPlane;
+
+    // Used when the ray hits no geometry (black map, no level loaded, no Mario): the point where the
+    // ray meets the horizontal plane at Mario's height (0 without Mario), or straight ahead if it never does.
+    private Vector3 FallbackPoint(Ray ray)
+    {
+        float planeY = _context.CurrentFrame?.Mario?.Position.Y ?? 0;
+        if (MathF.Abs(ray.Direction.Y) > 1e-4f && (planeY - ray.Origin.Y) / ray.Direction.Y is var t && t > 0)
+            return ray.Origin + ray.Direction * t;
+        return ray.Origin + ray.Direction * (float)_camera.Distance;
+    }
 
     private void ShowMenu()
     {
