@@ -20,6 +20,10 @@
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4"/>
     </ItemGroup>
     <ItemGroup>
+        <!-- Legacy STROOP's object images (Mario panel, held objects): copied next to the app, loaded on demand. -->
+        <Content Include="..\..\..\STROOP\Resources\Object Images\*.png" LinkBase="Assets\Object Images" CopyToOutputDirectory="PreserveNewest" Visible="false"/>
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\StroopNext.Core\StroopNext.Core.csproj"/>
         <ProjectReference Include="..\StroopNext.Rendering\StroopNext.Rendering.csproj"/>
         <ProjectReference Include="..\StroopNext.Platform\StroopNext.Platform.csproj"/>

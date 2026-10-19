@@ -32,16 +32,14 @@ internal sealed class MarioView : ModuleView
     private static readonly Setting<bool> HolpRelative = new("holpRelative", "HOLP relative to facing yaw", true);
 
     private readonly VariableGrid _grid;
-    private readonly TextBlock _headline = new() { FontSize = 18, FontWeight = FontWeight.SemiBold, TextTrimming = TextTrimming.CharacterEllipsis };
-    private readonly TextBlock _subline = new() { Classes = { "muted", "mono" }, FontSize = 12 };
+    private readonly MarioCard _card = new();
 
     public MarioView(ModuleContext context) : base(context)
     {
         _grid = new VariableGrid(context, MarioVariables.All, MarioVariables.Groups, MarioVariables.CollapsedByDefault);
         _grid.PickRequested += (variable, anchor) => ShowActionPicker(variable, anchor);
 
-        var heading = new StackPanel { Spacing = 2, Margin = new Thickness(12, 10, 12, 8) };
-        heading.Children.AddRange([_headline, _subline]);
+        var heading = _card;
         var table = new Border { Classes = { "card" }, Padding = new Thickness(0, 0, 0, 4), Child = _grid, ClipToBounds = true };
         var left = new DockPanel { Margin = new Thickness(8, 0, 0, 8) };
         DockPanel.SetDock(heading, Dock.Top);
@@ -61,14 +59,7 @@ internal sealed class MarioView : ModuleView
     public override void OnFrame(GameFrame frame)
     {
         _grid.Render(frame);
-        string headline = frame.Mario is { } m
-            ? frame.Services.Actions.NameOf(m.Action) ?? $"action 0x{m.Action:X8}"
-            : frame.IsKnownGame ? "Mario not available" : "No SM64 game detected";
-        string subline = frame.Mario is { } mario ? $"action 0x{mario.Action:X8}  ·  timer {frame.GlobalTimer}" : $"timer {frame.GlobalTimer}";
-        if (_headline.Text != headline)
-            _headline.Text = headline;
-        if (_subline.Text != subline)
-            _subline.Text = subline;
+        _card.Update(frame);
     }
 
     public override void OnDisplayOptionsChanged()
