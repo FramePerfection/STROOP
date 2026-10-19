@@ -210,7 +210,7 @@ internal sealed class EnginePanel : UserControl, IDisposable
         var port = new NumericUpDown { Minimum = 1024, Maximum = 65535, Increment = 1, FormatString = "0", Value = _engine.Port, Width = 120, HorizontalAlignment = HorizontalAlignment.Left };
         var budget = new NumericUpDown { Minimum = 1, Maximum = 600, Increment = 1, FormatString = "0", Value = (decimal)_s.Get(EngineService.BudgetSetting), Width = 120, HorizontalAlignment = HorizontalAlignment.Left };
         budget.ValueChanged += (_, _) => _s.Set(EngineService.BudgetSetting, (double)(budget.Value ?? 60));
-        var rom = new TextBox { Text = _s.Get(EngineService.RomSetting), PlaceholderText = "empty: Super Mario 64 (US)" };
+        var rom = new TextBox { Text = _s.Get(EngineService.RomSetting), PlaceholderText = "empty: the ROM Mupen runs" };
         rom.LostFocus += (_, _) => _s.Set(EngineService.RomSetting, rom.Text?.Trim().Trim('"') ?? "");
         var auto = new CheckBox { Content = "Start with Mupen (Connect)", IsChecked = _engine.AutoConnect };
         auto.IsCheckedChanged += (_, _) => _engine.AutoConnect = auto.IsChecked == true;
@@ -249,7 +249,7 @@ internal sealed class EnginePanel : UserControl, IDisposable
         {
             Savestate = st, Movie = movie, Output = output,
             Task = _s.Get(TaskSetting) is { Length: > 0 } t ? t : null,
-            Rom = _s.Get(EngineService.RomSetting) is { Length: > 0 } r ? r : null,
+            Rom = _engine.Rom(),
             Minutes = (double)(_minutes.Value ?? 0),
             KeepGoing = _s.Get(KeepGoingSetting), CpuOnly = _s.Get(CpuSetting),
             NoMupenCheck = _s.Get(NoMupenSetting), NoCompetitors = _s.Get(NoCompetitorsSetting),

@@ -52,6 +52,7 @@ internal sealed class EngineService : IDisposable
     private Process? _server;
     private Process? _search;
     private CancellationTokenSource? _searchPoll;
+    private string? _mupenRom;
     private double _liveSince;
     private int _tick;
     private bool _disposed;
@@ -310,9 +311,15 @@ internal sealed class EngineService : IDisposable
     {
         MupenProcess = source is ProcessRamSource p && p.Name.StartsWith("mupen", StringComparison.OrdinalIgnoreCase) ? p.ProcessId : null;
         if (MupenProcess is int mupenPid)
+        {
             _ = Task.Run(() => LoadAnimationsNear(mupenPid));
+            _mupenRom = MupenRom.Detect(mupenPid);
+            if (_mupenRom is { } rom && _settings.Get(RomSetting) is not { Length: > 0 })
+                Log($"STROOP: ROM {rom} (from Mupen)");
+        }
         if (MupenProcess is null)
         {
+            _mupenRom = null;
             BridgeUp = false;
             AutoText = null;
             if (LiveAttached)
@@ -338,6 +345,14 @@ internal sealed class EngineService : IDisposable
         {
             AutoText = "Starting bridge.lua in Mupen…";
             Notify();
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(BridgeStatusFile)!);
+            }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+            {
+                Log($"STROOP: cannot create the bridge folder: {e.Message}");
+            }
             Log($"STROOP: starting {Setup.BridgeLua} in Mupen (Lua menu)");
             string? error = await MupenLua.StartScriptAsync(processId, Setup.BridgeLua).ConfigureAwait(false);
             for (int i = 0; error is null && i < 30 && !BridgeAlive(); i++)
@@ -399,7 +414,23 @@ internal sealed class EngineService : IDisposable
         Notify();
     }
 
-    private string? Rom() => _settings.Get(RomSetting) is { Length: > 0 } rom ? rom : null;
+    private string? _warnedMissingRom;
+
+    // Detected again at each use: the ROM can change inside the same Mupen process.
+    public string? Rom()
+    {
+        if (_settings.Get(RomSetting) is { Length: > 0 } rom)
+            return rom;
+        if (MupenProcess is not int pid)
+            return _mupenRom;
+        _mupenRom = MupenRom.Detect(pid);
+        if (_mupenRom is null && MupenRom.MissingName is { } name && name != _warnedMissingRom)
+        {
+            _warnedMissingRom = name;
+            Say($"Mupen runs {name} but its ROM file was not found: set it in Engine → ROM hack.", true);
+        }
+        return _mupenRom;
+    }
 
 
     public string? PathStart { get; private set; }
