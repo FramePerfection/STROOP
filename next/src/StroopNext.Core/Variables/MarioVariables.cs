@@ -90,7 +90,7 @@ public static class MarioVariables
             new Variable<float>("mario.heightAboveFloor", "Height Above Floor", Position, Formats.Float,
                 f => f.Mario?.HeightAboveFloor,
                 (f, v, p) => Y.Write(f, f.Mario!.FloorY + v, p)),
-            Field(O.CeilingY, Primitives.F32).ToVariable("mario.ceilingY", "Ceiling Y", Position, Formats.Float, writable: false),
+            Field(O.CeilingY, Primitives.F32).ToVariable("mario.ceilingY", "Ceiling Y", Position, Formats.Float),
             Field(O.WaterLevel, Primitives.S16).ToVariable("mario.waterLevel", "Water Level", Position, Formats.Integer),
             Field(O.PeakY, Primitives.F32).ToVariable("mario.peakY", "Peak Y", Position, Formats.Float),
             new Variable<float>("mario.fallHeight", "Fall Height", Position, Formats.Float, f => f.Mario?.FallHeight,
@@ -125,15 +125,24 @@ public static class MarioVariables
             Field(O.IntendedMag, Primitives.F32).ToVariable("mario.intendedMag", "Intended Magnitude", Speed, Formats.Float),
             new Variable<float>("mario.flyingEnergy", "Flying Energy", Speed, Formats.Float,
                 f => f.Mario is { } m ? (float)MarioMath.FlyingEnergy(m.HSpeed, m.Position.Y) : null,
-                description: "H speed² + (4/π)·Y: roughly conserved while flying."),
+                (f, v, p) =>
+                {
+                    var m = f.Mario!;
+                    double h = Math.Sqrt(Math.Max(0, v - MarioMath.FlyingEnergy(0, m.Position.Y)));
+                    HSpeed.Write(f, (float)(m.HSpeed < 0 ? -h : h), p);
+                },
+                description: "H speed² + (4/π)·Y: roughly conserved while flying. Writing it sets the H speed."),
 
             FacingYaw.ToVariable("mario.facingYaw", "Facing Yaw", Angles, Formats.Angle),
             Field(O.IntendedYaw, Primitives.U16).ToVariable("mario.intendedYaw", "Intended Yaw", Angles, Formats.Angle),
             new Variable<int>("mario.dyawIntendedFacing", "Δ Intended − Facing", Angles, Formats.SignedAngle,
-                f => f.Mario is { } m ? Angle.Difference(m.IntendedYaw, m.FacingYaw) : null),
+                f => f.Mario is { } m ? Angle.Difference(m.IntendedYaw, m.FacingYaw) : null,
+                (f, v, p) => FacingYaw.Write(f, (f.Mario!.IntendedYaw - v) & 0xFFFF, p),
+                description: "Writing it turns Mario (the facing yaw), the intended yaw staying."),
             new Variable<int>("mario.dyawIntendedBack", "Δ Intended − Back", Angles, Formats.SignedAngle,
                 f => f.Mario is { } m ? Angle.Difference(m.IntendedYaw, m.FacingYaw + 0x8000) : null,
-                description: "Δ between the intended yaw and Mario's back: what backwards movement compares."),
+                (f, v, p) => FacingYaw.Write(f, (f.Mario!.IntendedYaw - v - 0x8000) & 0xFFFF, p),
+                description: "Δ between the intended yaw and Mario's back: what backwards movement compares. Writing it turns Mario."),
             Field(O.SlideYaw, Primitives.U16).ToVariable("mario.slideYaw", "Moving (Slide) Yaw", Angles, Formats.Angle),
             new Variable<int>("mario.slidingYaw", "Sliding Velocity Yaw", Angles, Formats.Angle, f => f.Mario?.SlidingYaw,
                 (f, v, p) =>
@@ -146,7 +155,13 @@ public static class MarioVariables
                 description: "Direction of the sliding velocity. Writing it turns the slide, keeping its speed."),
             Field(O.TwirlYaw, Primitives.U16).ToVariable("mario.twirlYaw", "Twirl Yaw", Angles, Formats.Angle),
             new Variable<int>("mario.twirlYawMod2048", "Twirl Yaw mod 2048", Angles, Formats.Integer,
-                f => Field(O.TwirlYaw, Primitives.U16).Read(f) is int t ? t % 2048 : null),
+                f => Field(O.TwirlYaw, Primitives.U16).Read(f) is int t ? t % 2048 : null,
+                (f, v, p) =>
+                {
+                    var twirl = Field(O.TwirlYaw, Primitives.U16);
+                    if (twirl.Read(f) is int t)
+                        twirl.Write(f, (t - t % 2048 + ((v % 2048) + 2048) % 2048) & 0xFFFF, p);
+                }),
             Field(O.FloorYaw, Primitives.U16).ToVariable("mario.floorYaw", "Floor Yaw", Angles, Formats.Angle),
             Field(O.Pitch, Primitives.S16).ToVariable("mario.pitch", "Pitch", Angles, Formats.SignedAngle),
             Field(O.Roll, Primitives.S16).ToVariable("mario.roll", "Roll", Angles, Formats.SignedAngle),
@@ -185,19 +200,34 @@ public static class MarioVariables
             HolpZ.ToVariable("mario.holpZ", "HOLP Z", Holp, Formats.Float),
             Field(O.HolpType, Primitives.U8).ToVariable("mario.holpType", "HOLP Type", Holp, Formats.Integer),
             new Variable<float>("mario.holpDistance", "Distance to HOLP", Holp, Formats.Float,
-                f => f.Mario is { } m && HolpPosition(f) is { } h ? System.Numerics.Vector3.Distance(m.Position, h) : null),
+                f => f.Mario is { } m && HolpPosition(f) is { } h ? System.Numerics.Vector3.Distance(m.Position, h) : null,
+                (f, v, p) =>
+                {
+                    if (f.Mario is not { } m || HolpPosition(f) is not { } h)
+                        return;
+                    var d = h - m.Position;
+                    var to = d.Length() > 0 ? m.Position + d * (v / d.Length()) : m.Position + new System.Numerics.Vector3(0, v, 0);
+                    HolpX.Write(f, to.X, p);
+                    HolpY.Write(f, to.Y, p);
+                    HolpZ.Write(f, to.Z, p);
+                },
+                description: "Writing it moves the HOLP along the line from Mario."),
             new Variable<float>("mario.holpHDistance", "H Distance to HOLP", Holp, Formats.Float,
                 f => f.Mario is { } m && HolpPosition(f) is { } h ? MathF.Sqrt((h.X - m.Position.X) * (h.X - m.Position.X) + (h.Z - m.Position.Z) * (h.Z - m.Position.Z)) : null,
                 (f, v, p) => PlaceMarioAroundHolp(f, v, null, p),
                 description: "Writing it moves Mario along the line to the HOLP."),
             new Variable<float>("mario.holpDY", "Y Distance to HOLP", Holp, Formats.Float,
-                f => f.Mario is { } m && HolpPosition(f) is { } h ? h.Y - m.Position.Y : null),
+                f => f.Mario is { } m && HolpPosition(f) is { } h ? h.Y - m.Position.Y : null,
+                (f, v, p) => HolpY.Write(f, f.Mario!.Position.Y + v, p),
+                description: "Writing it moves the HOLP vertically."),
             new Variable<int>("mario.holpAngle", "Angle Mario → HOLP", Holp, Formats.Angle,
                 f => f.Mario is { } m && HolpPosition(f) is { } h ? Angle.Towards(m.Position.X, m.Position.Z, h.X, h.Z) : null,
                 (f, v, p) => PlaceMarioAroundHolp(f, null, v, p),
                 description: "Writing it moves Mario around the HOLP, keeping the distance."),
             new Variable<int>("mario.holpDAngle", "Δ Angle to HOLP − Facing", Holp, Formats.SignedAngle,
-                f => f.Mario is { } m && HolpPosition(f) is { } h ? Angle.Difference(Angle.Towards(m.Position.X, m.Position.Z, h.X, h.Z), m.FacingYaw) : null),
+                f => f.Mario is { } m && HolpPosition(f) is { } h ? Angle.Difference(Angle.Towards(m.Position.X, m.Position.Z, h.X, h.Z), m.FacingYaw) : null,
+                (f, v, p) => PlaceMarioAroundHolp(f, null, (f.Mario!.FacingYaw + v) & 0xFFFF, p),
+                description: "Writing it moves Mario around the HOLP, keeping the distance and his facing."),
 
             ObjectReference.Variable("mario.stoodOnObject", "Stood-On Object", Objects, Bases.Global(l => l.StoodOnObjectPointer), 0),
             ObjectReference.Variable("mario.heldObject", "Held Object", Objects, Bases.Mario, O.HeldObject),
@@ -207,11 +237,15 @@ public static class MarioVariables
             ObjectReference.Variable("mario.visualObject", "Visual Mario Object", Objects, Bases.Mario, O.MarioObject),
             ObjectReference.Variable("mario.effectiveObject", "Effective Mario Object", Objects, Bases.Global(l => l.MarioObjectPointer), 0),
 
-            Field(O.FloorTri, Primitives.U32).ToVariable("mario.floorTri", "Floor Triangle", Collision, Formats.Pointer, writable: false),
-            new Variable<int>("mario.floorType", "Floor Type", Collision, Formats.Integer, f => FloorTri(f) is uint t ? f.Ram.S16(t) : null),
-            new Variable<float>("mario.floorNormalY", "Floor Normal Y", Collision, Formats.Float, f => FloorTri(f) is uint t ? f.Ram.F32(t + 0x20) : null),
-            Field(O.WallTri, Primitives.U32).ToVariable("mario.wallTri", "Wall Triangle", Collision, Formats.Pointer, writable: false),
-            Field(O.CeilingTri, Primitives.U32).ToVariable("mario.ceilingTri", "Ceiling Triangle", Collision, Formats.Pointer, writable: false),
+            Field(O.FloorTri, Primitives.U32).ToVariable("mario.floorTri", "Floor Triangle", Collision, Formats.Pointer),
+            new Variable<int>("mario.floorType", "Floor Type", Collision, Formats.Integer, f => FloorTri(f) is uint t ? f.Ram.S16(t) : null,
+                (f, v, p) => { if (FloorTri(f) is uint t) p.WriteS16(t, (short)v); },
+                description: "Writing it changes the floor triangle itself (for the whole level until it reloads)."),
+            new Variable<float>("mario.floorNormalY", "Floor Normal Y", Collision, Formats.Float, f => FloorTri(f) is uint t ? f.Ram.F32(t + 0x20) : null,
+                (f, v, p) => { if (FloorTri(f) is uint t) p.WriteF32(t + 0x20, v); },
+                description: "Writing it changes the floor triangle itself (for the whole level until it reloads)."),
+            Field(O.WallTri, Primitives.U32).ToVariable("mario.wallTri", "Wall Triangle", Collision, Formats.Pointer),
+            Field(O.CeilingTri, Primitives.U32).ToVariable("mario.ceilingTri", "Ceiling Triangle", Collision, Formats.Pointer),
             Field(O.FloorFootstep, Primitives.S16).ToVariable("mario.floorFootstep", "Floor Footstep Type", Collision, Formats.Integer),
 
             Field(O.Health, Primitives.S16).ToVariable("mario.health", "Health (raw)", Status, Formats.Integer),
@@ -243,13 +277,28 @@ public static class MarioVariables
             Global(Sm64Addresses.BlinkState, Primitives.S32).ToVariable("game.blinkState", "Blinking State", Status, Formats.Integer),
             Global(Sm64Addresses.BlinkTimer, Primitives.S16).ToVariable("game.blinkTimer", "Blinking Timer", Status, Formats.Integer),
             new MemoryField<uint>(Bases.Global(l => l.GlobalTimer), 0, Primitives.U32)
-                .ToVariable("game.globalTimer", "Global Timer", Status, new GlobalTimerFormat(), writable: false),
+                .ToVariable("game.globalTimer", "Global Timer", Status, new GlobalTimerFormat()),
 
             new Variable<float>("mario.speedMultiplier", "Speed Multiplier", Advanced, Formats.Float, SpeedMultiplier,
-                description: "The factor Mario's ground speed is multiplied by next frame (friction + stick input). NaN off known floors."),
+                (f, v, p) =>
+                {
+                    if (f.Mario is not { } m || FloorTri(f) is not uint tri)
+                        return;
+                    double a = TriangleInfo.Default.FrictionMultiplier(f.Ram.S16(tri));
+                    double cos = GameTrig.InGameCosine(m.IntendedYaw - m.SlideYaw);
+                    double k = cos < 0 && m.HSpeed >= 0 ? 0.5 + 0.5 * m.HSpeed / 100 : 1;
+                    if (Math.Abs(cos * k) > 1e-9)
+                        p.WriteF32(m.Address + O.IntendedMag, (float)Math.Clamp((v - a) / (cos * k * 0.02) * 32, 0, 32));
+                },
+                description: "The factor Mario's ground speed is multiplied by next frame (friction + stick input). NaN off known floors. Writing it sets the intended magnitude (0-32)."),
             new Variable<int>("mario.igDYaw", "IG DYaw", Advanced, Formats.Integer,
                 f => f.Mario is { } m && InGameDeltaAngle(f, m.FacingYaw) is int d ? d : null,
-                description: "Facing yaw minus the yaw the game's atan2 table rounds it to: the error from in-game angles."),
+                (f, v, p) =>
+                {
+                    if (f.Mario is { } m && InGameDeltaAngle(f, m.FacingYaw) is int d)
+                        FacingYaw.Write(f, (m.FacingYaw - d + v) & 0xFFFF, p);
+                },
+                description: "Facing yaw minus the yaw the game's atan2 table rounds it to: the error from in-game angles. Writing it moves the facing yaw off that rounded yaw."),
             new Variable<float>("mario.rotDispX", "Rotation Disp. X", Advanced, Formats.Float, f => RotationDisplacement(f)?.X,
                 description: "How far the platform Mario stands on carries him next frame, by its spin."),
             new Variable<float>("mario.rotDispY", "Rotation Disp. Y", Advanced, Formats.Float, f => RotationDisplacement(f)?.Y),

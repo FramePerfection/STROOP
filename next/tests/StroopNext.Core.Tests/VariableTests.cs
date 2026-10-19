@@ -37,7 +37,7 @@ public class VariableTests
         var frame = TestRam.Us().Frame();
         Assert.False(V("mario.x").TryWrite(frame, "abc", DisplayOptions.Default, new RamPatch(), out string? error));
         Assert.Contains("not a valid value", error);
-        Assert.False(V("mario.ceilingY").TryWrite(frame, "1", DisplayOptions.Default, new RamPatch(), out error));
+        Assert.False(V("mario.rotDispX").TryWrite(frame, "1", DisplayOptions.Default, new RamPatch(), out error));
         Assert.Contains("read-only", error);
     }
 
