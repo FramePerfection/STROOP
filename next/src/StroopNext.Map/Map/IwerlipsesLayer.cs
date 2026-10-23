@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Map3D;
 using StroopNext.Settings;
 
@@ -52,7 +53,7 @@ public sealed record IwerlipseHit(Iwerlipse Ellipse) : IMapHit
 
 public sealed class IwerlipsesLayer : MapLayer, IMapLayer3D
 {
-    public static readonly MapColor Color = MapColor.Rgb(0xE5, 0x53, 0x4B);
+    public static readonly Argb8Color Color = Argb8Color.Rgb(0xE5, 0x53, 0x4B);
 
     public override string Id => "iwerlipses";
     public override string Name => "Iwerlipses";

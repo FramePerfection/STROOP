@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using StroopNext.Game;
+using StroopNext.Ghosts;
 using StroopNext.Map;
 using StroopNext.Memory;
 using StroopNext.Platform;
@@ -95,7 +96,7 @@ internal static class GhostServe
                 Log(hack.Restore(frame) is { } restore ? $"restored: {Apply(source, restore)} ({restore.Writes.Count} writes)" : "nothing to restore");
             if (mode is "play" or "playnow" && ghost is not null)
             {
-                var feed = hack.Feed(frame, [(ghost, MapColor.Rgb(0, 200, 0))], transparent: false);
+                var feed = hack.Feed(frame, [(ghost, Argb8Color.Rgb(0, 200, 0))], transparent: false);
                 if (!feed.IsEmpty)
                     Apply(source, feed);
             }

@@ -1,6 +1,7 @@
 using System.Numerics;
 using SkiaSharp;
 using StroopNext.Map;
+using StroopNext.Graphics;
 
 namespace StroopNext.Rendering.Skia;
 
@@ -58,7 +59,7 @@ internal sealed class SkiaMapRenderer : IDisposable
     public int BackgroundReuses { get; private set; }
     public TimeSpan BackgroundTime { get; private set; }
 
-    private static SKColor C(MapColor c) => new(c.R, c.G, c.B, c.A);
+    private static SKColor C(Argb8Color  c) => new(c.R, c.G, c.B, c.A);
     private static SKPoint P(Vector2 v) => new(v.X, v.Y);
 
     public void Draw(SKCanvas canvas, MapScene scene, MapView view, MapPrimitive? hovered)
@@ -140,7 +141,7 @@ internal sealed class SkiaMapRenderer : IDisposable
                 _path.Close();
                 if (emphasis)
                 {
-                    Stroke(canvas, _path, new MapColor(255, 255, 255, 255), 2.5f);
+                    Stroke(canvas, _path, new Argb8Color(255, 255, 255, 255), 2.5f);
                     break;
                 }
                 if (polygon.Fill.IsVisible)
@@ -157,7 +158,7 @@ internal sealed class SkiaMapRenderer : IDisposable
                 _path.MoveTo(P(view.WorldToScreen(line.Points[0])));
                 for (int i = 1; i < line.Points.Length; i++)
                     _path.LineTo(P(view.WorldToScreen(line.Points[i])));
-                Stroke(canvas, _path, emphasis ? new MapColor(255, 255, 255, 255) : line.Stroke, emphasis ? line.StrokePx + 2 : line.StrokePx);
+                Stroke(canvas, _path, emphasis ? new Argb8Color(255, 255, 255, 255) : line.Stroke, emphasis ? line.StrokePx + 2 : line.StrokePx);
                 break;
 
             case MapCircle circle:
@@ -206,7 +207,7 @@ internal sealed class SkiaMapRenderer : IDisposable
         }
     }
 
-    private void Stroke(SKCanvas canvas, SKPath path, MapColor color, float width)
+    private void Stroke(SKCanvas canvas, SKPath path, Argb8Color color, float width)
     {
         _stroke.Color = C(color);
         _stroke.StrokeWidth = width;
@@ -269,7 +270,7 @@ internal sealed class SkiaMapRenderer : IDisposable
         }
         if (emphasis)
         {
-            Stroke(canvas, _path, new MapColor(255, 255, 255, 255), 2.5f);
+            Stroke(canvas, _path, new Argb8Color(255, 255, 255, 255), 2.5f);
             return;
         }
         if (marker.Fill.IsVisible)
@@ -299,7 +300,7 @@ internal sealed class SkiaMapRenderer : IDisposable
 
     private void DrawNorth(SKCanvas canvas, MapView view)
     {
-        var arrow = new MapArrow(view.ScreenToWorld(new Vector2(view.Width - 30, 46)), 0x8000, 22, MapColor.Rgb(230, 230, 240));
+        var arrow = new MapArrow(view.ScreenToWorld(new Vector2(view.Width - 30, 46)), 0x8000, 22, Argb8Color.Rgb(230, 230, 240));
         DrawArrow(canvas, view, arrow);
         _text.Color = SKColors.White;
         canvas.DrawText("−Z", view.Width - 40, 18, _boldFont, _text);

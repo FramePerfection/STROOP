@@ -1,5 +1,6 @@
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Session;
 using StroopNext.Settings;
 
@@ -12,23 +13,23 @@ internal static class Xz
 
 public static class MapPalette
 {
-    public static readonly MapColor Floor = MapColor.Rgb(0x4F, 0x86, 0xE0);
-    public static readonly MapColor ObjectFloor = MapColor.Rgb(0x2E, 0xC4, 0xB6);
-    public static readonly MapColor Wall = MapColor.Rgb(0x3C, 0xB0, 0x4B);
-    public static readonly MapColor ObjectWall = MapColor.Rgb(0xA6, 0xD8, 0x4A);
-    public static readonly MapColor Ceiling = MapColor.Rgb(0xE0, 0x4A, 0x4A);
-    public static readonly MapColor Highlight = MapColor.Rgb(0xFF, 0xD4, 0x2A);
-    public static readonly MapColor Mario = MapColor.Rgb(0xE5, 0x33, 0x33);
-    public static readonly MapColor Object = MapColor.Rgb(0xF0, 0x8C, 0x2E);
-    public static readonly MapColor Hurtbox = MapColor.Rgb(0xC0, 0x4C, 0xE0);
-    public static readonly MapColor Intended = MapColor.Rgb(0xF5, 0xD0, 0x20);
-    public static readonly MapColor Sliding = MapColor.Rgb(0x3A, 0x9B, 0xF0);
-    public static readonly MapColor Moving = MapColor.Rgb(0x44, 0xC0, 0x66);
-    public static readonly MapColor Path = MapColor.Rgb(0xFF, 0x7A, 0xC8);
-    public static readonly MapColor Camera = MapColor.Rgb(0x9A, 0x9A, 0xA8);
-    public static readonly MapColor Grid = MapColor.Rgb(0x80, 0x80, 0x90);
-    public static readonly MapColor White = MapColor.Rgb(255, 255, 255);
-    public static readonly MapColor Black = MapColor.Rgb(0, 0, 0);
+    public static readonly Argb8Color Floor = Argb8Color.Rgb(0x4F, 0x86, 0xE0);
+    public static readonly Argb8Color ObjectFloor = Argb8Color.Rgb(0x2E, 0xC4, 0xB6);
+    public static readonly Argb8Color Wall = Argb8Color.Rgb(0x3C, 0xB0, 0x4B);
+    public static readonly Argb8Color ObjectWall = Argb8Color.Rgb(0xA6, 0xD8, 0x4A);
+    public static readonly Argb8Color Ceiling = Argb8Color.Rgb(0xE0, 0x4A, 0x4A);
+    public static readonly Argb8Color Highlight = Argb8Color.Rgb(0xFF, 0xD4, 0x2A);
+    public static readonly Argb8Color Mario = Argb8Color.Rgb(0xE5, 0x33, 0x33);
+    public static readonly Argb8Color Object = Argb8Color.Rgb(0xF0, 0x8C, 0x2E);
+    public static readonly Argb8Color Hurtbox = Argb8Color.Rgb(0xC0, 0x4C, 0xE0);
+    public static readonly Argb8Color Intended = Argb8Color.Rgb(0xF5, 0xD0, 0x20);
+    public static readonly Argb8Color Sliding = Argb8Color.Rgb(0x3A, 0x9B, 0xF0);
+    public static readonly Argb8Color Moving = Argb8Color.Rgb(0x44, 0xC0, 0x66);
+    public static readonly Argb8Color Path = Argb8Color.Rgb(0xFF, 0x7A, 0xC8);
+    public static readonly Argb8Color Camera = Argb8Color.Rgb(0x9A, 0x9A, 0xA8);
+    public static readonly Argb8Color Grid = Argb8Color.Rgb(0x80, 0x80, 0x90);
+    public static readonly Argb8Color White = Argb8Color.Rgb(255, 255, 255);
+    public static readonly Argb8Color Black = Argb8Color.Rgb(0, 0, 0);
 }
 
 public static class StandardLayers
@@ -106,7 +107,7 @@ public sealed partial class GridLayer : MapLayer
             c.Scene.AddBackground(new MapPolyline([new(min.X, (float)z), new(max.X, (float)z)], z == 0 ? axis : minor));
 
         if (bounds)
-            c.Scene.AddBackground(new MapPolygon([new(-8192, -8192), new(8192, -8192), new(8192, 8192), new(-8192, 8192)], MapColor.Transparent, MapPalette.Grid.WithAlpha(0.7), 1.5f));
+            c.Scene.AddBackground(new MapPolygon([new(-8192, -8192), new(8192, -8192), new(8192, 8192), new(-8192, 8192)], Argb8Color.Transparent, MapPalette.Grid.WithAlpha(0.7), 1.5f));
 
         double unitAlpha = c.Settings.Get(UnitGrid) ? UnitGridAlpha(c.View.Scale) : 0;
         if (unitAlpha > 0 && spacing > 1 && max.X - min.X < 1200 && max.Y - min.Y < 1200)
@@ -142,7 +143,7 @@ public abstract partial class HorizontalSurfaceLayer : MapLayer
 
     protected abstract SurfaceClass Class { get; }
     protected abstract uint CurrentTriangle(MarioState mario);
-    protected abstract MapColor ColorFor(Surface s, MarioState? mario);
+    protected abstract Argb8Color ColorFor(Surface s, MarioState? mario);
 
     protected virtual object? ColorKey(MarioState? mario) => null;
 
@@ -188,7 +189,7 @@ public abstract partial class HorizontalSurfaceLayer : MapLayer
         MapPolygon Polygon(Surface s)
         {
             var color = ColorFor(s, mario);
-            return new MapPolygon(s.PointsXZ, color.WithAlpha(opacity), outline ? color.Lerp(MapPalette.Black, 0.4).WithAlpha(Math.Min(1, opacity + 0.2)) : MapColor.Transparent) { Hit = SurfaceHit.Of(s) };
+            return new MapPolygon(s.PointsXZ, color.WithAlpha(opacity), outline ? color.Lerp(MapPalette.Black, 0.4).WithAlpha(Math.Min(1, opacity + 0.2)) : Argb8Color.Transparent) { Hit = SurfaceHit.Of(s) };
         }
 
         foreach (var s in _sortedStatic)
@@ -196,7 +197,7 @@ public abstract partial class HorizontalSurfaceLayer : MapLayer
             {
                 c.Scene.AddBackground(Polygon(s));
                 if (units && UnitsShape(s, viewMin, viewMax) is { } shape)
-                    c.Scene.AddBackground(new MapPolygon(shape, MapColor.Transparent, MapPalette.White.WithAlpha(0.55), 1));
+                    c.Scene.AddBackground(new MapPolygon(shape, Argb8Color.Transparent, MapPalette.White.WithAlpha(0.55), 1));
             }
 
         if (objects)
@@ -268,7 +269,7 @@ public sealed partial class FloorsLayer : HorizontalSurfaceLayer
 
     protected override object? ColorKey(MarioState? mario) => _shading ? mario?.Position.Y : null;
 
-    protected override MapColor ColorFor(Surface s, MarioState? mario)
+    protected override Argb8Color ColorFor(Surface s, MarioState? mario)
     {
         var color = s.IsStatic ? MapPalette.Floor : MapPalette.ObjectFloor;
         if (!_shading || mario is null)
@@ -287,7 +288,7 @@ public sealed partial class CeilingsLayer : HorizontalSurfaceLayer
     public override bool VisibleByDefault => false;
     protected override SurfaceClass Class => SurfaceClass.Ceiling;
     protected override uint CurrentTriangle(MarioState mario) => mario.CeilingTri;
-    protected override MapColor ColorFor(Surface s, MarioState? mario) => MapPalette.Ceiling;
+    protected override Argb8Color ColorFor(Surface s, MarioState? mario) => MapPalette.Ceiling;
 }
 
 public sealed partial class WallsLayer : MapLayer
@@ -526,12 +527,12 @@ public sealed partial class ObjectsLayer : MapLayer
             {
                 var h = Xz.Of(o.Home);
                 c.Scene.Add(new MapPolyline([h, p], MapPalette.Object.WithAlpha(0.6), 1));
-                c.Scene.Add(new MapMarker(h, 6, MarkerShape.Diamond, MapColor.Transparent, MapPalette.Object));
+                c.Scene.Add(new MapMarker(h, 6, MarkerShape.Diamond, Argb8Color.Transparent, MapPalette.Object));
             }
             if (effective && o.HitboxRadius > 0)
-                c.Scene.Add(new MapCircle(p, o.HitboxRadius + MarioState.HitboxRadius, MapColor.Transparent, stroke.WithAlpha(0.7), 1));
+                c.Scene.Add(new MapCircle(p, o.HitboxRadius + MarioState.HitboxRadius, Argb8Color.Transparent, stroke.WithAlpha(0.7), 1));
             if (hurtboxes && o.HurtboxRadius > 0)
-                c.Scene.Add(new MapCircle(p, o.HurtboxRadius, MapColor.Transparent, MapPalette.Hurtbox.WithAlpha(0.8)));
+                c.Scene.Add(new MapCircle(p, o.HurtboxRadius, Argb8Color.Transparent, MapPalette.Hurtbox.WithAlpha(0.8)));
             if (hitboxes && o.HitboxRadius > 0)
                 c.Scene.Add(new MapCircle(p, o.HitboxRadius, MapPalette.Object.WithAlpha(selected ? 0.35 : 0.18), stroke, selected ? 3 : 1.5f) { Hit = hit });
             if (moving)
@@ -583,7 +584,7 @@ public sealed partial class MarioLayer : MapLayer
         var hit = new MarioHit(m, c.Frame.Services.Actions.NameOf(m.Action));
 
         if (c.Settings.Get(ShowWallRadius))
-            c.Scene.Add(new MapCircle(p, MarioState.WallHitboxRadius, MapColor.Transparent, MapPalette.Mario.WithAlpha(0.6)));
+            c.Scene.Add(new MapCircle(p, MarioState.WallHitboxRadius, Argb8Color.Transparent, MapPalette.Mario.WithAlpha(0.6)));
         if (c.Settings.Get(ShowHitbox))
             c.Scene.Add(new MapCircle(p, MarioState.HitboxRadius, MapPalette.Mario.WithAlpha(0.2), MapPalette.Mario, 1.5f) { Hit = hit });
         bool speedLength = c.Settings.Get(SpeedLength);
@@ -608,7 +609,7 @@ public sealed partial class HolpLayer : MapLayer
     public override string Id => "holp";
     public override string Name => "HOLP";
 
-    public static readonly MapColor HolpColor = MapColor.Rgb(0x3D, 0xD6, 0xF5);
+    public static readonly Argb8Color HolpColor = Argb8Color.Rgb(0x3D, 0xD6, 0xF5);
 
     public override void Build(MapContext c)
     {
@@ -659,7 +660,7 @@ public sealed partial class PathLayer : MapLayer
                 continue;
             float? moved = i == 0 ? null : Vector2.Distance(points[i], points[i - 1]);
             double age = (double)(count - 1 - i) / count;
-            c.Scene.Add(new MapMarker(points[i], 5, MarkerShape.Circle, MapPalette.Path.WithAlpha(1 - age * 0.7), MapColor.Transparent)
+            c.Scene.Add(new MapMarker(points[i], 5, MarkerShape.Circle, MapPalette.Path.WithAlpha(1 - age * 0.7), Argb8Color.Transparent)
             {
                 Hit = new PathSampleHit(recent[i].GlobalTimer, recent[i].Value, moved),
             });

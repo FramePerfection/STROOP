@@ -1,3 +1,4 @@
+using StroopNext.Graphics;
 using System.Numerics;
 using StroopNext.Map;
 using StroopNext.Map3D;
@@ -63,7 +64,7 @@ public class SideViewTests
     {
         var camera = Side(SideAxis.AlongZ, 0, cut: 100);
         var scene = new Scene3D();
-        var color = MapColor.Rgb(255, 255, 255);
+        var color = Argb8Color.Rgb(255, 255, 255);
         void Quad(float z) => scene.Add(new Triangle3D(new(-5000 + 100, -5000, z), new(5000 + 100, -5000, z), new(100, 5000, z), color));
         Quad(200 + 1000);
         Quad(200 - 50);

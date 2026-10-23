@@ -1,5 +1,6 @@
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Map;
 using StroopNext.Map3D;
 using StroopNext.Session;
@@ -92,8 +93,8 @@ public class Map3DTests
         var cylinderHit = new CameraHit(new CameraState(default, default, 2));
         var target = camera.Target;
         Assert.True(scene.BeginBackground(this, "level"));
-        scene.AddBackground(new Triangle3D(target + new Vector3(-500, 0, -500), target + new Vector3(500, 0, -500), target + new Vector3(0, 0, 500), new MapColor(255, 0, 0, 255)) { Hit = floorHit });
-        scene.Add(new Cylinder3D(target, 50, 100, new MapColor(128, 255, 0, 0)) { Hit = cylinderHit });
+        scene.AddBackground(new Triangle3D(target + new Vector3(-500, 0, -500), target + new Vector3(500, 0, -500), target + new Vector3(0, 0, 500), new Argb8Color(255, 0, 0, 255)) { Hit = floorHit });
+        scene.Add(new Cylinder3D(target, 50, 100, new Argb8Color(128, 255, 0, 0)) { Hit = cylinderHit });
         var center = camera.Project(target)!.Value;
 
         var hit = Picking.Pick(scene, camera, center)!.Value;
@@ -102,7 +103,7 @@ public class Map3DTests
         Assert.Equal(50, Vector2.Distance(new(hit.Point.X, hit.Point.Z), new(target.X, target.Z)), 1);
 
         var pointHit = new CameraHit(new CameraState(default, default, 3));
-        scene.Add(new Point3D(target + new Vector3(0, 0, -150), 6, new MapColor(255, 255, 255, 255)) { Hit = pointHit });
+        scene.Add(new Point3D(target + new Vector3(0, 0, -150), 6, new Argb8Color(255, 255, 255, 255)) { Hit = pointHit });
         var dot = camera.Project(target + new Vector3(0, 0, -150))!.Value;
         Assert.Same(pointHit, Picking.Pick(scene, camera, dot + new Vector2(3, 0))!.Value.Primitive.Hit);
     }
@@ -111,18 +112,18 @@ public class Map3DTests
     public void Tessellation_routes_primitives_to_their_pass()
     {
         var buffers = new MeshBuffers();
-        buffers.Add(new Triangle3D(Vector3.Zero, Vector3.UnitX, Vector3.UnitZ, new MapColor(255, 10, 20, 30)));
-        buffers.Add(new Triangle3D(Vector3.Zero, Vector3.UnitX, Vector3.UnitZ, new MapColor(100, 10, 20, 30)));
-        buffers.Add(new Cylinder3D(Vector3.Zero, 10, 20, new MapColor(255, 1, 2, 3), Segments: 8));
-        buffers.Add(new Line3D([Vector3.Zero, Vector3.UnitX, Vector3.UnitY], new MapColor(255, 1, 2, 3)));
-        buffers.Add(new Point3D(Vector3.Zero, 5, new MapColor(255, 1, 2, 3)));
-        buffers.Add(new Arrow3D(Vector3.Zero, 0x4000, 100, 10, new MapColor(255, 1, 2, 3)));
+        buffers.Add(new Triangle3D(Vector3.Zero, Vector3.UnitX, Vector3.UnitZ, new Argb8Color(255, 10, 20, 30)));
+        buffers.Add(new Triangle3D(Vector3.Zero, Vector3.UnitX, Vector3.UnitZ, new Argb8Color(100, 10, 20, 30)));
+        buffers.Add(new Cylinder3D(Vector3.Zero, 10, 20, new Argb8Color(255, 1, 2, 3), Segments: 8));
+        buffers.Add(new Line3D([Vector3.Zero, Vector3.UnitX, Vector3.UnitY], new Argb8Color(255, 1, 2, 3)));
+        buffers.Add(new Point3D(Vector3.Zero, 5, new Argb8Color(255, 1, 2, 3)));
+        buffers.Add(new Arrow3D(Vector3.Zero, 0x4000, 100, 10, new Argb8Color(255, 1, 2, 3)));
 
         Assert.Equal(3 + 8 * 12 + 9, buffers.Opaque.Count);
         Assert.Equal(3, buffers.Transparent.Count);
         Assert.Equal(4 + 8 * 4, buffers.Lines.Count);
         Assert.Equal(1, buffers.Points.Count);
-        Assert.Equal(0xFF140A00u, MeshBuffers.Pack(new MapColor(255, 0, 10, 20)));
+        Assert.Equal(0xFF140A00u, MeshBuffers.Pack(new Argb8Color(255, 0, 10, 20)));
         Assert.Equal(new Vector3(0, -1, 0), buffers.Opaque.Array[0].Normal);
 
         buffers.Clear();

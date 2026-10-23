@@ -25,7 +25,11 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\StroopNext.Core\StroopNext.Core.csproj"/>
+        <ProjectReference Include="..\StroopNext.Graphics\StroopNext.Graphics.csproj"/>
+        <ProjectReference Include="..\StroopNext.Map\StroopNext.Map.csproj"/>
+        <ProjectReference Include="..\StroopNext.Ghosts\StroopNext.Ghosts.csproj"/>
         <ProjectReference Include="..\StroopNext.Rendering\StroopNext.Rendering.csproj"/>
+        <ProjectReference Include="..\StroopNext.TasEngine\StroopNext.TasEngine.csproj"/>
         <ProjectReference Include="..\StroopNext.Platform\StroopNext.Platform.csproj"/>
     </ItemGroup>
 </Project>

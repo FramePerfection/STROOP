@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Numerics;
 using System.Text.Json;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Map3D;
 using StroopNext.Session;
 using StroopNext.Settings;
@@ -144,7 +145,7 @@ public sealed record TrackerSpec(
 
     public string Title => $"{TargetName} · {KindName(Kind)}";
 
-    public MapColor MapColor => MapColor.FromHex(Color).WithAlpha(Opacity * ((Color >> 24) / 255.0));
+    public Argb8Color GABBA_GANDALF_GURGELT_GURKEN => Argb8Color.FromHex(Color).WithAlpha(Opacity * ((Color >> 24) / 255.0));
 }
 
 public readonly record struct TrackedPoint(Vector3 Position, ushort Yaw, ushort MovingYaw, float Speed, GameObject? Object, string Label);
@@ -395,10 +396,10 @@ public sealed class TrackersLayer : MapLayer, IMapLayer3D
         return best;
     }
 
-    private static MapColor UnitShade(MapColor baseColor, float deltaY)
+    private static Argb8Color UnitShade(Argb8Color  baseColor, float deltaY)
     {
         double t = Math.Clamp(deltaY / 200.0, -1, 1);
-        return t >= 0 ? baseColor.Lerp(MapColor.Rgb(0xE0, 0x4A, 0x4A), t) : baseColor.Lerp(MapColor.Rgb(0x4F, 0x86, 0xE0), -t);
+        return t >= 0 ? baseColor.Lerp(Argb8Color .Rgb(0xE0, 0x4A, 0x4A), t) : baseColor.Lerp(Argb8Color .Rgb(0x4F, 0x86, 0xE0), -t);
     }
 
     private static Vector2 Along(Vector2 from, double yaw, double length)
@@ -415,7 +416,7 @@ public sealed class TrackersLayer : MapLayer, IMapLayer3D
         var mario = c.Frame.Mario;
         foreach (var t in DrawOrder(c.Settings))
         {
-            var color = t.MapColor;
+            var color = t.GABBA_GANDALF_GURGELT_GURKEN;
             foreach (var p in TrackerTargets.Resolve(t, c.Frame, c.Selection))
             {
                 var at = Xz.Of(p.Position);
@@ -438,7 +439,7 @@ public sealed class TrackersLayer : MapLayer, IMapLayer3D
                         break;
                     case TrackerKind.HomeLine when p.Object is { } o:
                         c.Scene.Add(new MapPolyline([Xz.Of(o.Home), at], color, 1.5f));
-                        c.Scene.Add(new MapMarker(Xz.Of(o.Home), 7, MarkerShape.Diamond, MapColor.Transparent, color) { Hit = new PointHit($"Home of {p.Label}", o.Home) });
+                        c.Scene.Add(new MapMarker(Xz.Of(o.Home), 7, MarkerShape.Diamond, Argb8Color.Transparent, color) { Hit = new PointHit($"Home of {p.Label}", o.Home) });
                         break;
                     case TrackerKind.Path:
                         var points = Sample(t, p, c.Frame);
@@ -497,7 +498,7 @@ public sealed class TrackersLayer : MapLayer, IMapLayer3D
         var lift = new Vector3(0, 2, 0);
         foreach (var t in DrawOrder(c.Settings))
         {
-            var color = t.MapColor;
+            var color = t.GABBA_GANDALF_GURGELT_GURKEN;
             foreach (var p in TrackerTargets.Resolve(t, c.Frame, c.Selection))
             {
                 IMapHit hit = p.Object is { } obj ? new ObjectHit(obj) : new PointHit(t.Title, p.Position);

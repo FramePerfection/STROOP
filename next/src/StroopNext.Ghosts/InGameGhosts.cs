@@ -1,9 +1,9 @@
+using StroopNext.Game;
 using System.Buffers.Binary;
-using StroopNext.Map;
 using StroopNext.Memory;
 using StroopNext.Session;
 
-namespace StroopNext.Game;
+namespace StroopNext.Ghosts;
 
 public sealed class PatchSnapshot
 {
@@ -307,7 +307,7 @@ public sealed class InGameGhosts
             Write(address, bytes);
         }
 
-        Write(Base + LightsOffset, Lights(MapColor.Rgb(255, 0, 0)));
+        Write(Base + LightsOffset, Lights(Argb8Color .Rgb(255, 0, 0)));
 
         var (inCode, outCode) = BodySwitchers(version);
         Write(Base + InCode, inCode);
@@ -578,13 +578,13 @@ public sealed class InGameGhosts
         return bytes;
     }
 
-    public static byte[] Lights(MapColor color)
+    public static byte[] Lights(Argb8Color color)
     {
         byte r = color.R, g = color.G, b = color.B, r2 = (byte)(r / 2), g2 = (byte)(g / 2), b2 = (byte)(b / 2);
         return [r2, g2, b2, 0, r2, g2, b2, 0, r, g, b, 0, r, g, b, 0, 0x28, 0x28, 0x28, 0, 0, 0, 0, 0];
     }
 
-    public RamPatch Feed(GameFrame frame, IReadOnlyList<(Ghost Ghost, MapColor Color)> ghosts, bool transparent)
+    public RamPatch Feed(GameFrame frame, IReadOnlyList<(Ghost Ghost, Argb8Color Color)> ghosts, bool transparent)
     {
         var patch = new RamPatch();
         var state = State(frame);

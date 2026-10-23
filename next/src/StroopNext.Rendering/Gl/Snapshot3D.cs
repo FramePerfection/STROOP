@@ -6,6 +6,7 @@ using System.Numerics;
 using OpenTK.Graphics.OpenGL4;
 using SkiaSharp;
 using StroopNext.Game;
+using StroopNext.Ghosts;
 using StroopNext.Map;
 using StroopNext.Map3D;
 using StroopNext.Memory;

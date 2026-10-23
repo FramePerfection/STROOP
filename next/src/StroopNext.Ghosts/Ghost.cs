@@ -1,7 +1,7 @@
 using System.Numerics;
 using StroopNext.Session;
 
-namespace StroopNext.Game;
+namespace StroopNext.Ghosts;
 
 public readonly record struct GhostFrame(Vector3 Position, short AnimationIndex, short AnimationFrame, uint Pitch, uint Yaw, uint Roll)
 {

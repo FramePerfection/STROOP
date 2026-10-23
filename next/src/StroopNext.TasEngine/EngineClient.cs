@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Text;
 using System.Text.Json.Nodes;
 
-namespace StroopNext.Engine;
+namespace StroopNext.TasEngine;
 
 public sealed class EngineException(string message, int status = 0) : Exception(message)
 {

@@ -11,6 +11,9 @@
     <ItemGroup>
         <Using Include="Xunit"/>
         <ProjectReference Include="..\..\src\StroopNext.Core\StroopNext.Core.csproj"/>
+        <ProjectReference Include="..\..\src\StroopNext.Graphics\StroopNext.Graphics.csproj"/>
+        <ProjectReference Include="..\..\src\StroopNext.Map\StroopNext.Map.csproj"/>
+        <ProjectReference Include="..\..\src\StroopNext.TasEngine\StroopNext.TasEngine.csproj"/>
         <ProjectReference Include="..\..\src\StroopNext.Platform\StroopNext.Platform.csproj"/>
     </ItemGroup>
 </Project>

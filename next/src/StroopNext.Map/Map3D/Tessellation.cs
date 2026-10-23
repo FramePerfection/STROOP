@@ -1,3 +1,4 @@
+using StroopNext.Graphics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using StroopNext.Map;
@@ -31,24 +32,6 @@ public struct PointVertex(Vector3 position, uint color, float size)
     public float SizePx = size;
 }
 
-public sealed class VertexList<T> where T : struct
-{
-    private T[] _items = new T[256];
-
-    public int Count { get; private set; }
-    public T[] Array => _items;
-    public ReadOnlySpan<T> Span => _items.AsSpan(0, Count);
-
-    public void Add(in T item)
-    {
-        if (Count == _items.Length)
-            System.Array.Resize(ref _items, _items.Length * 2);
-        _items[Count++] = item;
-    }
-
-    public void Clear() => Count = 0;
-}
-
 public sealed class MeshBuffers
 {
     private static readonly Vector2 NoEdges = new(1f / 3, 1f / 3);
@@ -67,7 +50,7 @@ public sealed class MeshBuffers
         Points.Clear();
     }
 
-    public static uint Pack(MapColor c) => c.R | ((uint)c.G << 8) | ((uint)c.B << 16) | ((uint)c.A << 24);
+    public static uint Pack(Argb8Color  c) => c.R | ((uint)c.G << 8) | ((uint)c.B << 16) | ((uint)c.A << 24);
 
     public void AddAll(IEnumerable<Primitive3D> primitives)
     {
@@ -102,9 +85,9 @@ public sealed class MeshBuffers
         }
     }
 
-    private VertexList<MeshVertex> PassFor(MapColor c) => c.A < 255 ? Transparent : Opaque;
+    private VertexList<MeshVertex> PassFor(Argb8Color  c) => c.A < 255 ? Transparent : Opaque;
 
-    private void Triangle(Vector3 a, Vector3 b, Vector3 c, MapColor color, bool edges)
+    private void Triangle(Vector3 a, Vector3 b, Vector3 c, Argb8Color color, bool edges)
     {
         var normal = Vector3.Cross(b - a, c - a);
         normal = normal.LengthSquared() > 0 ? Vector3.Normalize(normal) : Vector3.UnitY;
@@ -119,7 +102,7 @@ public sealed class MeshBuffers
     {
         var pass = PassFor(c.Color);
         uint color = Pack(c.Color);
-        uint ring = Pack(c.Color.Lerp(new MapColor(255, 0, 0, 0), 0.35) with { A = 255 });
+        uint ring = Pack(c.Color.Lerp(new Argb8Color(255, 0, 0, 0), 0.35) with { A = 255 });
         int n = Math.Max(6, c.Segments);
         var top = c.Base + new Vector3(0, c.Height, 0);
         Vector3 Rim(int i, Vector3 center)

@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Headless;
-using Avalonia.Themes.Fluent;
 using Avalonia.Threading;
 using StroopNext.Desktop.Map;
 

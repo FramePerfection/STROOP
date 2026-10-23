@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\StroopNext.Core\StroopNext.Core.csproj"/>
+        <ProjectReference Include="..\StroopNext.Graphics\StroopNext.Graphics.csproj"/>
+        <ProjectReference Include="..\StroopNext.Map\StroopNext.Map.csproj"/>
+        <ProjectReference Include="..\StroopNext.Ghosts\StroopNext.Ghosts.csproj"/>
+    </ItemGroup>
+</Project>

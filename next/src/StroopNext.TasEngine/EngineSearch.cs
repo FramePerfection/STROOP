@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace StroopNext.Engine;
+namespace StroopNext.TasEngine;
 
 public sealed record SearchOptions
 {

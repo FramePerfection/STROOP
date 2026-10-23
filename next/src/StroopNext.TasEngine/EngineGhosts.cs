@@ -1,8 +1,8 @@
 using System.Numerics;
 using System.Text.Json.Nodes;
-using StroopNext.Game;
+using StroopNext.Ghosts;
 
-namespace StroopNext.Engine;
+namespace StroopNext.TasEngine;
 
 public static class EngineGhosts
 {

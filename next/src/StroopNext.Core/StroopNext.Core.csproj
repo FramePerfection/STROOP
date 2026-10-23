@@ -10,8 +10,6 @@
         <EmbeddedResource Include="..\..\..\STROOP\Config\MarioActions.xml" LogicalName="StroopNext.Data.MarioActions.xml"/>
         <EmbeddedResource Include="..\..\..\STROOP\Config\ObjectAssociations.xml" LogicalName="StroopNext.Data.ObjectAssociations.xml"/>
         <EmbeddedResource Include="..\..\..\STROOP\Config\TriangleInfo.xml" LogicalName="StroopNext.Data.TriangleInfo.xml"/>
-        <EmbeddedResource Include="..\..\..\STROOP\Resources\Hacks\GhostHackUS.hck" LogicalName="StroopNext.Data.GhostHackUS.hck"/>
-        <EmbeddedResource Include="..\..\..\STROOP\Resources\Hacks\GhostHackJP.hck" LogicalName="StroopNext.Data.GhostHackJP.hck"/>
         <EmbeddedResource Include="..\..\..\STROOP\Mappings\MappingUS.map" LogicalName="StroopNext.Data.MappingUS.map"/>
         <EmbeddedResource Include="..\..\..\STROOP\Mappings\MappingJP.map" LogicalName="StroopNext.Data.MappingJP.map"/>
     </ItemGroup>

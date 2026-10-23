@@ -8,7 +8,7 @@ namespace StroopNext.Rendering.Gl;
 internal sealed class GlMapRenderer : IDisposable
 {
     public static readonly Vector3 ClearColor = new(0x1B / 255f, 0x1C / 255f, 0x24 / 255f);
-    private static readonly MapColor HoverColor = new(110, 255, 255, 255);
+    private static readonly Argb8Color HoverColor = new(110, 255, 255, 255);
 
     private readonly ShaderProgram _mesh;
     private readonly ShaderProgram _lines;
@@ -122,7 +122,7 @@ internal sealed class GlMapRenderer : IDisposable
     {
         Triangle3D t => t with { Color = HoverColor },
         Cylinder3D c => c with { Color = HoverColor },
-        Point3D d => d with { Color = new MapColor(255, 255, 255, 255), SizePx = d.SizePx + 4 },
+        Point3D d => d with { Color = new Argb8Color(255, 255, 255, 255), SizePx = d.SizePx + 4 },
         _ => p,
     };
 

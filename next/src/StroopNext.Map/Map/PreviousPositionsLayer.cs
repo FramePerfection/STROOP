@@ -1,3 +1,4 @@
+using StroopNext.Graphics;
 using System.Globalization;
 using System.Numerics;
 using StroopNext.Map3D;
@@ -22,11 +23,11 @@ public static class PreviousPositions
         "Quarter step: intended", "Quarter step: after wall check A", "Quarter step: after wall check B", "Quarter step: after floor check",
     ];
 
-    public static readonly MapColor[] StageColors =
+    public static readonly Argb8Color[] StageColors =
     [
-        MapColor.Rgb(0xFF, 0x8F, 0xC8), MapColor.Rgb(0xF5, 0xD0, 0x20), MapColor.Rgb(0xA0, 0x60, 0xE0), MapColor.Rgb(0xA0, 0xA0, 0xA8),
-        MapColor.Rgb(0x3D, 0xD6, 0xC5), MapColor.Rgb(0x44, 0xC0, 0x66), MapColor.Rgb(0xA0, 0x6A, 0x3A),
-        MapColor.Rgb(0xF0, 0x8C, 0x2E), MapColor.Rgb(0x3D, 0xD6, 0xC5), MapColor.Rgb(0x44, 0xC0, 0x66), MapColor.Rgb(0x3A, 0x9B, 0xF0),
+        Argb8Color.Rgb(0xFF, 0x8F, 0xC8), Argb8Color.Rgb(0xF5, 0xD0, 0x20), Argb8Color.Rgb(0xA0, 0x60, 0xE0), Argb8Color.Rgb(0xA0, 0xA0, 0xA8),
+        Argb8Color.Rgb(0x3D, 0xD6, 0xC5), Argb8Color.Rgb(0x44, 0xC0, 0x66), Argb8Color.Rgb(0xA0, 0x6A, 0x3A),
+        Argb8Color.Rgb(0xF0, 0x8C, 0x2E), Argb8Color.Rgb(0x3D, 0xD6, 0xC5), Argb8Color.Rgb(0x44, 0xC0, 0x66), Argb8Color.Rgb(0x3A, 0x9B, 0xF0),
     ];
 
     public static List<PreviousPosition> Read(GameFrame frame, int frames, bool skipIdentical)
@@ -116,7 +117,7 @@ public sealed class PreviousPositionsLayer : MapLayer, IMapLayer3D
             var at = Xz.Of(p.Position);
             c.Scene.Add(new MapMarker(at, p.QuarterStep is null ? 8 : 6, MarkerShape.Triangle, PreviousPositions.StageColors[p.Stage], MapPalette.Black, p.Angle) { Hit = new PreviousPositionHit(p) });
             if (truncated && p.EarlyQuarterSteps is int e)
-                c.Scene.Add(new MapLabel(at, $"{e}/4", MapColor.Rgb(0xFF, 0x50, 0x50)));
+                c.Scene.Add(new MapLabel(at, $"{e}/4", Argb8Color.Rgb(0xFF, 0x50, 0x50)));
         }
     }
 

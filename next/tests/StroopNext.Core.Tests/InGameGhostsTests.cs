@@ -1,6 +1,8 @@
 using System.Buffers.Binary;
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Ghosts;
+using StroopNext.Graphics;
 using StroopNext.Map;
 using StroopNext.Memory;
 
@@ -164,7 +166,7 @@ public class InGameGhostsTests
         var ghost = new Ghost { PlaybackBaseFrame = 900 };
         for (uint key = 98; key <= 110; key++)
             ghost.Frames[key] = new GhostFrame(new Vector3(key, 2, 3), 0x2A, (short)key, 0x10, 0x4000 + key, 0x20);
-        var feed = ghosts.Feed(F(ram), [(ghost, MapColor.Rgb(0, 255, 0))], transparent: true);
+        var feed = ghosts.Feed(F(ram), [(ghost, Argb8Color.Rgb(0, 255, 0))], transparent: true);
         feed.ApplyTo(ram.Bytes);
         var image = new RamImage(ram.Bytes);
 
@@ -177,13 +179,13 @@ public class InGameGhostsTests
         Assert.Equal(0x20, image.U16(slot + 0x14));
         Assert.Equal(100, image.U16(slot + 0x16));
         Assert.Equal(0u, image.U32(slot + 0x18));
-        Assert.Equal(InGameGhosts.Lights(MapColor.Rgb(0, 255, 0)), Enumerable.Range(0, 24).Select(i => image.U8(Base + 0x8320 + (uint)i)).ToArray());
+        Assert.Equal(InGameGhosts.Lights(Argb8Color .Rgb(0, 255, 0)), Enumerable.Range(0, 24).Select(i => image.U8(Base + 0x8320 + (uint)i)).ToArray());
 
         Assert.DoesNotContain(feed.Writes, w => w.Address == 0x80000061);
 
         var later = new Ghost { PlaybackBaseFrame = 5000 };
         later.Frames[0] = new GhostFrame(Vector3.One, 0, 0, 0, 0, 0);
-        ghosts.Feed(F(ram), [(later, MapColor.Rgb(0, 0, 255))], true).ApplyTo(ram.Bytes);
+        ghosts.Feed(F(ram), [(later, Argb8Color.Rgb(0, 0, 255))], true).ApplyTo(ram.Bytes);
         Assert.Equal(30000f, new RamImage(ram.Bytes).F32(slot));
     }
 
@@ -194,7 +196,7 @@ public class InGameGhostsTests
         var ghosts = new InGameGhosts();
         ghosts.Install(F(ram), out _)!.ApplyTo(ram.Bytes);
         W(ram, p => p.WriteU32(Base + 0x7FF8, Base + 0x7FF8 - 0x64));
-        var feed = ghosts.Feed(F(ram), [(new Ghost(), MapColor.Rgb(1, 1, 1))], transparent: true);
+        var feed = ghosts.Feed(F(ram), [(new Ghost(), Argb8Color.Rgb(1, 1, 1))], transparent: true);
         Assert.Contains(feed.Writes, w => w.Address == Base + 0x7FF8 - 0x64 + 0x61 && w.Bytes[0] == 1);
         Assert.Equal(InGameGhostState.Running, ghosts.State(F(ram)));
     }
@@ -209,7 +211,7 @@ public class InGameGhostsTests
         ghosts.RequestDisable().ApplyTo(ram.Bytes);
         W(ram, p => p.WriteU32(Base + 0x7FF8, Base + 0x7FF8 - 0x64));
         Assert.Equal(InGameGhostState.Disabling, ghosts.State(F(ram)));
-        Assert.True(ghosts.Feed(F(ram), [(new Ghost(), MapColor.Rgb(1, 1, 1))], true).IsEmpty);
+        Assert.True(ghosts.Feed(F(ram), [(new Ghost(), Argb8Color.Rgb(1, 1, 1))], true).IsEmpty);
         Assert.False(ghosts.ReadyToRestore(F(ram)));
         W(ram, p => p.WriteU32(Base + 0x7FF8, 0));
         Assert.True(ghosts.ReadyToRestore(F(ram)));

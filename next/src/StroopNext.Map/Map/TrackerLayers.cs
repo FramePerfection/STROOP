@@ -1,5 +1,6 @@
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Map3D;
 using StroopNext.Settings;
 
@@ -8,7 +9,7 @@ namespace StroopNext.Map;
 
 internal static class Shapes3D
 {
-    public static void Box(Scene3D scene, Vector3 min, Vector3 max, MapColor color)
+    public static void Box(Scene3D scene, Vector3 min, Vector3 max, Argb8Color color)
     {
         Vector3 c000 = min, c111 = max;
         Vector3 c100 = new(max.X, min.Y, min.Z), c010 = new(min.X, max.Y, min.Z), c001 = new(min.X, min.Y, max.Z);
@@ -31,7 +32,7 @@ internal static class Shapes3D
         scene.Add(new Line3D([c010, c011], edge));
     }
 
-    public static void ColumnGrid(Scene3D scene, double minX, double maxX, double minZ, double maxZ, double spacing, float[] levels, MapColor color)
+    public static void ColumnGrid(Scene3D scene, double minX, double maxX, double minZ, double maxZ, double spacing, float[] levels, Argb8Color color)
     {
         int nx = (int)Math.Min(64, Math.Round((maxX - minX) / spacing) + 1), nz = (int)Math.Min(64, Math.Round((maxZ - minZ) / spacing) + 1);
         foreach (float y in levels)
@@ -69,8 +70,8 @@ public sealed class CellsLayer : MapLayer, IMapLayer3D
 
     public CellsLayer() => CurrentCell = Declare(new Setting<bool>("current", "Highlight Mario's cell", true));
 
-    private static readonly MapColor GridColor = new(170, 0, 0, 0);
-    private static readonly MapColor CellColor = MapColor.Rgb(255, 230, 40);
+    private static readonly Argb8Color GridColor = new(170, 0, 0, 0);
+    private static readonly Argb8Color CellColor = Argb8Color.Rgb(255, 230, 40);
 
     public override void Build(MapContext c)
     {
@@ -114,7 +115,7 @@ public sealed class ParallelUniversesLayer : MapLayer, IMapLayer3D
     public ParallelUniversesLayer() =>
         LevelCopies = Declare(new Setting<bool>("copies", "Draw the level in neighbouring PUs (3D)", true, "The 3×3 PUs around the camera, drawn with GPU instancing."));
 
-    private static readonly MapColor PuColor = new(255, 255, 51, 255);
+    private static readonly Argb8Color PuColor = new(255, 255, 51, 255);
 
     public override void Build(MapContext c)
     {
@@ -165,7 +166,7 @@ public sealed class CurrentUnitLayer : MapLayer, IMapLayer3D
     public override string Name => "Current unit";
     public override bool VisibleByDefault => false;
 
-    private static readonly MapColor UnitColor = MapColor.Rgb(170, 60, 255);
+    private static readonly Argb8Color UnitColor = Argb8Color.Rgb(170, 60, 255);
 
     private static (float X0, float X1) Span1(float v)
     {
@@ -201,7 +202,7 @@ public sealed class FacingDividerLayer : MapLayer, IMapLayer3D
     public override bool VisibleByDefault => false;
 
     public readonly Setting<int> Size;
-    private static readonly MapColor DividerColor = MapColor.Rgb(230, 40, 40);
+    private static readonly Argb8Color DividerColor = Argb8Color.Rgb(230, 40, 40);
 
     public FacingDividerLayer() => Size = Declare(new Setting<int>("size", "Half length", 1000) { Range = (10, 20000, 50) });
 
@@ -241,7 +242,7 @@ public sealed class SectorLayer : MapLayer, IMapLayer3D
 
     public readonly Setting<int> Radius;
     public readonly Setting<int> HalfAngle;
-    private static readonly MapColor SectorColor = MapColor.Rgb(255, 220, 40);
+    private static readonly Argb8Color SectorColor = Argb8Color.Rgb(255, 220, 40);
 
     public SectorLayer()
     {
@@ -295,7 +296,7 @@ public sealed class NextPositionsLayer : MapLayer, IMapLayer3D
     public readonly Setting<int> Frames;
     public readonly Setting<bool> QuarterSteps;
     public readonly Setting<bool> MarioModels;
-    private static readonly MapColor PathColor = MapColor.Rgb(255, 235, 60);
+    private static readonly Argb8Color PathColor = Argb8Color.Rgb(255, 235, 60);
 
     public NextPositionsLayer()
     {

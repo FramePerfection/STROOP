@@ -1,3 +1,4 @@
+using StroopNext.Graphics;
 using System.Numerics;
 using StroopNext.Map;
 
@@ -8,15 +9,15 @@ public abstract record Primitive3D
     public IMapHit? Hit { get; init; }
 }
 
-public sealed record Triangle3D(Vector3 A, Vector3 B, Vector3 C, MapColor Color, bool Edges = true) : Primitive3D;
+public sealed record Triangle3D(Vector3 A, Vector3 B, Vector3 C, Argb8Color Color, bool Edges = true) : Primitive3D;
 
-public sealed record Cylinder3D(Vector3 Base, float Radius, float Height, MapColor Color, int Segments = 24) : Primitive3D;
+public sealed record Cylinder3D(Vector3 Base, float Radius, float Height, Argb8Color Color, int Segments = 24) : Primitive3D;
 
-public sealed record Line3D(Vector3[] Points, MapColor Color) : Primitive3D;
+public sealed record Line3D(Vector3[] Points, Argb8Color Color) : Primitive3D;
 
-public sealed record Arrow3D(Vector3 Origin, double Yaw, float Length, float Width, MapColor Color) : Primitive3D;
+public sealed record Arrow3D(Vector3 Origin, double Yaw, float Length, float Width, Argb8Color Color) : Primitive3D;
 
-public sealed record Point3D(Vector3 Position, float SizePx, MapColor Color) : Primitive3D;
+public sealed record Point3D(Vector3 Position, float SizePx, Argb8Color Color) : Primitive3D;
 
 public sealed record GameVisualsOptions(bool Level, bool Objects, bool Sky, bool Fog, bool CullBackFaces, float MaxY, bool KeepMarioVisible = true)
 {

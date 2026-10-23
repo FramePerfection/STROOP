@@ -1,5 +1,6 @@
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Map;
 using StroopNext.Session;
 using StroopNext.Settings;
@@ -93,11 +94,11 @@ public class MapTests
     {
         var view = View();
         var scene = new MapScene();
-        var bottom = new MapCircle(view.Center, 100, MapColor.Transparent, MapColor.Transparent) { Hit = new CameraHit(new CameraState(default, default, 0)) };
-        var top = new MapMarker(view.Center, 10, MarkerShape.Square, MapColor.Transparent, MapColor.Transparent) { Hit = new CameraHit(new CameraState(default, default, 1)) };
+        var bottom = new MapCircle(view.Center, 100, Argb8Color.Transparent, Argb8Color.Transparent) { Hit = new CameraHit(new CameraState(default, default, 0)) };
+        var top = new MapMarker(view.Center, 10, MarkerShape.Square, Argb8Color.Transparent, Argb8Color.Transparent) { Hit = new CameraHit(new CameraState(default, default, 1)) };
         scene.Add(bottom);
         scene.Add(top);
-        scene.Add(new MapCircle(view.Center, 1000, MapColor.Transparent, MapColor.Transparent));
+        scene.Add(new MapCircle(view.Center, 1000, Argb8Color.Transparent, Argb8Color.Transparent));
 
         Assert.Same(top, scene.HitTest(view, new Vector2(400, 300)));
         Assert.Same(bottom, scene.HitTest(view, new Vector2(400 + 40, 300)));

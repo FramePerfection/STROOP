@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Map3D;
 using StroopNext.Session;
 
@@ -44,8 +45,8 @@ public sealed record MeasureHit(Measurement Measurement) : IMapHit
 
 public sealed class MapToolsLayer : MapLayer, IMapLayer3D
 {
-    public static readonly MapColor MeasureColor = MapColor.Rgb(0xFF, 0xFF, 0xFF);
-    public static readonly MapColor DrawingColor = MapColor.Rgb(0xFF, 0x7A, 0xC8);
+    public static readonly Argb8Color MeasureColor = Argb8Color.Rgb(0xFF, 0xFF, 0xFF);
+    public static readonly Argb8Color DrawingColor = Argb8Color.Rgb(0xFF, 0x7A, 0xC8);
 
     private readonly List<List<Vector2>> _strokes = new();
 
@@ -108,7 +109,7 @@ public sealed class MapToolsLayer : MapLayer, IMapLayer3D
             if (stroke.Count >= 2)
                 c.Scene.Add(new MapPolyline(stroke.ToArray(), DrawingColor, 2.5f));
             else if (stroke.Count == 1)
-                c.Scene.Add(new MapMarker(stroke[0], 4, MarkerShape.Circle, DrawingColor, MapColor.Transparent));
+                c.Scene.Add(new MapMarker(stroke[0], 4, MarkerShape.Circle, DrawingColor, Argb8Color.Transparent));
 
         if (Start?.Resolve(c.Frame) is { } lone && End is null)
             c.Scene.Add(new MapMarker(Xz.Of(lone), 9, MarkerShape.Diamond, MeasureColor, MapPalette.Black) { Hit = new PointHit("Tape measure start", lone) });
@@ -120,8 +121,8 @@ public sealed class MapToolsLayer : MapLayer, IMapLayer3D
         c.Scene.Add(new MapPolyline([a, b], MapPalette.Black.WithAlpha(0.6), 4));
         c.Scene.Add(new MapPolyline([a, b], MeasureColor, 2) { Hit = hit });
         var corner = new Vector2(b.X, a.Y);
-        c.Scene.Add(new MapPolyline([a, corner], MapColor.Rgb(0xE5, 0x53, 0x4B).WithAlpha(0.7), 1.5f));
-        c.Scene.Add(new MapPolyline([corner, b], MapColor.Rgb(0x3A, 0x9B, 0xF0).WithAlpha(0.7), 1.5f));
+        c.Scene.Add(new MapPolyline([a, corner], Argb8Color.Rgb(0xE5, 0x53, 0x4B).WithAlpha(0.7), 1.5f));
+        c.Scene.Add(new MapPolyline([corner, b], Argb8Color.Rgb(0x3A, 0x9B, 0xF0).WithAlpha(0.7), 1.5f));
         c.Scene.Add(new MapMarker(a, 8, MarkerShape.Diamond, MeasureColor, MapPalette.Black) { Hit = hit });
         c.Scene.Add(new MapMarker(b, 8, MarkerShape.Diamond, MeasureColor, MapPalette.Black) { Hit = hit });
         c.Scene.Add(new MapLabel((a + b) / 2, m.Summary, MeasureColor));

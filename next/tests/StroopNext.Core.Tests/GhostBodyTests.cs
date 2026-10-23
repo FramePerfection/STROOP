@@ -1,5 +1,7 @@
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Ghosts;
+using StroopNext.Graphics;
 using StroopNext.Map;
 using StroopNext.Memory;
 
@@ -117,7 +119,7 @@ public class GhostBodyTests
         new RamPatch().WriteU32(Timer, 1000).ApplyTo(ram.Bytes);
         var hack = new InGameGhosts();
         hack.Install(F(ram), out _)!.ApplyTo(ram.Bytes);
-        hack.Feed(F(ram), [(WithBodies(), MapColor.Rgb(0, 255, 0))], true).ApplyTo(ram.Bytes);
+        hack.Feed(F(ram), [(WithBodies(), Argb8Color.Rgb(0, 255, 0))], true).ApplyTo(ram.Bytes);
         var image = new RamImage(ram.Bytes);
         uint slot = Base + 0x60000 + (1000 & 0x7F) * 0x20;
         Assert.Equal(WithBodies().Bodies[100], Enumerable.Range(0, InGameGhosts.BodyBytes).Select(i => image.U8(slot + (uint)i)).ToArray());

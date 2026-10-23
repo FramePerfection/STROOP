@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace StroopNext.Engine;
+namespace StroopNext.TasEngine;
 
 public sealed record EngineSetup(string Folder, string Python)
 {

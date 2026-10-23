@@ -1,25 +1,7 @@
+using StroopNext.Graphics;
 using System.Numerics;
 
 namespace StroopNext.Map;
-
-public readonly record struct MapColor(byte A, byte R, byte G, byte B)
-{
-    public static readonly MapColor Transparent = new(0, 0, 0, 0);
-
-    public static MapColor Rgb(byte r, byte g, byte b) => new(255, r, g, b);
-    public static MapColor FromHex(uint argb) => new((byte)(argb >> 24), (byte)(argb >> 16), (byte)(argb >> 8), (byte)argb);
-
-    public MapColor WithAlpha(double alpha) => this with { A = (byte)Math.Clamp(Math.Round(alpha * 255), 0, 255) };
-
-    public MapColor Lerp(MapColor to, double t)
-    {
-        t = Math.Clamp(t, 0, 1);
-        byte L(byte a, byte b) => (byte)Math.Round(a + (b - a) * t);
-        return new MapColor(L(A, to.A), L(R, to.R), L(G, to.G), L(B, to.B));
-    }
-
-    public bool IsVisible => A > 0;
-}
 
 public interface IMapHit
 {
@@ -34,15 +16,15 @@ public abstract record MapPrimitive
     public IMapHit? Hit { get; init; }
 }
 
-public sealed record MapPolygon(Vector2[] Points, MapColor Fill, MapColor Stroke, float StrokePx = 1) : MapPrimitive;
-public sealed record MapPolyline(Vector2[] Points, MapColor Stroke, float StrokePx = 1) : MapPrimitive;
-public sealed record MapCircle(Vector2 Center, float Radius, MapColor Fill, MapColor Stroke, float StrokePx = 1) : MapPrimitive;
+public sealed record MapPolygon(Vector2[] Points, Argb8Color Fill, Argb8Color Stroke, float StrokePx = 1) : MapPrimitive;
+public sealed record MapPolyline(Vector2[] Points, Argb8Color Stroke, float StrokePx = 1) : MapPrimitive;
+public sealed record MapCircle(Vector2 Center, float Radius, Argb8Color Fill, Argb8Color Stroke, float StrokePx = 1) : MapPrimitive;
 
-public sealed record MapArrow(Vector2 From, double Yaw, float LengthPx, MapColor Color, float StrokePx = 2) : MapPrimitive;
+public sealed record MapArrow(Vector2 From, double Yaw, float LengthPx, Argb8Color Color, float StrokePx = 2) : MapPrimitive;
 
-public sealed record MapMarker(Vector2 Center, float SizePx, MarkerShape Shape, MapColor Fill, MapColor Stroke, double? Yaw = null) : MapPrimitive;
+public sealed record MapMarker(Vector2 Center, float SizePx, MarkerShape Shape, Argb8Color Fill, Argb8Color Stroke, double? Yaw = null) : MapPrimitive;
 
-public sealed record MapLabel(Vector2 At, string Text, MapColor Color, float OffsetXPx = 8, float OffsetYPx = -8) : MapPrimitive;
+public sealed record MapLabel(Vector2 At, string Text, Argb8Color Color, float OffsetXPx = 8, float OffsetYPx = -8) : MapPrimitive;
 
 public sealed class SceneKey : IEquatable<SceneKey>
 {

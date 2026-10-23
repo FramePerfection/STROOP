@@ -1,4 +1,5 @@
 using StroopNext.Game;
+using StroopNext.Ghosts;
 using StroopNext.Memory;
 using StroopNext.Platform;
 using StroopNext.Session;

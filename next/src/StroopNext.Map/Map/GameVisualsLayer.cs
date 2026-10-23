@@ -72,7 +72,7 @@ public sealed class GameVisualsLayer : MapLayer, IMapLayer3D
 
     private static void AddShadow(Scene3D scene, GfxShadow s)
     {
-        var color = new MapColor((byte)Math.Clamp(s.Opacity * 160, 0, 255), 0, 0, 0);
+        var color = new Argb8Color((byte)Math.Clamp(s.Opacity * 160, 0, 255), 0, 0, 0);
         var center = s.Position + new Vector3(0, 4, 0);
         float r = s.Size / 2;
         if (s.Square)

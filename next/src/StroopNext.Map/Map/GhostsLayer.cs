@@ -1,14 +1,16 @@
 using System.Globalization;
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Ghosts;
+using StroopNext.Graphics;
 using StroopNext.Map3D;
 
 namespace StroopNext.Map;
 
-public sealed class GhostEntry(Ghost ghost, MapColor color)
+public sealed class GhostEntry(Ghost ghost, Argb8Color color)
 {
     public Ghost Ghost { get; } = ghost;
-    public MapColor Color { get; set; } = color;
+    public Argb8Color Color { get; set; } = color;
     public bool Visible { get; set; } = true;
     public bool ShowPath { get; set; } = true;
 
@@ -73,10 +75,10 @@ public sealed record GhostHit(Ghost Ghost, uint GlobalTimer, GhostFrame Frame) :
 
 public sealed class GhostsLayer : MapLayer, IMapLayer3D
 {
-    public static readonly MapColor[] Colors =
+    public static readonly Argb8Color[] Colors =
     [
-        MapColor.Rgb(0x44, 0xC0, 0x66), MapColor.Rgb(0x3A, 0x9B, 0xF0), MapColor.Rgb(0xF5, 0xD0, 0x20),
-        MapColor.Rgb(0xC0, 0x4C, 0xE0), MapColor.Rgb(0x3D, 0xD6, 0xF5), MapColor.Rgb(0xF0, 0x8C, 0x2E),
+        Argb8Color.Rgb(0x44, 0xC0, 0x66), Argb8Color.Rgb(0x3A, 0x9B, 0xF0), Argb8Color.Rgb(0xF5, 0xD0, 0x20),
+        Argb8Color.Rgb(0xC0, 0x4C, 0xE0), Argb8Color.Rgb(0x3D, 0xD6, 0xF5), Argb8Color.Rgb(0xF0, 0x8C, 0x2E),
     ];
 
     private readonly List<GhostEntry> _ghosts = new();

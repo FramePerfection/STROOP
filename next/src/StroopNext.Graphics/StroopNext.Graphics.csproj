@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="StroopNext.Core.Tests"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\StroopNext.Core\StroopNext.Core.csproj"/>
+        <ProjectReference Include="..\StroopNext.Ghosts\StroopNext.Ghosts.csproj"/>
+    </ItemGroup>
+</Project>

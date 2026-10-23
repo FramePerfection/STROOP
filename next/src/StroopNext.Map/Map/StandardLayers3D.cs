@@ -1,5 +1,6 @@
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Graphics;
 using StroopNext.Map3D;
 using StroopNext.Settings;
 
@@ -43,7 +44,7 @@ public abstract partial class HorizontalSurfaceLayer : IMapLayer3D
 
         bool Keep(Surface s) => s.Class == Class && !(filtered && (s.MaxY < mario!.Position.Y - range || s.MinY > mario.Position.Y + range));
         bool overlay = c.Scene.GameVisuals is not null && c.Scene.GameVisualsOptions.Level;
-        MapColor Color(Surface s) => overlay ? ColorFor(s, null).WithAlpha(0.12) : ColorFor(s, null);
+        Argb8Color Color(Surface s) => overlay ? ColorFor(s, null).WithAlpha(0.12) : ColorFor(s, null);
 
         if (c.Scene.BeginBackground(this, (surfaces.StaticVersion, range, filtered ? mario!.Position.Y : (float?)null, overlay)))
             foreach (var s in surfaces.Static)
@@ -182,7 +183,7 @@ public sealed partial class MarioLayer
 {
     public readonly Setting<bool> ShowVelocity3D = new("velocity3d", "Velocity vector, with Y speed (3D)", true);
 
-    internal static void LineArrow(Map3DContext c, Vector3 origin, Vector3 direction, float length, MapColor color)
+    internal static void LineArrow(Map3DContext c, Vector3 origin, Vector3 direction, float length, Argb8Color color)
     {
         if (length <= 0 || direction.LengthSquared() < 1e-8f)
             return;

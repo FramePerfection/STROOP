@@ -4,9 +4,9 @@ using System.Numerics;
 using System.Text;
 using System.Text.Json.Nodes;
 using Avalonia.Threading;
-using StroopNext.Engine;
+using StroopNext.TasEngine;
 using StroopNext.Game;
-using StroopNext.Map;
+using StroopNext.Ghosts;
 using StroopNext.Memory;
 using StroopNext.Platform;
 using StroopNext.Session;
@@ -14,11 +14,11 @@ using StroopNext.Settings;
 
 namespace StroopNext.Desktop.Engine;
 
-internal sealed class EngineGhost(string key, Ghost ghost, MapColor color, bool marker = false, bool light = false)
+internal sealed class EngineGhost(string key, Ghost ghost, Argb8Color color, bool marker = false, bool light = false)
 {
     public string Key { get; } = key;
     public Ghost Ghost { get; } = ghost;
-    public MapColor Color { get; } = color;
+    public Argb8Color Color { get; } = color;
 
     public bool Marker { get; } = marker;
 
@@ -34,14 +34,14 @@ internal sealed class EngineService : IDisposable
     public static readonly Setting<bool> AutoSetting = new("auto", "Connect the engine with Mupen automatically", true);
     public static readonly Setting<double> BudgetSetting = new("stepTime", "Search time per step (s)", 120) { Range = (5, 1200, 5) };
 
-    public static readonly MapColor PathColor = MapColor.Rgb(0xF5, 0x9E, 0x2E);
-    public static readonly MapColor BestColor = MapColor.Rgb(0x8C, 0xE0, 0x3A);
-    public static readonly MapColor ReferenceColor = MapColor.Rgb(0xC8, 0xCC, 0xD8);
-    public static readonly MapColor TargetColor = MapColor.Rgb(0xFF, 0x5A, 0x5A);
-    public static readonly MapColor[] TryColors =
+    public static readonly Argb8Color PathColor = Argb8Color.Rgb(0xF5, 0x9E, 0x2E);
+    public static readonly Argb8Color BestColor = Argb8Color.Rgb(0x8C, 0xE0, 0x3A);
+    public static readonly Argb8Color ReferenceColor = Argb8Color.Rgb(0xC8, 0xCC, 0xD8);
+    public static readonly Argb8Color TargetColor = Argb8Color.Rgb(0xFF, 0x5A, 0x5A);
+    public static readonly Argb8Color[] TryColors =
     [
-        MapColor.Rgb(0x5A, 0xC8, 0xFA), MapColor.Rgb(0xFF, 0xD4, 0x3B), MapColor.Rgb(0xC0, 0x7C, 0xFF), MapColor.Rgb(0xFF, 0x8C, 0x5A),
-        MapColor.Rgb(0x4C, 0xE0, 0xB3), MapColor.Rgb(0xFF, 0x6E, 0xC7), MapColor.Rgb(0x9A, 0xD8, 0x5A), MapColor.Rgb(0x7A, 0x9C, 0xFF),
+        Argb8Color.Rgb(0x5A, 0xC8, 0xFA), Argb8Color.Rgb(0xFF, 0xD4, 0x3B), Argb8Color.Rgb(0xC0, 0x7C, 0xFF), Argb8Color.Rgb(0xFF, 0x8C, 0x5A),
+        Argb8Color.Rgb(0x4C, 0xE0, 0xB3), Argb8Color.Rgb(0xFF, 0x6E, 0xC7), Argb8Color.Rgb(0x9A, 0xD8, 0x5A), Argb8Color.Rgb(0x7A, 0x9C, 0xFF),
     ];
 
     private readonly SettingsScope _settings;

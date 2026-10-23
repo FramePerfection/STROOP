@@ -1,5 +1,6 @@
 using System.Numerics;
 using StroopNext.Game;
+using StroopNext.Ghosts;
 using StroopNext.Session;
 
 namespace StroopNext.Graphics;
@@ -778,7 +779,7 @@ public sealed partial class GameSceneBuilder
     private void CollectGhostNodes()
     {
         _ghostNodes.Clear();
-        uint first = ((uint)(Game.InGameGhosts.InstalledBaseHi(_memory.U32) ?? Game.InGameGhosts.DefaultBaseHi) << 16) + 0x7FF8;
+        uint first = ((uint)(InGameGhosts.InstalledBaseHi(_memory.U32) ?? InGameGhosts.DefaultBaseHi) << 16) + 0x7FF8;
         for (uint i = 0, slot = first; i < 40 && _memory.IsPointer(slot); i++, slot -= 0x68)
         {
             uint node = _memory.U32(slot);

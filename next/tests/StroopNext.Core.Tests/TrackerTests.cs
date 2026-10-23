@@ -1,3 +1,4 @@
+using StroopNext.Graphics;
 using System.Numerics;
 using StroopNext.Map;
 using StroopNext.Map3D;
@@ -181,6 +182,6 @@ public class TrackerTests
         layer.Add(scope, TrackerSpec.Create(TrackerKind.Marker, TrackerTarget.Camera) with { Visible = false });
         var markers = Build2D(layer, scope, Mario().Frame()).Items.OfType<MapMarker>().ToList();
         Assert.Equal(2, markers.Count);
-        Assert.Equal(MapColor.FromHex(0xFF0000FF), markers[^1].Fill);
+        Assert.Equal(Argb8Color .FromHex(0xFF0000FF), markers[^1].Fill);
     }
 }

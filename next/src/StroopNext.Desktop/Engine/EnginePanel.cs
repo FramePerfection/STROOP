@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using StroopNext.Desktop.Modules;
-using StroopNext.Engine;
+using StroopNext.TasEngine;
 using StroopNext.Settings;
 using Path = System.IO.Path;
 
