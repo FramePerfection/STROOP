@@ -1,7 +1,6 @@
 using StroopNext.Game;
 using StroopNext.Memory;
 using StroopNext.Session;
-using Xunit;
 
 namespace StroopNext.Core.Tests;
 

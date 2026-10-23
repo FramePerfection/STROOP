@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.Json.Nodes;
 using Avalonia.Threading;
 using StroopNext.TasEngine;
-using StroopNext.Game;
 using StroopNext.Ghosts;
 using StroopNext.Memory;
 using StroopNext.Platform;

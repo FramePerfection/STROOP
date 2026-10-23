@@ -1,5 +1,4 @@
 using System.Globalization;
-using StroopNext.Memory;
 using StroopNext.Session;
 
 namespace StroopNext.Variables;

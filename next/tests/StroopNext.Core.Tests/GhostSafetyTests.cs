@@ -1,4 +1,3 @@
-using StroopNext.Game;
 using StroopNext.Ghosts;
 using StroopNext.Memory;
 

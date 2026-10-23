@@ -1,6 +1,3 @@
-using StroopNext.Rendering.Skia;
-using StroopNext.Rendering.Gl;
-using StroopNext.Rendering.Diagnostics;
 using System.Diagnostics;
 using System.Numerics;
 using OpenTK.Graphics.OpenGL4;

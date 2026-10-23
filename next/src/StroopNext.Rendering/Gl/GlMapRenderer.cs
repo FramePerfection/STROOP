@@ -1,6 +1,5 @@
 using System.Numerics;
 using OpenTK.Graphics.OpenGL4;
-using StroopNext.Map;
 using StroopNext.Map3D;
 
 namespace StroopNext.Rendering.Gl;

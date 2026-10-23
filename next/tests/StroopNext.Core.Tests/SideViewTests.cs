@@ -1,6 +1,4 @@
-using StroopNext.Graphics;
 using System.Numerics;
-using StroopNext.Map;
 using StroopNext.Map3D;
 
 namespace StroopNext.Core.Tests;

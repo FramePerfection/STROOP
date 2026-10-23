@@ -1,7 +1,5 @@
 using System.Diagnostics;
-using StroopNext.Game;
 using StroopNext.Ghosts;
-using StroopNext.Map;
 using StroopNext.Memory;
 using StroopNext.Platform;
 using StroopNext.Session;

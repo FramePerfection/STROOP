@@ -1,7 +1,5 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Styling;
-using Avalonia.Themes.Fluent;
 using StroopNext.Desktop.Map;
 using StroopNext.Desktop.Mario;
 using StroopNext.Desktop.Modules;

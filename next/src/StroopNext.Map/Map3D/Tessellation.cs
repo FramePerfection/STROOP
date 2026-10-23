@@ -1,7 +1,6 @@
 using StroopNext.Graphics;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using StroopNext.Map;
 
 namespace StroopNext.Map3D;
 

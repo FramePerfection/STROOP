@@ -1,5 +1,3 @@
-using StroopNext.Rendering.Gl;
-using StroopNext.Rendering.Diagnostics;
 using System.Diagnostics;
 using System.Numerics;
 using SkiaSharp;

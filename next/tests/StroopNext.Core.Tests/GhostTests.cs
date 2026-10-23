@@ -1,5 +1,4 @@
 using System.Numerics;
-using StroopNext.Game;
 using StroopNext.Ghosts;
 using StroopNext.Map;
 using StroopNext.Session;

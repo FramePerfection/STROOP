@@ -1,6 +1,5 @@
 using System.Numerics;
 using StroopNext.Game;
-using StroopNext.Graphics;
 using StroopNext.Map;
 using StroopNext.Session;
 using StroopNext.Settings;

@@ -1,7 +1,6 @@
 using System.Numerics;
 using SkiaSharp;
 using StroopNext.Map;
-using StroopNext.Graphics;
 
 namespace StroopNext.Rendering.Skia;
 

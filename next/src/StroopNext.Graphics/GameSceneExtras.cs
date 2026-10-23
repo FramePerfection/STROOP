@@ -1,5 +1,4 @@
 using System.Numerics;
-using StroopNext.Game;
 using StroopNext.Session;
 
 namespace StroopNext.Graphics;

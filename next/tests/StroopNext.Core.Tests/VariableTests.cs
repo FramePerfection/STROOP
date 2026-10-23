@@ -1,4 +1,3 @@
-using System.Numerics;
 using StroopNext.Memory;
 using StroopNext.Variables;
 using O = StroopNext.Game.MarioOffsets;

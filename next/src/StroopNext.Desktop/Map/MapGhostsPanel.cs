@@ -4,7 +4,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using StroopNext.Game;
 using StroopNext.Ghosts;
 using StroopNext.Map;
 

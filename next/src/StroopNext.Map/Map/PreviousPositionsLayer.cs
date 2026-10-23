@@ -1,4 +1,3 @@
-using StroopNext.Graphics;
 using System.Globalization;
 using System.Numerics;
 using StroopNext.Map3D;

@@ -1,8 +1,6 @@
 using System.Numerics;
 using StroopNext.Game;
 using StroopNext.Ghosts;
-using StroopNext.Graphics;
-using StroopNext.Map;
 using StroopNext.Memory;
 
 namespace StroopNext.Core.Tests;
